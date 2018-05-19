@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
-<ProjectName>C:\Users\Max\OneDrive\Dokumenty\Moje Dokumenty\iiet\inz\RemoteProgrammer\RemoteProgrammer\\RemoteProgrammer</ProjectName>
+<ProjectName>C:\Users\Max\OneDrive\Dokumenty\Moje Dokumenty\iiet\inz\makefileRemote\RemoteProgrammer\\RemoteProgrammer</ProjectName>
 <ProjectNature>C</ProjectNature> 
 <CMSIS>Drivers\CMSIS</CMSIS>
 <HAL_Driver>C:\Users\Max\STM32Cube\Repository\STM32Cube_FW_F4_V1.21.0\Drivers\CMSIS</HAL_Driver>
@@ -9,6 +9,7 @@
 
 <filestoremove>
     <file>
+    <name>Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_iwdg.c</name>
     </file>
 </filestoremove>
 
@@ -32,7 +33,7 @@
     <usedDebug>true</usedDebug>
     	<debugprobe></debugprobe>
     <optimization></optimization>
-    <icfloc>1</icfloc>
+    <icfloc>0</icfloc>
     <Adefines>
         <define></define>
     </Adefines>   
@@ -304,9 +305,6 @@
 		 		<name>STM32F4xx_HAL_Driver</name>
 						<file>
 							<name>Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_eth.c</name>
-						</file>
-						<file>
-							<name>Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_iwdg.c</name>
 						</file>
 						<file>
 							<name>Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c</name>
