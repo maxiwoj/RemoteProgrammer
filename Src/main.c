@@ -100,6 +100,8 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
+  JTAG_Init();
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */

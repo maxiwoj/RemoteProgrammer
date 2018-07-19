@@ -112,6 +112,7 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c \
 Middlewares/Third_Party/LwIP/src/core/ipv4/icmp.c \
 Middlewares/Third_Party/LwIP/src/api/netifapi.c \
 Src/main.c \
+Src/programmers/JTAGInitialisation.c \
 Middlewares/Third_Party/LwIP/src/core/ipv6/ip6_addr.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
 Src/ethernetif.c \
