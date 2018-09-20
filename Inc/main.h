@@ -59,6 +59,27 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define LED_G_Pin GPIO_PIN_0
+#define LED_G_GPIO_Port GPIOB
+#define LED_R_Pin GPIO_PIN_14
+#define LED_R_GPIO_Port GPIOB
+#define USB_GPIO_OUT_Pin GPIO_PIN_6
+#define USB_GPIO_OUT_GPIO_Port GPIOG
+#define USB_GPIO_IN_Pin GPIO_PIN_7
+#define USB_GPIO_IN_GPIO_Port GPIOG
+#define JTAG_TRST_Pin GPIO_PIN_8
+#define JTAG_TRST_GPIO_Port GPIOC
+#define JTAG_TDI_Pin GPIO_PIN_9
+#define JTAG_TDI_GPIO_Port GPIOC
+#define JTAG_TDO_Pin GPIO_PIN_10
+#define JTAG_TDO_GPIO_Port GPIOC
+#define JTAG_TMS_Pin GPIO_PIN_11
+#define JTAG_TMS_GPIO_Port GPIOC
+#define JTAG_TCLK_Pin GPIO_PIN_12
+#define JTAG_TCLK_GPIO_Port GPIOC
+#define LED_B_Pin GPIO_PIN_7
+#define LED_B_GPIO_Port GPIOB
+
 /* ########################## Assert Selection ############################## */
 /**
   * @brief Uncomment the line below to expanse the "assert_param" macro in the 

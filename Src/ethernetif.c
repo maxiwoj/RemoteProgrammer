@@ -50,22 +50,24 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 #include "lwip/opt.h"
-#include "lwip/mem.h"
-#include "lwip/memp.h"
+
 #include "lwip/timeouts.h"
 #include "netif/ethernet.h"
 #include "netif/etharp.h"
 #include "lwip/ethip6.h"
 #include "ethernetif.h"
 #include <string.h>
-
+#include "cmsis_os.h"
 /* Within 'USER CODE' section, code will be kept by default at each generation */
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
 
 /* Private define ------------------------------------------------------------*/
-
+/* The time to block waiting for input. */
+#define TIME_WAITING_FOR_INPUT ( portMAX_DELAY )
+/* Stack size of the interface thread */
+#define INTERFACE_THREAD_STACK_SIZE ( 350 )
 /* Network interface name */
 #define IFNAME0 's'
 #define IFNAME1 't'
@@ -99,6 +101,8 @@ __ALIGN_BEGIN uint8_t Tx_Buff[ETH_TXBUFNB][ETH_TX_BUF_SIZE] __ALIGN_END; /* Ethe
 
 /* USER CODE END 2 */
 
+/* Semaphore to signal incoming packets */
+osSemaphoreId s_xSemaphore = NULL;
 /* Global Ethernet handle */
 ETH_HandleTypeDef heth;
 
@@ -120,54 +124,47 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     __HAL_RCC_ETH_CLK_ENABLE();
   
     /**ETH GPIO Configuration    
-    PE2     ------> ETH_TXD3
     PC1     ------> ETH_MDC
-    PC2     ------> ETH_TXD2
-    PC3     ------> ETH_TX_CLK
-    PA0/WKUP     ------> ETH_CRS
-    PA1     ------> ETH_RX_CLK
+    PA1     ------> ETH_REF_CLK
     PA2     ------> ETH_MDIO
-    PA3     ------> ETH_COL
-    PA7     ------> ETH_RX_DV
+    PA7     ------> ETH_CRS_DV
     PC4     ------> ETH_RXD0
     PC5     ------> ETH_RXD1
-    PB0     ------> ETH_RXD2
-    PB1     ------> ETH_RXD3
-    PB11     ------> ETH_TX_EN
-    PB12     ------> ETH_TXD0
-    PB13     ------> ETH_TXD1 
+    PB13     ------> ETH_TXD1
+    PG11     ------> ETH_TX_EN
+    PG13     ------> ETH_TXD0 
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_2;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
-    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4 
-                          |GPIO_PIN_5;
+    GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3 
-                          |GPIO_PIN_7;
+    GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_7;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_11|GPIO_PIN_12 
-                          |GPIO_PIN_13;
+    GPIO_InitStruct.Pin = GPIO_PIN_13;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_13;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+    HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+    /* Peripheral interrupt init */
+    HAL_NVIC_SetPriority(ETH_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(ETH_IRQn);
   /* USER CODE BEGIN ETH_MspInit 1 */
 
   /* USER CODE END ETH_MspInit 1 */
@@ -185,38 +182,41 @@ void HAL_ETH_MspDeInit(ETH_HandleTypeDef* ethHandle)
     __HAL_RCC_ETH_CLK_DISABLE();
   
     /**ETH GPIO Configuration    
-    PE2     ------> ETH_TXD3
     PC1     ------> ETH_MDC
-    PC2     ------> ETH_TXD2
-    PC3     ------> ETH_TX_CLK
-    PA0/WKUP     ------> ETH_CRS
-    PA1     ------> ETH_RX_CLK
+    PA1     ------> ETH_REF_CLK
     PA2     ------> ETH_MDIO
-    PA3     ------> ETH_COL
-    PA7     ------> ETH_RX_DV
+    PA7     ------> ETH_CRS_DV
     PC4     ------> ETH_RXD0
     PC5     ------> ETH_RXD1
-    PB0     ------> ETH_RXD2
-    PB1     ------> ETH_RXD3
-    PB11     ------> ETH_TX_EN
-    PB12     ------> ETH_TXD0
-    PB13     ------> ETH_TXD1 
+    PB13     ------> ETH_TXD1
+    PG11     ------> ETH_TX_EN
+    PG13     ------> ETH_TXD0 
     */
-    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_2);
+    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5);
 
-    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4 
-                          |GPIO_PIN_5);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_7);
 
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3 
-                          |GPIO_PIN_7);
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13);
 
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_11|GPIO_PIN_12 
-                          |GPIO_PIN_13);
+    HAL_GPIO_DeInit(GPIOG, GPIO_PIN_11|GPIO_PIN_13);
+
+    /* Peripheral interrupt Deinit*/
+    HAL_NVIC_DisableIRQ(ETH_IRQn);
 
   /* USER CODE BEGIN ETH_MspDeInit 1 */
 
   /* USER CODE END ETH_MspDeInit 1 */
   }
+}
+
+/**
+  * @brief  Ethernet Rx Transfer completed callback
+  * @param  heth: ETH handle
+  * @retval None
+  */
+void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
+{
+  osSemaphoreRelease(s_xSemaphore);
 }
 
 /* USER CODE BEGIN 4 */
@@ -243,7 +243,7 @@ static void low_level_init(struct netif *netif)
    uint8_t MACAddr[6] ;
   heth.Instance = ETH;
   heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
-  heth.Init.PhyAddress = DP83848_PHY_ADDRESS;
+  heth.Init.PhyAddress = LAN8742A_PHY_ADDRESS;
   MACAddr[0] = 0x00;
   MACAddr[1] = 0x80;
   MACAddr[2] = 0xE1;
@@ -251,9 +251,9 @@ static void low_level_init(struct netif *netif)
   MACAddr[4] = 0x00;
   MACAddr[5] = 0x00;
   heth.Init.MACAddr = &MACAddr[0];
-  heth.Init.RxMode = ETH_RXPOLLING_MODE;
+  heth.Init.RxMode = ETH_RXINTERRUPT_MODE;
   heth.Init.ChecksumMode = ETH_CHECKSUM_BY_HARDWARE;
-  heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_MII;
+  heth.Init.MediaInterface = ETH_MEDIA_INTERFACE_RMII;
 
   /* USER CODE BEGIN MACADDRESS */
     
@@ -296,6 +296,13 @@ static void low_level_init(struct netif *netif)
     netif->flags |= NETIF_FLAG_BROADCAST;
   #endif /* LWIP_ARP */
   
+/* create a binary semaphore used for informing ethernetif of frame reception */
+  osSemaphoreDef(SEM);
+  s_xSemaphore = osSemaphoreCreate(osSemaphore(SEM) , 1 );
+
+/* create the task that handles the ETH_MAC */
+  osThreadDef(EthIf, ethernetif_input, osPriorityRealtime, 0, INTERFACE_THREAD_STACK_SIZE);
+  osThreadCreate (osThread(EthIf), netif);
   /* Enable MAC and DMA transmission and reception */
   HAL_ETH_Start(&heth);
 
@@ -303,22 +310,16 @@ static void low_level_init(struct netif *netif)
     
 /* USER CODE END PHY_PRE_CONFIG */
   
-  /**** Configure PHY to generate an interrupt when Eth Link state changes ****/
-  /* Read Register Configuration */
-  HAL_ETH_ReadPHYRegister(&heth, PHY_MICR, &regvalue);
-  
-  regvalue |= (PHY_MICR_INT_EN | PHY_MICR_INT_OE);
 
-  /* Enable Interrupts */
-  HAL_ETH_WritePHYRegister(&heth, PHY_MICR, regvalue );
+  /* Read Register Configuration */
+  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR, &regvalue);
+  regvalue |= (PHY_ISFR_INT4);
+
+  /* Enable Interrupt on change of link status */ 
+  HAL_ETH_WritePHYRegister(&heth, PHY_ISFR , regvalue );
   
   /* Read Register Configuration */
-  HAL_ETH_ReadPHYRegister(&heth, PHY_MISR, &regvalue);
-  
-  regvalue |= PHY_MISR_LINK_INT_EN;
-    
-  /* Enable Interrupt on change of link status */
-  HAL_ETH_WritePHYRegister(&heth, PHY_MISR, regvalue);
+  HAL_ETH_ReadPHYRegister(&heth, PHY_ISFR , &regvalue);
 
 /* USER CODE BEGIN PHY_POST_CONFIG */ 
     
@@ -445,7 +446,7 @@ static struct pbuf * low_level_input(struct netif *netif)
   
 
   /* get received frame */
-  if (HAL_ETH_GetReceivedFrame(&heth) != HAL_OK)
+  if (HAL_ETH_GetReceivedFrame_IT(&heth) != HAL_OK)
     return NULL;
   
   /* Obtain the size of the packet and put it into the "len" variable. */
@@ -520,25 +521,27 @@ static struct pbuf * low_level_input(struct netif *netif)
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-void ethernetif_input(struct netif *netif)
+void ethernetif_input( void const * argument ) 
 {
-  err_t err;
   struct pbuf *p;
-
-  /* move received packet into a new pbuf */
-  p = low_level_input(netif);
-    
-  /* no packet could be read, silently ignore this */
-  if (p == NULL) return;
-    
-  /* entry point to the LwIP stack */
-  err = netif->input(p, netif);
-    
-  if (err != ERR_OK)
+  struct netif *netif = (struct netif *) argument;
+  
+  for( ;; )
   {
-    LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
-    pbuf_free(p);
-    p = NULL;    
+    if (osSemaphoreWait( s_xSemaphore, TIME_WAITING_FOR_INPUT)==osOK)
+    {
+      do
+      {   
+        p = low_level_input( netif );
+        if   (p != NULL)
+        {
+          if (netif->input( p, netif) != ERR_OK )
+          {
+            pbuf_free(p);
+          }
+        }
+      } while(p!=NULL);
+    }
   }
 }
 
