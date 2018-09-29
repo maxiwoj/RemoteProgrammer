@@ -361,6 +361,7 @@ void StartDefaultTask(void const * argument)
       HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
       usb_ls();
       osDelay(500);
+      usb_write("asd", 3);
       HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
     }
     HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);

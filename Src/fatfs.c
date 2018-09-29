@@ -120,6 +120,36 @@ void usb_ls() {
     printf("Error mounting USB\n");
   }
 }
+
+#define CHECK_FRESULT(result, msg, er) \
+  if ((result) != FR_OK) { \
+    printf("%s, error code 0x%x\n", (msg), (result)); \
+    return (er); \
+  }
+
+int usb_write(const void *bytes, size_t size) {
+  FRESULT result;
+
+  
+  result = f_mount(&USBHFatFS, "", 1);
+  if (result == FR_OK) {
+    FIL fp;
+    result = f_open(&fp, "0:/temp", FA_WRITE | FA_CREATE_ALWAYS);
+    CHECK_FRESULT(result, "open failed", -1);
+
+    uint written_bytes;
+    result = f_write(&fp, bytes, size, &written_bytes);
+    CHECK_FRESULT(result, "write failed", -1);
+    
+    result = f_close(&fp);
+    CHECK_FRESULT(result, "close failed", -1);
+
+    f_mount(NULL, "", 0);
+  } else {
+    CHECK_FRESULT(result, "mount failed", -1);
+  }
+
+}
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
