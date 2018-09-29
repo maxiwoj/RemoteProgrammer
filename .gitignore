@@ -1,2 +1,3 @@
 build/*
 r
+.gcc-flags.json
