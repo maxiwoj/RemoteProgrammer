@@ -158,7 +158,9 @@ Src/main.c \
 Src/lwip.c \
 Src/ethernetif.c \
 Src/stm32f4xx_it.c \
-Src/stm32f4xx_hal_msp.c
+Src/stm32f4xx_hal_msp.c \
+Src/communication/dbgu.c \
+Src/communication/term_io.c 
 
 # ASM sources
 ASM_SOURCES =  \
@@ -237,7 +239,8 @@ C_INCLUDES =  \
 -IMiddlewares/Third_Party/LwIP/src/include/posix \
 -IMiddlewares/Third_Party/LwIP/src/include/posix/sys \
 -IMiddlewares/Third_Party/LwIP/system/arch \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include \
+-IInc/communication
 
 
 # compile gcc flags

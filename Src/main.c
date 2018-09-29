@@ -55,7 +55,8 @@
 #include "usb_host.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "term_io.h"
+#include "debug_leds.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -305,12 +306,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 int __io_putchar(int ch)
 {
-  /*
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
-    HAL_Delay(100);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
-    HAL_Delay(100);*/
-
  uint8_t c[1];
  c[1] = '\0';
  c[0] = ch & 0x00FF;
@@ -320,16 +315,7 @@ int __io_putchar(int ch)
  HAL_UART_Transmit(&huart3, &*c, 1, 10);
  return ch;
 }
-/*
-int _write(int file,char *ptr, int len)
-{
- int DataIdx;
- for(DataIdx= 0; DataIdx< len; DataIdx++)
- {
- __io_putchar(*ptr++);
- }
-return len;
-}*/
+
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -354,24 +340,30 @@ void StartDefaultTask(void const * argument)
   int x = 0;
   osDelay(500);
   HAL_GPIO_WritePin(USB_GPIO_OUT_GPIO_Port, USB_GPIO_OUT_Pin, GPIO_PIN_SET);
+  BlinkBlue();
+  char usrInput[2];
   /* Infinite loop */
+  debug_init(&huart3);
   for(;;)
   {
-    if (get_usb_ready()) {
-      HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
-      usb_ls();
-      osDelay(500);
-      usb_write("asd", 3);
-      HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
-    }
-    HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_RESET);
     printf("in loop %d\n\r", x);
-    osDelay(500);
     x++;
-    HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
-    osDelay(500);
+    printf("$ ");
+    fflush(stdout);
+    get_line(usrInput, 2);
+    printf("%s\n", usrInput);
+    switch(usrInput[0]) {
+      case 'l':
+        if (get_usb_ready()) {
+          usb_ls();
+        }
+        break;
+      case 'w':
+        if (get_usb_ready()) {
+          usb_write("asd", 3);
+        }
+        break;
+    }
   }
   /* USER CODE END 5 */ 
 }
