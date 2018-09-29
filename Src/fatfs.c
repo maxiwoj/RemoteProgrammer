@@ -102,7 +102,7 @@ FRESULT scan_files (
         /*if (res != FR_OK) break;
         path[i] = 0;*/
       } else {                                       /* It is a file. */
-        printf("%s/%s\n\r", path, fno.fname);
+        printf("%s%s\n\r", path, fno.fname);
       }
     }
     f_closedir(&dir);
@@ -111,12 +111,13 @@ FRESULT scan_files (
 }
 
 void usb_ls() {
-  char path[256];
   printf("Start ls\n");
   if (f_mount(&USBHFatFS, "", 1) == FR_OK) {
-    //sprintf(path, "/");
-    scan_files("/");
+    scan_files(USBHPath);
     f_mount(NULL, "", 0);
+  } else {
+    f_mount(NULL, "", 0);
+    printf("Error mounting USB\n");
   }
 }
 /* USER CODE END Application */
