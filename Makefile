@@ -189,6 +189,9 @@ Middlewares/Third_Party/wakaama/discover.c \
 Middlewares/Third_Party/wakaama/block1.c \
 Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.c \
 
+WAKAAMA_PLATFORM = \
+Middlewares/Third_Party/wakaama/platform/platform.c \
+
 WAKAAMA_INC = \
 -IMiddlewares/Third_Party/wakaama \
 -IMiddlewares/Third_Party/wakaama/er-coap-13
@@ -275,7 +278,7 @@ C_INCLUDES =  \
 
 C_INCLUDES += $(WAKAAMA_INC)
 
-C_SOURCES += $(WAKAAMA_SOURCES)
+C_SOURCES += $(WAKAAMA_SOURCES) $(WAKAAMA_PLATFORM)
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections

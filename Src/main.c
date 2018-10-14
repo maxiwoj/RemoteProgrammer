@@ -306,6 +306,10 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 int __io_putchar(int ch)
 {
+<<<<<<< HEAD
+=======
+
+>>>>>>> Wakaama
  uint8_t c[1];
  c[1] = '\0';
  c[0] = ch & 0x00FF;
