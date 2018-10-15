@@ -21,9 +21,7 @@
 #include <ctype.h>
 #include "connection.h"
 
-connection_t * connection_find(connection_t * connList,
-                               struct sockaddr_storage * addr,
-                               size_t addrLen)
+connection_t * connection_find(connection_t * connList, struct sockaddr_storage * addr, size_t addrLen)
 {
     connection_t * connP;
 
@@ -77,9 +75,11 @@ connection_t * connection_create(connection_t * connList,
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = addressFamily;
     hints.ai_socktype = SOCK_DGRAM;
-
-    if (0 != getaddrinfo(host, port, &hints, &servinfo) || servinfo == NULL) return NULL;
-
+    int result = lwip_getaddrinfo(host, port, &hints, &servinfo);
+    fprintf(stderr, "lwip_getaddrinfo %d\r\n", result);
+    if (result != 0 || servinfo == NULL) {
+        return NULL;
+    }
     // we test the various addresses
     s = -1;
     for(p = servinfo ; p != NULL && s == -1 ; p = p->ai_next)
@@ -97,9 +97,9 @@ connection_t * connection_create(connection_t * connList,
         }
     }
     if (s >= 0)
-    {
+    {   
         connP = connection_new_incoming(connList, sock, sa, sl);
-        close(s);
+        lwip_close(s);
     }
     if (NULL != servinfo) {
         lwm2m_free(servinfo);
@@ -115,7 +115,7 @@ void connection_free(connection_t * connList)
         connection_t * nextP;
 
         nextP = connList->next;
-        free(connList);
+        lwm2m_free(connList);
 
         connList = nextP;
     }
@@ -147,7 +147,7 @@ int connection_send(connection_t *connP,
         port = saddr->sin6_port;
     }
 
-    fprintf(stderr, "Sending %lu bytes to [%s]:%hu\r\n", length, s, ntohs(port));
+    fprintf(stderr, "Sending %d bytes to [%s]:%hu\r\n", length, s, ntohs(port));
 
     output_buffer(stderr, buffer, length, 0);
 #endif
@@ -162,93 +162,6 @@ int connection_send(connection_t *connP,
     return 0;
 }
 
-// communication layer
-#ifdef LWM2M_CLIENT_MODE
-// Returns a session handle that MUST uniquely identify a peer.
-// secObjInstID: ID of the Securty Object instance to open a connection to
-// userData: parameter to lwm2m_init()
-void * lwm2m_connect_server(uint16_t secObjInstID, void * userData){
-    client_data_t * dataP;
-    char * uri;
-    char * host;
-    char * port;
-
-    connection_t * newConnP = NULL;
-
-    dataP = (client_data_t *) userData;
-
-    uri = get_server_uri(dataP->securityObjP, secObjInstID);
-
-
-    if (uri == NULL) return NULL;
-
-    fprintf(stdout, "Connecting to %s instance: %d\r\n", uri, secObjInstID);
-
-    // parse uri in the form "coaps://[host]:[port]"
-    if (0 == strncmp(uri, "coaps://", strlen("coaps://"))) {
-        host = uri + strlen("coaps://");
-    } else if (0 == strncmp(uri, "coap://", strlen("coap://"))) {
-        host = uri + strlen("coap://");
-    } else {
-        goto exit;
-    }
-    port = strrchr(host, ':');
-    if (port == NULL) goto exit;
-    // remove brackets
-    if (host[0] == '[') {
-        host++;
-        if (*(port - 1) == ']') {
-            *(port - 1) = 0;
-        } else goto exit;
-    }
-    // split strings
-    *port = 0;
-    port++;
-    newConnP = connection_create(dataP->connList, dataP->sock, host, port, dataP->addressFamily);
-    if (newConnP == NULL) {
-        fprintf(stderr, "Connection creation failed.\r\n");
-    } else {
-        dataP->connList = newConnP;
-    }
-
-exit:
-    lwm2m_free(uri);
-    return (void *) newConnP;
-}
-// Close a session created by lwm2m_connect_server()
-// sessionH: session handle identifying the peer (opaque to the core)
-// userData: parameter to lwm2m_init()
-void lwm2m_close_connection(void * sessionH, void * userData) {
-    client_data_t * app_data;
-    connection_t * targetP;
-
-    app_data = (client_data_t *) userData;
-    targetP = (connection_t *) sessionH;
-
-    if (targetP == app_data->connList) {
-        app_data->connList = targetP->next;
-        lwm2m_free(targetP);
-    } else {
-        connection_t * parentP;
-
-        parentP = app_data->connList;
-        while (parentP != NULL && parentP->next != targetP) {
-            parentP = parentP->next;
-        }
-        if (parentP != NULL) {
-            parentP->next = targetP->next;
-            lwm2m_free(targetP);
-        }
-    }
-}
-#endif
-
-
-// Send data to a peer
-// Returns COAP_NO_ERROR or a COAP_NNN error code
-// sessionH: session handle identifying the peer (opaque to the core)
-// buffer, length: data to send
-// userData: parameter to lwm2m_init()
 uint8_t lwm2m_buffer_send(void * sessionH,
                           uint8_t * buffer,
                           size_t length,
@@ -271,9 +184,6 @@ uint8_t lwm2m_buffer_send(void * sessionH,
     return COAP_NO_ERROR;
 }
 
-// Compare two session handles
-// Returns true if the two sessions identify the same peer. false otherwise.
-// userData: parameter to lwm2m_init()
 bool lwm2m_session_is_equal(void * session1,
                             void * session2,
                             void * userData)

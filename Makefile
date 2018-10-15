@@ -160,7 +160,8 @@ Src/ethernetif.c \
 Src/stm32f4xx_it.c \
 Src/stm32f4xx_hal_msp.c \
 Src/communication/dbgu.c \
-Src/communication/term_io.c 
+Src/communication/term_io.c \
+Src/communication/lwip_helpers.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -189,12 +190,15 @@ Middlewares/Third_Party/wakaama/discover.c \
 Middlewares/Third_Party/wakaama/block1.c \
 Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.c \
 
-WAKAAMA_PLATFORM = \
+WAKAAMA_CUSTOM = \
 Middlewares/Third_Party/wakaama/platform/platform.c \
+Middlewares/Third_Party/wakaama/client/connection.c \
+
 
 WAKAAMA_INC = \
 -IMiddlewares/Third_Party/wakaama \
--IMiddlewares/Third_Party/wakaama/er-coap-13
+-IMiddlewares/Third_Party/wakaama/er-coap-13 \
+-IMiddlewares/Third_Party/wakaama/client \
 
 WAKAAMA_SYMBOL = -DLWM2M_LITTLE_ENDIAN
 WAKAAMA_SYMBOL += -DLWM2M_CLIENT_MODE
@@ -278,7 +282,8 @@ C_INCLUDES =  \
 
 C_INCLUDES += $(WAKAAMA_INC)
 
-C_SOURCES += $(WAKAAMA_SOURCES) $(WAKAAMA_PLATFORM)
+C_SOURCES += $(WAKAAMA_SOURCES)
+C_SOURCES += $(WAKAAMA_CUSTOM)
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
