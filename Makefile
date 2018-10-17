@@ -161,7 +161,7 @@ Src/stm32f4xx_it.c \
 Src/stm32f4xx_hal_msp.c \
 Src/communication/dbgu.c \
 Src/communication/term_io.c \
-Src/communication/lwip_helpers.c \
+Src/communication/lwip_helpers.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -173,8 +173,8 @@ startup_stm32f429xx.s
 
 WAKAAMA_SOURCES = \
 Middlewares/Third_Party/wakaama/liblwm2m.c \
+Middlewares/Third_Party/wakaama/wakaama_utils.c \
 Middlewares/Third_Party/wakaama/uri.c \
-Middlewares/Third_Party/wakaama/utils.c \
 Middlewares/Third_Party/wakaama/objects.c \
 Middlewares/Third_Party/wakaama/tlv.c \
 Middlewares/Third_Party/wakaama/data.c \
@@ -188,17 +188,23 @@ Middlewares/Third_Party/wakaama/observe.c \
 Middlewares/Third_Party/wakaama/json.c \
 Middlewares/Third_Party/wakaama/discover.c \
 Middlewares/Third_Party/wakaama/block1.c \
-Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.c \
+Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.c
 
 WAKAAMA_CUSTOM = \
 Middlewares/Third_Party/wakaama/platform/platform.c \
 Middlewares/Third_Party/wakaama/client/connection.c \
+Middlewares/Third_Party/wakaama/client/objects/object_device.c \
+Middlewares/Third_Party/wakaama/client/objects/object_security.c \
+Middlewares/Third_Party/wakaama/client/objects/object_server.c \
+Middlewares/Third_Party/wakaama/client/objects/test_object.c
 
 
 WAKAAMA_INC = \
 -IMiddlewares/Third_Party/wakaama \
 -IMiddlewares/Third_Party/wakaama/er-coap-13 \
 -IMiddlewares/Third_Party/wakaama/client \
+-IMiddlewares/Third_Party/wakaama/client/objects
+
 
 WAKAAMA_SYMBOL = -DLWM2M_LITTLE_ENDIAN
 WAKAAMA_SYMBOL += -DLWM2M_CLIENT_MODE
@@ -282,8 +288,7 @@ C_INCLUDES =  \
 
 C_INCLUDES += $(WAKAAMA_INC)
 
-C_SOURCES += $(WAKAAMA_SOURCES)
-C_SOURCES += $(WAKAAMA_CUSTOM)
+C_SOURCES += $(WAKAAMA_SOURCES) $(WAKAAMA_CUSTOM)
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
