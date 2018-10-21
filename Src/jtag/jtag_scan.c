@@ -29,6 +29,7 @@
 #include "stm32f4xx_it.h"
 #include "jtag/jtag_low_level.h"
 #include "jtag/jtag_scan.h"
+#include "adiv5/adiv5_jtag.h"
 
 static jtag_dev_t devs[JTAG_MAX_DEVS];
 static int num_of_devs;
@@ -38,11 +39,11 @@ static struct jtag_dev_descr_s {
   uint32_t idcode;
   uint32_t idmask;
   char *descr;
-  void (*handler)(jtag_dev_t *dev);
+  void (*handler)(int dev_num);
 } dev_descr[] = {
   {.idcode = 0x0BA00477, .idmask = 0x0FFF0FFF,
     .descr = "ARM Limited: ADIv5 JTAG-DP port.",
-  },//.handler = adiv5_jtag_dp_handler},
+    .handler = adiv5_jtag_handler},
     /* Just for fun, unsupported */
   {.idcode = 0x3F0F0F0F, .idmask = 0xFFFFFFFF,
     .descr = "ST Microelectronics: STR730"},
@@ -139,7 +140,7 @@ static int init_tagrets_in_chain(jtag_dev_t *devs_table, int num_of_devs)
       if((devs_table->idcode & dev_descr[j].idmask) == dev_descr[j].idcode) {
         devs_table->descr = dev_descr[j].descr;
         if(dev_descr[j].handler) {
-          dev_descr[j].handler(devs_table);
+          dev_descr[j].handler(i);
         }
       }
     }
@@ -204,6 +205,7 @@ void jtag_dev_shift_dr(uint_jtag_transfer_t *din, uint_jtag_transfer_t *dout, in
     jtag_tdi(GPIO_PIN_SET);
   }
 
+  // TODO: check if we do correct operation for tables
   while(n){
     if(n > sizeof(uint_jtag_transfer_t)) {
       read_size = sizeof(uint_jtag_transfer_t);
@@ -211,7 +213,7 @@ void jtag_dev_shift_dr(uint_jtag_transfer_t *din, uint_jtag_transfer_t *dout, in
       read_size = n;
     }
     n -= read_size;
-    *dout = jtag_tdin(*dout, read_size);
+    *dout = jtag_tdin(read_size, *din);
     dout++;
     din++;
   }
