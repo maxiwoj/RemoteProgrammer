@@ -64,11 +64,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "client_config.h"
 
-
-#define PRV_MANUFACTURER      "Open Mobile Alliance"
-#define PRV_MODEL_NUMBER      "Lightweight M2M Client"
-#define PRV_BINDING_MODE      "U"
 
 // Resource Id's:
 #define RES_O_MANUFACTURER          0
@@ -101,18 +98,18 @@ static uint8_t prv_set_value(lwm2m_data_t * dataP)
     switch (dataP->id)
     {
     case RES_O_MANUFACTURER:
-        lwm2m_data_encode_string(PRV_MANUFACTURER, dataP);
+        lwm2m_data_encode_string(WAKAAMA_COMPANY, dataP);
         return COAP_205_CONTENT;
 
     case RES_O_MODEL_NUMBER:
-        lwm2m_data_encode_string(PRV_MODEL_NUMBER, dataP);
+        lwm2m_data_encode_string(WAKAAMA_MODEL_NUMBER, dataP);
         return COAP_205_CONTENT;
 
     case RES_M_REBOOT:
         return COAP_405_METHOD_NOT_ALLOWED;
       
     case RES_M_BINDING_MODES:
-        lwm2m_data_encode_string(PRV_BINDING_MODE, dataP);
+        lwm2m_data_encode_string(WAKAAMA_BINDING, dataP);
         return COAP_205_CONTENT;
 
 
@@ -249,10 +246,12 @@ lwm2m_object_t * get_object_device()
      */
     lwm2m_object_t * deviceObj;
 
+    printf("ALLOC\n\r");
     deviceObj = (lwm2m_object_t *)lwm2m_malloc(sizeof(lwm2m_object_t));
-
+    printf("Alloced!\n\r");
     if (NULL != deviceObj)
     {
+        printf("NULL\n\r");
         memset(deviceObj, 0, sizeof(lwm2m_object_t));
 
         /*
@@ -286,6 +285,7 @@ lwm2m_object_t * get_object_device()
         deviceObj->discoverFunc = prv_device_discover;
 
      }
+     printf("GO on!\n\r");
 
     return deviceObj;
 }

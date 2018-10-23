@@ -2,7 +2,10 @@
 #define __OBJECTS_H
 
 lwm2m_object_t * get_security_object();
-lwm2m_object_t * get_server_object();
+lwm2m_object_t * get_server_object(int serverId,
+                                   const char* binding,
+                                   int lifetime,
+                                   bool storing);
 lwm2m_object_t * get_object_device();
 lwm2m_object_t * get_test_object();
 

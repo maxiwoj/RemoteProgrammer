@@ -383,7 +383,7 @@ static void taskWakaama(void *socket) {
         printf("SecurityObject Created\n");
 
         if(objArray[1] == NULL) {
-          objArray[1] = get_server_object();
+          objArray[1] = get_server_object(WAKAAMA_SHORT_ID, WAKAAMA_BINDING, 300, false);
         }
         
         if (NULL == objArray[1]) {
@@ -391,9 +391,11 @@ static void taskWakaama(void *socket) {
             result = -2;
             continue;
         }
-        printf("ServerObject Created\n");
+        printf("ServerObject Created\n\r");
+        printf("NEXT printf\n\r");
 
         if(objArray[2] == NULL) {
+          printf("Getting object device\n\r");
           objArray[2] = get_object_device();
         }
         if (NULL == objArray[2]) {
@@ -639,12 +641,16 @@ void StartDefaultTask(void const * argument)
   MX_FATFS_Init();
 
   /* USER CODE BEGIN 5 */
+  printf("\n\n\n-----------------------START-------------------------\n\n");
 
 // Initialize Wakaama LWM2M Client
   int socket = getUDPSocket(LWM2M_PORT, AF_INET);
     if(socket != -1){
-        int res = xTaskCreate(taskWakaama, "wakaama", 700, (void *) socket, 2, NULL);
-        printf("\r\ntaskWakaama xTaskCreate returned %d\n", res);
+        int res = xTaskCreate(taskWakaama, "wakaama", 10000, (void *) socket, 2, NULL);
+        if (res != pdPASS) {
+          printf("\r\ntaskWakaama xTaskCreate returned %d\n", res);  
+        }
+
     }
 
 

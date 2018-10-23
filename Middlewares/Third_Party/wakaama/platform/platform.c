@@ -14,41 +14,42 @@
 //       it with FreeRTOS is bad idea (as far as heared). 
 
 // Allocate a block of size bytes of memory, returning a pointer to the beginning of the block.
-void * lwm2m_malloc(size_t s
 #ifdef LWM2M_MEMORY_TRACE
-  , const char * file, const char * function, int lineno
-) {
+void * lwm2m_trace_malloc(size_t s, const char * file, const char * function, int lineno) {
   printf("lwm2m_malloc: \"%s\" : \"%s\" : %d \n", file, function, lineno);
-#else
-) {
-#endif
   return pvPortMalloc(s);
 }
-// Deallocate a block of memory previously allocated by lwm2m_malloc() or lwm2m_strdup()
-void lwm2m_free(void * p
-#ifdef LWM2M_MEMORY_TRACE
-  , const char * file, const char * function, int lineno
-) {
-  printf("lwm2m_malloc: \"%s\" : \"%s\" : %d \n", file, function, lineno);
-#else
-) {
+#else 
+void * lwm2m_malloc(size_t s){
+  return pvPortMalloc(s);
+}
 #endif
+
+// Deallocate a block of memory previously allocated by lwm2m_malloc() or lwm2m_strdup()
+#ifdef LWM2M_MEMORY_TRACE
+void lwm2m_trace_free(void * p, const char * file, const char * function, int lineno) {
+  printf("lwm2m_free: \"%s\" : \"%s\" : %d \n", file, function, lineno);
   return vPortFree(p);
 }
-
+#else 
+void lwm2m_free(void * p) {
+  return vPortFree(p);
+}
+#endif
 
 // Allocate a memory block, duplicate the string str in it and return a pointer to this new block.
-char * lwm2m_strdup(const char * str
 #ifdef LWM2M_MEMORY_TRACE
-  , const char * file, const char * function, int lineno
-) {
-  printf("lwm2m_malloc: \"%s\" : \"%s\" : %d \n", file, function, lineno);
-#else
-) {
-#endif
+char * lwm2m_trace_strdup(const char * str, const char * file, const char * function, int lineno) {
+  printf("lwm2m_strdup: \"%s\" : \"%s\" : %d \n", file, function, lineno);
   char *dup = pvPortMalloc(strlen(str) + 1);
   return dup ? strcpy(dup, str) : dup;
 }
+#else
+char * lwm2m_strdup(const char * str) {
+  char *dup = pvPortMalloc(strlen(str) + 1);
+  return dup ? strcpy(dup, str) : dup;
+}
+#endif
 
 // Compare at most the n first bytes of s1 and s2, return 0 if they match
 int lwm2m_strncmp(const char * s1, const char * s2, size_t n) {
