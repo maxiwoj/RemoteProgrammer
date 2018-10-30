@@ -651,40 +651,36 @@ void StartDefaultTask(void const * argument)
     printf("Error creating socket: ");
   }
 
-  while(1) {
-    osDelay(500);
-  }
-
   // TODO: We cannot wait actively for user input since it kills the connection
-  // int x = 0;
-  // osDelay(500);
-  // HAL_GPIO_WritePin(USB_GPIO_OUT_GPIO_Port, USB_GPIO_OUT_Pin, GPIO_PIN_SET);
-  // BlinkBlue();
-  // char usrInput[2];
-  // /* Infinite loop */
-  // debug_init(&huart3);
-  // for(;;)
-  // {
-  //   osDelay(5);
-  //   printf("in loop %d\n\r", x);
-  //   x++;
-  //   printf("$ ");
-  //   fflush(stdout);
-  //   get_line(usrInput, 2);
-  //   printf("%s\n", usrInput);
-  //   switch(usrInput[0]) {
-  //     case 'l':
-  //       if (get_usb_ready()) {
-  //         usb_ls();
-  //       }
-  //       break;
-  //     case 'w':
-  //       if (get_usb_ready()) {
-  //         usb_write("asd", 3);
-  //       }
-  //       break;
-  //   }
-  // }
+  int x = 0;
+  osDelay(500);
+  HAL_GPIO_WritePin(USB_GPIO_OUT_GPIO_Port, USB_GPIO_OUT_Pin, GPIO_PIN_SET);
+  BlinkBlue();
+  char usrInput[2];
+  /* Infinite loop */
+  debug_init(&huart3);
+  for(;;)
+  {
+    osDelay(5);
+    printf("in loop %d\n\r", x);
+    x++;
+    printf("$ ");
+    fflush(stdout);
+    get_line(usrInput, 2);
+    printf("%s\n", usrInput);
+    switch(usrInput[0]) {
+      case 'l':
+        if (get_usb_ready()) {
+          usb_ls();
+        }
+        break;
+      case 'w':
+        if (get_usb_ready()) {
+          usb_write("asd", 3);
+        }
+        break;
+    }
+  }
   /* USER CODE END 5 */ 
 }
 
