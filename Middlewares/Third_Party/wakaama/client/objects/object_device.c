@@ -246,12 +246,9 @@ lwm2m_object_t * get_object_device()
      */
     lwm2m_object_t * deviceObj;
 
-    printf("ALLOC\n\r");
     deviceObj = (lwm2m_object_t *)lwm2m_malloc(sizeof(lwm2m_object_t));
-    printf("Alloced!\n\r");
     if (NULL != deviceObj)
     {
-        printf("NULL\n\r");
         memset(deviceObj, 0, sizeof(lwm2m_object_t));
 
         /*
@@ -285,7 +282,6 @@ lwm2m_object_t * get_object_device()
         deviceObj->discoverFunc = prv_device_discover;
 
      }
-     printf("GO on!\n\r");
 
     return deviceObj;
 }

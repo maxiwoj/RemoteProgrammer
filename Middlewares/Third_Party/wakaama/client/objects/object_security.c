@@ -215,7 +215,7 @@ lwm2m_object_t * get_security_object()
         targetP->instanceId = 0;
         targetP->uri = SERVER_URI;
         targetP->isBootstrap = false;
-        targetP->shortID = 123;
+        targetP->shortID = WAKAAMA_SHORT_ID;
         targetP->clientHoldOffTime = 10;
 
         securityObj->instanceList = LWM2M_LIST_ADD(securityObj->instanceList, targetP);

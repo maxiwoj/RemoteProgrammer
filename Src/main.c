@@ -55,10 +55,7 @@
 #include "usb_host.h"
 
 /* USER CODE BEGIN Includes */
-#include "term_io.h"
 #include "debug_leds.h"
-#include "liblwm2m.h"
-#include "sockets.h"
 #include "connection.h"
 #include "objects.h"
 #include "client_config.h"
@@ -363,7 +360,6 @@ static void taskWakaama(void *socket) {
     int result;
     while(1){
 
-        //vTaskDelay(1000); // TODO 
         printf("wakaama has started!\n");
         result = 1;
 
@@ -392,7 +388,6 @@ static void taskWakaama(void *socket) {
             continue;
         }
         printf("ServerObject Created\n\r");
-        printf("NEXT printf\n\r");
 
         if(objArray[2] == NULL) {
           printf("Getting object device\n\r");
@@ -427,13 +422,13 @@ static void taskWakaama(void *socket) {
         * the number of objects we will be passing through and the objects array
         */
         result = lwm2m_configure(lwm2mContext, DEVICE_NAME, NULL, NULL, OBJ_COUNT, objArray);
-        if (result != 0) {
-            printf(stderr, "lwm2m_configure() failed: 0x%X\r\n", result);
+        if (result != COAP_NO_ERROR) {
+            printf("lwm2m_configure() failed: 0x%X\r\n", result);
             result = -9;
         }
 
         printf("LWM2M Client has started\n");
-
+        print_state(lwm2mContext);
         while (q_reset == 0) {
             struct timeval tv;
             fd_set readfds;
@@ -642,46 +637,54 @@ void StartDefaultTask(void const * argument)
 
   /* USER CODE BEGIN 5 */
   printf("\n\n\n-----------------------START-------------------------\n\n");
-
+  osDelay(3000); // wait for DHCP initialisation
 // Initialize Wakaama LWM2M Client
+  lwip_socket_init();
   int socket = getUDPSocket(LWM2M_PORT, AF_INET);
-    if(socket != -1){
-        int res = xTaskCreate(taskWakaama, "wakaama", 10000, (void *) socket, 2, NULL);
-        if (res != pdPASS) {
-          printf("\r\ntaskWakaama xTaskCreate returned %d\n", res);  
-        }
-
+  if(socket != -1){ 
+    printf("Start wakaama\r\n");
+    int res = xTaskCreate(taskWakaama, "wakaama", 3000, (void *) socket, 2, NULL);
+    if (res != pdPASS) {
+      printf("\r\nerror creating taskWakaama: xTaskCreate returned %d\n", res);  
     }
-
-
-  int x = 0;
-  osDelay(500);
-  HAL_GPIO_WritePin(USB_GPIO_OUT_GPIO_Port, USB_GPIO_OUT_Pin, GPIO_PIN_SET);
-  BlinkBlue();
-  char usrInput[2];
-  /* Infinite loop */
-  debug_init(&huart3);
-  for(;;)
-  {
-    printf("in loop %d\n\r", x);
-    x++;
-    printf("$ ");
-    fflush(stdout);
-    get_line(usrInput, 2);
-    printf("%s\n", usrInput);
-    switch(usrInput[0]) {
-      case 'l':
-        if (get_usb_ready()) {
-          usb_ls();
-        }
-        break;
-      case 'w':
-        if (get_usb_ready()) {
-          usb_write("asd", 3);
-        }
-        break;
-    }
+  } else {
+    printf("Error creating socket: ");
   }
+
+  while(1) {
+    osDelay(500);
+  }
+
+  // TODO: We cannot wait actively for user input since it kills the connection
+  // int x = 0;
+  // osDelay(500);
+  // HAL_GPIO_WritePin(USB_GPIO_OUT_GPIO_Port, USB_GPIO_OUT_Pin, GPIO_PIN_SET);
+  // BlinkBlue();
+  // char usrInput[2];
+  // /* Infinite loop */
+  // debug_init(&huart3);
+  // for(;;)
+  // {
+  //   osDelay(5);
+  //   printf("in loop %d\n\r", x);
+  //   x++;
+  //   printf("$ ");
+  //   fflush(stdout);
+  //   get_line(usrInput, 2);
+  //   printf("%s\n", usrInput);
+  //   switch(usrInput[0]) {
+  //     case 'l':
+  //       if (get_usb_ready()) {
+  //         usb_ls();
+  //       }
+  //       break;
+  //     case 'w':
+  //       if (get_usb_ready()) {
+  //         usb_write("asd", 3);
+  //       }
+  //       break;
+  //   }
+  // }
   /* USER CODE END 5 */ 
 }
 

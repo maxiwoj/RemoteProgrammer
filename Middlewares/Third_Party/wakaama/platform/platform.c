@@ -17,11 +17,11 @@
 #ifdef LWM2M_MEMORY_TRACE
 void * lwm2m_trace_malloc(size_t s, const char * file, const char * function, int lineno) {
   printf("lwm2m_malloc: \"%s\" : \"%s\" : %d \n", file, function, lineno);
-  return pvPortMalloc(s);
+  return mem_malloc(s);
 }
 #else 
 void * lwm2m_malloc(size_t s){
-  return pvPortMalloc(s);
+  return mem_malloc(s);
 }
 #endif
 
@@ -29,11 +29,11 @@ void * lwm2m_malloc(size_t s){
 #ifdef LWM2M_MEMORY_TRACE
 void lwm2m_trace_free(void * p, const char * file, const char * function, int lineno) {
   printf("lwm2m_free: \"%s\" : \"%s\" : %d \n", file, function, lineno);
-  return vPortFree(p);
+  mem_free(p);
 }
 #else 
 void lwm2m_free(void * p) {
-  return vPortFree(p);
+  mem_free(p);
 }
 #endif
 
