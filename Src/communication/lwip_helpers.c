@@ -6,7 +6,8 @@
 #include "sockets.h"
 #include "mem.h"
 
-int getUDPSocket(int port, int addressFamily){
+// TODO: 
+int createUDPSocket(int port, int addressFamily){
     /* create a UDP socket */
     int socket;
     socket = lwip_socket(addressFamily, SOCK_DGRAM, 0);

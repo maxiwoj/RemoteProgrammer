@@ -46,7 +46,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "client_config.h"
+#include "communication_config.h"
 
 
 typedef struct _security_instance_

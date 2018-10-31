@@ -41,12 +41,12 @@ void lwm2m_free(void * p) {
 #ifdef LWM2M_MEMORY_TRACE
 char * lwm2m_trace_strdup(const char * str, const char * file, const char * function, int lineno) {
   printf("lwm2m_strdup: \"%s\" : \"%s\" : %d \n", file, function, lineno);
-  char *dup = pvPortMalloc(strlen(str) + 1);
+  char *dup = mem_malloc(strlen(str) + 1);
   return dup ? strcpy(dup, str) : dup;
 }
 #else
 char * lwm2m_strdup(const char * str) {
-  char *dup = pvPortMalloc(strlen(str) + 1);
+  char *dup = mem_malloc(strlen(str) + 1);
   return dup ? strcpy(dup, str) : dup;
 }
 #endif

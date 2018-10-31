@@ -496,4 +496,5 @@ void clean_server_object(lwm2m_object_t * object)
         object->instanceList = object->instanceList->next;
         lwm2m_free(serverInstance);
     }
+    lwm2m_free(object);
 }

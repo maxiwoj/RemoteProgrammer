@@ -64,7 +64,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "client_config.h"
+#include "communication_config.h"
 
 
 // Resource Id's:

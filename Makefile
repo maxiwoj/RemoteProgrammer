@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = JtagProgrammer
+TARGET = RemoteProgrammer
 
 
 ######################################
@@ -161,7 +161,7 @@ Src/stm32f4xx_it.c \
 Src/stm32f4xx_hal_msp.c \
 Src/communication/dbgu.c \
 Src/communication/term_io.c \
-Src/communication/lwip_helpers.c
+Src/communication/wakaama_client/wakaama.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -191,19 +191,17 @@ Middlewares/Third_Party/wakaama/block1.c \
 Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.c
 
 WAKAAMA_CUSTOM = \
-Middlewares/Third_Party/wakaama/platform/platform.c \
-Middlewares/Third_Party/wakaama/client/connection.c \
-Middlewares/Third_Party/wakaama/client/objects/object_device.c \
-Middlewares/Third_Party/wakaama/client/objects/object_security.c \
-Middlewares/Third_Party/wakaama/client/objects/object_server.c \
-Middlewares/Third_Party/wakaama/client/objects/test_object.c
+Src/communication/wakaama_client/platform/platform.c \
+Src/communication/wakaama_client/connection.c \
+Src/communication/wakaama_client/objects/object_device.c \
+Src/communication/wakaama_client/objects/object_security.c \
+Src/communication/wakaama_client/objects/object_server.c \
+Src/communication/wakaama_client/objects/test_object.c
 
 
 WAKAAMA_INC = \
 -IMiddlewares/Third_Party/wakaama \
 -IMiddlewares/Third_Party/wakaama/er-coap-13 \
--IMiddlewares/Third_Party/wakaama/client \
--IMiddlewares/Third_Party/wakaama/client/objects
 
 
 WAKAAMA_SYMBOL = -DLWM2M_LITTLE_ENDIAN
@@ -285,7 +283,10 @@ C_INCLUDES =  \
 -IMiddlewares/Third_Party/LwIP/src/include/posix/sys \
 -IMiddlewares/Third_Party/LwIP/system/arch \
 -IDrivers/CMSIS/Include \
--IInc/communication
+-IInc/communication \
+-IInc/communication/wakaama_client \
+-IInc/communication/wakaama_client/objects \
+-Iconfig
 
 C_INCLUDES += $(WAKAAMA_INC)
 
