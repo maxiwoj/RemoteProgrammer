@@ -2,6 +2,7 @@
 #include "cmsis_os.h"
 #include "adiv5/adiv5.h"
 #include "jtag/jtag_scan.h"
+#include "cortexm/cortexm.h"
 
 static void adiv5_ap_priv_free(ADIv5_AP_t *this)
 {
@@ -48,6 +49,155 @@ static uint32_t adiv5_ap_read(ADIv5_AP_PRIV_t *ap, uint8_t addr)
 	ret = adiv5_dp_read_ap(ap->dp, addr);
 	return ret;
 }
+
+//uint32_t ap_check_error() --> dp_check_error
+
+uint32_t ap_mem_read_words(ADIv5_AP_PRIV_t *ap, uint32_t *dest, uint32_t src, uint32_t len)
+{
+	uint32_t osrc = src;
+  len >>= 2;
+
+  adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_WORD | ADIV5_AP_CSW_ADDRINC_SINGLE);
+  ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_TAR, src);
+  ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_READ, ADIV5_AP_DRW, 0);
+
+  while(--len) {
+    //*dest++ = ...
+    *dest = ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_READ, ADIV5_AP_DRW, 0);
+    dest++;
+    src += 4;
+
+    /* Check for 10 bit address overflow */
+    if ((src ^ osrc) & 0xfffffc00) {
+      osrc = src;
+      ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_TAR, src);
+      ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_READ, ADIV5_AP_DRW, 0);
+    }
+  }
+  *dest = ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_DP, ADIV5_LOW_READ, ADIV5_DP_RDBUFF, 0);
+  dest++;
+
+  return 0;
+}
+
+uint32_t ap_mem_read_bytes(ADIv5_AP_PRIV_t *ap, uint8_t *dest, uint32_t src, uint32_t len)
+{
+  uint32_t tmp;
+	uint32_t osrc = src;
+  len >>= 2;
+
+  adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_BYTE | ADIV5_AP_CSW_ADDRINC_SINGLE);
+  ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_TAR, src);
+  ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_READ, ADIV5_AP_DRW, 0);
+
+  while(--len) {
+    //*dest++ = ...
+    tmp = ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_READ, ADIV5_AP_DRW, 0);
+    *dest = (tmp >> ((src & 0x3) << 3) & 0xFF);
+    dest++;
+    src++;
+
+    /* Check for 10 bit address overflow */
+    if ((src ^ osrc) & 0xfffffc00) {
+      osrc = src;
+      ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_TAR, src);
+      ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_READ, ADIV5_AP_DRW, 0);
+    }
+  }
+  tmp = ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_DP, ADIV5_LOW_READ, ADIV5_AP_DRW, 0);
+  *dest = (tmp >> ((src & 0x3) << 3) & 0xFF);
+  dest++;
+
+  return 0;
+}
+
+uint32_t ap_mem_write_words(ADIv5_AP_PRIV_t *ap, uint32_t dest, const uint32_t *src, uint32_t len)
+{
+	uint32_t odest = dest;
+  len >>= 2;
+
+  adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_WORD | ADIV5_AP_CSW_ADDRINC_SINGLE);
+  ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_TAR, dest);
+
+  while(len--) {
+    ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_DRW, *src);
+    src++;
+    dest += 4;
+
+    /* Check for 10 bit address overflow */
+    if ((dest ^ odest) & 0xfffffc00) {
+      odest = dest;
+      ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_TAR, dest);
+    }
+  }
+
+  return 0;
+}
+
+uint32_t ap_mem_write_bytes(ADIv5_AP_PRIV_t *ap, uint32_t dest, const uint8_t *src, uint32_t len)
+{
+  uint32_t tmp;
+	uint32_t odest = dest;
+
+  adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_BYTE | ADIV5_AP_CSW_ADDRINC_SINGLE);
+  ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_TAR, dest);
+
+  while(len--) {
+    tmp = (uint32_t)*src << ((dest & 0x3) << 3);
+    ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_DRW, tmp);
+    src++;
+    dest++;
+
+    /* Check for 10 bit address overflow */
+    if ((dest ^ odest) & 0xfffffc00) {
+      odest = dest;
+      ap->dp->ops->low_access(ap->dp->priv, ADIV5_LOW_AP, ADIV5_LOW_WRITE, ADIV5_AP_TAR, dest);
+    }
+  }
+
+  return 0;
+}
+
+uint32_t ap_mem_read_word(ADIv5_AP_PRIV_t *ap, uint32_t addr)
+{
+  adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_WORD | ADIV5_AP_CSW_ADDRINC_SINGLE);
+  adiv5_ap_write(ap, ADIV5_AP_TAR, addr);
+  return adiv5_ap_read(ap, ADIV5_AP_DRW);
+}
+
+void ap_mem_write_word(ADIv5_AP_PRIV_t *ap, uint32_t addr, uint32_t value)
+{
+  adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_WORD | ADIV5_AP_CSW_ADDRINC_SINGLE);
+  adiv5_ap_write(ap, ADIV5_AP_TAR, addr);
+  adiv5_ap_write(ap, ADIV5_AP_DRW, value);
+}
+
+uint16_t ap_mem_read_halfword(ADIv5_AP_PRIV_t *ap, uint32_t addr)
+{
+  uint32_t v;
+
+  adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_HALFWORD | ADIV5_AP_CSW_ADDRINC_SINGLE);
+  adiv5_ap_write(ap, ADIV5_AP_TAR, addr);
+  v = adiv5_ap_read(ap, ADIV5_AP_DRW);
+  if (addr & 2) {
+    return v >> 16;
+  } else {
+    return v & 0xFFFF;
+  }
+}
+
+void ap_mem_write_halfword(ADIv5_AP_PRIV_t *ap, uint32_t addr, uint16_t value)
+{
+  uint32_t v = value;
+  if (addr & 2) {
+    v <<= 16;
+  }
+
+  adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_HALFWORD | ADIV5_AP_CSW_ADDRINC_SINGLE);
+  adiv5_ap_write(ap, ADIV5_AP_TAR, addr);
+  adiv5_ap_write(ap, ADIV5_AP_DRW, v);
+}
+
 
 ADIv5_AP_OPS_t adiv5_ap_ops = {
   adiv5_ap_priv_free
@@ -108,7 +258,7 @@ uint16_t adiv5_init(ADIv5_DP_t *dp_low_level)
     ap->priv->csw = adiv5_ap_read(ap->priv, ADIV5_AP_CSW) & ~(ADIV5_AP_CSW_SIZE_MASK | ADIV5_AP_CSW_ADDRINC_MASK);
 
     /* Currently only CortexM is supported */
-    
+    probe_cortexm();
   }
 
   return dp_low_level->ap_count;
