@@ -1,6 +1,7 @@
 #ifndef __CORTEXM_H
 #define __CORTEXM_H
 
+#include "stm32f4xx_it.h"
 
 /* target options recognised by the Cortex-M target */
 #define	TOPT_FLAVOUR_V6M	(1<<0)	/* if not set, target is assumed to be v7m */
@@ -135,11 +136,32 @@
 
 
 typedef struct ADIv5_AP_s ADIv5_AP_t;
+typedef struct CORTEXM_s CORTEXM_t;
 
 typedef struct CORTEXM_PRIV_s
 {
   ADIv5_AP_t *ap;
 } CORTEXM_PRIV_t;
+
+typedef struct CORTEXM_OPS_s
+{
+  uint32_t (*read_word)(CORTEXM_PRIV_t *priv, uint32_t addr);
+  void (*write_word)(CORTEXM_PRIV_t *priv, uint32_t addr, uint32_t value);
+  uint32_t (*pc_read)(CORTEXM_PRIV_t *priv);
+  void (*pc_write)(CORTEXM_PRIV_t *priv, uint32_t val);
+  void (*halt_request)(CORTEXM_PRIV_t *priv);
+  uint32_t (*halt_wait)(CORTEXM_PRIV_t *priv);
+  void (*halt_resume)(CORTEXM_PRIV_t *priv);
+
+  void (*free)(CORTEXM_t *cortexm);
+} CORTEXM_OPS_t;
+
+
+typedef struct CORTEXM_s
+{
+  CORTEXM_OPS_t *ops;
+  CORTEXM_PRIV_t *priv;
+} CORTEXM_t;
 
 int probe_cortexm(ADIv5_AP_t *ap);
 
