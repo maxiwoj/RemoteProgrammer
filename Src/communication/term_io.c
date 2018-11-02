@@ -198,6 +198,7 @@ void get_line (char *buff, int len)
 	int idx = 0;
 
 	for (;;) {
+		osDelay(5);
 		c = xgetc();
 		if (c == '\r') break;
 		if ((c == '\b') && idx) {

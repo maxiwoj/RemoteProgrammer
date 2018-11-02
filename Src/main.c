@@ -55,8 +55,8 @@
 #include "usb_host.h"
 
 /* USER CODE BEGIN Includes */
-#include "term_io.h"
 #include "debug_leds.h"
+#include "wakaama.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -304,6 +304,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
 int __io_putchar(int ch)
 {
  uint8_t c[1];
@@ -337,6 +338,22 @@ void StartDefaultTask(void const * argument)
   MX_FATFS_Init();
 
   /* USER CODE BEGIN 5 */
+  printf("\n\n\n-----------------------START-------------------------\n\n");
+  osDelay(3000); // wait for DHCP initialisation
+
+// Initialize Wakaama LWM2M Client
+  lwip_socket_init();
+  int socket = createUDPSocket(LOCAL_PORT, AF_INET);
+  if(socket != -1){ 
+    printf("Start wakaama task\r\n");
+    int res = xTaskCreate(taskWakaama, "wakaama", 3000, (void *) socket, 2, NULL);
+    if (res != pdPASS) {
+      printf("\r\nerror creating taskWakaama: %d\n", res);  
+    }
+  } else {
+    printf("Error creating socket: %d", socket);
+  }
+
   int x = 0;
   osDelay(500);
   HAL_GPIO_WritePin(USB_GPIO_OUT_GPIO_Port, USB_GPIO_OUT_Pin, GPIO_PIN_SET);
@@ -346,6 +363,7 @@ void StartDefaultTask(void const * argument)
   debug_init(&huart3);
   for(;;)
   {
+    osDelay(5);
     printf("in loop %d\n\r", x);
     x++;
     printf("$ ");
