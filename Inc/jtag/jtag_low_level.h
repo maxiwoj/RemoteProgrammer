@@ -15,19 +15,19 @@ void jtag_tclk(void);
 void jtag_tms(GPIO_PinState state);
 
 // cycle TCK, set TDI to value, sample TDO
-GPIO_PinState jtag_tdi(GPIO_PinState tdi_val);
+GPIO_PinState jtag_tdi(GPIO_PinState tdi_val, GPIO_PinState tms_val);
 
 
 // multi-bit version of tdi()
 // shift bits to TDI from right most
 // first bit from TDO is n-th bit in res 
-uint_jtag_transfer_t jtag_tdin(uint8_t n, uint_jtag_transfer_t bits);
+uint_jtag_transfer_t jtag_tdin(uint8_t n, uint_jtag_transfer_t bits, GPIO_PinState last_tms);
 
 void jtag_from_idle_to_shift_ir();
 
 void jtag_from_idle_to_shift_dr();
 
-void jtag_from_shift_to_idle();
+void jtag_from_exit_to_idle();
 
 void jtag_go_to_idle();
 

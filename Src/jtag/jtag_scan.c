@@ -39,7 +39,7 @@ static struct jtag_dev_descr_s {
   uint32_t idcode;
   uint32_t idmask;
   char *descr;
-  void (*handler)(int dev_num);
+  int (*handler)(int dev_num);
 } dev_descr[] = {
   {.idcode = 0x0BA00477, .idmask = 0x0FFF0FFF,
     .descr = "ARM Limited: ADIv5 JTAG-DP port.",
@@ -81,7 +81,7 @@ static int get_ir_len_in_chain(jtag_dev_t *devs_table, int max_number_of_devs)
   jtag_from_idle_to_shift_ir();
   // after reset, devices in chain should have 0b00...01 in IR
 
-  if(!jtag_tdi(GPIO_PIN_SET)) {
+  if(!jtag_tdi(GPIO_PIN_SET, GPIO_PIN_RESET)) {
     // No device detected
     return num_of_devs;
   }
@@ -92,17 +92,18 @@ static int get_ir_len_in_chain(jtag_dev_t *devs_table, int max_number_of_devs)
     }
     ir_len = 1;
     // read zeros that are from current device ir
-    while(!jtag_tdi(GPIO_PIN_SET)) {
+    while(!jtag_tdi(GPIO_PIN_SET, GPIO_PIN_RESET)) {
       ir_len++;
     }
     // we have one, this is begining of next device IR or end of chain
     devs_table->ir_len = ir_len;
     devs_table++;
-  } while(!jtag_tdi(GPIO_PIN_SET));
+  } while(!jtag_tdi(GPIO_PIN_SET, GPIO_PIN_RESET));
 
   //TODO: We pushed ones to IR, so all devices are in BYPASS mode. 
   //      We can check if we have num_of_devs * one bit register filed with 0.
-  jtag_from_shift_to_idle();
+  jtag_tms(GPIO_PIN_SET);    // from shift to exit
+  jtag_from_exit_to_idle();
 
   return num_of_devs;
 }
@@ -117,14 +118,14 @@ static int get_idcodes(jtag_dev_t *devs_table, int num_of_devs)
   // devices without IDCODE should have selected BYPASS DR
   
   for(i = 0; i < num_of_devs; i++) {
-    if(!jtag_tdi(GPIO_PIN_SET)){
+    if(!jtag_tdi(GPIO_PIN_SET, GPIO_PIN_RESET)){
       // 0 means BYPASS DR, skip this device
       continue;
     }
     // IDCODE allways start with one and has 32 bits
-    devs_table->idcode = jtag_tdin(31, (~0));
+    devs_table->idcode = jtag_tdin(31, (~0), GPIO_PIN_RESET);
     devs_table->idcode <<= 1;
-    devs_table->idcode += 1;
+    devs_table->idcode += 1;    // one that was read at begin of for-loop
     devs_table++;
   }
   
@@ -188,21 +189,22 @@ void jtag_dev_write_ir(uint32_t ir)
 
   jtag_from_idle_to_shift_ir();
   for(i = 0; i < current_dev; i++) {
-    jtag_tdin(devs[i].ir_len, BYPASS_IR);
+    jtag_tdin(devs[i].ir_len, BYPASS_IR, GPIO_PIN_RESET);
   }
-  jtag_tdin(devs[current_dev].ir_len, ir);
+  jtag_tdin(devs[current_dev].ir_len, ir, ((current_dev == num_of_devs - 1) ? GPIO_PIN_SET : GPIO_PIN_RESET));
   for(i = current_dev + 1; i < num_of_devs; i++) {
-    jtag_tdin(devs[i].ir_len, BYPASS_IR);
+    jtag_tdin(devs[i].ir_len, BYPASS_IR, ((i == num_of_devs - 1) ? GPIO_PIN_SET : GPIO_PIN_RESET));
   }
-  jtag_from_shift_to_idle();
+  jtag_from_exit_to_idle();
 }
 
 void jtag_dev_shift_dr(uint_jtag_transfer_t *din, uint_jtag_transfer_t *dout, int n)
 {
   int i, read_size;
-  
+
+  jtag_from_idle_to_shift_dr();
   for(i = 0; i < current_dev; i++) {
-    jtag_tdi(GPIO_PIN_SET);
+    jtag_tdi(GPIO_PIN_SET, GPIO_PIN_RESET);
   }
 
   // TODO: check if we do correct operation for tables
@@ -213,12 +215,13 @@ void jtag_dev_shift_dr(uint_jtag_transfer_t *din, uint_jtag_transfer_t *dout, in
       read_size = n;
     }
     n -= read_size;
-    *dout = jtag_tdin(read_size, *din);
+    *dout = jtag_tdin(read_size, *din, (((current_dev == num_of_devs - 1) && !n) ? GPIO_PIN_SET : GPIO_PIN_RESET));
     dout++;
     din++;
   }
 
   for(i = current_dev + 1; i < num_of_devs; i++) {
-    jtag_tdi(GPIO_PIN_SET);
+    jtag_tdi(GPIO_PIN_SET, ((i == num_of_devs - 1) ? GPIO_PIN_SET : GPIO_PIN_RESET));
   }
+  jtag_from_exit_to_idle();
 }
