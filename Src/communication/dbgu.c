@@ -85,7 +85,8 @@ char debug_waitkey(void)
 	
 	do
 	{
-		res = HAL_UART_Receive(pUart,&rxed,1,HAL_MAX_DELAY);
+		osDelay(1);
+		res = HAL_UART_Receive(pUart,&rxed,1,3);
 	}
 	while(res != HAL_OK);
 	return rxed;

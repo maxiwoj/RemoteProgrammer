@@ -110,7 +110,6 @@ void MX_LWIP_Init(void)
   dhcp_start(&gnetif);
 
 /* USER CODE BEGIN 3 */
-
 /* USER CODE END 3 */
 }
 
