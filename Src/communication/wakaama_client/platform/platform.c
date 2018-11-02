@@ -66,7 +66,7 @@ time_t lwm2m_gettime(void) {
   // TODO: Now we use 32bit counter and it will overflow.
   //       Maybe export xNumOfOverflows from tasks.c and do something like that:
   //       return (xNumOfOverflows << 16) | (xTaskGetTickCount >> 16)
-  return xTaskGetTickCount();
+  return xTaskGetTickCount() / configTICK_RATE_HZ;
 }
 
 #ifdef LWM2M_WITH_LOGS
