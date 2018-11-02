@@ -158,14 +158,14 @@ uint32_t ap_mem_write_bytes(ADIv5_AP_PRIV_t *ap, uint32_t dest, const uint8_t *s
   return 0;
 }
 
-uint32_t ap_mem_read_word(ADIv5_AP_PRIV_t *ap, uint32_t addr)
+static uint32_t ap_mem_read_word(ADIv5_AP_PRIV_t *ap, uint32_t addr)
 {
   adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_WORD | ADIV5_AP_CSW_ADDRINC_SINGLE);
   adiv5_ap_write(ap, ADIV5_AP_TAR, addr);
   return adiv5_ap_read(ap, ADIV5_AP_DRW);
 }
 
-void ap_mem_write_word(ADIv5_AP_PRIV_t *ap, uint32_t addr, uint32_t value)
+static void ap_mem_write_word(ADIv5_AP_PRIV_t *ap, uint32_t addr, uint32_t value)
 {
   adiv5_ap_write(ap, ADIV5_AP_CSW, ap->csw | ADIV5_AP_CSW_SIZE_WORD | ADIV5_AP_CSW_ADDRINC_SINGLE);
   adiv5_ap_write(ap, ADIV5_AP_TAR, addr);
@@ -200,6 +200,9 @@ void ap_mem_write_halfword(ADIv5_AP_PRIV_t *ap, uint32_t addr, uint16_t value)
 
 
 ADIv5_AP_OPS_t adiv5_ap_ops = {
+  ap_mem_read_word,
+  ap_mem_write_word,
+
   adiv5_ap_priv_free
 };
 
@@ -258,7 +261,7 @@ uint16_t adiv5_init(ADIv5_DP_t *dp_low_level)
     ap->priv->csw = adiv5_ap_read(ap->priv, ADIV5_AP_CSW) & ~(ADIV5_AP_CSW_SIZE_MASK | ADIV5_AP_CSW_ADDRINC_MASK);
 
     /* Currently only CortexM is supported */
-    probe_cortexm();
+    probe_cortexm(ap);
   }
 
   return dp_low_level->ap_count;
