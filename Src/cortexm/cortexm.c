@@ -14,6 +14,14 @@ inline static void cortexm_write_word(CORTEXM_PRIV_t *priv, uint32_t addr, uint3
   priv->ap->ops->mem_write_word(priv->ap->priv, addr, value);
 }
 
+static uint32_t cortexm_read_words(CORTEXM_PRIV_t *priv, uint32_t *dest, uint32_t src, uint32_t len) {
+  return priv->ap->ops->mem_read_words(priv->ap->priv, dest, src, len);
+}
+
+static uint32_t cortexm_write_words(CORTEXM_PRIV_t *priv, uint32_t dest, const uint32_t *src, uint32_t len) {
+  return priv->ap->ops->mem_write_words(priv->ap->priv, dest, src, len);
+}
+
 uint32_t cortexm_pc_read(CORTEXM_PRIV_t *priv)
 {
   cortexm_write_word(priv, CORTEXM_DCRSR, 0x0F);
@@ -64,6 +72,11 @@ void cortexm_halt_resume(CORTEXM_PRIV_t *priv)
   //allow_timeout == true
 }
 
+uint32_t cortexm_check_error(CORTEXM_PRIV_t *priv)
+{
+  return priv->ap->ops->error_check(priv->ap->priv);
+}
+
 void free_cortexm(CORTEXM_t *cortexm)
 {
   vPortFree(cortexm->priv);
@@ -73,11 +86,14 @@ void free_cortexm(CORTEXM_t *cortexm)
 CORTEXM_OPS_t cortexm_ops = {
   cortexm_read_word,
   cortexm_write_word,
+  cortexm_read_words,
+  cortexm_write_words,
   cortexm_pc_read,
   cortexm_pc_write,
   cortexm_halt_request,
   cortexm_halt_wait,
   cortexm_halt_resume,
+  cortexm_check_error,
 
   free_cortexm
 };

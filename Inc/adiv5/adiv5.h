@@ -140,6 +140,9 @@ typedef struct ADIv5_AP_PRIV_s {
 typedef struct ADIv5_AP_OPS_s {
   uint32_t (*mem_read_word)(ADIv5_AP_PRIV_t *ap, uint32_t addr);
   void (*mem_write_word)(ADIv5_AP_PRIV_t *ap, uint32_t addr, uint32_t value);
+  uint32_t (*mem_read_words)(ADIv5_AP_PRIV_t *ap, uint32_t *dest, uint32_t src, uint32_t len);
+  uint32_t (*mem_write_words)(ADIv5_AP_PRIV_t *ap, uint32_t dest, const uint32_t *src, uint32_t len);
+  uint32_t (*error_check)(ADIv5_AP_PRIV_t *ap);
 
   void (*priv_free)(ADIv5_AP_t *this);
 } ADIv5_AP_OPS_t;

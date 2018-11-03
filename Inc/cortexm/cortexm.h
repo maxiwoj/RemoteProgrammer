@@ -147,11 +147,14 @@ typedef struct CORTEXM_OPS_s
 {
   uint32_t (*read_word)(CORTEXM_PRIV_t *priv, uint32_t addr);
   void (*write_word)(CORTEXM_PRIV_t *priv, uint32_t addr, uint32_t value);
+  uint32_t (*read_words)(CORTEXM_PRIV_t *priv, uint32_t *dest, uint32_t src, uint32_t len);
+  uint32_t (*write_words)(CORTEXM_PRIV_t *priv, uint32_t dest, const uint32_t *src, uint32_t len);
   uint32_t (*pc_read)(CORTEXM_PRIV_t *priv);
   void (*pc_write)(CORTEXM_PRIV_t *priv, uint32_t val);
   void (*halt_request)(CORTEXM_PRIV_t *priv);
   uint32_t (*halt_wait)(CORTEXM_PRIV_t *priv);
   void (*halt_resume)(CORTEXM_PRIV_t *priv);
+  uint32_t (*check_error)(CORTEXM_PRIV_t *priv);
 
   void (*free)(CORTEXM_t *cortexm);
 } CORTEXM_OPS_t;

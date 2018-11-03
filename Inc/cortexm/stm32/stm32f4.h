@@ -40,7 +40,13 @@
 
 #define DBGMCU_IDCODE	0xE0042000
 
+#define SIZE_OF_ONE_WRITE 0x1000
+
 typedef struct CORTEXM_s CORTEXM_t;
+
+typedef struct STM32F4_PRIV_s {
+  CORTEXM_t *cortex;
+} STM32F4_PRIV_t;
 
 int stm32f4_probe(CORTEXM_t *cortexm);
 

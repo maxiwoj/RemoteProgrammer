@@ -50,7 +50,9 @@ static uint32_t adiv5_ap_read(ADIv5_AP_PRIV_t *ap, uint8_t addr)
 	return ret;
 }
 
-//uint32_t ap_check_error() --> dp_check_error
+uint32_t ap_check_error(ADIv5_AP_PRIV_t *ap) {
+  return ap->dp->ops->error(ap->dp->priv);
+}
 
 uint32_t ap_mem_read_words(ADIv5_AP_PRIV_t *ap, uint32_t *dest, uint32_t src, uint32_t len)
 {
@@ -202,6 +204,9 @@ void ap_mem_write_halfword(ADIv5_AP_PRIV_t *ap, uint32_t addr, uint16_t value)
 ADIv5_AP_OPS_t adiv5_ap_ops = {
   ap_mem_read_word,
   ap_mem_write_word,
+  ap_mem_read_words,
+  ap_mem_write_words,
+  ap_check_error,
 
   adiv5_ap_priv_free
 };
