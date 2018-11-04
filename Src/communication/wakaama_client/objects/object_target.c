@@ -2,18 +2,20 @@
  * Implements an object for targeting purpose
  *
  *                  Multiple
- * Object |  ID   | Instances | Mandatory |
+ *   Object |  ID   | Instances | Mandatory |
  *  target  | 31025 |    Yes    |    No     |
  *
  *  Resources:
  *                         Supported    Multiple
- *  Name            | ID | Operations | Instances | Mandatory |  Type   | Range | Units |      Description      |
- *  target_type     |  1 |    R/W     |    No     |    Yes    |         |       |       |                       |
- *  firmware_url    |  2 |    R/W     |    No     |    Yes    | string  |       |       |                       |
- *  download_state  |  3 |    R       |    No     |    Yes    | integer | 0-255 |       |                       |
- *  firmware_version|  4 |    R       |    No     |    Yes    | integer |       |       |                       |
- *  flash_target    |  5 |    E       |    No     |    Yes    |         |       |       |                       |
- *  reset_target    |  6 |    E       |    No     |    Yes    |         |       |       |                       |
+ *  Name            | ID | Operations | Instances | Mandatory |  Type   | Range | Units |           Description         |
+ * -----------------|----|------------|-----------|-----------|---------|-------|-------|-------------------------------|
+ *  target_type     |  1 |    R/W     |    No     |    Yes    |         |       |       | type of the programmable board|
+ *  firmware_url    |  2 |    R/W     |    No     |    Yes    | string  |       |       | url to the binary             |
+ *  download_state  |  3 |    R       |    No     |    Yes    | integer | 0-255 |       | state of the download         |
+ *  firmware_version|  4 |    R       |    No     |    Yes    | integer |       |       | timestamp of the latest binary|
+ *  flash_target    |  5 |    E       |    No     |    Yes    |         |       |       | programms the target          |
+ *  flash_state     |  6 |    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of flashing the board|
+ *  reset_target    |  7 |    E       |    No     |    Yes    |         |       |       | resets the target             |
  *
  */
 
