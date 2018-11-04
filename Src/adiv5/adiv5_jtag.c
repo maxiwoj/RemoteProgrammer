@@ -91,6 +91,7 @@ int adiv5_jtag_handler(int dev_num)
   dev_count = adiv5_init(adiv5_jtag_low_level);
 
   if(!dev_count) {
+    // non of AP has been probed successful, free low level adiv5
     adiv5_jtag_priv_free(adiv5_jtag_low_level);
   }
 

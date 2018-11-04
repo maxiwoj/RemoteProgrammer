@@ -266,7 +266,10 @@ uint16_t adiv5_init(ADIv5_DP_t *dp_low_level)
     ap->priv->csw = adiv5_ap_read(ap->priv, ADIV5_AP_CSW) & ~(ADIV5_AP_CSW_SIZE_MASK | ADIV5_AP_CSW_ADDRINC_MASK);
 
     /* Currently only CortexM is supported */
-    probe_cortexm(ap);
+    if(!probe_cortexm(ap)) {
+      // probed unsuccessful, free ap
+      adiv5_ap_priv_free(ap);
+    }
   }
 
   return dp_low_level->ap_count;
