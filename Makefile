@@ -161,7 +161,14 @@ Src/stm32f4xx_it.c \
 Src/stm32f4xx_hal_msp.c \
 Src/communication/dbgu.c \
 Src/communication/term_io.c \
-Src/communication/wakaama_client/wakaama.c
+Src/communication/wakaama_client/wakaama.c \
+Src/jtag/jtag_low_level.c \
+Src/jtag/jtag_scan.c \
+Src/adiv5/adiv5_jtag.c \
+Src/adiv5/adiv5.c \
+Src/cortexm/cortexm.c \
+Src/cortexm/stm32/stm32f4.c \
+Src/target.c
 
 # ASM sources
 ASM_SOURCES =  \

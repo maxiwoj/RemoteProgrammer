@@ -57,6 +57,7 @@
 /* USER CODE BEGIN Includes */
 #include "debug_leds.h"
 #include "wakaama.h"
+#include "jtag/jtag_scan.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -339,6 +340,9 @@ void StartDefaultTask(void const * argument)
 
   /* USER CODE BEGIN 5 */
   printf("\n\n\n-----------------------START-------------------------\n\n");
+  printf("\n\n\n---------------------JTAG-SCAN-----------------------\n\n");
+  jtag_scan();
+  printf("\n\n\n----------------------WAKAAMA------------------------\n\n");
   osDelay(3000); // wait for DHCP initialisation
 
 // Initialize Wakaama LWM2M Client

@@ -19,6 +19,6 @@ typedef struct TARGET_s {
 void register_target(void *priv, TARGET_OPS_t *ops);
 
 // Head of targets list
-TARGET_t target_list = {0, 0, 0};
+extern TARGET_t target_list;
 
 #endif //__TARGET_H

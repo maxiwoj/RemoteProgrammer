@@ -2,6 +2,8 @@
 #include "cmsis_os.h"
 #include "target.h"
 
+TARGET_t target_list = {0, 0, 0};
+
 // TODO: Add wakaama registration here or wakaama will travel target_list leater
 void register_target(void *priv, TARGET_OPS_t *ops){
   TARGET_t *new_target = pvPortMalloc(sizeof(TARGET_t));
