@@ -47,10 +47,10 @@ uint16_t stm32f4_flash_write_stub[] = {
 
 void stm32f4_flash_unlock(STM32F4_PRIV_t *priv)
 {
-  if (priv->cortex->ops->read_word(priv->cortex->priv, FLASH_CR) & FLASH_CR_LOCK) {
+  if (priv->cortex->ops->read_word(priv->cortex->priv, STM32F4_FLASH_CR) & STM32F4_FLASH_CR_LOCK) {
     /* Enable FPEC controller access */
-    priv->cortex->ops->write_word(priv->cortex->priv, FLASH_KEYR, KEY1);
-    priv->cortex->ops->write_word(priv->cortex->priv, FLASH_KEYR, KEY2);
+    priv->cortex->ops->write_word(priv->cortex->priv, STM32F4_FLASH_KEYR, STM32F4_KEY1);
+    priv->cortex->ops->write_word(priv->cortex->priv, STM32F4_FLASH_KEYR, STM32F4_KEY2);
   }
 }
 
@@ -59,11 +59,11 @@ int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
   uint16_t sr;
 
   /* Flash mass erase start instruction */
-  priv->cortex->ops->write_word(priv->cortex->priv, FLASH_CR, FLASH_CR_MER);
-  priv->cortex->ops->write_word(priv->cortex->priv, FLASH_CR, FLASH_CR_STRT | FLASH_CR_MER);
+  priv->cortex->ops->write_word(priv->cortex->priv, STM32F4_FLASH_CR, STM32F4_FLASH_CR_MER);
+  priv->cortex->ops->write_word(priv->cortex->priv, STM32F4_FLASH_CR, STM32F4_FLASH_CR_STRT | STM32F4_FLASH_CR_MER);
 
   /* Read FLASH_SR to poll for BSY bit */
-  while(priv->cortex->ops->read_word(priv->cortex->priv, FLASH_SR) & FLASH_SR_BSY) {
+  while(priv->cortex->ops->read_word(priv->cortex->priv, STM32F4_FLASH_SR) & STM32F4_FLASH_SR_BSY) {
     if(priv->cortex->ops->check_error(priv->cortex->priv)) {
       // TODO: handle error
       return 1;
@@ -71,8 +71,8 @@ int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
   }
 
   /* Check for error */
-  sr = priv->cortex->ops->read_word(priv->cortex->priv, FLASH_SR);
-  if ((sr & SR_ERROR_MASK) || !(sr & SR_EOP)) {
+  sr = priv->cortex->ops->read_word(priv->cortex->priv, STM32F4_FLASH_SR);
+  if ((sr & STM32F4_SR_ERROR_MASK) || !(sr & STM32F4_SR_EOP)) {
     // TODO: handle error
     return 1;
   }
@@ -104,8 +104,8 @@ int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32_t *src
   }
 
   /* Check for error */
-  sr = priv->cortex->ops->read_word(priv->cortex->priv, FLASH_SR);
-  if (sr & SR_ERROR_MASK) {
+  sr = priv->cortex->ops->read_word(priv->cortex->priv, STM32F4_FLASH_SR);
+  if (sr & STM32F4_SR_ERROR_MASK) {
     // TODO: handle error
     return 1;
   }
@@ -118,7 +118,7 @@ int stm32f4_program(void *priv_void, FIL *file)
   UINT br;
   uint8_t unaligned;
   uint32_t addr = 0x8000000; // start of flash memory
-  uint32_t data[SIZE_OF_ONE_WRITE/sizeof(uint32_t)];
+  uint32_t data[STM32F4_SIZE_OF_ONE_WRITE/sizeof(uint32_t)];
   STM32F4_PRIV_t *priv = priv_void;
 
   stm32f4_flash_unlock(priv);
@@ -127,7 +127,7 @@ int stm32f4_program(void *priv_void, FIL *file)
   }
 
   do {
-    f_read(file, data, SIZE_OF_ONE_WRITE, &br);
+    f_read(file, data, STM32F4_SIZE_OF_ONE_WRITE, &br);
     unaligned = br & 0x3;
     if (unaligned) {
       // If number of readed bytes % sizeof(uint32_t) != 0, last readed bytes are unaligned.
@@ -149,7 +149,7 @@ int stm32f4_program(void *priv_void, FIL *file)
       return 1;
     }
     addr += br;
-  } while(br < SIZE_OF_ONE_WRITE);
+  } while(br < STM32F4_SIZE_OF_ONE_WRITE);
 
   return 0;
 }
@@ -170,7 +170,7 @@ int stm32f4_probe(CORTEXM_t *cortexm)
   uint32_t idcode;
   STM32F4_PRIV_t *priv;
 
-  idcode = cortexm->ops->read_word(cortexm->priv, DBGMCU_IDCODE);
+  idcode = cortexm->ops->read_word(cortexm->priv, STM32F4_DBGMCU_IDCODE);
 
   switch (idcode) {
     case 0x411: /* Documented to be 0x413! This is what I read... */
