@@ -1,6 +1,8 @@
 #ifndef _BINARY_DOWNLOAD_H
 #define _BINARY_DOWNLOAD_H
 
+#include "object_target.h"
+
 // Downlaod States
 #define NO_DOWNLOAD_DATA 0
 #define DOWNLOAD_IN_PROGRESS 1
@@ -17,7 +19,5 @@
 #define USB_ERROR -6
 
 
-
-
-int startDownload(char *path, char *filename);
+int startDownload(target_instance_t *targetP);
 #endif
