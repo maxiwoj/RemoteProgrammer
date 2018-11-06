@@ -3,6 +3,7 @@
 #include "cortexm/cortexm.h"
 #include "cortexm/stm32/stm32f4.h"
 #include "fatfs.h"
+#include "target.h"
 
 /* This routine is uses word access.  Only usable on target voltage >2.7V */
 uint16_t stm32f4_flash_write_stub[] = {
@@ -112,12 +113,13 @@ int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32_t *src
   return 0;
 }
 
-int stm32f4_program(STM32F4_PRIV_t *priv, FIL *file)
+int stm32f4_program(void *priv_void, FIL *file)
 {
   UINT br;
   uint8_t unaligned;
   uint32_t addr = 0x8000000; // start of flash memory
   uint32_t data[SIZE_OF_ONE_WRITE/sizeof(uint32_t)];
+  STM32F4_PRIV_t *priv = priv_void;
 
   stm32f4_flash_unlock(priv);
   if(stm32f4_erase_all_flash(priv)) {
@@ -152,9 +154,21 @@ int stm32f4_program(STM32F4_PRIV_t *priv, FIL *file)
   return 0;
 }
 
+void stm32f4_free_priv(void *priv){
+  ((STM32F4_PRIV_t*)priv)->cortex->ops->free(((STM32F4_PRIV_t*)priv)->cortex);
+  vPortFree(priv);
+}
+
+TARGET_OPS_t stm32f4_ops = {
+  .flash_target = stm32f4_program,
+
+  .free_priv = stm32f4_free_priv
+};
+
 int stm32f4_probe(CORTEXM_t *cortexm)
 {
   uint32_t idcode;
+  STM32F4_PRIV_t *priv;
 
   idcode = cortexm->ops->read_word(cortexm->priv, DBGMCU_IDCODE);
 
@@ -163,6 +177,8 @@ int stm32f4_probe(CORTEXM_t *cortexm)
     case 0x413:
     case 0x423: /* F401 */
     case 0x419: /* 427/437 */
+      priv = pvPortMalloc(sizeof(STM32F4_PRIV_t));
+      register_target(priv, &stm32f4_ops);
       return 1;
   }
 

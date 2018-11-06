@@ -1,9 +1,13 @@
 #ifndef __TARGET_H
 #define __TARGET_H
 
+#include "fatfs.h"
+
 // TODO: define real functions with real arguments
 typedef struct TARGET_OPS_s {
-  void (*flash_target)(void *priv);
+  int (*flash_target)(void *priv, FIL *file);
+
+  void (*free_priv)(void *priv);
 } TARGET_OPS_t;
 
 typedef struct TARGET_s {
