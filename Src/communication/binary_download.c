@@ -84,7 +84,7 @@ int startDownload(target_instance_t *targetP) {
 
         if( received_len < 0 ){
             printf("recv failed\r\n");
-            download_error(targetP, RECEIVE_ERROR, socket);gst
+            download_error(targetP, RECEIVE_ERROR, socket);
         }
 
 
@@ -105,6 +105,7 @@ int startDownload(target_instance_t *targetP) {
     }
 
     targetP->download_state = DOWNLOAD_COMPLETED;
+    targetP->download_progress = 100;
     targetP->download_error = NO_ERROR;	
     lwip_close(socket);
     vTaskDelete();

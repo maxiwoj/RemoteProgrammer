@@ -119,8 +119,8 @@ static uint8_t target_read(uint16_t instanceId,
         case 8:
             lwm2m_data_encode_int(targetP->download_error, *dataArrayP + i);
             break;
-        case 8:
-            lwm2m_data_encode_int(targetP->download_progres, *dataArrayP + i);
+        case 9:
+            lwm2m_data_encode_int(targetP->download_progress, *dataArrayP + i);
             break;
         default:
             return COAP_404_NOT_FOUND;
@@ -207,6 +207,9 @@ static uint8_t target_write(uint16_t instanceId,
         break;*/
         case 2:
         {
+            if (targetP->download_state == DOWNLOAD_IN_PROGRESS) {
+                return COAP_412_PRECONDITION_FAILED;
+            }
             if (!dataArray[i].type == LWM2M_TYPE_STRING && !dataArray[i].type == LWM2M_TYPE_OPAQUE) {
                 return COAP_400_BAD_REQUEST;  
             } 
