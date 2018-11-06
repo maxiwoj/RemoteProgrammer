@@ -27,6 +27,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <limits.h>
+#include "object_target.h"
 #include "binary_download.h"
 
 static void prv_output_buffer(uint8_t * buffer,
@@ -65,29 +66,6 @@ static void prv_output_buffer(uint8_t * buffer,
         i += 16;
     }
 }
-
-/*
- * Multiple instance objects can use userdata to store data that will be shared between the different instances.
- * The lwm2m_object_t object structure - which represent every object of the liblwm2m as seen in the single instance
- * object - contain a chained list called instanceList with the object specific structure target_instance_t:
- */
-typedef struct _target_instance_
-{
-    /*
-     * The first two are mandatories and represent the pointer to the next instance and the ID of this one. The rest
-     * is the instance scope user data (uint8_t target in this case)
-     */
-    struct _target_instance_ * next;   // matches lwm2m_list_t::next
-    uint16_t shortID;               // matches lwm2m_list_t::id
-    
-    uint8_t flash_state;
-    uint32_t * target_type;
-    char * firmware_url;
-    uint8_t download_state;
-    uint16_t download_error;
-    uint32_t firmware_version;
-    char * binary_filename;
-} target_instance_t;
 
 static uint8_t target_read(uint16_t instanceId,
                         int * numDataP,
@@ -225,22 +203,26 @@ static uint8_t target_write(uint16_t instanceId,
             if (!dataArray[i].type == LWM2M_TYPE_STRING && !dataArray[i].type == LWM2M_TYPE_OPAQUE) {
                 return COAP_400_BAD_REQUEST;  
             } 
-            if (targetP->firmware_url != NULL) {
-                lwm2m_free(targetP->firmware_url);
-            }
+            // if (targetP->firmware_url != NULL) {
+            //     lwm2m_free(targetP->firmware_url);
+            // }
+            dataArray[i].value.asBuffer.buffer[dataArray[i].value.asBuffer.length] = '\0';
             targetP->firmware_url = lwm2m_strdup((char*)dataArray[i].value.asBuffer.buffer);
             targetP->firmware_version = lwm2m_gettime();
             targetP->download_state = DOWNLOAD_IN_PROGRESS;
             sprintf(targetP->binary_filename, "%d", targetP->firmware_version);
             
-            int res = startDownload(targetP->firmware_url, targetP->binary_filename);
-            if (res == NO_ERROR) {
-                targetP->download_state = DOWNLOAD_COMPLETED;
-                targetP->download_error = NO_ERROR;
-            } else {
-                targetP->download_state = DOWNLOAD_ERROR;
-                targetP->download_error = res;
-            }
+
+            xTaskCreate(startDownload, NULL, 2000, targetP, 2, NULL);
+
+            // int res = startDownload(targetP->firmware_url, targetP->binary_filename);
+            // if (res == NO_ERROR) {
+                // targetP->download_state = DOWNLOAD_COMPLETED;
+                // targetP->download_error = NO_ERROR;
+            // } else {
+                // targetP->download_state = DOWNLOAD_ERROR;
+                // targetP->download_error = res;
+            // }
         }
         break;
         case 3:
