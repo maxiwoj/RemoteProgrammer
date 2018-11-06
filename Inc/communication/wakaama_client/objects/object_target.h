@@ -23,6 +23,7 @@ typedef struct _target_instance_
     int16_t download_error;
     uint32_t firmware_version;
     char * binary_filename;
+    uint8_t download_progress;
 } target_instance_t;
 
 
