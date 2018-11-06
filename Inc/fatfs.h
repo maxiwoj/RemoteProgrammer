@@ -70,7 +70,7 @@ void MX_FATFS_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void usb_ls();
-int usb_write(const void *bytes, size_t size);
+int usb_write(const void *bytes, const char *filename, size_t size);
 /* USER CODE END Prototypes */
 #ifdef __cplusplus
 }

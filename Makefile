@@ -161,6 +161,7 @@ Src/stm32f4xx_it.c \
 Src/stm32f4xx_hal_msp.c \
 Src/communication/dbgu.c \
 Src/communication/term_io.c \
+Src/communication/binary_download.c \
 Src/communication/wakaama_client/wakaama.c
 
 # ASM sources
