@@ -120,12 +120,14 @@ static int get_idcodes(jtag_dev_t *devs_table, int num_of_devs)
   for(i = 0; i < num_of_devs; i++) {
     if(!jtag_tdi(GPIO_PIN_SET, GPIO_PIN_RESET)){
       // 0 means BYPASS DR, skip this device
-      continue;
+      devs_table->idcode = 0;
+    } else {
+      // IDCODE allways start with one and has 32 bits
+      devs_table->idcode = jtag_tdin(31, (~0), GPIO_PIN_RESET);
+      devs_table->idcode <<= 1;
+      devs_table->idcode += 1;    // one that was read at begin of for-loop
     }
-    // IDCODE allways start with one and has 32 bits
-    devs_table->idcode = jtag_tdin(31, (~0), GPIO_PIN_RESET);
-    devs_table->idcode <<= 1;
-    devs_table->idcode += 1;    // one that was read at begin of for-loop
+    printf("dev %d: 0x%lx\n", i, devs_table->idcode);
     devs_table++;
   }
   

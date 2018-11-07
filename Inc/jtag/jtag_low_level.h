@@ -3,7 +3,7 @@
 
 #include "stm32f4xx_it.h"
 
-#define TCKWAIT 1000
+#define TCKWAIT 100
 
 // maximum size of transfer in jtag_tdin function
 typedef uint32_t uint_jtag_transfer_t;
@@ -15,7 +15,7 @@ void jtag_tclk(void);
 void jtag_tms(GPIO_PinState state);
 
 // cycle TCK, set TDI to value, sample TDO
-GPIO_PinState jtag_tdi(GPIO_PinState tdi_val, GPIO_PinState tms_val);
+int jtag_tdi(GPIO_PinState tdi_val, GPIO_PinState tms_val);
 
 
 // multi-bit version of tdi()

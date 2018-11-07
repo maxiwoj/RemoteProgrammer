@@ -30,9 +30,9 @@ void jtag_tms(GPIO_PinState state)
 }
 
 // cycle TCK, set TDI to value, sample TDO
-GPIO_PinState jtag_tdi(GPIO_PinState tdi_val, GPIO_PinState tms_val)
+int jtag_tdi(GPIO_PinState tdi_val, GPIO_PinState tms_val)
 {
-  GPIO_PinState tdo;
+  int tdo;
   HAL_GPIO_WritePin(JTAG_TDI_GPIO_Port, JTAG_TDI_Pin, tdi_val);
   HAL_GPIO_WritePin(JTAG_TMS_GPIO_Port, JTAG_TMS_Pin, tms_val);
   jtag_tclk_up();
@@ -48,7 +48,7 @@ uint_jtag_transfer_t jtag_tdin(uint8_t n, uint_jtag_transfer_t bits, GPIO_PinSta
 {
   uint_jtag_transfer_t res = 0, mask;
 
-  assert(n <= sizeof(uint_jtag_transfer_t));
+  assert(n <= sizeof(uint_jtag_transfer_t) * 8);
 
   // mask == 0b00100..n..0
   for(mask = 1; n; mask <<= 1, n--) {
