@@ -85,12 +85,14 @@ static int get_ir_len_in_chain(jtag_dev_t *devs_table, int max_number_of_devs)
     // No device detected
     return num_of_devs;
   }
+  // already one bit is readed form ir.
+  ir_len = 1;
   do {
     num_of_devs++;
     if(num_of_devs > max_number_of_devs) {
+      printf("ERROR: More devices in JTAG chain than supported\n");
       return -1;
     }
-    ir_len = 1;
     // read zeros that are from current device ir
     while(!jtag_tdi(GPIO_PIN_SET, GPIO_PIN_RESET)) {
       ir_len++;
@@ -98,6 +100,10 @@ static int get_ir_len_in_chain(jtag_dev_t *devs_table, int max_number_of_devs)
     // we have one, this is begining of next device IR or end of chain
     devs_table->ir_len = ir_len;
     devs_table++;
+    printf("dev %d: ir_len: %d\n", num_of_devs - 1, ir_len);
+    // we have one bit, and if it is next device, we will read 0 from while condition.
+    // so reading next device ir len start with 2 already readed bits.
+    ir_len = 2;
   } while(!jtag_tdi(GPIO_PIN_SET, GPIO_PIN_RESET));
 
   //TODO: We pushed ones to IR, so all devices are in BYPASS mode. 
@@ -127,7 +133,7 @@ static int get_idcodes(jtag_dev_t *devs_table, int num_of_devs)
       devs_table->idcode <<= 1;
       devs_table->idcode += 1;    // one that was read at begin of for-loop
     }
-    printf("dev %d: 0x%lx\n", i, devs_table->idcode);
+    printf("dev %d: IDCODE: 0x%lx\n", i, devs_table->idcode);
     devs_table++;
   }
   
@@ -143,7 +149,10 @@ static int init_tagrets_in_chain(jtag_dev_t *devs_table, int num_of_devs)
       if((devs_table->idcode & dev_descr[j].idmask) == dev_descr[j].idcode) {
         devs_table->descr = dev_descr[j].descr;
         if(dev_descr[j].handler) {
+          printf("Start dev %d handler\n", i);
           dev_descr[j].handler(i);
+        } else {
+          printf("dev %d has no handler\n", i);
         }
       }
     }
