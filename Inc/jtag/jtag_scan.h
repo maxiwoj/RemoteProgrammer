@@ -18,6 +18,7 @@ typedef struct jtag_dev_s {
 
 
 void jtag_scan();
+void jtag_test();
 void jtag_select_dev(int dev);
 void jtag_dev_write_ir(uint32_t ir);
 void jtag_dev_shift_dr(uint_jtag_transfer_t *din, uint_jtag_transfer_t *dout, int n);

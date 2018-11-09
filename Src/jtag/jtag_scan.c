@@ -180,6 +180,32 @@ void jtag_scan()
   init_tagrets_in_chain(devs, num_of_devs);
 }
 
+
+/*
+ * Debug JTAG connection.
+ * This function forever in loop shifts out 32 bits throught register and print
+ * it out. TDI is set on 1. After 32 bits it is changed to 0, and so on.
+ */
+void jtag_test()
+{
+  uint32_t tdo;
+  GPIO_PinState tdi = GPIO_PIN_RESET;
+
+  jtag_go_to_idle();
+  jtag_from_idle_to_shift_dr();
+  while(1){
+    tdo = 0;
+    tdi = tdi == GPIO_PIN_SET ? GPIO_PIN_RESET : GPIO_PIN_SET;
+    uint32_t add = 1 << 31;
+    for (int i = 0; i < 32; i++) {
+      tdo >>= 1;
+      tdo += jtag_tdi(tdi, GPIO_PIN_RESET) ? add : 0;
+    }
+    printf("0x%lx\n", tdo);
+  }
+  jtag_tdi(tdo, GPIO_PIN_RESET);
+}
+
 void jtag_select_dev(int dev)
 {
   current_dev = dev;

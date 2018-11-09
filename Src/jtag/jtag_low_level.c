@@ -6,14 +6,14 @@
 
 void jtag_tclk_up()
 {
-  HAL_GPIO_WritePin(JTAG_TCLK_GPIO_Port, JTAG_TCLK_Pin, GPIO_PIN_SET);
   osDelay(TCKWAIT);
+  HAL_GPIO_WritePin(JTAG_TCLK_GPIO_Port, JTAG_TCLK_Pin, GPIO_PIN_SET);
 }
 
 void jtag_tclk_down()
 {
-  HAL_GPIO_WritePin(JTAG_TCLK_GPIO_Port, JTAG_TCLK_Pin, GPIO_PIN_RESET);
   osDelay(TCKWAIT);
+  HAL_GPIO_WritePin(JTAG_TCLK_GPIO_Port, JTAG_TCLK_Pin, GPIO_PIN_RESET);
 }
 
 void jtag_tclk(void)
@@ -25,19 +25,20 @@ void jtag_tclk(void)
 // set TMS to value, cycle TCK
 void jtag_tms(GPIO_PinState state)
 {
+  jtag_tclk_down();
   HAL_GPIO_WritePin(JTAG_TMS_GPIO_Port, JTAG_TMS_Pin, state);
-  jtag_tclk();
+  jtag_tclk_up();
 }
 
 // cycle TCK, set TDI to value, sample TDO
 int jtag_tdi(GPIO_PinState tdi_val, GPIO_PinState tms_val)
 {
   int tdo;
+  jtag_tclk_down();
   HAL_GPIO_WritePin(JTAG_TDI_GPIO_Port, JTAG_TDI_Pin, tdi_val);
   HAL_GPIO_WritePin(JTAG_TMS_GPIO_Port, JTAG_TMS_Pin, tms_val);
   jtag_tclk_up();
   tdo = HAL_GPIO_ReadPin(JTAG_TDO_GPIO_Port, JTAG_TDO_Pin) == GPIO_PIN_SET ? 1 : 0;
-  jtag_tclk_down();
   return tdo;
 }
 
@@ -66,6 +67,7 @@ uint_jtag_transfer_t jtag_tdin(uint8_t n, uint_jtag_transfer_t bits, GPIO_PinSta
 void jtag_from_idle_to_shift_ir()
 {
   // jtag_tms: 1, 1, 0, 0
+  jtag_tms(0);
   jtag_tms(1);
   jtag_tms(1);
   jtag_tms(0);
@@ -75,6 +77,7 @@ void jtag_from_idle_to_shift_ir()
 void jtag_from_idle_to_shift_dr()
 {
   // jtag_tms: 1, 0, 0
+  jtag_tms(0);
   jtag_tms(1);
   jtag_tms(0);
   jtag_tms(0);
