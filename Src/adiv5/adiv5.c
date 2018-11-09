@@ -50,11 +50,11 @@ static uint32_t adiv5_ap_read(ADIv5_AP_PRIV_t *ap, uint8_t addr)
 	return ret;
 }
 
-uint32_t ap_check_error(ADIv5_AP_PRIV_t *ap) {
+static uint32_t ap_check_error(ADIv5_AP_PRIV_t *ap) {
   return ap->dp->ops->error(ap->dp->priv);
 }
 
-uint32_t ap_mem_read_words(ADIv5_AP_PRIV_t *ap, uint32_t *dest, uint32_t src, uint32_t len)
+static uint32_t ap_mem_read_words(ADIv5_AP_PRIV_t *ap, uint32_t *dest, uint32_t src, uint32_t len)
 {
 	uint32_t osrc = src;
   len >>= 2;
@@ -113,7 +113,7 @@ uint32_t ap_mem_read_bytes(ADIv5_AP_PRIV_t *ap, uint8_t *dest, uint32_t src, uin
   return 0;
 }
 
-uint32_t ap_mem_write_words(ADIv5_AP_PRIV_t *ap, uint32_t dest, const uint32_t *src, uint32_t len)
+static uint32_t ap_mem_write_words(ADIv5_AP_PRIV_t *ap, uint32_t dest, const uint32_t *src, uint32_t len)
 {
 	uint32_t odest = dest;
   len >>= 2;
@@ -201,7 +201,7 @@ void ap_mem_write_halfword(ADIv5_AP_PRIV_t *ap, uint32_t addr, uint16_t value)
 }
 
 
-ADIv5_AP_OPS_t adiv5_ap_ops = {
+static ADIv5_AP_OPS_t adiv5_ap_ops = {
   ap_mem_read_word,
   ap_mem_write_word,
   ap_mem_read_words,
@@ -214,7 +214,6 @@ ADIv5_AP_OPS_t adiv5_ap_ops = {
 uint16_t adiv5_init(ADIv5_DP_t *dp_low_level)
 {
   uint32_t ctrlstat;
-
   ctrlstat = dp_low_level->ops->dp_read(dp_low_level->priv, ADIV5_DP_CTRLSTAT);
 
   /* Write request for system and debug power up */
@@ -246,6 +245,7 @@ uint16_t adiv5_init(ADIv5_DP_t *dp_low_level)
 
   /* Probe for APs on this DP */
   for(int i = 0; i < 256; i++) {
+    printf("Probe %d AP\n", i);
     ADIv5_AP_PRIV_t *ap_priv = pvPortMalloc(sizeof(ADIv5_AP_PRIV_t));
     ap_priv->dp = dp_low_level;
     ap_priv->apsel = i;
@@ -268,7 +268,9 @@ uint16_t adiv5_init(ADIv5_DP_t *dp_low_level)
     /* Currently only CortexM is supported */
     if(!probe_cortexm(ap)) {
       // probed unsuccessful, free ap
-      adiv5_ap_priv_free(ap);
+      dp_low_level->ap_count--;
+      vPortFree(ap->priv);
+      vPortFree(ap);
     }
   }
 

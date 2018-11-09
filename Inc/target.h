@@ -13,10 +13,11 @@ typedef struct TARGET_OPS_s {
 typedef struct TARGET_s {
   TARGET_OPS_t *ops;
   void *priv;
+  char *name;
   struct TARGET_s *next;
 } TARGET_t;
 
-void register_target(void *priv, TARGET_OPS_t *ops);
+void register_target(void *priv, TARGET_OPS_t *ops, char *name);
 
 // Head of targets list
 extern TARGET_t target_list;

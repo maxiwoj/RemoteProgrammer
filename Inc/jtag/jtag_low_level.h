@@ -3,7 +3,8 @@
 
 #include "stm32f4xx_it.h"
 
-#define TCKWAIT 20
+#define TCKWAIT 1
+#define SIZEOF_IN_BITS(x) (sizeof(x) * 8)
 
 // maximum size of transfer in jtag_tdin function
 typedef uint32_t uint_jtag_transfer_t;

@@ -6,7 +6,7 @@
 #include "target.h"
 
 /* This routine is uses word access.  Only usable on target voltage >2.7V */
-uint16_t stm32f4_flash_write_stub[] = {
+static uint16_t stm32f4_flash_write_stub[] = {
 // _start:
   0x480a,	// ldr r0, [pc, #40] // _flashbase
   0x490b,	// ldr r1, [pc, #44] // _addr
@@ -45,7 +45,7 @@ uint16_t stm32f4_flash_write_stub[] = {
 // 	...
 };
 
-void stm32f4_flash_unlock(STM32F4_PRIV_t *priv)
+static void stm32f4_flash_unlock(STM32F4_PRIV_t *priv)
 {
   if (priv->cortex->ops->read_word(priv->cortex->priv, STM32F4_FLASH_CR) & STM32F4_FLASH_CR_LOCK) {
     /* Enable FPEC controller access */
@@ -54,7 +54,7 @@ void stm32f4_flash_unlock(STM32F4_PRIV_t *priv)
   }
 }
 
-int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
+static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
 {
   uint16_t sr;
 
@@ -79,7 +79,7 @@ int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
   return 0;
 }
 
-int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32_t *src, int len)
+static int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32_t *src, int len)
 {
   uint32_t start_of_ram = 0x20000000;
   uint32_t stub_len = 0x38;
@@ -113,7 +113,7 @@ int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32_t *src
   return 0;
 }
 
-int stm32f4_program(void *priv_void, FIL *file)
+static int stm32f4_program(void *priv_void, FIL *file)
 {
   UINT br;
   uint8_t unaligned;
@@ -154,16 +154,18 @@ int stm32f4_program(void *priv_void, FIL *file)
   return 0;
 }
 
-void stm32f4_free_priv(void *priv){
+static void stm32f4_free_priv(void *priv){
   ((STM32F4_PRIV_t*)priv)->cortex->ops->free(((STM32F4_PRIV_t*)priv)->cortex);
   vPortFree(priv);
 }
 
-TARGET_OPS_t stm32f4_ops = {
+static TARGET_OPS_t stm32f4_ops = {
   .flash_target = stm32f4_program,
 
   .free_priv = stm32f4_free_priv
 };
+
+static char stm32f4_name[] = "STM32F4x";
 
 int stm32f4_probe(CORTEXM_t *cortexm)
 {
@@ -171,14 +173,15 @@ int stm32f4_probe(CORTEXM_t *cortexm)
   STM32F4_PRIV_t *priv;
 
   idcode = cortexm->ops->read_word(cortexm->priv, STM32F4_DBGMCU_IDCODE);
+  printf("STM32F4 probed id code: 0x%lx\n", idcode);
 
-  switch (idcode) {
+  switch (idcode & 0xFFF) {
     case 0x411: /* Documented to be 0x413! This is what I read... */
     case 0x413:
     case 0x423: /* F401 */
     case 0x419: /* 427/437 */
       priv = pvPortMalloc(sizeof(STM32F4_PRIV_t));
-      register_target(priv, &stm32f4_ops);
+      register_target(priv, &stm32f4_ops, stm32f4_name);
       return 1;
   }
 

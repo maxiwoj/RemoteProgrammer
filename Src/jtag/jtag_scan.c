@@ -129,14 +129,16 @@ static int get_idcodes(jtag_dev_t *devs_table, int num_of_devs)
       devs_table->idcode = 0;
     } else {
       // IDCODE allways start with one and has 32 bits
-      devs_table->idcode = jtag_tdin(31, (~0), GPIO_PIN_RESET);
+      devs_table->idcode = jtag_tdin(31, UINT32_MAX, GPIO_PIN_RESET);
       devs_table->idcode <<= 1;
       devs_table->idcode += 1;    // one that was read at begin of for-loop
     }
     printf("dev %d: IDCODE: 0x%lx\n", i, devs_table->idcode);
     devs_table++;
   }
-  
+  jtag_tms(GPIO_PIN_SET);    // from shift to exit
+  jtag_from_exit_to_idle();
+
   return 0;
 }
 
@@ -244,10 +246,11 @@ void jtag_dev_shift_dr(uint_jtag_transfer_t *din, uint_jtag_transfer_t *dout, in
     jtag_tdi(GPIO_PIN_SET, GPIO_PIN_RESET);
   }
 
-  // TODO: check if we do correct operation for tables
+  // TODO: check if we do correct operation for tables.
+  //       This code works when uint64_t is passed like that: ((uint_jtag_transfer_t*)&uint64_t_var)
   while(n){
-    if(n > sizeof(uint_jtag_transfer_t)) {
-      read_size = sizeof(uint_jtag_transfer_t);
+    if(n > SIZEOF_IN_BITS(uint_jtag_transfer_t)) {
+      read_size = SIZEOF_IN_BITS(uint_jtag_transfer_t);
     } else {
       read_size = n;
     }

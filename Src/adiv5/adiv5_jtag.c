@@ -26,16 +26,17 @@ static uint32_t adiv5_jtag_low_access(void *priv, uint8_t APnDP, uint8_t RnW,
 
 	int tries = 1000;
 	do {
-    jtag_dev_shift_dr((uint_jtag_transfer_t*)&response, (uint_jtag_transfer_t*)&request, 35);
-		ack = response & 0x07;
+    jtag_dev_shift_dr((uint_jtag_transfer_t*)&request, (uint_jtag_transfer_t*)&response, 35);
+    ack = response & 0x07;
 	} while(--tries && (ack == JTAGDP_ACK_WAIT));
 
-	/*if (dp->allow_timeout && (ack == JTAGDP_ACK_WAIT))
-		return 0;*/
+  /*if (dp->allow_timeout && (ack == JTAGDP_ACK_WAIT))
+    return 0;*/
 
-	if((ack != JTAGDP_ACK_OK)) {
+	if(ack != JTAGDP_ACK_OK) {
     /* Fatal error if invalid ACK response */
     // TODO: do something useful
+    printf("ERROR: ack != JTAGDP_ACK_OK\n");
 	}
 
 	return (uint32_t)(response >> 3);
@@ -63,7 +64,7 @@ static uint32_t adiv5_jtag_error(void *priv)
 
 static void adiv5_jtag_priv_free(ADIv5_DP_t *this)
 {
-  if(!this->ap_count) {
+  if(this->ap_count) {
     printf("ERROR: ap_count = %d while freeing adiv5_jtag!\n", this->ap_count);
   }
   vPortFree(this->priv);
@@ -88,6 +89,7 @@ int adiv5_jtag_handler(int dev_num)
   adiv5_jtag_low_level->ops = &adiv5_jtag_dp_ops;
   adiv5_jtag_low_level->ap_count = 0;
 
+  printf("ADIv5 init start\n");
   dev_count = adiv5_init(adiv5_jtag_low_level);
 
   if(!dev_count) {

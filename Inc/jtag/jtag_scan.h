@@ -7,7 +7,7 @@
 #define JTAG_MAX_DEVS	5
 #define JTAG_MAX_IR_LEN	16
 
-#define BYPASS_IR (~0)
+#define BYPASS_IR UINT32_MAX
 
 typedef struct jtag_dev_s {
 	uint8_t ir_len;

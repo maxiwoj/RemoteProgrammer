@@ -5,10 +5,12 @@
 TARGET_t target_list = {0, 0, 0};
 
 // TODO: Add wakaama registration here or wakaama will travel target_list leater
-void register_target(void *priv, TARGET_OPS_t *ops){
+void register_target(void *priv, TARGET_OPS_t *ops, char *name){
   TARGET_t *new_target = pvPortMalloc(sizeof(TARGET_t));
   new_target->priv = priv;
   new_target->ops = ops;
+  new_target->name = name;
   new_target->next = target_list.next;
   target_list.next = new_target;
+  printf("Registered target \"%s\"\n", name);
 }

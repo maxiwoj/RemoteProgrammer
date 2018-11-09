@@ -49,7 +49,7 @@ uint_jtag_transfer_t jtag_tdin(uint8_t n, uint_jtag_transfer_t bits, GPIO_PinSta
 {
   uint_jtag_transfer_t res = 0, mask;
 
-  assert(n <= sizeof(uint_jtag_transfer_t) * 8);
+  assert(n <= SIZEOF_IN_BITS(uint_jtag_transfer_t));
 
   // mask == 0b00100..n..0
   for(mask = 1; n; mask <<= 1, n--) {
@@ -57,8 +57,6 @@ uint_jtag_transfer_t jtag_tdin(uint8_t n, uint_jtag_transfer_t bits, GPIO_PinSta
       // if TDO == 1 then add 1 to res
       res |= mask;
     }
-    // get next bit to send
-    bits >>= 1;
   }
 
   return res;

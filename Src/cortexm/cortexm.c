@@ -22,25 +22,25 @@ static uint32_t cortexm_write_words(CORTEXM_PRIV_t *priv, uint32_t dest, const u
   return priv->ap->ops->mem_write_words(priv->ap->priv, dest, src, len);
 }
 
-uint32_t cortexm_pc_read(CORTEXM_PRIV_t *priv)
+static uint32_t cortexm_pc_read(CORTEXM_PRIV_t *priv)
 {
   cortexm_write_word(priv, CORTEXM_DCRSR, 0x0F);
   return cortexm_read_word(priv, CORTEXM_DCRDR);
 }
 
-void cortexm_pc_write(CORTEXM_PRIV_t *priv, uint32_t val)
+static void cortexm_pc_write(CORTEXM_PRIV_t *priv, uint32_t val)
 {
   cortexm_write_word(priv, CORTEXM_DCRDR, val);
   cortexm_write_word(priv, CORTEXM_DCRSR, CORTEXM_DCRSR_REGWnR | 0x0F);
 }
 
-void cortexm_halt_request(CORTEXM_PRIV_t *priv)
+static void cortexm_halt_request(CORTEXM_PRIV_t *priv)
 {
   //allow_timeout == false
   cortexm_write_word(priv, CORTEXM_DHCSR, CORTEXM_DHCSR_DBGKEY | CORTEXM_DHCSR_C_HALT | CORTEXM_DHCSR_C_DEBUGEN);
 }
 
-uint32_t cortexm_halt_wait(CORTEXM_PRIV_t *priv)
+static uint32_t cortexm_halt_wait(CORTEXM_PRIV_t *priv)
 {
   uint32_t dfsr;
 
@@ -63,7 +63,7 @@ uint32_t cortexm_halt_wait(CORTEXM_PRIV_t *priv)
   return SIGTRAP;
 }
 
-void cortexm_halt_resume(CORTEXM_PRIV_t *priv)
+static void cortexm_halt_resume(CORTEXM_PRIV_t *priv)
 {
   uint32_t dhcsr;
 
@@ -72,18 +72,19 @@ void cortexm_halt_resume(CORTEXM_PRIV_t *priv)
   //allow_timeout == true
 }
 
-uint32_t cortexm_check_error(CORTEXM_PRIV_t *priv)
+static uint32_t cortexm_check_error(CORTEXM_PRIV_t *priv)
 {
   return priv->ap->ops->error_check(priv->ap->priv);
 }
 
-void free_cortexm(CORTEXM_t *cortexm)
+static void free_cortexm(CORTEXM_t *cortexm)
 {
+  cortexm->priv->ap->ops->priv_free(cortexm->priv->ap);
   vPortFree(cortexm->priv);
   vPortFree(cortexm);
 }
 
-CORTEXM_OPS_t cortexm_ops = {
+static CORTEXM_OPS_t cortexm_ops = {
   cortexm_read_word,
   cortexm_write_word,
   cortexm_read_words,
@@ -116,7 +117,8 @@ int probe_cortexm(ADIv5_AP_t *ap)
   }
 
   // Non of the targets successful probed. Cleanup
-  free_cortexm(cortexm);
+  vPortFree(cortexm->priv);
+  vPortFree(cortexm);
 
   return 0;
 }
