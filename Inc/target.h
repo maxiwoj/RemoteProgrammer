@@ -15,7 +15,7 @@
 
 // TODO: define real functions with real arguments
 typedef struct TARGET_OPS_s {
-  int (*flash_target)(void *priv, FIL *file);
+  int (*flash_target)(void *priv, FIL *file, int *progress);
   void (*reset_target)(void *priv);
 
   void (*free_priv)(void *priv);

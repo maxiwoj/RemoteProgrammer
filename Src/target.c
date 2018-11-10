@@ -22,6 +22,7 @@ void flash_target_task(void *object) {
 
 	FIL file;
 	int result;
+  int progress;
 
 	result = usb_open_file(target_object->binary_filename, &file, FA_READ);
 	if (result != 0) {
@@ -30,7 +31,7 @@ void flash_target_task(void *object) {
 		vTaskDelete(NULL);
 	}
 
-	result = target_object->target->ops->flash_target(target_object->target->priv, &file);
+	result = target_object->target->ops->flash_target(target_object->target->priv, &file, &progress);
 	if (result != 0) {
 		target_object->flash_error = result;
 		target_object->flash_state = FLASH_ERROR;

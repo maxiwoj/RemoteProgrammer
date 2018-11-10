@@ -40,7 +40,8 @@
 
 #define STM32F4_DBGMCU_IDCODE	0xE0042000
 
-#define STM32F4_SIZE_OF_ONE_WRITE 0x1000
+#define STM32F4_SIZE_OF_ONE_WRITE    0x1000
+#define STM32F4_ERASE_TIME_IN_WRITES 10
 
 /* 
  * flash errors returned to flash_target_task
