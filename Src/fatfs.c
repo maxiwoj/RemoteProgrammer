@@ -127,6 +127,31 @@ void usb_ls() {
     return (er); \
   }
 
+
+int usb_open_file(const char *filename, FIL *fp, BYTE mode) {
+  FRESULT result = f_mount(&USBHFatFS, "", 1);
+  if (result == FR_OK) {
+    char *path = pvPortMalloc(sizeof filename + 4);
+    sprintf(path, "0:/%s", filename);
+    result = f_open(fp, path, mode);
+    vPortFree(path);
+    if(result != FR_OK) {
+      f_mount(NULL, "", 0);
+    }
+    CHECK_FRESULT(result, "open failed", -1);
+  } else {
+    CHECK_FRESULT(result, "mount failed", -1);
+  }
+  return 0;
+}
+
+int usb_close_file(FIL *fp) {
+  FRESULT result = f_close(fp);
+  f_mount(NULL, "", 0);
+  CHECK_FRESULT(result, "close failed", -1);
+  return 0;
+}
+
 int usb_write(const void *bytes, const char *filename, size_t size) {
   FRESULT result;
 

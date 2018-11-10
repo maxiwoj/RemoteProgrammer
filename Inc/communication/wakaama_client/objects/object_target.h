@@ -2,6 +2,8 @@
 #define __OBJECT_TARGET_H
 
 
+#include "target.h"
+
 /*
  * Multiple instance objects can use userdata to store data that will be shared between the different instances.
  * The lwm2m_object_t object structure - which represent every object of the liblwm2m as seen in the single instance
@@ -17,13 +19,15 @@ typedef struct _target_instance_
     uint16_t shortID;               // matches lwm2m_list_t::id
     
     uint8_t flash_state;
-    uint32_t * target_type;
+    char * target_type;
     char * firmware_url;
     uint8_t download_state;
     int16_t download_error;
     uint32_t firmware_version;
     char * binary_filename;
     uint8_t download_progress;
+    uint8_t flash_error;
+    TARGET_t *target;
 } target_instance_t;
 
 
