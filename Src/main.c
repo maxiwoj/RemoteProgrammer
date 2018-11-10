@@ -1,4 +1,3 @@
-
 /**
   ******************************************************************************
   * @file           : main.c
@@ -58,6 +57,7 @@
 #include "debug_leds.h"
 #include "wakaama.h"
 #include "jtag/jtag_scan.h"
+#include "binary_download.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -289,14 +289,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USB_GPIO_IN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : JTAG_TRST_Pin JTAG_TDO_Pin JTAG_TMS_Pin JTAG_TCLK_Pin */
+  /*Configure GPIO pins : JTAG_TRST_Pin JTAG_TDI_Pin JTAG_TMS_Pin JTAG_TCLK_Pin */
   GPIO_InitStruct.Pin = JTAG_TRST_Pin|JTAG_TDI_Pin|JTAG_TMS_Pin|JTAG_TCLK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : JTAG_TDI_Pin */
+  /*Configure GPIO pin : JTAG_TDO_Pin */
   GPIO_InitStruct.Pin = JTAG_TDO_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
@@ -347,6 +347,7 @@ void StartDefaultTask(void const * argument)
 
 // Initialize Wakaama LWM2M Client
   lwip_socket_init();
+  
   int socket = createUDPSocket(LOCAL_PORT, AF_INET);
   if(socket != -1){ 
     printf("Start wakaama task\r\n");
@@ -382,7 +383,7 @@ void StartDefaultTask(void const * argument)
         break;
       case 'w':
         if (get_usb_ready()) {
-          usb_write("asd", 3);
+          usb_write("asd", "temp", 3);
         }
         break;
     }
