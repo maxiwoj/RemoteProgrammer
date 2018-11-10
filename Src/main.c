@@ -347,11 +347,10 @@ void StartDefaultTask(void const * argument)
 
 // Initialize Wakaama LWM2M Client
   lwip_socket_init();
-  
   int socket = createUDPSocket(LOCAL_PORT, AF_INET);
   if(socket != -1){ 
     printf("Start wakaama task\r\n");
-    int res = xTaskCreate(taskWakaama, "wakaama", 3000, (void *) socket, 2, NULL);
+    int res = xTaskCreate(taskWakaama, "wakaama", 3000, (void *) socket, 3, NULL);
     if (res != pdPASS) {
       printf("\r\nerror creating taskWakaama: %d\n", res);  
     }

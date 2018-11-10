@@ -121,6 +121,6 @@ int startDownload(target_instance_t *targetP) {
     targetP->download_error = NO_ERROR;	
     lwip_close(socket);
     lwm2m_free(url_str);
-    vTaskDelete();
+    vTaskDelete(NULL);
 
 }

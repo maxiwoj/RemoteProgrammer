@@ -9,7 +9,7 @@
  *                         Supported    Multiple
  *  Name            | ID | Operations | Instances | Mandatory |  Type   | Range | Units |           Description         |
  * -----------------|----|------------|-----------|-----------|---------|-------|-------|-------------------------------|
- * target_type      |  1 |    R/W     |    No     |    Yes    |         |       |       | type of the programmable board|
+ * target_type      |  1 |    R/W     |    No     |    Yes    | string  |       |       | type of the programmable board|
  * firmware_url     |  2 |    R/W     |    No     |    Yes    | string  |       |       | url to the binary             |
  * download_state   |  3 |    R       |    No     |    Yes    | integer | 0-255 |       | state of the download         |
  * firmware_version |  4 |    R       |    No     |    Yes    | integer |       |       | timestamp of the latest binary|
@@ -17,7 +17,8 @@
  * flash_state      |  6 |    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of flashing the board|
  * reset_target     |  7 |    E       |    No     |    Yes    |         |       |       | resets the target             |
  * download_error   |  8 |    R       |    No     |    Yes    | integer |       |       | download error                |
- * download_progres |  9 |    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of binary download   |
+ * download_progress|  9 |    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of binary download   |
+ * flash_error      |  10|    R       |    No     |    Yes    | integer |       |       | flashing error                |
  *
  */
 
@@ -81,7 +82,7 @@ static uint8_t target_read(uint16_t instanceId,
 
     if (*numDataP == 0)
     {
-        *dataArrayP = lwm2m_data_new(7);
+        *dataArrayP = lwm2m_data_new(8);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
         *numDataP = 4;
         (*dataArrayP)[0].id = 1;
@@ -91,6 +92,7 @@ static uint8_t target_read(uint16_t instanceId,
         (*dataArrayP)[4].id = 6;
         (*dataArrayP)[5].id = 8;
         (*dataArrayP)[6].id = 9;
+        (*dataArrayP)[7].id = 10;
     }
 
     for (i = 0 ; i < *numDataP ; i++)
@@ -98,7 +100,7 @@ static uint8_t target_read(uint16_t instanceId,
         switch ((*dataArrayP)[i].id)
         {
         case 1:
-            lwm2m_data_encode_int(targetP->target_type, *dataArrayP + i);
+            lwm2m_data_encode_string(targetP->target_type, *dataArrayP + i);
             break;
         case 2:
             lwm2m_data_encode_string(targetP->firmware_url, *dataArrayP + i);
@@ -122,6 +124,9 @@ static uint8_t target_read(uint16_t instanceId,
         case 9:
             lwm2m_data_encode_int(targetP->download_progress, *dataArrayP + i);
             break;
+        case 10:
+            lwm2m_data_encode_int(targetP->flash_error, *dataArrayP + i);
+            break;
         default:
             return COAP_404_NOT_FOUND;
         }
@@ -140,7 +145,7 @@ static uint8_t target_discover(uint16_t instanceId,
     // is the server asking for the full object ?
     if (*numDataP == 0)
     {
-        *dataArrayP = lwm2m_data_new(9);
+        *dataArrayP = lwm2m_data_new(10);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
         *numDataP = 8;
         (*dataArrayP)[0].id = 1;
@@ -152,6 +157,7 @@ static uint8_t target_discover(uint16_t instanceId,
         (*dataArrayP)[6].id = 7;
         (*dataArrayP)[7].id = 8;
         (*dataArrayP)[8].id = 9;
+        (*dataArrayP)[9].id = 10;
     }
     else
     {
@@ -168,6 +174,7 @@ static uint8_t target_discover(uint16_t instanceId,
             case 7:
             case 8:
             case 9:
+            case 10:
                 break;
             default:
                 return COAP_404_NOT_FOUND;
@@ -194,17 +201,6 @@ static uint8_t target_write(uint16_t instanceId,
         {
         case 1:
             return COAP_405_METHOD_NOT_ALLOWED;
-        /* we do not support writing the target_type yet
-        {
-            int64_t value;
-
-            if (1 != lwm2m_data_decode_int(dataArray + i, &value))
-            {
-                return COAP_400_BAD_REQUEST;
-            }
-            targetP->target_type = (uint32_t) value;
-        }
-        break;*/
         case 2:
         {
             if (targetP->download_state == DOWNLOAD_IN_PROGRESS) {
@@ -239,6 +235,8 @@ static uint8_t target_write(uint16_t instanceId,
         case 8:
             return COAP_405_METHOD_NOT_ALLOWED;
         case 9:
+            return COAP_405_METHOD_NOT_ALLOWED;
+        case 10:
             return COAP_405_METHOD_NOT_ALLOWED;
         default:
             return COAP_404_NOT_FOUND;
@@ -319,29 +317,37 @@ static uint8_t target_exec(uint16_t instanceId,
             return COAP_412_PRECONDITION_FAILED;
         }
         fprintf(stdout, "\r\n-----------------\r\n"
-                        "Execute flash_target on %hu/%d/%d\r\n"
+                        "Executing flash_target on %hu/%d/%d\r\n"
+                        "Target Name: %s\n"
                         " Parameter (%d bytes):\r\n",
-                        objectP->objID, instanceId, resourceId, length);
+                        objectP->objID, instanceId, resourceId, targetP->target_type, length);
         prv_output_buffer((uint8_t*)buffer, length);
         fprintf(stdout, "-----------------\r\n\r\n");
-
-// TODO: FLASH TARGET AND Update flash progress
+        targetP->flash_state=FLASH_IN_PROGRESS;
+        // targetP->flash_progress=0;
+        xTaskCreate(flash_target_task, "Flash_Target", 2000, targetP, 2, NULL);
         return COAP_204_CHANGED;
     case 6:
         return COAP_405_METHOD_NOT_ALLOWED;
     case 7:
-        if (targetP->flash_state != 100 && targetP->flash_state != 0) {
-            return COAP_503_SERVICE_UNAVAILABLE;
+        if (targetP->flash_state == FLASH_IN_PROGRESS) {
+            return COAP_412_PRECONDITION_FAILED;
         }
         fprintf(stdout, "\r\n-----------------\r\n"
                         "Execute reset_target on %hu/%d/%d\r\n"
+                        "Target Name: %s\n"
                         " Parameter (%d bytes):\r\n",
-                        objectP->objID, instanceId, resourceId, length);
+                        objectP->objID, instanceId, resourceId, targetP->target_type, length);
         prv_output_buffer((uint8_t*)buffer, length);
         fprintf(stdout, "-----------------\r\n\r\n");
+        xTaskCreate(reset_target_task, "ResetTarget", 300, targetP, 2, NULL);
 // TODO: RESET TARGET
         return COAP_204_CHANGED;
     case 8:
+        return COAP_405_METHOD_NOT_ALLOWED;
+    case 9:
+        return COAP_405_METHOD_NOT_ALLOWED;
+    case 10:
         return COAP_405_METHOD_NOT_ALLOWED;
     default:
         return COAP_404_NOT_FOUND;
@@ -351,48 +357,97 @@ static uint8_t target_exec(uint16_t instanceId,
 lwm2m_object_t * get_target_object(void)
 {
     lwm2m_object_t * targetObj;
+    targetObj = (lwm2m_object_t *)lwm2m_malloc(sizeof(lwm2m_object_t)); 
 
-    targetObj = (lwm2m_object_t *)lwm2m_malloc(sizeof(lwm2m_object_t));
+        if (NULL != targetObj) {
+            target_instance_t * targetP;
+            int i = 1;
+            memset(targetObj, 0, sizeof(lwm2m_object_t));
+            targetObj->objID = 31025;
 
-    if (NULL != targetObj)
-    {
-        int i;
-        target_instance_t * targetP;
+            TARGET_t *target = target_list.next;
+            while(target != NULL) {
+                printf("Add targetObject: %d\n", i);
+                targetP = (target_instance_t *)lwm2m_malloc(sizeof(target_instance_t));
+                if (NULL == targetP) return NULL;
+                memset(targetP, 0, sizeof(target_instance_t));
+                targetP->shortID = i;
+                targetP->target_type = target->name;
+                targetP->firmware_url = NULL;
+                targetP->download_state = NO_DOWNLOAD_DATA;
+                targetP->firmware_version = 0;
+                targetP->flash_state = NO_FLASH_DATA;
+                targetP->download_progress = 0;
+                targetP->download_error = NO_ERROR;
+                targetP->binary_filename = lwm2m_malloc(25);
+                targetP->target = target;
 
-        memset(targetObj, 0, sizeof(lwm2m_object_t));
+                targetObj->instanceList = LWM2M_LIST_ADD(targetObj->instanceList, targetP);
 
-        targetObj->objID = 31025;
-        
-        targetP = (target_instance_t *)lwm2m_malloc(sizeof(target_instance_t));
-        if (NULL == targetP) return NULL;
-        memset(targetP, 0, sizeof(target_instance_t));
-        targetP->shortID = 1;
-        targetP->target_type = 3124;
-        targetP->firmware_url = NULL;
-        targetP->download_state = NO_DOWNLOAD_DATA;
-        targetP->firmware_version = 0;
-        targetP->flash_state = 0;
-        targetP->download_progress = 0;
-        targetP->download_error = NO_ERROR;
-        targetP->binary_filename = lwm2m_malloc(25);
+                target = target->next;
+                i++;
+            }
 
-        targetObj->instanceList = LWM2M_LIST_ADD(targetObj->instanceList, targetP);
-        /*
-         * From a single instance object, two more functions are available.
-         * - The first one (createFunc) create a new instance and filled it with the provided informations. If an ID is
-         *   provided a check is done for verifying his disponibility, or a new one is generated.
-         * - The other one (deleteFunc) delete an instance by removing it from the instance list (and freeing the memory
-         *   allocated to it)
-         */
-        targetObj->readFunc = target_read;
-        targetObj->writeFunc = target_write;
-        targetObj->executeFunc = target_exec;
-        targetObj->createFunc = target_create;
-        targetObj->deleteFunc = target_delete;
-        targetObj->discoverFunc = target_discover;
-    }
 
+            /*
+             * From a single instance object, two more functions are available.
+             * - The first one (createFunc) create a new instance and filled it with the provided informations. If an ID is
+             *   provided a check is done for verifying his disponibility, or a new one is generated.
+             * - The other one (deleteFunc) delete an instance by removing it from the instance list (and freeing the memory
+             *   allocated to it)
+             */
+            targetObj->readFunc = target_read;
+            targetObj->writeFunc = target_write;
+            targetObj->executeFunc = target_exec;
+            targetObj->createFunc = target_create;
+            targetObj->deleteFunc = target_delete;
+            targetObj->discoverFunc = target_discover;        
+        }
     return targetObj;
+
+
+
+
+    // lwm2m_object_t * targetObj;
+    // targetObj = (lwm2m_object_t *)lwm2m_malloc(sizeof(lwm2m_object_t));
+    // if (NULL != targetObj)
+    // {
+    //     target_instance_t * targetP;
+
+    //     memset(targetObj, 0, sizeof(lwm2m_object_t));
+
+    //     targetObj->objID = 31025;
+        
+    //     targetP = (target_instance_t *)lwm2m_malloc(sizeof(target_instance_t));
+    //     if (NULL == targetP) return NULL;
+    //     memset(targetP, 0, sizeof(target_instance_t));
+    //     targetP->shortID = 1;
+    //     targetP->target_type = "STM32";
+    //     targetP->firmware_url = NULL;
+    //     targetP->download_state = NO_DOWNLOAD_DATA;
+    //     targetP->firmware_version = 0;
+    //     targetP->flash_state = 0;
+    //     targetP->download_progress = 0;
+    //     targetP->download_error = NO_ERROR;
+    //     targetP->binary_filename = lwm2m_malloc(25);
+
+    //     targetObj->instanceList = LWM2M_LIST_ADD(targetObj->instanceList, targetP);
+    //     /*
+    //      * From a single instance object, two more functions are available.
+    //      * - The first one (createFunc) create a new instance and filled it with the provided informations. If an ID is
+    //      *   provided a check is done for verifying his disponibility, or a new one is generated.
+    //      * - The other one (deleteFunc) delete an instance by removing it from the instance list (and freeing the memory
+    //      *   allocated to it)
+    //      */
+    //     targetObj->readFunc = target_read;
+    //     targetObj->writeFunc = target_write;
+    //     targetObj->executeFunc = target_exec;
+    //     targetObj->createFunc = target_create;
+    //     targetObj->deleteFunc = target_delete;
+    //     targetObj->discoverFunc = target_discover;
+    // }
+
+    // return targetObj;
 }
 
 void free_target_object(lwm2m_object_t * object)
