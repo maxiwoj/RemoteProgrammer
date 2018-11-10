@@ -9,14 +9,15 @@
  *                         Supported    Multiple
  *  Name            | ID | Operations | Instances | Mandatory |  Type   | Range | Units |           Description         |
  * -----------------|----|------------|-----------|-----------|---------|-------|-------|-------------------------------|
- *  target_type     |  1 |    R/W     |    No     |    Yes    |         |       |       | type of the programmable board|
- *  firmware_url    |  2 |    R/W     |    No     |    Yes    | string  |       |       | url to the binary             |
- *  download_state  |  3 |    R       |    No     |    Yes    | integer | 0-255 |       | state of the download         |
- *  firmware_version|  4 |    R       |    No     |    Yes    | integer |       |       | timestamp of the latest binary|
- *  flash_target    |  5 |    E       |    No     |    Yes    |         |       |       | programms the target          |
- *  flash_state     |  6 |    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of flashing the board|
- *  reset_target    |  7 |    E       |    No     |    Yes    |         |       |       | resets the target             |
- *  download_error  |  8 |    R       |    No     |    Yes    | integer |       |       | download error                |
+ * target_type      |  1 |    R/W     |    No     |    Yes    |         |       |       | type of the programmable board|
+ * firmware_url     |  2 |    R/W     |    No     |    Yes    | string  |       |       | url to the binary             |
+ * download_state   |  3 |    R       |    No     |    Yes    | integer | 0-255 |       | state of the download         |
+ * firmware_version |  4 |    R       |    No     |    Yes    | integer |       |       | timestamp of the latest binary|
+ * flash_target     |  5 |    E       |    No     |    Yes    |         |       |       | programms the target          |
+ * flash_state      |  6 |    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of flashing the board|
+ * reset_target     |  7 |    E       |    No     |    Yes    |         |       |       | resets the target             |
+ * download_error   |  8 |    R       |    No     |    Yes    | integer |       |       | download error                |
+ * download_progres |  9 |    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of binary download   |
  *
  */
 
@@ -80,7 +81,7 @@ static uint8_t target_read(uint16_t instanceId,
 
     if (*numDataP == 0)
     {
-        *dataArrayP = lwm2m_data_new(6);
+        *dataArrayP = lwm2m_data_new(7);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
         *numDataP = 4;
         (*dataArrayP)[0].id = 1;
@@ -89,6 +90,7 @@ static uint8_t target_read(uint16_t instanceId,
         (*dataArrayP)[3].id = 4;
         (*dataArrayP)[4].id = 6;
         (*dataArrayP)[5].id = 8;
+        (*dataArrayP)[6].id = 9;
     }
 
     for (i = 0 ; i < *numDataP ; i++)
@@ -117,6 +119,9 @@ static uint8_t target_read(uint16_t instanceId,
         case 8:
             lwm2m_data_encode_int(targetP->download_error, *dataArrayP + i);
             break;
+        case 9:
+            lwm2m_data_encode_int(targetP->download_progress, *dataArrayP + i);
+            break;
         default:
             return COAP_404_NOT_FOUND;
         }
@@ -135,7 +140,7 @@ static uint8_t target_discover(uint16_t instanceId,
     // is the server asking for the full object ?
     if (*numDataP == 0)
     {
-        *dataArrayP = lwm2m_data_new(8);
+        *dataArrayP = lwm2m_data_new(9);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
         *numDataP = 8;
         (*dataArrayP)[0].id = 1;
@@ -146,6 +151,7 @@ static uint8_t target_discover(uint16_t instanceId,
         (*dataArrayP)[5].id = 6;
         (*dataArrayP)[6].id = 7;
         (*dataArrayP)[7].id = 8;
+        (*dataArrayP)[8].id = 9;
     }
     else
     {
@@ -161,6 +167,7 @@ static uint8_t target_discover(uint16_t instanceId,
             case 6:
             case 7:
             case 8:
+            case 9:
                 break;
             default:
                 return COAP_404_NOT_FOUND;
@@ -200,29 +207,23 @@ static uint8_t target_write(uint16_t instanceId,
         break;*/
         case 2:
         {
+            if (targetP->download_state == DOWNLOAD_IN_PROGRESS) {
+                return COAP_412_PRECONDITION_FAILED;
+            }
             if (!dataArray[i].type == LWM2M_TYPE_STRING && !dataArray[i].type == LWM2M_TYPE_OPAQUE) {
                 return COAP_400_BAD_REQUEST;  
             } 
-            // if (targetP->firmware_url != NULL) {
-            //     lwm2m_free(targetP->firmware_url);
-            // }
+            if (targetP->firmware_url != NULL) {
+                lwm2m_free(targetP->firmware_url);
+            }
             dataArray[i].value.asBuffer.buffer[dataArray[i].value.asBuffer.length] = '\0';
             targetP->firmware_url = lwm2m_strdup((char*)dataArray[i].value.asBuffer.buffer);
             targetP->firmware_version = lwm2m_gettime();
             targetP->download_state = DOWNLOAD_IN_PROGRESS;
             sprintf(targetP->binary_filename, "%d", targetP->firmware_version);
-            
+            targetP->download_progress = 0;
 
             xTaskCreate(startDownload, NULL, 2000, targetP, 2, NULL);
-
-            // int res = startDownload(targetP->firmware_url, targetP->binary_filename);
-            // if (res == NO_ERROR) {
-                // targetP->download_state = DOWNLOAD_COMPLETED;
-                // targetP->download_error = NO_ERROR;
-            // } else {
-                // targetP->download_state = DOWNLOAD_ERROR;
-                // targetP->download_error = res;
-            // }
         }
         break;
         case 3:
@@ -236,6 +237,8 @@ static uint8_t target_write(uint16_t instanceId,
         case 7: 
             return COAP_405_METHOD_NOT_ALLOWED;
         case 8:
+            return COAP_405_METHOD_NOT_ALLOWED;
+        case 9:
             return COAP_405_METHOD_NOT_ALLOWED;
         default:
             return COAP_404_NOT_FOUND;
@@ -369,6 +372,7 @@ lwm2m_object_t * get_target_object(void)
         targetP->download_state = NO_DOWNLOAD_DATA;
         targetP->firmware_version = 0;
         targetP->flash_state = 0;
+        targetP->download_progress = 0;
         targetP->download_error = NO_ERROR;
         targetP->binary_filename = lwm2m_malloc(25);
 
