@@ -9,7 +9,9 @@
 #define FLASH_ERROR 2
 #define FLASH_COMPLETED 3
 
-#define USB_FS_ERROR 1
+// Flash Error status
+// 0x0 -- 0x1000 reserved for target
+#define USB_FS_ERROR 0x1001
 
 // TODO: define real functions with real arguments
 typedef struct TARGET_OPS_s {

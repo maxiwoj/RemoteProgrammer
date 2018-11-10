@@ -69,7 +69,7 @@ static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
     if(priv->cortex->ops->check_error(priv->cortex->priv)) {
       // TODO: handle error
       printf("Error while waiting for erase end\n");
-      return 1;
+      return STM32F4_ERASE_NEVER_END;
     }
   }
 
@@ -78,7 +78,7 @@ static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
   if ((sr & STM32F4_SR_ERROR_MASK) || !(sr & STM32F4_SR_EOP)) {
     // TODO: handle error
     printf("Error after erase 0x%x\n", sr);
-    return 1;
+    return sr | STM32F4_ERASE_ERROR_BIT;
   }
   return 0;
 }
@@ -100,7 +100,7 @@ static int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32
   if(priv->cortex->ops->check_error(priv->cortex->priv)) {
     // TODO: handle error
     printf("ERROR: Filed to setup write operation\n");
-    return 1;
+    return STM32F4_ERROR_ON_FLASH_WRITE_SETUP;
   }
 
   /* Execute the stub */
@@ -115,7 +115,7 @@ static int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32
   if (sr & STM32F4_SR_ERROR_MASK) {
     // TODO: handle error
     printf("ERROR: writing ended with error 0x%x\n", sr);
-    return 1;
+    return sr | STM32F4_FLASH_ERROR_BIT;
   }
 
   return 0;
@@ -128,14 +128,16 @@ static int stm32f4_program(void *priv_void, FIL *file)
   uint32_t addr = 0x8000000; // start of flash memory
   uint32_t *data = pvPortMalloc(STM32F4_SIZE_OF_ONE_WRITE/sizeof(uint32_t));
   STM32F4_PRIV_t *priv = priv_void;
+  uint16_t result;
 
   printf("Start flashing STM32F4x\n");
 
   priv->cortex->ops->halt_request(priv->cortex->priv);
   stm32f4_flash_unlock(priv);
-  if(stm32f4_erase_all_flash(priv)) {
+  result = stm32f4_erase_all_flash(priv);
+  if(result) {
     vPortFree(data);
-    return 1;
+    return result;
   }
 
   do {
@@ -151,15 +153,17 @@ static int stm32f4_program(void *priv_void, FIL *file)
       // add modified bytes to bytes that will be written
       br++;
       br <<= 2;
-      if(stm32f4_flash_write(priv, addr, data, br)) {
+      result = stm32f4_flash_write(priv, addr, data, br);
+      if(result) {
         vPortFree(data);
-        return 1;
+        return result;
       }
       // Unaligned read is always smaller then SIZE_OF_ONE_WRITE.
       // This is EOF so we have done here.
       break;
     }
-    if(stm32f4_flash_write(priv, addr, data, br)) {
+    result = stm32f4_flash_write(priv, addr, data, br);
+    if(result) {
       vPortFree(data);
       return 1;
     }
