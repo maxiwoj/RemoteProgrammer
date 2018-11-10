@@ -648,11 +648,13 @@ lwip_connect(int s, const struct sockaddr *name, socklen_t namelen)
 
   sock = get_socket(s);
   if (!sock) {
+    printf("Cannot get socket\r\n");
     return -1;
   }
 
   if (!SOCK_ADDR_TYPE_MATCH_OR_UNSPEC(name, sock)) {
     /* sockaddr does not match socket type (IPv4/IPv6) */
+    printf("sockaddr does not match socket type (IPv4/IPv6)\r\n");
     sock_set_errno(sock, err_to_errno(ERR_VAL));
     return -1;
   }

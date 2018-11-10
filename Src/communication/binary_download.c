@@ -86,10 +86,7 @@ int startDownload(target_instance_t *targetP) {
             printf("recv failed\r\n");
             download_error(targetP, RECEIVE_ERROR, socket);
         }
-
-
         targetP->download_progress = 100 * total_received_len / payload_len;
-
         total_received_len += received_len;
         server_reply[received_len] = '\0';
   
