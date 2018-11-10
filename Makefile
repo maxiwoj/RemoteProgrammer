@@ -196,7 +196,8 @@ Src/communication/wakaama_client/connection.c \
 Src/communication/wakaama_client/objects/object_device.c \
 Src/communication/wakaama_client/objects/object_security.c \
 Src/communication/wakaama_client/objects/object_server.c \
-Src/communication/wakaama_client/objects/test_object.c
+Src/communication/wakaama_client/objects/test_object.c \
+Src/communication/wakaama_client/objects/object_target.c
 
 
 WAKAAMA_INC = \
@@ -349,6 +350,15 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 
 $(BUILD_DIR):
 	mkdir $@
+
+program: all
+	openocd -f board/st_nucleo_f4.cfg -c "program build/RemoteProgrammer.elf verify reset exit"
+
+st-flash: all
+	st-flash write build/RemoteProgrammer.bin 0x8000000
+
+debug:
+	arm-none-eabi-gdb ./build/RemoteProgrammer.elf
 
 #######################################
 # clean up
