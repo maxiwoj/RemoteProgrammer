@@ -57,6 +57,7 @@
 /* USER CODE BEGIN Includes */
 #include "debug_leds.h"
 #include "wakaama.h"
+#include "binary_download.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -343,6 +344,7 @@ void StartDefaultTask(void const * argument)
 
 // Initialize Wakaama LWM2M Client
   lwip_socket_init();
+  
   int socket = createUDPSocket(LOCAL_PORT, AF_INET);
   if(socket != -1){ 
     printf("Start wakaama task\r\n");
@@ -378,7 +380,7 @@ void StartDefaultTask(void const * argument)
         break;
       case 'w':
         if (get_usb_ready()) {
-          usb_write("asd", 3);
+          usb_write("asd", "temp", 3);
         }
         break;
     }

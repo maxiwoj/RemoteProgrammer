@@ -127,14 +127,16 @@ void usb_ls() {
     return (er); \
   }
 
-int usb_write(const void *bytes, size_t size) {
+int usb_write(const void *bytes, const char *filename, size_t size) {
   FRESULT result;
 
-  
   result = f_mount(&USBHFatFS, "", 1);
   if (result == FR_OK) {
     FIL fp;
-    result = f_open(&fp, "0:/temp", FA_WRITE | FA_CREATE_ALWAYS);
+    char *path = pvPortMalloc(sizeof filename + 4);
+    sprintf(path, "0:/%s", filename);
+    result = f_open(&fp, path, FA_WRITE | FA_OPEN_APPEND);
+    vPortFree(path);
     CHECK_FRESULT(result, "open failed", -1);
 
     uint written_bytes;
