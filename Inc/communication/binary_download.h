@@ -17,7 +17,8 @@
 #define REQUEST_ERROR -4
 #define RECEIVE_ERROR -5
 #define USB_ERROR -6
-
+#define ERROR_PARSING_URL -7
+#define HOST_UNKNOWN_ERROR -8
 
 int startDownload(target_instance_t *targetP);
 #endif
