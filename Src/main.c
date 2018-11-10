@@ -1,4 +1,3 @@
-
 /**
   ******************************************************************************
   * @file           : main.c
@@ -57,6 +56,7 @@
 /* USER CODE BEGIN Includes */
 #include "debug_leds.h"
 #include "wakaama.h"
+#include "jtag/jtag_scan.h"
 #include "binary_download.h"
 /* USER CODE END Includes */
 
@@ -289,18 +289,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USB_GPIO_IN_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : JTAG_TRST_Pin JTAG_TDO_Pin JTAG_TMS_Pin JTAG_TCLK_Pin */
-  GPIO_InitStruct.Pin = JTAG_TRST_Pin|JTAG_TDO_Pin|JTAG_TMS_Pin|JTAG_TCLK_Pin;
+  /*Configure GPIO pins : JTAG_TRST_Pin JTAG_TDI_Pin JTAG_TMS_Pin JTAG_TCLK_Pin */
+  GPIO_InitStruct.Pin = JTAG_TRST_Pin|JTAG_TDI_Pin|JTAG_TMS_Pin|JTAG_TCLK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : JTAG_TDI_Pin */
-  GPIO_InitStruct.Pin = JTAG_TDI_Pin;
+  /*Configure GPIO pin : JTAG_TDO_Pin */
+  GPIO_InitStruct.Pin = JTAG_TDO_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(JTAG_TDI_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(JTAG_TDO_GPIO_Port, &GPIO_InitStruct);
 
 }
 
@@ -340,6 +340,9 @@ void StartDefaultTask(void const * argument)
 
   /* USER CODE BEGIN 5 */
   printf("\n\n\n-----------------------START-------------------------\n\n");
+  printf("\n\n\n---------------------JTAG-SCAN-----------------------\n\n");
+  jtag_scan();
+  printf("\n\n\n----------------------WAKAAMA------------------------\n\n");
   osDelay(3000); // wait for DHCP initialisation
 
 // Initialize Wakaama LWM2M Client
