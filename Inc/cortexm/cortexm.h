@@ -155,6 +155,7 @@ typedef struct CORTEXM_OPS_s
   uint32_t (*halt_wait)(CORTEXM_PRIV_t *priv);
   void (*halt_resume)(CORTEXM_PRIV_t *priv);
   uint32_t (*check_error)(CORTEXM_PRIV_t *priv);
+  void (*restart)(CORTEXM_PRIV_t *priv);
 
   void (*free)(CORTEXM_t *cortexm);
 } CORTEXM_OPS_t;

@@ -106,6 +106,8 @@ static int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32
   /* Execute the stub */
   priv->cortex->ops->halt_resume(priv->cortex->priv);
   while(!priv->cortex->ops->halt_wait(priv->cortex->priv)) {
+    // Don't be greedy about CPU, allow another task
+    osDelay(10);
   }
 
   /* Check for error */
@@ -167,7 +169,16 @@ static int stm32f4_program(void *priv_void, FIL *file)
   } while(br == STM32F4_SIZE_OF_ONE_WRITE);
 
   vPortFree(data);
+
+  printf("Device flashed\nReset device\n");
+  priv->cortex->ops->restart(priv->cortex->priv);
+
   return 0;
+}
+
+static void stm32f4_restart(void *priv)
+{
+  ((STM32F4_PRIV_t*)priv)->cortex->ops->restart(((STM32F4_PRIV_t*)priv)->cortex->priv);
 }
 
 static void stm32f4_free_priv(void *priv){
@@ -177,6 +188,7 @@ static void stm32f4_free_priv(void *priv){
 
 static TARGET_OPS_t stm32f4_ops = {
   .flash_target = stm32f4_program,
+  .reset_target = stm32f4_restart,
 
   .free_priv = stm32f4_free_priv
 };

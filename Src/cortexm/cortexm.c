@@ -72,6 +72,24 @@ static void cortexm_halt_resume(CORTEXM_PRIV_t *priv)
   //allow_timeout == true
 }
 
+static void cortexm_reset(CORTEXM_PRIV_t *priv)
+{
+  /* Read DHCSR here to clear S_RESET_ST bit before reset */
+  cortexm_read_word(priv, CORTEXM_DHCSR);
+
+  /* Request system reset from NVIC: SRST doesn't work correctly */
+  /* This could be VECTRESET: 0x05FA0001 (reset only core)
+   *          or SYSRESETREQ: 0x05FA0004 (system reset)
+   */
+  cortexm_write_word(priv, CORTEXM_AIRCR, CORTEXM_AIRCR_VECTKEY | CORTEXM_AIRCR_SYSRESETREQ);
+
+  /* Poll for release from reset */
+  while(cortexm_read_word(priv, CORTEXM_DHCSR) & CORTEXM_DHCSR_S_RESET_ST);
+
+  /* Reset DFSR flags */
+  cortexm_write_word(priv, CORTEXM_DFSR, CORTEXM_DFSR_RESETALL);
+}
+
 static uint32_t cortexm_check_error(CORTEXM_PRIV_t *priv)
 {
   return priv->ap->ops->error_check(priv->ap->priv);
@@ -85,18 +103,19 @@ static void free_cortexm(CORTEXM_t *cortexm)
 }
 
 static CORTEXM_OPS_t cortexm_ops = {
-  cortexm_read_word,
-  cortexm_write_word,
-  cortexm_read_words,
-  cortexm_write_words,
-  cortexm_pc_read,
-  cortexm_pc_write,
-  cortexm_halt_request,
-  cortexm_halt_wait,
-  cortexm_halt_resume,
-  cortexm_check_error,
+  .read_word = cortexm_read_word,
+  .write_word = cortexm_write_word,
+  .read_words = cortexm_read_words,
+  .write_words = cortexm_write_words,
+  .pc_read = cortexm_pc_read,
+  .pc_write = cortexm_pc_write,
+  .halt_request = cortexm_halt_request,
+  .halt_wait = cortexm_halt_wait,
+  .halt_resume = cortexm_halt_resume,
+  .check_error = cortexm_check_error,
+  .restart = cortexm_reset,
 
-  free_cortexm
+  .free = free_cortexm
 };
 
 int probe_cortexm(ADIv5_AP_t *ap)
