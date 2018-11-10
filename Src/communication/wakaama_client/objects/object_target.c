@@ -404,50 +404,6 @@ lwm2m_object_t * get_target_object(void)
             targetObj->discoverFunc = target_discover;        
         }
     return targetObj;
-
-
-
-
-    // lwm2m_object_t * targetObj;
-    // targetObj = (lwm2m_object_t *)lwm2m_malloc(sizeof(lwm2m_object_t));
-    // if (NULL != targetObj)
-    // {
-    //     target_instance_t * targetP;
-
-    //     memset(targetObj, 0, sizeof(lwm2m_object_t));
-
-    //     targetObj->objID = 31025;
-        
-    //     targetP = (target_instance_t *)lwm2m_malloc(sizeof(target_instance_t));
-    //     if (NULL == targetP) return NULL;
-    //     memset(targetP, 0, sizeof(target_instance_t));
-    //     targetP->shortID = 1;
-    //     targetP->target_type = "STM32";
-    //     targetP->firmware_url = NULL;
-    //     targetP->download_state = NO_DOWNLOAD_DATA;
-    //     targetP->firmware_version = 0;
-    //     targetP->flash_state = 0;
-    //     targetP->download_progress = 0;
-    //     targetP->download_error = NO_ERROR;
-    //     targetP->binary_filename = lwm2m_malloc(25);
-
-    //     targetObj->instanceList = LWM2M_LIST_ADD(targetObj->instanceList, targetP);
-    //     /*
-    //      * From a single instance object, two more functions are available.
-    //      * - The first one (createFunc) create a new instance and filled it with the provided informations. If an ID is
-    //      *   provided a check is done for verifying his disponibility, or a new one is generated.
-    //      * - The other one (deleteFunc) delete an instance by removing it from the instance list (and freeing the memory
-    //      *   allocated to it)
-    //      */
-    //     targetObj->readFunc = target_read;
-    //     targetObj->writeFunc = target_write;
-    //     targetObj->executeFunc = target_exec;
-    //     targetObj->createFunc = target_create;
-    //     targetObj->deleteFunc = target_delete;
-    //     targetObj->discoverFunc = target_discover;
-    // }
-
-    // return targetObj;
 }
 
 void free_target_object(lwm2m_object_t * object)
