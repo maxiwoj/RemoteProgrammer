@@ -13,6 +13,7 @@
 #define STM32F4_FLASH_CR_PG		(1 << 0)
 #define STM32F4_FLASH_CR_SER		(1 << 1)
 #define STM32F4_FLASH_CR_MER		(1 << 2)
+#define STM32F4_FLASH_CR_SNB_SHIFT	(3)
 #define STM32F4_FLASH_CR_PSIZE8		(0 << 8)
 #define STM32F4_FLASH_CR_PSIZE16	(1 << 8)
 #define STM32F4_FLASH_CR_PSIZE32	(2 << 8)

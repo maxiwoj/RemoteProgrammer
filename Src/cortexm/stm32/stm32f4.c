@@ -61,7 +61,6 @@ static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv, int *progress, int prog
   int time = 0;
   int progress_step = progress_end/10;
 
-  printf("Erase Flash\n");
   /* Flash mass erase start instruction */
   priv->cortex->ops->write_word(priv->cortex->priv, STM32F4_FLASH_CR, STM32F4_FLASH_CR_MER);
   priv->cortex->ops->write_word(priv->cortex->priv, STM32F4_FLASH_CR, STM32F4_FLASH_CR_STRT | STM32F4_FLASH_CR_MER | STM32F4_FLASH_CR_EOPIE);
@@ -73,7 +72,7 @@ static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv, int *progress, int prog
       printf("Error while waiting for erase end\n");
       return STM32F4_ERASE_NEVER_END;
     }
-    osDelay(1);
+    osDelay(10);
     time++;
     // after each 100 loops add one to progress, we asume that whole erase will take 1000 loops
     if(time > 100) {
@@ -95,6 +94,84 @@ static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv, int *progress, int prog
 
   // End of erase, update progress
   *progress = progress_end;
+  return 0;
+}
+
+// This function return how many sectors is needed in bank 1 of flash
+// to save len bytes. If len is bigger then 7 sectors, return bigger number than number of sectors
+static uint8_t stm32f4_sectors_in_bank1(int len)
+{
+  uint8_t sector = 0;
+  while(len > 0) {
+    /*
+     * Secotr sizes from:
+     * RM0090 -- STM32F4xx reference manual, chapter 3.3
+     */
+    switch (sector) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+        len -= 0x4000;
+        break;
+      case 4:
+        len -= 0x10000;
+        break;
+      case 5:
+      case 6:
+      case 7:
+        len -= 0x20000;
+        break;
+      case 8:
+        return 255;
+    }
+    sector++;
+  }
+  return sector;
+}
+
+static int stm32f4_erase_flash(STM32F4_PRIV_t *priv, int len, int *progress, int progress_end)
+{
+  uint16_t sr;
+  uint32_t cr;
+  uint8_t  last_sector_to_flash = stm32f4_sectors_in_bank1(len);
+  int progress_step = (progress_end + 31)/32;
+
+  printf("Erase Flash\n");
+  // TODO: For simplicity only when writing less than 512KB optimal sector erase
+  //       algorithm is used. First 7 sectors are the same size which is independent
+  //       of single and dual bank mode and size of flash memory.
+  if(last_sector_to_flash > 7) {
+    return stm32f4_erase_all_flash(priv, progress, progress_end);
+  }
+
+  for(uint8_t sector = 0; sector <= last_sector_to_flash; sector++) {
+    cr = STM32F4_FLASH_CR_EOPIE | STM32F4_FLASH_CR_ERRIE | STM32F4_FLASH_CR_SER;
+    cr |= sector << STM32F4_FLASH_CR_SNB_SHIFT;
+    /* Flash page erase instruction */
+    priv->cortex->ops->write_word(priv->cortex->priv, STM32F4_FLASH_CR, cr);
+    /* write address to FMA */
+    priv->cortex->ops->write_word(priv->cortex->priv, STM32F4_FLASH_CR, cr | STM32F4_FLASH_CR_STRT);
+    /* Read FLASH_SR to poll for BSY bit */
+    while(priv->cortex->ops->read_word(priv->cortex->priv, STM32F4_FLASH_SR) & STM32F4_FLASH_SR_BSY) {
+      if(priv->cortex->ops->check_error(priv->cortex->priv)) {
+        // TODO: handle error
+        printf("Error while waiting for erase end\n");
+        return STM32F4_ERASE_NEVER_END;
+      }
+    }
+    *progress += progress_step;
+    printf("Flash progress %d\n", *progress);
+  }
+
+  /* Check for error */
+  sr = priv->cortex->ops->read_word(priv->cortex->priv, STM32F4_FLASH_SR);
+  if ((sr & STM32F4_SR_ERROR_MASK) || !(sr & STM32F4_SR_EOP)) {
+    // TODO: handle error
+    printf("Error after erase 0x%x\n", sr);
+    return sr | STM32F4_ERASE_ERROR_BIT;
+  }
+
   return 0;
 }
 
@@ -144,22 +221,25 @@ static int stm32f4_program(void *priv_void, FIL *file, int *progress)
   uint32_t *data = pvPortMalloc(STM32F4_SIZE_OF_ONE_WRITE/sizeof(uint32_t));
   STM32F4_PRIV_t *priv = priv_void;
   uint16_t result;
+  uint32_t file_len = f_size(file);
 
   // these variables are only needed to show progress
-  int number_of_writes = (f_size(file) + STM32F4_SIZE_OF_ONE_WRITE - 1)/STM32F4_SIZE_OF_ONE_WRITE + STM32F4_ERASE_TIME_IN_WRITES;
-  float progress_as_float = 100 * STM32F4_ERASE_TIME_IN_WRITES/number_of_writes;
-  float progress_on_one_write = 100.0/number_of_writes;
+  int number_of_writes = (file_len + STM32F4_SIZE_OF_ONE_WRITE - 1)/STM32F4_SIZE_OF_ONE_WRITE;
+  float progress_as_float = 100 * STM32F4_ERASE_TIME_IN_WRITES/(number_of_writes + STM32F4_ERASE_TIME_IN_WRITES);
+  float progress_on_one_write;
 
   printf("Start flashing STM32F4x\n");
 
   priv->cortex->ops->halt_request(priv->cortex->priv);
   stm32f4_flash_unlock(priv);
-  result = stm32f4_erase_all_flash(priv, progress, progress_as_float);
+  result = stm32f4_erase_flash(priv, file_len, progress, progress_as_float);
   if(result) {
     vPortFree(data);
     return result;
   }
 
+  progress_as_float = *progress;
+  progress_on_one_write = (100 - *progress)/number_of_writes;
 
   do {
     f_read(file, data, STM32F4_SIZE_OF_ONE_WRITE, &br);
