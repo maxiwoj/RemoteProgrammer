@@ -13,12 +13,13 @@
  * firmware_url     |  2 |    R/W     |    No     |    Yes    | string  |       |       | url to the binary             |
  * download_state   |  3 |    R       |    No     |    Yes    | integer | 0-255 |       | state of the download         |
  * firmware_version |  4 |    R       |    No     |    Yes    | integer |       |       | timestamp of the latest binary|
- * flash_target     |  5 |    E       |    No     |    Yes    |         |       |       | programms the target          |
- * flash_state      |  6 |    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of flashing the board|
- * reset_target     |  7 |    E       |    No     |    Yes    |         |       |       | resets the target             |
+ * flash_target     |  5 |    E       |    No     |    Yes    |    -    |       |       | programms the target          |
+ * flash_state      |  6 |    R       |    No     |    Yes    | integer |       |       | state of the last flashing    |
+ * reset_target     |  7 |    E       |    No     |    Yes    |    -    |       |       | resets the target             |
  * download_error   |  8 |    R       |    No     |    Yes    | integer |       |       | download error                |
  * download_progress|  9 |    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of binary download   |
  * flash_error      |  10|    R       |    No     |    Yes    | integer |       |       | flashing error                |
+ * flash_progress   |  11|    R       |    No     |    Yes    | integer | 0-100 |   %   | progress of flashing the board|
  *
  */
 
@@ -82,7 +83,7 @@ static uint8_t target_read(uint16_t instanceId,
 
     if (*numDataP == 0)
     {
-        *dataArrayP = lwm2m_data_new(8);
+        *dataArrayP = lwm2m_data_new(9);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
         *numDataP = 4;
         (*dataArrayP)[0].id = 1;
@@ -93,6 +94,7 @@ static uint8_t target_read(uint16_t instanceId,
         (*dataArrayP)[5].id = 8;
         (*dataArrayP)[6].id = 9;
         (*dataArrayP)[7].id = 10;
+        (*dataArrayP)[8].id = 11;
     }
 
     for (i = 0 ; i < *numDataP ; i++)
@@ -127,6 +129,9 @@ static uint8_t target_read(uint16_t instanceId,
         case 10:
             lwm2m_data_encode_int(targetP->flash_error, *dataArrayP + i);
             break;
+        case 11:
+            lwm2m_data_encode_int(targetP->flash_progress, *dataArrayP + i);
+            break;
         default:
             return COAP_404_NOT_FOUND;
         }
@@ -145,7 +150,7 @@ static uint8_t target_discover(uint16_t instanceId,
     // is the server asking for the full object ?
     if (*numDataP == 0)
     {
-        *dataArrayP = lwm2m_data_new(10);
+        *dataArrayP = lwm2m_data_new(11);
         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
         *numDataP = 8;
         (*dataArrayP)[0].id = 1;
@@ -158,6 +163,7 @@ static uint8_t target_discover(uint16_t instanceId,
         (*dataArrayP)[7].id = 8;
         (*dataArrayP)[8].id = 9;
         (*dataArrayP)[9].id = 10;
+        (*dataArrayP)[10].id = 11;
     }
     else
     {
@@ -175,6 +181,7 @@ static uint8_t target_discover(uint16_t instanceId,
             case 8:
             case 9:
             case 10:
+            case 11:
                 break;
             default:
                 return COAP_404_NOT_FOUND;
@@ -203,7 +210,7 @@ static uint8_t target_write(uint16_t instanceId,
             return COAP_405_METHOD_NOT_ALLOWED;
         case 2:
         {
-            if (targetP->download_state == DOWNLOAD_IN_PROGRESS) {
+            if (targetP->download_state == DOWNLOAD_IN_PROGRESS || targetP->flash_state == FLASH_IN_PROGRESS) {
                 return COAP_412_PRECONDITION_FAILED;
             }
             if (!dataArray[i].type == LWM2M_TYPE_STRING && !dataArray[i].type == LWM2M_TYPE_OPAQUE) {
@@ -238,6 +245,8 @@ static uint8_t target_write(uint16_t instanceId,
             return COAP_405_METHOD_NOT_ALLOWED;
         case 10:
             return COAP_405_METHOD_NOT_ALLOWED;
+        case 11:
+            return COAP_405_METHOD_NOT_ALLOWED;
         default:
             return COAP_404_NOT_FOUND;
         }
@@ -264,7 +273,8 @@ static uint8_t target_create(uint16_t instanceId,
                           lwm2m_data_t * dataArray,
                           lwm2m_object_t * objectP)
 {
-    target_instance_t * targetP;
+    return COAP_405_METHOD_NOT_ALLOWED;
+    /*target_instance_t * targetP;
     uint8_t result;
 
 
@@ -287,7 +297,7 @@ static uint8_t target_create(uint16_t instanceId,
         result = COAP_201_CREATED;
     }
 
-    return result;
+    return result;*/
 }
 
 static uint8_t target_exec(uint16_t instanceId,
@@ -313,7 +323,7 @@ static uint8_t target_exec(uint16_t instanceId,
     case 4:
         return COAP_405_METHOD_NOT_ALLOWED;
     case 5:
-        if (targetP->download_state != DOWNLOAD_COMPLETED) {
+        if (targetP->download_state != DOWNLOAD_COMPLETED || targetP->flash_state == FLASH_IN_PROGRESS) {
             return COAP_412_PRECONDITION_FAILED;
         }
         fprintf(stdout, "\r\n-----------------\r\n"
@@ -324,7 +334,7 @@ static uint8_t target_exec(uint16_t instanceId,
         prv_output_buffer((uint8_t*)buffer, length);
         fprintf(stdout, "-----------------\r\n\r\n");
         targetP->flash_state=FLASH_IN_PROGRESS;
-        // targetP->flash_progress=0;
+        targetP->flash_progress=0;
         xTaskCreate(flash_target_task, "Flash_Target", 2000, targetP, 2, NULL);
         return COAP_204_CHANGED;
     case 6:
@@ -341,13 +351,14 @@ static uint8_t target_exec(uint16_t instanceId,
         prv_output_buffer((uint8_t*)buffer, length);
         fprintf(stdout, "-----------------\r\n\r\n");
         xTaskCreate(reset_target_task, "ResetTarget", 300, targetP, 2, NULL);
-// TODO: RESET TARGET
         return COAP_204_CHANGED;
     case 8:
         return COAP_405_METHOD_NOT_ALLOWED;
     case 9:
         return COAP_405_METHOD_NOT_ALLOWED;
     case 10:
+        return COAP_405_METHOD_NOT_ALLOWED;
+    case 11:
         return COAP_405_METHOD_NOT_ALLOWED;
     default:
         return COAP_404_NOT_FOUND;
@@ -377,6 +388,7 @@ lwm2m_object_t * get_target_object(void)
                 targetP->download_state = NO_DOWNLOAD_DATA;
                 targetP->firmware_version = 0;
                 targetP->flash_state = NO_FLASH_DATA;
+                targetP->flash_progress = 0;
                 targetP->download_progress = 0;
                 targetP->download_error = NO_ERROR;
                 targetP->binary_filename = lwm2m_malloc(25);

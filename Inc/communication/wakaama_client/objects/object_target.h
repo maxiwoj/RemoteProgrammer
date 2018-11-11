@@ -18,15 +18,18 @@ typedef struct _target_instance_
     struct _target_instance_ * next;   // matches lwm2m_list_t::next
     uint16_t shortID;               // matches lwm2m_list_t::id
     
-    uint8_t flash_state;
     char * target_type;
     char * firmware_url;
-    uint8_t download_state;
-    int16_t download_error;
     uint32_t firmware_version;
     char * binary_filename;
+    
+    uint8_t download_state;
+    int16_t download_error;
     uint8_t download_progress;
+
+    uint32_t flash_state;
     uint16_t flash_error;
+    uint8_t falsh_progress;
     TARGET_t *target;
 } target_instance_t;
 
