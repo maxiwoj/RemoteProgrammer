@@ -55,9 +55,11 @@ static void stm32f4_flash_unlock(STM32F4_PRIV_t *priv)
   }
 }
 
-static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
+static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv, int *progress, int progress_end)
 {
   uint16_t sr;
+  int time = 0;
+  int progress_step = progress_end/10;
 
   printf("Erase Flash\n");
   /* Flash mass erase start instruction */
@@ -69,7 +71,17 @@ static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
     if(priv->cortex->ops->check_error(priv->cortex->priv)) {
       // TODO: handle error
       printf("Error while waiting for erase end\n");
-      return 1;
+      return STM32F4_ERASE_NEVER_END;
+    }
+    osDelay(1);
+    time++;
+    // after each 100 loops add one to progress, we asume that whole erase will take 1000 loops
+    if(time > 100) {
+      time = 0;
+      if(*progress < progress_end - progress_step) {
+        *progress += progress_step;
+        printf("Flash progress %d\n", *progress);
+      }
     }
   }
 
@@ -78,8 +90,11 @@ static int stm32f4_erase_all_flash(STM32F4_PRIV_t *priv)
   if ((sr & STM32F4_SR_ERROR_MASK) || !(sr & STM32F4_SR_EOP)) {
     // TODO: handle error
     printf("Error after erase 0x%x\n", sr);
-    return 1;
+    return sr | STM32F4_ERASE_ERROR_BIT;
   }
+
+  // End of erase, update progress
+  *progress = progress_end;
   return 0;
 }
 
@@ -100,7 +115,7 @@ static int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32
   if(priv->cortex->ops->check_error(priv->cortex->priv)) {
     // TODO: handle error
     printf("ERROR: Filed to setup write operation\n");
-    return 1;
+    return STM32F4_ERROR_ON_FLASH_WRITE_SETUP;
   }
 
   /* Execute the stub */
@@ -115,28 +130,36 @@ static int stm32f4_flash_write(STM32F4_PRIV_t *priv, uint32_t dest, const uint32
   if (sr & STM32F4_SR_ERROR_MASK) {
     // TODO: handle error
     printf("ERROR: writing ended with error 0x%x\n", sr);
-    return 1;
+    return sr | STM32F4_FLASH_ERROR_BIT;
   }
 
   return 0;
 }
 
-static int stm32f4_program(void *priv_void, FIL *file)
+static int stm32f4_program(void *priv_void, FIL *file, int *progress)
 {
   UINT br;
   uint8_t unaligned;
   uint32_t addr = 0x8000000; // start of flash memory
   uint32_t *data = pvPortMalloc(STM32F4_SIZE_OF_ONE_WRITE/sizeof(uint32_t));
   STM32F4_PRIV_t *priv = priv_void;
+  uint16_t result;
+
+  // these variables are only needed to show progress
+  int number_of_writes = (f_size(file) + STM32F4_SIZE_OF_ONE_WRITE - 1)/STM32F4_SIZE_OF_ONE_WRITE + STM32F4_ERASE_TIME_IN_WRITES;
+  float progress_as_float = 100 * STM32F4_ERASE_TIME_IN_WRITES/number_of_writes;
+  float progress_on_one_write = 100.0/number_of_writes;
 
   printf("Start flashing STM32F4x\n");
 
   priv->cortex->ops->halt_request(priv->cortex->priv);
   stm32f4_flash_unlock(priv);
-  if(stm32f4_erase_all_flash(priv)) {
+  result = stm32f4_erase_all_flash(priv, progress, progress_as_float);
+  if(result) {
     vPortFree(data);
-    return 1;
+    return result;
   }
+
 
   do {
     f_read(file, data, STM32F4_SIZE_OF_ONE_WRITE, &br);
@@ -151,19 +174,25 @@ static int stm32f4_program(void *priv_void, FIL *file)
       // add modified bytes to bytes that will be written
       br++;
       br <<= 2;
-      if(stm32f4_flash_write(priv, addr, data, br)) {
+      result = stm32f4_flash_write(priv, addr, data, br);
+      if(result) {
         vPortFree(data);
-        return 1;
+        return result;
       }
       // Unaligned read is always smaller then SIZE_OF_ONE_WRITE.
       // This is EOF so we have done here.
       break;
     }
-    if(stm32f4_flash_write(priv, addr, data, br)) {
+    result = stm32f4_flash_write(priv, addr, data, br);
+    if(result) {
       vPortFree(data);
       return 1;
     }
     addr += br;
+
+    progress_as_float += progress_on_one_write;
+    *progress = (int)progress_as_float;
+    printf("Flash progress %d\n", *progress);
 
     // EOF is when readed less bytes than requested
   } while(br == STM32F4_SIZE_OF_ONE_WRITE);
@@ -173,6 +202,7 @@ static int stm32f4_program(void *priv_void, FIL *file)
   printf("Device flashed\nReset device\n");
   priv->cortex->ops->restart(priv->cortex->priv);
 
+  *progress = 100;
   return 0;
 }
 

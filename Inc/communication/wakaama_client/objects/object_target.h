@@ -26,7 +26,7 @@ typedef struct _target_instance_
     uint32_t firmware_version;
     char * binary_filename;
     uint8_t download_progress;
-    uint8_t flash_error;
+    uint16_t flash_error;
     TARGET_t *target;
 } target_instance_t;
 

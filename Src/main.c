@@ -58,6 +58,7 @@
 #include "wakaama.h"
 #include "jtag/jtag_scan.h"
 #include "binary_download.h"
+#include "target.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -363,6 +364,9 @@ void StartDefaultTask(void const * argument)
   HAL_GPIO_WritePin(USB_GPIO_OUT_GPIO_Port, USB_GPIO_OUT_Pin, GPIO_PIN_SET);
   BlinkBlue();
   char usrInput[2];
+  FIL file;
+  int result;
+  int progress;
   /* Infinite loop */
   debug_init(&huart3);
   for(;;)
@@ -384,6 +388,22 @@ void StartDefaultTask(void const * argument)
         if (get_usb_ready()) {
           usb_write("asd", "temp", 3);
         }
+        break;
+      case 'r':
+        progress = 0;
+        if (usb_open_file("red.bin", &file, FA_READ) != 0) {
+          break;
+        }
+        target_list.next->ops->flash_target(target_list.next->priv, &file, &progress);
+        usb_close_file(&file);
+        break;
+      case 'b':
+        progress = 0;
+        if (usb_open_file("blue.bin", &file, FA_READ) != 0) {
+          break;
+        }
+        target_list.next->ops->flash_target(target_list.next->priv, &file, &progress);
+        usb_close_file(&file);
         break;
     }
   }

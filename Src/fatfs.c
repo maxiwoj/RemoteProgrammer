@@ -87,7 +87,7 @@ FRESULT scan_files (
   printf("Scan path \"%s\"\n", path);
   FRESULT res;
   DIR dir;
-  int i;
+  //int i;
   static FILINFO fno;
 
   res = f_opendir(&dir, path);                       /* Open the directory */
@@ -98,8 +98,8 @@ FRESULT scan_files (
       if (fno.fattrib & AM_DIR) {                    /* It is a directory */
         /*i = strlen(path);
         sprintf(&path[i], "/%s", fno.fname);
-        res = scan_files(path);                    /* Enter the directory */
-        /*if (res != FR_OK) break;
+        res = scan_files(path);                    // Enter the directory
+        if (res != FR_OK) break;
         path[i] = 0;*/
       } else {                                       /* It is a file. */
         printf("%s%s\n\r", path, fno.fname);
@@ -131,7 +131,7 @@ void usb_ls() {
 int usb_open_file(const char *filename, FIL *fp, BYTE mode) {
   FRESULT result = f_mount(&USBHFatFS, "", 1);
   if (result == FR_OK) {
-    char *path = pvPortMalloc(sizeof filename + 4);
+    char *path = pvPortMalloc(strlen(filename) + 4);
     sprintf(path, "0:/%s", filename);
     result = f_open(fp, path, mode);
     vPortFree(path);
@@ -158,7 +158,7 @@ int usb_write(const void *bytes, const char *filename, size_t size) {
   result = f_mount(&USBHFatFS, "", 1);
   if (result == FR_OK) {
     FIL fp;
-    char *path = pvPortMalloc(sizeof filename + 4);
+    char *path = pvPortMalloc(strlen(filename) + 4);
     sprintf(path, "0:/%s", filename);
     result = f_open(&fp, path, FA_WRITE | FA_OPEN_APPEND);
     vPortFree(path);
@@ -176,6 +176,7 @@ int usb_write(const void *bytes, const char *filename, size_t size) {
     CHECK_FRESULT(result, "mount failed", -1);
   }
 
+  return 0;
 }
 /* USER CODE END Application */
 

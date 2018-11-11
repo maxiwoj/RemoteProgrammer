@@ -40,7 +40,19 @@
 
 #define STM32F4_DBGMCU_IDCODE	0xE0042000
 
-#define STM32F4_SIZE_OF_ONE_WRITE 0x1000
+#define STM32F4_SIZE_OF_ONE_WRITE    0x1000
+#define STM32F4_ERASE_TIME_IN_WRITES 10
+
+/* 
+ * flash errors returned to flash_target_task
+ * 0x0 - 0x1000   - reserved for target (we can use this pool here)
+ * bit 9 (0x200)  - error while flash erasing. [8..0] represent FLASH_SR[8..0]
+ * bit 10 (0x400) - error while flash writing. [8..0] represent FLASH_SR[8..0]
+ */
+#define STM32F4_ERASE_ERROR_BIT            0x200
+#define STM32F4_FLASH_ERROR_BIT            0x400
+#define STM32F4_ERASE_NEVER_END            0x800
+#define STM32F4_ERROR_ON_FLASH_WRITE_SETUP 0x801
 
 typedef struct CORTEXM_s CORTEXM_t;
 
