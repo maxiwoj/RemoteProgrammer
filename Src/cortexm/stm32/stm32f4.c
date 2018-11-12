@@ -218,7 +218,7 @@ static int stm32f4_program(void *priv_void, FIL *file, int *progress)
   UINT br;
   uint8_t unaligned;
   uint32_t addr = 0x8000000; // start of flash memory
-  uint32_t *data = pvPortMalloc(STM32F4_SIZE_OF_ONE_WRITE/sizeof(uint32_t));
+  uint32_t *data = pvPortMalloc(STM32F4_SIZE_OF_ONE_WRITE);
   STM32F4_PRIV_t *priv = priv_void;
   uint16_t result;
   uint32_t file_len = f_size(file);

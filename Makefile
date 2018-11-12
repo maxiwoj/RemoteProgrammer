@@ -170,6 +170,7 @@ Src/adiv5/adiv5_jtag.c \
 Src/adiv5/adiv5.c \
 Src/cortexm/cortexm.c \
 Src/cortexm/stm32/stm32f4.c \
+Src/cortexm/stm32/stm32l4.c \
 Src/target.c
 
 # ASM sources
