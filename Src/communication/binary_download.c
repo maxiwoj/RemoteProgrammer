@@ -1,3 +1,6 @@
+#include <task.h>
+#include <errno.h>
+#include <sys/errno.h>
 #include "lwip/inet.h"
 #include "lwip/sockets.h"
 #include "lwip/api.h"
@@ -9,134 +12,212 @@
 #include "yuarel.h"
 #include "term_io.h"
 #include "FreeRTOS.h"
+#include "regex.h"
+
+static void resolveAddress(target_instance_t *targetP, char *url_str, struct yuarel *url, int *socket,
+                    struct sockaddr_in *clientAddressv4);
+static void connectToServer(target_instance_t *targetP, char *url_str, int socket, struct sockaddr_in *clientAddressv4);
+static void makeRequest(target_instance_t *targetP, struct yuarel *url, char *url_str, int socket);
+static int receive(target_instance_t *targetP, char *url_str, int socket, char *server_reply, int max_received_len);
+static void checkResponseCode(target_instance_t *targetP, char *url_str, int socket, char *server_reply);
+FIL *createFile(target_instance_t *targetP, char *url_str, int socket);
+
 
 
 
 static void download_error(target_instance_t *targetP, int err, int socket, char *url_str) {
-	targetP->download_state = DOWNLOAD_ERROR;
-	targetP->download_error = err;
-	if(err != SOCKET_ERROR && err != ERROR_PARSING_URL){
-		lwip_close(socket);
-	}
+    targetP->download_state = DOWNLOAD_ERROR;
+    targetP->download_error = (int16_t) err;
+    if (err != SOCKET_ERROR && err != ERROR_PARSING_URL) {
+        lwip_close(socket);
+    }
     lwm2m_free(url_str);
-	vTaskDelete(NULL);
+    vTaskDelete(NULL);
 }
 
-void startDownload(void * object_target) {
-    target_instance_t *targetP = (target_instance_t*) object_target;
+void startDownload(void *object_target) {
+    target_instance_t *targetP = (target_instance_t *) object_target;
     struct yuarel url;
     char *url_str = lwm2m_strdup(targetP->firmware_url);
-    FIL file;
-    int result;
+    FIL *file = NULL;
 
-    if(yuarel_parse(&url, url_str) != 0) {
-        printf("Error parsing URL\r\n");
-        download_error(targetP, ERROR_PARSING_URL, 0, url_str);
-    }
-	int socket;
-    socket = lwip_socket(AF_INET, SOCK_STREAM, 0);
-    if (socket < 0 ) {
-        printf("cannot create socket: %d\r\n", errno);
-        download_error(targetP, SOCKET_ERROR, socket, url_str);
-    }
-
-    ip_addr_t *addr = NULL;
-    if (netconn_gethostbyname(url.host, addr) != ERR_OK) {
-        printf("cannot resolve hostname\r\n");
-        download_error(targetP, HOST_UNKNOWN_ERROR, socket, url_str);
-    }
-
+    int socket;
     struct sockaddr_in clientAddressv4;
-    clientAddressv4.sin_family = AF_INET;
-    clientAddressv4.sin_port = htons(80);
-    clientAddressv4.sin_addr.s_addr = addr->addr;
+    resolveAddress(targetP, url_str, &url, &socket, &clientAddressv4);
+    connectToServer(targetP, url_str, socket, &clientAddressv4);
 
-    result = lwip_connect(socket, (struct sockaddr *) &clientAddressv4, sizeof (struct sockaddr_in));
-    if (result < 0) {
-	    printf("cannot connect to server, err: %d\r\n", result);
-        lwip_close(socket);
-        download_error(targetP,CONNECTION_ERROR, socket, url_str);
-    }
-
-    char message[200];
-    sprintf(message, "GET /%s HTTP/1.1\r\nHost: %s\r\n\r\n Connection: keep-alive\r\n\r\n Keep-Alive: 300\r\n", url.path, url.host);
-
-    if( lwip_send(socket , message , strlen(message) , 0) < 0) {
-        printf("Send failed\r\n");
-        download_error(targetP,REQUEST_ERROR, socket, url_str);
-    }
+    makeRequest(targetP, &url, url_str, socket);
 
     int server_response_length = 300;
     char server_reply[server_response_length + 1];
-    server_reply[server_response_length] = 0;
+    server_reply[server_response_length] = '\0';
     long payload_len = 0;
     long total_received_len = 0;
 
-    int received_len = lwip_recv(socket, server_reply , sizeof server_reply - 1, 0);
-    if( received_len < 0 ){
-        printf("recv failed\r\n");
-        download_error(targetP,RECEIVE_ERROR, socket, url_str);
-    }
 
-    if(!lwm2m_strncmp(server_reply, "HTTP/1.1 200 OK", 15) == 0){
-    	long response_code;
-    	char *asd;
-    	asd = server_reply + 9;
-    	if(xatoi(&asd, &response_code) != 1) {
-    		printf("Error reading Server response code\r\n");
-    		download_error(targetP,UNKNOWN_ERROR, socket, url_str);
-    	}
-    	printf("Server Response status:%ld\r\n", response_code);
-    	download_error(targetP, response_code, socket, url_str);
-    }
-    printf("Server responded with 200!\r\n");
-    for(int i = 15 ; i < received_len ; i++) {
-		if(lwm2m_strncmp(server_reply + i, "Content-Length: ", 15) == 0){
-			char *asd;
-			asd = server_reply + i + 15;
-			if (xatoi(&asd, &payload_len) != 1) {
-				printf("Error reading Content-Length\r\n");
-				download_error(targetP, UNKNOWN_ERROR, socket, url_str);
-			}
-			break;
-		}
-    }
+    int received_len = receive(targetP, url_str, socket, server_reply, server_response_length);
+    checkResponseCode(targetP, url_str, socket, server_reply);
 
-    if(get_usb_ready()) {
-        result = usb_open_file(targetP->binary_filename, &file, FA_WRITE | FA_CREATE_NEW);
-        if (result != 0) {
-            download_error(targetP, USB_ERROR, socket, url_str);
+    while (1) {
+        if (payload_len == 0) {
+            char *content_length_str = strstr(server_reply, "Content-Length: ");
+            if (content_length_str != NULL) {
+                if (strstr(content_length_str, "\r\n")) {
+                    char *asd = content_length_str + 16;
+                    if (xatoi(&asd, &payload_len) != 1) {
+                        printf("Error reading Content-Length\r\n");
+                        download_error(targetP, UNKNOWN_ERROR, socket, url_str);
+                    }
+                } else {
+                    // Copy the bytes from Content-Length to the beginning and read more, because it may be the case,
+                    // that not all the value of the content length had been received
+                    int i;
+                    for (i = 0; content_length_str - server_reply < received_len; i++) {
+                        server_reply[i] = content_length_str[i];
+                    }
+                    received_len = receive(targetP, url_str, socket, server_reply + i, server_response_length - i);
+                    continue;
+                }
+            } else {
+                if (strstr(server_reply, "\r\n\r\n")) {
+                    download_error(targetP, CONTENT_LENGTH_NOT_SPECIFIED_ERROR, socket, url_str);
+                }
+                received_len = receive(targetP, url_str, socket, server_reply, server_response_length);
+            }
+        }
+
+        if (payload_len > 0) {
+            char *payload = strstr(server_reply, "\r\n\r\n");
+            if (payload != NULL) {
+                unsigned long read_length = payload + 4 - server_reply + 1; //+1 because extracting len from pointer diff
+                if (read_length < received_len) {
+                    file = createFile(targetP, url_str, socket);
+                    int result = usb_write(file, payload + 4, received_len - read_length);
+                    if (result != 0) {
+                        usb_close_file(file);
+                        download_error(targetP, USB_ERROR, socket, url_str);
+                    }
+                    total_received_len += received_len;
+                    targetP->download_progress = (uint8_t) (100 * total_received_len / payload_len);
+                }
+                break;
+            } else {
+                received_len = receive(targetP, url_str, socket, server_reply, server_response_length);
+            }
         }
     }
 
-    while(1){
-        int received_len = lwip_recv(socket, server_reply , sizeof server_reply - 1, 0);
+    if (file == NULL) {
+        file = createFile(targetP, url_str, socket);
+    }
 
-        if( received_len < 0 ){
+    while (1) {
+        received_len = lwip_recv(socket, server_reply, (size_t) server_response_length, 0);
+
+        if (received_len < 0) {
             printf("recv failed\r\n");
-            usb_close_file(&file);
+            usb_close_file(file);
             download_error(targetP, RECEIVE_ERROR, socket, url_str);
         }
-        targetP->download_progress = 100 * total_received_len / payload_len;
         total_received_len += received_len;
+        targetP->download_progress = (uint8_t) (100 * total_received_len / payload_len);
         server_reply[received_len] = '\0';
-  
-        result = usb_write(&file, server_reply, received_len);
+
+        int result = usb_write(file, server_reply, (size_t) received_len);
         if (result != 0) {
-            usb_close_file(&file);
+            usb_close_file(file);
             download_error(targetP, USB_ERROR, socket, url_str);
         }
 
-        if( total_received_len >= payload_len ){
+        if (total_received_len >= payload_len) {
             break;
-        }   
+        }
     }
 
-    usb_close_file(&file);
+    usb_close_file(file);
     targetP->download_state = DOWNLOAD_COMPLETED;
     targetP->download_progress = 100;
-    targetP->download_error = NO_ERROR;	
+    targetP->download_error = NO_ERROR;
     lwip_close(socket);
     lwm2m_free(url_str);
     vTaskDelete(NULL);
+}
+
+static FIL *createFile(target_instance_t *targetP, char *url_str, int socket) {
+    FIL *file = malloc(sizeof FIL);
+    if (get_usb_ready()) {
+        int result = usb_open_file(targetP->binary_filename, file, FA_WRITE | FA_CREATE_NEW);
+        if (result != 0) {
+            download_error(targetP, USB_ERROR, socket, url_str);
+        }
+    }
+    return file;
+}
+
+static void checkResponseCode(target_instance_t *targetP, char *url_str, int socket, char *server_reply) {
+    if (!lwm2m_strncmp(server_reply, "HTTP/1.1 200 OK", 15) == 0 &&
+        !lwm2m_strncmp(server_reply, "HTTP/1.0 200 OK", 15) == 0) {
+        long response_code;
+        char *asd;
+        asd = server_reply + 9;
+        if (xatoi(&asd, &response_code) != 1) {
+            printf("Error reading Server response code\r\n");
+            download_error(targetP, UNKNOWN_ERROR, socket, url_str);
+        }
+        printf("Server Response status:%ld\r\n", response_code);
+        download_error(targetP, (int) response_code, socket, url_str);
+    }
+    printf("Server responded with 200!\r\n");
+}
+
+static int receive(target_instance_t *targetP, char *url_str, int socket, char *server_reply, int max_received_len) {
+    int received_len = lwip_recv(socket, server_reply, (size_t) max_received_len, 0);
+    if (received_len < 0) {
+        printf("recv failed\r\n");
+        download_error(targetP, RECEIVE_ERROR, socket, url_str);
+    }
+    server_reply[received_len] = '\0';
+    return received_len;
+}
+
+static void makeRequest(target_instance_t *targetP, struct yuarel *url, char *url_str, int socket) {
+    char message[200];
+    sprintf(message, "GET /%s HTTP/1.1\r\nHost: %s\r\n\r\n Connection: keep-alive\r\n\r\n Keep-Alive: 300\r\n",
+            (*url).path, (*url).host);
+
+    if (lwip_send(socket, message, strlen(message), 0) < 0) {
+        printf("Send failed\r\n");
+        download_error(targetP, REQUEST_ERROR, socket, url_str);
+    }
+}
+
+static void connectToServer(target_instance_t *targetP, char *url_str, int socket, struct sockaddr_in *clientAddressv4) {
+    int result = lwip_connect(socket, (struct sockaddr *) clientAddressv4, sizeof(struct sockaddr_in));
+    if (result < 0) {
+        printf("cannot connect to server, err: %d\r\n", result);
+        lwip_close(socket);
+        download_error(targetP, CONNECTION_ERROR, socket, url_str);
+    }
+}
+
+static void resolveAddress(target_instance_t *targetP, char *url_str, struct yuarel *url, int *socket,
+                    struct sockaddr_in *clientAddressv4) {
+    if (yuarel_parse(url, url_str) != 0) {
+        printf("Error parsing URL\r\n");
+        download_error(targetP, ERROR_PARSING_URL, 0, url_str);
+    }
+    (*socket) = lwip_socket(AF_INET, SOCK_STREAM, 0);
+    if ((*socket) < 0) {
+        printf("cannot create socket: %d\r\n", errno);
+        download_error(targetP, SOCKET_ERROR, (*socket), url_str);
+    }
+
+    ip_addr_t *addr = NULL;
+    if (netconn_gethostbyname((*url).host, addr) != ERR_OK) {
+        printf("cannot resolve hostname\r\n");
+        download_error(targetP, HOST_UNKNOWN_ERROR, (*socket), url_str);
+    }
+    (*clientAddressv4).sin_family = AF_INET;
+    (*clientAddressv4).sin_port = htons(80);
+    (*clientAddressv4).sin_addr.s_addr = addr->addr;
 }
