@@ -394,7 +394,7 @@ void StartDefaultTask(void const * argument)
         if (usb_open_file("red.bin", &file, FA_READ) != 0) {
           break;
         }
-        target_list.next->next->ops->flash_target(target_list.next->next->priv, &file, &progress);
+        target_list.next->ops->flash_target(target_list.next->priv, &file, &progress);
         usb_close_file(&file);
         break;
       case 'b':
@@ -402,7 +402,7 @@ void StartDefaultTask(void const * argument)
         if (usb_open_file("blue.bin", &file, FA_READ) != 0) {
           break;
         }
-        target_list.next->next->ops->flash_target(target_list.next->next->priv, &file, &progress);
+        target_list.next->ops->flash_target(target_list.next->priv, &file, &progress);
         usb_close_file(&file);
         break;
     }
