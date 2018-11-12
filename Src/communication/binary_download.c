@@ -1,9 +1,13 @@
 #include "lwip/inet.h"
 #include "lwip/sockets.h"
+#include "lwip/api.h"
+#include "liblwm2m.h"
 #include "communication_config.h"
 #include "binary_download.h"
 #include "errno.h"
+#include "usb_host.h"
 #include "yuarel.h"
+#include "term_io.h"
 #include "FreeRTOS.h"
 
 
@@ -18,7 +22,8 @@ static void download_error(target_instance_t *targetP, int err, int socket, char
 	vTaskDelete(NULL);
 }
 
-int startDownload(target_instance_t *targetP) {
+void startDownload(void * object_target) {
+    target_instance_t *targetP = (target_instance_t*) object_target;
     struct yuarel url;
     char *url_str = lwm2m_strdup(targetP->firmware_url);
     FIL file;
@@ -36,7 +41,7 @@ int startDownload(target_instance_t *targetP) {
     }
 
     ip_addr_t *addr = NULL;
-    if (netconn_gethostbyname(url.host, &addr) != ERR_OK) {
+    if (netconn_gethostbyname(url.host, addr) != ERR_OK) {
         printf("cannot resolve hostname\r\n");
         download_error(targetP, HOST_UNKNOWN_ERROR, socket, url_str);
     }
@@ -44,7 +49,7 @@ int startDownload(target_instance_t *targetP) {
     struct sockaddr_in clientAddressv4;
     clientAddressv4.sin_family = AF_INET;
     clientAddressv4.sin_port = htons(80);
-    clientAddressv4.sin_addr.s_addr = addr;
+    clientAddressv4.sin_addr.s_addr = addr->addr;
 
     result = lwip_connect(socket, (struct sockaddr *) &clientAddressv4, sizeof (struct sockaddr_in));
     if (result < 0) {
@@ -134,5 +139,4 @@ int startDownload(target_instance_t *targetP) {
     lwip_close(socket);
     lwm2m_free(url_str);
     vTaskDelete(NULL);
-
 }

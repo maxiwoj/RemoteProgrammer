@@ -213,7 +213,7 @@ static uint8_t target_write(uint16_t instanceId,
             if (targetP->download_state == DOWNLOAD_IN_PROGRESS || targetP->flash_state == FLASH_IN_PROGRESS) {
                 return COAP_412_PRECONDITION_FAILED;
             }
-            if (!dataArray[i].type == LWM2M_TYPE_STRING && !dataArray[i].type == LWM2M_TYPE_OPAQUE) {
+            if (!(dataArray[i].type == LWM2M_TYPE_STRING) && !(dataArray[i].type == LWM2M_TYPE_OPAQUE)) {
                 return COAP_400_BAD_REQUEST;  
             } 
             if (targetP->firmware_url != NULL) {
@@ -223,10 +223,10 @@ static uint8_t target_write(uint16_t instanceId,
             targetP->firmware_url = lwm2m_strdup((char*)dataArray[i].value.asBuffer.buffer);
             targetP->firmware_version = lwm2m_gettime();
             targetP->download_state = DOWNLOAD_IN_PROGRESS;
-            sprintf(targetP->binary_filename, "%d", targetP->firmware_version);
+            sprintf(targetP->binary_filename, "%ld", targetP->firmware_version);
             targetP->download_progress = 0;
 
-            xTaskCreate(startDownload, NULL, 2000, targetP, 2, NULL);
+            xTaskCreate(startDownload, NULL, 2000, (void*) targetP, 2, NULL);
         }
         break;
         case 3:

@@ -29,7 +29,7 @@ typedef struct _target_instance_
 
     uint32_t flash_state;
     uint16_t flash_error;
-    uint8_t falsh_progress;
+    int flash_progress;
     TARGET_t *target;
 } target_instance_t;
 
