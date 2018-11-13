@@ -3,7 +3,9 @@
 
 #include "stm32f4xx_it.h"
 
-#define TCKWAIT 10
+// if TCKWAIT == 0 than alternate method of delay is used.
+// if TCKWAIT > 0 than it represent half of TCK cycle in micro seconds
+#define TCKWAIT 0
 #define SIZEOF_IN_BITS(x) (sizeof(x) * 8)
 
 // maximum size of transfer in jtag_tdin function

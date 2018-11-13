@@ -5,7 +5,10 @@
 #include "jtag/jtag_low_level.h"
 
 uint32_t getUs(void) {
-  uint32_t usTicks = HAL_RCC_GetSysClockFreq() / 1000000;
+  static uint32_t usTicks = 0;
+  if (usTicks == 0) {
+    usTicks = HAL_RCC_GetSysClockFreq() / 1000000;
+  }
   register uint32_t ms, cycle_cnt;
   do {
     ms = HAL_GetTick();
@@ -23,15 +26,38 @@ void delayUs(uint16_t micros)
   }
 }
 
+#if TCKWAIT == 0
+// current implementation of JTAG low level routines allow us to get ~1MHz if there
+// is no additional delay.
+static inline void short_delay(){
+  asm("nop");
+  asm("nop");
+  asm("nop");
+  asm("nop");
+  asm("nop");
+  asm("nop");
+  asm("nop");
+  asm("nop");
+}
+#endif
+
 void jtag_tclk_up()
 {
+#if TCKWAIT == 0
+  short_delay();
+#else
   delayUs(TCKWAIT);
+#endif
   HAL_GPIO_WritePin(JTAG_TCLK_GPIO_Port, JTAG_TCLK_Pin, GPIO_PIN_SET);
 }
 
 void jtag_tclk_down()
 {
+#if TCKWAIT == 0
+  short_delay();
+#else
   delayUs(TCKWAIT);
+#endif
   HAL_GPIO_WritePin(JTAG_TCLK_GPIO_Port, JTAG_TCLK_Pin, GPIO_PIN_RESET);
 }
 
