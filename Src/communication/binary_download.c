@@ -30,6 +30,7 @@ static void download_error(target_instance_t *targetP, int err, int socket, char
         lwip_close(socket);
     }
     lwm2m_free(url_str);
+    USB_BUSY = 0;
     vTaskDelete(NULL);
 }
 
@@ -155,12 +156,13 @@ void startDownload(void *object_target) {
     targetP->download_error = NO_ERROR;
     lwip_close(socket);
     lwm2m_free(url_str);
+    USB_BUSY = 0;
     vTaskDelete(NULL);
 }
 
 static uint8_t createFile(target_instance_t *targetP, char *url_str, int socket, FIL *file) {
     if (get_usb_ready()) {
-        int result = usb_open_file(targetP->binary_filename, file, FA_WRITE | FA_CREATE_NEW);
+        int result = usb_open_file(targetP->binary_filename, file, FA_WRITE | FA_CREATE_ALWAYS);
         if (result != 0) {
             download_error(targetP, USB_ERROR, socket, url_str);
         }

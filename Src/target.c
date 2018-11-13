@@ -27,6 +27,8 @@ void flash_target_task(void *object) {
 	if (result != 0) {
 		target_object->flash_error = USB_FS_ERROR;
 		target_object->flash_state = FLASH_ERROR;
+		JTAG_BUSY = 0;
+		USB_BUSY = 0;
 		vTaskDelete(NULL);
 	}
 
@@ -40,6 +42,8 @@ void flash_target_task(void *object) {
 	}
 	
 	result = usb_close_file(&file);
+	JTAG_BUSY = 0;
+	USB_BUSY = 0;
 	if (result != 0) {
 		target_object->flash_error = USB_FS_ERROR;
 		vTaskDelete(NULL);
@@ -50,5 +54,6 @@ void flash_target_task(void *object) {
 void reset_target_task(void *object) {
 	target_instance_t * target_object = (target_instance_t *) object;
 	target_object->target->ops->reset_target(target_object->target->priv);
+	JTAG_BUSY = 0;
 	vTaskDelete(NULL);	
 }
