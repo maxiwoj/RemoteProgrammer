@@ -353,7 +353,6 @@ lwm2m_object_t * get_target_object(void)
 
             TARGET_t *target = target_list.next;
             while(target != NULL) {
-                printf("Add targetObject: %d\n", i);
                 targetP = (target_instance_t *)lwm2m_malloc(sizeof(target_instance_t));
                 if (NULL == targetP) return NULL;
                 memset(targetP, 0, sizeof(target_instance_t));
@@ -371,6 +370,7 @@ lwm2m_object_t * get_target_object(void)
 
                 targetObj->instanceList = LWM2M_LIST_ADD(targetObj->instanceList, targetP);
 
+                printf("Add targetObject %d: %s\n", i, targetP->target_type);
                 target = target->next;
                 i++;
             }
