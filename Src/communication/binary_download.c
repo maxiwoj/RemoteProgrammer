@@ -1,9 +1,13 @@
 #include "lwip/inet.h"
 #include "lwip/sockets.h"
+#include "lwip/api.h"
+#include "liblwm2m.h"
 #include "communication_config.h"
 #include "binary_download.h"
 #include "errno.h"
+#include "usb_host.h"
 #include "yuarel.h"
+#include "term_io.h"
 #include "FreeRTOS.h"
 
 
@@ -18,9 +22,13 @@ static void download_error(target_instance_t *targetP, int err, int socket, char
 	vTaskDelete(NULL);
 }
 
-int startDownload(target_instance_t *targetP) {
+void startDownload(void * object_target) {
+    target_instance_t *targetP = (target_instance_t*) object_target;
     struct yuarel url;
     char *url_str = lwm2m_strdup(targetP->firmware_url);
+    FIL file;
+    int result;
+
     if(yuarel_parse(&url, url_str) != 0) {
         printf("Error parsing URL\r\n");
         download_error(targetP, ERROR_PARSING_URL, 0, url_str);
@@ -33,7 +41,7 @@ int startDownload(target_instance_t *targetP) {
     }
 
     ip_addr_t *addr = NULL;
-    if (netconn_gethostbyname(url.host, &addr) != ERR_OK) {
+    if (netconn_gethostbyname(url.host, addr) != ERR_OK) {
         printf("cannot resolve hostname\r\n");
         download_error(targetP, HOST_UNKNOWN_ERROR, socket, url_str);
     }
@@ -41,9 +49,9 @@ int startDownload(target_instance_t *targetP) {
     struct sockaddr_in clientAddressv4;
     clientAddressv4.sin_family = AF_INET;
     clientAddressv4.sin_port = htons(80);
-    clientAddressv4.sin_addr.s_addr = addr;
+    clientAddressv4.sin_addr.s_addr = addr->addr;
 
-    int result = lwip_connect(socket, (struct sockaddr *) &clientAddressv4, sizeof (struct sockaddr_in));
+    result = lwip_connect(socket, (struct sockaddr *) &clientAddressv4, sizeof (struct sockaddr_in));
     if (result < 0) {
 	    printf("cannot connect to server, err: %d\r\n", result);
         lwip_close(socket);
@@ -94,33 +102,41 @@ int startDownload(target_instance_t *targetP) {
 		}
     }
 
+    if(get_usb_ready()) {
+        result = usb_open_file(targetP->binary_filename, &file, FA_WRITE | FA_CREATE_NEW);
+        if (result != 0) {
+            download_error(targetP, USB_ERROR, socket, url_str);
+        }
+    }
+
     while(1){
         int received_len = lwip_recv(socket, server_reply , sizeof server_reply - 1, 0);
 
         if( received_len < 0 ){
             printf("recv failed\r\n");
+            usb_close_file(&file);
             download_error(targetP, RECEIVE_ERROR, socket, url_str);
         }
         targetP->download_progress = 100 * total_received_len / payload_len;
         total_received_len += received_len;
         server_reply[received_len] = '\0';
   
-  		if(get_usb_ready()) {
-  			usb_write(server_reply, targetP->binary_filename, received_len);
-  		} else {
-  			download_error(targetP, USB_ERROR, socket, url_str);
-  		}
+        result = usb_write(&file, server_reply, received_len);
+        if (result != 0) {
+            usb_close_file(&file);
+            download_error(targetP, USB_ERROR, socket, url_str);
+        }
 
         if( total_received_len >= payload_len ){
             break;
         }   
     }
 
+    usb_close_file(&file);
     targetP->download_state = DOWNLOAD_COMPLETED;
     targetP->download_progress = 100;
     targetP->download_error = NO_ERROR;	
     lwip_close(socket);
     lwm2m_free(url_str);
     vTaskDelete(NULL);
-
 }

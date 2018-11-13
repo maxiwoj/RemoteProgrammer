@@ -20,5 +20,5 @@
 #define ERROR_PARSING_URL -7
 #define HOST_UNKNOWN_ERROR -8
 
-int startDownload(target_instance_t *targetP);
+void startDownload(void *object_target);
 #endif

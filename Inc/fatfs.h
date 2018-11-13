@@ -72,7 +72,8 @@ void MX_FATFS_Init(void);
 void usb_ls();
 int usb_close_file(FIL *fp);
 int usb_open_file(const char *filename, FIL *fp, BYTE mode);
-int usb_write(const void *bytes, const char *filename, size_t size);
+int usb_write(FIL *fp, const void *bytes, size_t size);
+int usb_open_and_write(const void *bytes, const char *filename, size_t size);
 /* USER CODE END Prototypes */
 #ifdef __cplusplus
 }

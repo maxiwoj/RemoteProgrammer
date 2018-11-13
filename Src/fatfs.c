@@ -152,7 +152,14 @@ int usb_close_file(FIL *fp) {
   return 0;
 }
 
-int usb_write(const void *bytes, const char *filename, size_t size) {
+int usb_write(FIL *fp, const void *bytes, size_t size) {
+  uint written_bytes;
+  FRESULT result = f_write(fp, bytes, size, &written_bytes);
+  CHECK_FRESULT(result, "write failed", -1);
+  return 0;
+}
+
+int usb_open_and_write(const void *bytes, const char *filename, size_t size) {
   FRESULT result;
 
   result = f_mount(&USBHFatFS, "", 1);

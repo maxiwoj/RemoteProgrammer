@@ -7,6 +7,7 @@
 #include "cmsis_os.h"
 #include <string.h>
 #include "stm32f4xx_hal.h"
+#include "mem.h"
 #include <stdarg.h>
 
 // TODO: Now FreeRTOS memory pool is used. Another option is to use LwIP memory
