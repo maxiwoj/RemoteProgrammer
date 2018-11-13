@@ -3,3 +3,6 @@ r
 .gcc-flags.json
 cscope*
 .cscope*
+.idea/
+CMakeLists.txt
+cmake-build-debug/

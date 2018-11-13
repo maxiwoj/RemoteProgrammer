@@ -1,4 +1,5 @@
-# RemoteProgrammer
+# RemoteProgrammer [![Release](https://img.shields.io/github/release/maxiwoj/RemoteProgrammer.svg?style=flat-square)](https://github.com/maxiwoj/RemoteProgrammer/releases/latest) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/maxiwoj/RemoteProgrammer/blob/master/LICENSE)
+
 Remote programming and reconfiguration system with LWM2M for embedded devices
 
 ## Installation
