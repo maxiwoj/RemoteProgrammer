@@ -1,5 +1,5 @@
-#include <task.h>
-#include <errno.h>
+#include "FreeRTOS.h"
+#include "task.h"
 #include <sys/errno.h>
 #include "lwip/inet.h"
 #include "lwip/sockets.h"
@@ -11,16 +11,14 @@
 #include "usb_host.h"
 #include "yuarel.h"
 #include "term_io.h"
-#include "FreeRTOS.h"
-#include "regex.h"
 
 static void resolveAddress(target_instance_t *targetP, char *url_str, struct yuarel *url, int *socket,
-                    struct sockaddr_in *clientAddressv4);
+                           struct sockaddr_in *clientAddressv4);
 static void connectToServer(target_instance_t *targetP, char *url_str, int socket, struct sockaddr_in *clientAddressv4);
 static void makeRequest(target_instance_t *targetP, struct yuarel *url, char *url_str, int socket);
 static int receive(target_instance_t *targetP, char *url_str, int socket, char *server_reply, int max_received_len);
 static void checkResponseCode(target_instance_t *targetP, char *url_str, int socket, char *server_reply);
-FIL *createFile(target_instance_t *targetP, char *url_str, int socket);
+static uint8_t createFile(target_instance_t *targetP, char *url_str, int socket, FIL *file);
 
 
 
@@ -39,7 +37,8 @@ void startDownload(void *object_target) {
     target_instance_t *targetP = (target_instance_t *) object_target;
     struct yuarel url;
     char *url_str = lwm2m_strdup(targetP->firmware_url);
-    FIL *file = NULL;
+    FIL file;
+    uint8_t file_initialised = 0;
 
     int socket;
     struct sockaddr_in clientAddressv4;
@@ -72,17 +71,23 @@ void startDownload(void *object_target) {
                     // Copy the bytes from Content-Length to the beginning and read more, because it may be the case,
                     // that not all the value of the content length had been received
                     int i;
-                    for (i = 0; content_length_str - server_reply < received_len; i++) {
+                    for (i = 0; content_length_str - server_reply + i < received_len; i++) {
                         server_reply[i] = content_length_str[i];
                     }
-                    received_len = receive(targetP, url_str, socket, server_reply + i, server_response_length - i);
+                    received_len = receive(targetP, url_str, socket, server_reply + i, server_response_length - i) + i;
                     continue;
                 }
             } else {
                 if (strstr(server_reply, "\r\n\r\n")) {
                     download_error(targetP, CONTENT_LENGTH_NOT_SPECIFIED_ERROR, socket, url_str);
                 }
-                received_len = receive(targetP, url_str, socket, server_reply, server_response_length);
+
+                int i;
+                for (i = 0; i < 20; i++) {
+                    server_reply[i] = server_reply[received_len - 20 + i];
+                }
+                received_len = receive(targetP, url_str, socket, server_reply + i, server_response_length - i) + i;
+                continue;
             }
         }
 
@@ -91,10 +96,10 @@ void startDownload(void *object_target) {
             if (payload != NULL) {
                 unsigned long read_length = payload + 4 - server_reply + 1; //+1 because extracting len from pointer diff
                 if (read_length < received_len) {
-                    file = createFile(targetP, url_str, socket);
-                    int result = usb_write(file, payload + 4, received_len - read_length);
+                    file_initialised = createFile(targetP, url_str, socket, &file);
+                    int result = usb_write(&file, payload + 4, received_len - read_length);
                     if (result != 0) {
-                        usb_close_file(file);
+                        usb_close_file(&file);
                         download_error(targetP, USB_ERROR, socket, url_str);
                     }
                     total_received_len += received_len;
@@ -102,13 +107,17 @@ void startDownload(void *object_target) {
                 }
                 break;
             } else {
-                received_len = receive(targetP, url_str, socket, server_reply, server_response_length);
+                int i;
+                for (i = 0; i < 5; i++) {
+                    server_reply[i] = server_reply[received_len - 5 + i];
+                }
+                received_len = receive(targetP, url_str, socket, server_reply + i, server_response_length - i) + i;
             }
         }
     }
 
-    if (file == NULL) {
-        file = createFile(targetP, url_str, socket);
+    if (!file_initialised) {
+        file_initialised = createFile(targetP, url_str, socket, &file);
     }
 
     while (1) {
@@ -116,16 +125,22 @@ void startDownload(void *object_target) {
 
         if (received_len < 0) {
             printf("recv failed\r\n");
-            usb_close_file(file);
+            usb_close_file(&file);
             download_error(targetP, RECEIVE_ERROR, socket, url_str);
         }
         total_received_len += received_len;
         targetP->download_progress = (uint8_t) (100 * total_received_len / payload_len);
         server_reply[received_len] = '\0';
 
-        int result = usb_write(file, server_reply, (size_t) received_len);
+        long bytes_to_write;
+        if (total_received_len > payload_len) {
+            bytes_to_write = received_len - (total_received_len - payload_len);
+        } else {
+            bytes_to_write = received_len;
+        }
+        int result = usb_write(&file, server_reply, (size_t) bytes_to_write);
         if (result != 0) {
-            usb_close_file(file);
+            usb_close_file(&file);
             download_error(targetP, USB_ERROR, socket, url_str);
         }
 
@@ -134,7 +149,7 @@ void startDownload(void *object_target) {
         }
     }
 
-    usb_close_file(file);
+    usb_close_file(&file);
     targetP->download_state = DOWNLOAD_COMPLETED;
     targetP->download_progress = 100;
     targetP->download_error = NO_ERROR;
@@ -143,15 +158,14 @@ void startDownload(void *object_target) {
     vTaskDelete(NULL);
 }
 
-static FIL *createFile(target_instance_t *targetP, char *url_str, int socket) {
-    FIL *file = malloc(sizeof FIL);
+static uint8_t createFile(target_instance_t *targetP, char *url_str, int socket, FIL *file) {
     if (get_usb_ready()) {
         int result = usb_open_file(targetP->binary_filename, file, FA_WRITE | FA_CREATE_NEW);
         if (result != 0) {
             download_error(targetP, USB_ERROR, socket, url_str);
         }
     }
-    return file;
+    return 1;
 }
 
 static void checkResponseCode(target_instance_t *targetP, char *url_str, int socket, char *server_reply) {
@@ -182,7 +196,7 @@ static int receive(target_instance_t *targetP, char *url_str, int socket, char *
 
 static void makeRequest(target_instance_t *targetP, struct yuarel *url, char *url_str, int socket) {
     char message[200];
-    sprintf(message, "GET /%s HTTP/1.1\r\nHost: %s\r\n\r\n Connection: keep-alive\r\n\r\n Keep-Alive: 300\r\n",
+    sprintf(message, "GET /%s HTTP/1.1\r\nHost: %s\r\n\r\n",
             (*url).path, (*url).host);
 
     if (lwip_send(socket, message, strlen(message), 0) < 0) {
@@ -201,7 +215,7 @@ static void connectToServer(target_instance_t *targetP, char *url_str, int socke
 }
 
 static void resolveAddress(target_instance_t *targetP, char *url_str, struct yuarel *url, int *socket,
-                    struct sockaddr_in *clientAddressv4) {
+                           struct sockaddr_in *clientAddressv4) {
     if (yuarel_parse(url, url_str) != 0) {
         printf("Error parsing URL\r\n");
         download_error(targetP, ERROR_PARSING_URL, 0, url_str);
@@ -212,12 +226,12 @@ static void resolveAddress(target_instance_t *targetP, char *url_str, struct yua
         download_error(targetP, SOCKET_ERROR, (*socket), url_str);
     }
 
-    ip_addr_t *addr = NULL;
-    if (netconn_gethostbyname((*url).host, addr) != ERR_OK) {
+    u32_t addr;
+    if (netconn_gethostbyname((*url).host, (ip_addr_t *) &addr) != ERR_OK) {
         printf("cannot resolve hostname\r\n");
         download_error(targetP, HOST_UNKNOWN_ERROR, (*socket), url_str);
     }
     (*clientAddressv4).sin_family = AF_INET;
     (*clientAddressv4).sin_port = htons(80);
-    (*clientAddressv4).sin_addr.s_addr = addr->addr;
+    (*clientAddressv4).sin_addr.s_addr = addr;
 }

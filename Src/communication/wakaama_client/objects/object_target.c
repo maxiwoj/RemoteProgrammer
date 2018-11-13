@@ -271,33 +271,8 @@ static uint8_t target_delete(uint16_t id,
 static uint8_t target_create(uint16_t instanceId,
                           int numData,
                           lwm2m_data_t * dataArray,
-                          lwm2m_object_t * objectP)
-{
+                          lwm2m_object_t * objectP) {
     return COAP_405_METHOD_NOT_ALLOWED;
-    /*target_instance_t * targetP;
-    uint8_t result;
-
-
-    targetP = (target_instance_t *)lwm2m_malloc(sizeof(target_instance_t));
-    if (NULL == targetP) return COAP_500_INTERNAL_SERVER_ERROR;
-    memset(targetP, 0, sizeof(target_instance_t));
-
-    targetP->shortID = instanceId;
-    targetP->binary_filename = lwm2m_malloc(25);
-    objectP->instanceList = LWM2M_LIST_ADD(objectP->instanceList, targetP);
-
-    result = target_write(instanceId, numData, dataArray, objectP);
-
-    if (result != COAP_204_CHANGED)
-    {
-        (void)target_delete(instanceId, objectP);
-    }
-    else
-    {
-        result = COAP_201_CREATED;
-    }
-
-    return result;*/
 }
 
 static uint8_t target_exec(uint16_t instanceId,
@@ -335,7 +310,7 @@ static uint8_t target_exec(uint16_t instanceId,
         fprintf(stdout, "-----------------\r\n\r\n");
         targetP->flash_state=FLASH_IN_PROGRESS;
         targetP->flash_progress=0;
-        xTaskCreate(flash_target_task, "Flash_Target", 2000, targetP, 2, NULL);
+        xTaskCreate(flash_target_task, "Flash_Target", 2000, targetP, 1, NULL);
         return COAP_204_CHANGED;
     case 6:
         return COAP_405_METHOD_NOT_ALLOWED;
@@ -350,7 +325,7 @@ static uint8_t target_exec(uint16_t instanceId,
                         objectP->objID, instanceId, resourceId, targetP->target_type, length);
         prv_output_buffer((uint8_t*)buffer, length);
         fprintf(stdout, "-----------------\r\n\r\n");
-        xTaskCreate(reset_target_task, "ResetTarget", 300, targetP, 2, NULL);
+        xTaskCreate(reset_target_task, "ResetTarget", 300, targetP, 1, NULL);
         return COAP_204_CHANGED;
     case 8:
         return COAP_405_METHOD_NOT_ALLOWED;
@@ -382,7 +357,7 @@ lwm2m_object_t * get_target_object(void)
                 targetP = (target_instance_t *)lwm2m_malloc(sizeof(target_instance_t));
                 if (NULL == targetP) return NULL;
                 memset(targetP, 0, sizeof(target_instance_t));
-                targetP->shortID = i;
+                targetP->shortID = (uint16_t) i;
                 targetP->target_type = target->name;
                 targetP->firmware_url = NULL;
                 targetP->download_state = NO_DOWNLOAD_DATA;
