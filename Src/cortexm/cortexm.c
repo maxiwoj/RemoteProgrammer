@@ -3,6 +3,7 @@
 #include "adiv5/adiv5.h"
 #include "cortexm/cortexm.h"
 #include "cortexm/stm32/stm32f4.h"
+#include "cortexm/stm32/stm32l4.h"
 
 inline static uint32_t cortexm_read_word(CORTEXM_PRIV_t *priv, uint32_t addr)
 {
@@ -132,6 +133,10 @@ int probe_cortexm(ADIv5_AP_t *ap)
   // probe stm32
 
   if(stm32f4_probe(cortexm)){
+    return 1;
+  }
+
+  if(stm32l4_probe(cortexm)){
     return 1;
   }
 
