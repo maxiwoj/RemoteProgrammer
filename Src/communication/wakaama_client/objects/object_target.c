@@ -33,6 +33,9 @@
 #include "object_target.h"
 #include "binary_download.h"
 
+int USB_BUSY = 0;
+int JTAG_BUSY = 0;
+
 static void prv_output_buffer(uint8_t * buffer,
                               int length)
 {
@@ -210,7 +213,7 @@ static uint8_t target_write(uint16_t instanceId,
             return COAP_405_METHOD_NOT_ALLOWED;
         case 2:
         {
-            if (targetP->download_state == DOWNLOAD_IN_PROGRESS || targetP->flash_state == FLASH_IN_PROGRESS) {
+            if (targetP->download_state == DOWNLOAD_IN_PROGRESS || targetP->flash_state == FLASH_IN_PROGRESS || USB_BUSY) {
                 return COAP_412_PRECONDITION_FAILED;
             }
             if (!(dataArray[i].type == LWM2M_TYPE_STRING) && !(dataArray[i].type == LWM2M_TYPE_OPAQUE)) {
@@ -223,9 +226,10 @@ static uint8_t target_write(uint16_t instanceId,
             targetP->firmware_url = lwm2m_strdup((char*)dataArray[i].value.asBuffer.buffer);
             targetP->firmware_version = lwm2m_gettime();
             targetP->download_state = DOWNLOAD_IN_PROGRESS;
-            sprintf(targetP->binary_filename, "%ld", targetP->firmware_version);
+            sprintf(targetP->binary_filename, "%x.%d", targetP->firmware_version, targetP->shortID);
             targetP->download_progress = 0;
 
+            USB_BUSY = 1;
             xTaskCreate(startDownload, NULL, 2000, (void*) targetP, 2, NULL);
         }
         break;
@@ -298,7 +302,7 @@ static uint8_t target_exec(uint16_t instanceId,
     case 4:
         return COAP_405_METHOD_NOT_ALLOWED;
     case 5:
-        if (targetP->download_state != DOWNLOAD_COMPLETED || targetP->flash_state == FLASH_IN_PROGRESS) {
+        if (targetP->download_state != DOWNLOAD_COMPLETED || targetP->flash_state == FLASH_IN_PROGRESS || JTAG_BUSY || USB_BUSY) {
             return COAP_412_PRECONDITION_FAILED;
         }
         fprintf(stdout, "\r\n-----------------\r\n"
@@ -310,12 +314,14 @@ static uint8_t target_exec(uint16_t instanceId,
         fprintf(stdout, "-----------------\r\n\r\n");
         targetP->flash_state=FLASH_IN_PROGRESS;
         targetP->flash_progress=0;
+        JTAG_BUSY = 1;
+        USB_BUSY = 1;
         xTaskCreate(flash_target_task, "Flash_Target", 2000, targetP, 1, NULL);
         return COAP_204_CHANGED;
     case 6:
         return COAP_405_METHOD_NOT_ALLOWED;
     case 7:
-        if (targetP->flash_state == FLASH_IN_PROGRESS) {
+        if (targetP->flash_state == FLASH_IN_PROGRESS || JTAG_BUSY) {
             return COAP_412_PRECONDITION_FAILED;
         }
         fprintf(stdout, "\r\n-----------------\r\n"
@@ -325,6 +331,7 @@ static uint8_t target_exec(uint16_t instanceId,
                         objectP->objID, instanceId, resourceId, targetP->target_type, length);
         prv_output_buffer((uint8_t*)buffer, length);
         fprintf(stdout, "-----------------\r\n\r\n");
+        JTAG_BUSY = 1;
         xTaskCreate(reset_target_task, "ResetTarget", 300, targetP, 1, NULL);
         return COAP_204_CHANGED;
     case 8:

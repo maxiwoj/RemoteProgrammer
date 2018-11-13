@@ -4,6 +4,9 @@
 
 #include "target.h"
 
+
+extern int JTAG_BUSY;
+extern int USB_BUSY;
 /*
  * Multiple instance objects can use userdata to store data that will be shared between the different instances.
  * The lwm2m_object_t object structure - which represent every object of the liblwm2m as seen in the single instance
