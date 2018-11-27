@@ -63,7 +63,7 @@
  * bit 11 and 10 == 0 - error while flash erasing. [9..0] represent FLASH_SR[9..0]
  * bit 10 (0x400) - error while flash writing. [9..0] represent FLASH_SR[9..0]
  */
-#define STM32F4_ERASE_ERROR_BIT            0x000
+#define STM32L4_ERASE_ERROR_BIT            0x000
 #define STM32L4_FLASH_ERROR_BIT            0x400
 #define STM32L4_ERASE_NEVER_END            0x800
 #define STM32L4_ERROR_ON_FLASH_WRITE_SETUP 0x801
