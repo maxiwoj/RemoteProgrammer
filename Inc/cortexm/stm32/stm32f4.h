@@ -47,8 +47,8 @@
 /* 
  * flash errors returned to flash_target_task
  * 0x0 - 0x1000   - reserved for target (we can use this pool here)
- * bit 9 (0x200)  - error while flash erasing. [8..0] represent FLASH_SR[8..0]
- * bit 10 (0x400) - error while flash writing. [8..0] represent FLASH_SR[8..0]
+ * bit 9 (0x200)  - error while flash erasing. [7..0] represent FLASH_SR[7..0]
+ * bit 10 (0x400) - error while flash writing. [7..0] represent FLASH_SR[7..0]
  */
 #define STM32F4_ERASE_ERROR_BIT            0x200
 #define STM32F4_FLASH_ERROR_BIT            0x400
