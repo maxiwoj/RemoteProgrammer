@@ -57,6 +57,8 @@ static void stm32l4_flash_unlock(STM32L4_PRIV_t *priv)
     priv->cortex->ops->write_word(priv->cortex->priv, STM32L4_FLASH_KEYR, STM32L4_KEY1);
     priv->cortex->ops->write_word(priv->cortex->priv, STM32L4_FLASH_KEYR, STM32L4_KEY2);
   }
+  // Clear flash error
+  priv->cortex->ops->write_word(priv->cortex->priv, STM32L4_FLASH_SR, STM32L4_FLASH_SR_ERROR_MASK);
 }
 
 static int stm32l4_erase_all_flash(STM32L4_PRIV_t *priv, int *progress, int progress_end)
