@@ -95,7 +95,7 @@ void startDownload(void *object_target) {
         if (payload_len > 0) {
             char *payload = strstr(server_reply, "\r\n\r\n");
             if (payload != NULL) {
-                unsigned long read_length = payload + 4 - server_reply + 1; //+1 because extracting len from pointer diff
+                unsigned long read_length = payload - server_reply + 4; //+ 4 because of \r\n\r\n sequence
                 if (read_length < received_len) {
                     file_initialised = createFile(targetP, url_str, socket, &file);
                     int result = usb_write(&file, payload + 4, received_len - read_length);
@@ -103,7 +103,7 @@ void startDownload(void *object_target) {
                         usb_close_file(&file);
                         download_error(targetP, USB_ERROR, socket, url_str);
                     }
-                    total_received_len += received_len;
+                    total_received_len += received_len - read_length;
                     targetP->download_progress = (uint8_t) (100 * total_received_len / payload_len);
                 }
                 break;
