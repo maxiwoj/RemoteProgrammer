@@ -23,6 +23,8 @@ void flash_target_task(void *object) {
 	FIL file;
 	int result;
 
+  int start_time = xTaskGetTickCount();
+
 	result = usb_open_file(target_object->binary_filename, &file, FA_READ);
 	if (result != 0) {
 		target_object->flash_error = USB_FS_ERROR;
@@ -41,6 +43,8 @@ void flash_target_task(void *object) {
 		target_object->flash_state = FLASH_COMPLETED;
 	}
 	
+  printf("Flash request ended in %d ms\n", xTaskGetTickCount() - start_time);
+
 	result = usb_close_file(&file);
 	JTAG_BUSY = 0;
 	USB_BUSY = 0;
@@ -52,8 +56,10 @@ void flash_target_task(void *object) {
 }
 
 void reset_target_task(void *object) {
+  int start_time = xTaskGetTickCount();
 	target_instance_t * target_object = (target_instance_t *) object;
 	target_object->target->ops->reset_target(target_object->target->priv);
+  printf("Reset request ended in %d ms\n", xTaskGetTickCount() - start_time);
 	JTAG_BUSY = 0;
 	vTaskDelete(NULL);	
 }

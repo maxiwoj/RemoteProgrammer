@@ -41,6 +41,8 @@ void startDownload(void *object_target) {
     FIL file;
     uint8_t file_initialised = 0;
 
+    int start_time = xTaskGetTickCount();
+
     int socket;
     struct sockaddr_in clientAddressv4;
     resolveAddress(targetP, url_str, &url, &socket, &clientAddressv4);
@@ -149,6 +151,8 @@ void startDownload(void *object_target) {
             break;
         }
     }
+
+    printf("Download ended in %d ms\n", xTaskGetTickCount() - start_time);
 
     usb_close_file(&file);
     targetP->download_state = DOWNLOAD_COMPLETED;
