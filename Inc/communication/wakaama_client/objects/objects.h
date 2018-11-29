@@ -7,15 +7,13 @@ lwm2m_object_t * get_server_object(int serverId,
                                    int lifetime,
                                    bool storing);
 lwm2m_object_t * get_object_device();
-lwm2m_object_t * get_test_object();
 lwm2m_object_t * get_target_object();
 
 void free_security_object();
 void clean_server_object();
 void free_object_device();
-void free_test_object();
 void free_target_object();
 
-#define OBJ_COUNT 5
+#define OBJ_COUNT 4
 
 #endif

@@ -10,10 +10,6 @@
 #include "mem.h"
 #include <stdarg.h>
 
-// TODO: Now FreeRTOS memory pool is used. Another option is to use LwIP memory
-//       pool. Third option is to use malloc and free from stdlib, but using
-//       it with FreeRTOS is bad idea (as far as heared). 
-
 // Allocate a block of size bytes of memory, returning a pointer to the beginning of the block.
 #ifdef LWM2M_MEMORY_TRACE
 void * lwm2m_trace_malloc(size_t s, const char * file, const char * function, int lineno) {
