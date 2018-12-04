@@ -238,6 +238,6 @@ static void resolveAddress(target_instance_t *targetP, char *url_str, struct yua
         download_error(targetP, HOST_UNKNOWN_ERROR, (*socket), url_str);
     }
     (*clientAddressv4).sin_family = AF_INET;
-    (*clientAddressv4).sin_port = htons(80);
+    (*clientAddressv4).sin_port = htons(url->port ? url->port : 80);
     (*clientAddressv4).sin_addr.s_addr = addr;
 }
