@@ -64,7 +64,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
 #include "communication_config.h"
+#include "config_parser.h"
 
 
 // Resource Id's:
@@ -98,11 +100,11 @@ static uint8_t prv_set_value(lwm2m_data_t * dataP)
     switch (dataP->id)
     {
     case RES_O_MANUFACTURER:
-        lwm2m_data_encode_string(WAKAAMA_COMPANY, dataP);
+        lwm2m_data_encode_string(configuration.wakaama_company, dataP);
         return COAP_205_CONTENT;
 
     case RES_O_MODEL_NUMBER:
-        lwm2m_data_encode_string(WAKAAMA_MODEL_NUMBER, dataP);
+        lwm2m_data_encode_string(configuration.wakaama_model_number, dataP);
         return COAP_205_CONTENT;
 
     case RES_M_REBOOT:

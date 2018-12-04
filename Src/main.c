@@ -59,6 +59,7 @@
 #include "jtag/jtag_scan.h"
 #include "binary_download.h"
 #include "target.h"
+#include "config_parser.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -343,12 +344,17 @@ void StartDefaultTask(void const * argument)
   printf("\n\n\n-----------------------START-------------------------\n\n");
   printf("\n\n\n---------------------JTAG-SCAN-----------------------\n\n");
   jtag_scan();
-  printf("\n\n\n----------------------WAKAAMA------------------------\n\n");
+  printf("\n\n\n---------------------START-USB-----------------------\n\n");
+  osDelay(500);
+  HAL_GPIO_WritePin(USB_GPIO_OUT_GPIO_Port, USB_GPIO_OUT_Pin, GPIO_PIN_SET);
+  printf("\n\n\n-------------------PARSE--CONFIG---------------------\n\n");
   osDelay(3000); // wait for DHCP initialisation
+  lwip_socket_init();
+  parse_config();
+  printf("\n\n\n----------------------WAKAAMA------------------------\n\n");
 
 // Initialize Wakaama LWM2M Client
-  lwip_socket_init();
-  int socket = createUDPSocket(LOCAL_PORT, AF_INET);
+  int socket = createUDPSocket(configuration.local_port, AF_INET);
   if(socket != -1){ 
     printf("Start wakaama task\r\n");
     int res = xTaskCreate(taskWakaama, "wakaama", 3000, (void *) socket, 3, NULL);
@@ -360,8 +366,6 @@ void StartDefaultTask(void const * argument)
   }
 
   int x = 0;
-  osDelay(500);
-  HAL_GPIO_WritePin(USB_GPIO_OUT_GPIO_Port, USB_GPIO_OUT_Pin, GPIO_PIN_SET);
   BlinkBlue();
   char usrInput[2];
   FIL file;

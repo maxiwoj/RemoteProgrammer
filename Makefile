@@ -171,7 +171,8 @@ Src/adiv5/adiv5.c \
 Src/cortexm/cortexm.c \
 Src/cortexm/stm32/stm32f4.c \
 Src/cortexm/stm32/stm32l4.c \
-Src/target.c
+Src/target.c \
+Src/config_parser.c
 
 # ASM sources
 ASM_SOURCES =  \

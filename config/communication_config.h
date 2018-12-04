@@ -1,7 +1,6 @@
 #ifndef __CLIENT_CONFIG_H
 #define __CLIENT_CONFIG_H
 
-
 #define DEVICE_NAME "Remote Programmer"
 
 #define SERVER_URI "coap://192.168.2.1:5683"

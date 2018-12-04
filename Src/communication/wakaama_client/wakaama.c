@@ -1,5 +1,5 @@
 #include "wakaama.h"
-
+#include "config_parser.h"
 
 static void print_state(lwm2m_context_t * lwm2mH)
 {
@@ -57,7 +57,7 @@ void taskWakaama(void *socket) {
         printf("SecurityObject Created\n");
 
         if(objArray[1] == NULL) {
-          objArray[1] = get_server_object(WAKAAMA_SHORT_ID, WAKAAMA_BINDING, 300, false);
+          objArray[1] = get_server_object(configuration.wakaama_short_id, WAKAAMA_BINDING, 300, false);
         }
         
         if (NULL == objArray[1]) {
@@ -98,7 +98,7 @@ void taskWakaama(void *socket) {
         * We configure the liblwm2m library with the name of the client - which shall be unique for each client -
         * the number of objects we will be passing through and the objects array
         */
-        result = lwm2m_configure(lwm2mContext, DEVICE_NAME, NULL, NULL, OBJ_COUNT, objArray);
+        result = lwm2m_configure(lwm2mContext, configuration.device_name, NULL, NULL, OBJ_COUNT, objArray);
         if (result != COAP_NO_ERROR) {
             printf("lwm2m_configure() failed: 0x%X\r\n", result);
             result = -9;
