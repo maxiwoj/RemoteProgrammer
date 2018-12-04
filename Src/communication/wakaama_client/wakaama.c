@@ -81,7 +81,7 @@ void taskWakaama(void *socket) {
         if (objArray[3] == NULL) {
           objArray[3] = get_target_object();
         }
-        if (NULL == objArray[3]) {
+        if (objArray[3] == NULL) {
             printf("Failed to create Target object\r\n");
             result = -4;
             continue;
@@ -194,7 +194,7 @@ void taskWakaama(void *socket) {
             free_security_object(objArray[0]);
             clean_server_object(objArray[1]);
             free_object_device(objArray[2]);
-            free_target_object(objArray[4]);
+            free_target_object(objArray[3]);
             fprintf(stdout, "\n\t RESET\r\n");
             q_reset = 0;
             NVIC_SystemReset(); // we assume we never end wakaama unless we want to restart
