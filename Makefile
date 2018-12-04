@@ -206,7 +206,6 @@ Src/communication/wakaama_client/connection.c \
 Src/communication/wakaama_client/objects/object_device.c \
 Src/communication/wakaama_client/objects/object_security.c \
 Src/communication/wakaama_client/objects/object_server.c \
-Src/communication/wakaama_client/objects/test_object.c \
 Src/communication/wakaama_client/objects/object_target.c
 
 
