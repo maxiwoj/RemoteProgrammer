@@ -65,7 +65,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "communication_config.h"
+#include "default_config.h"
 #include "config_parser.h"
 
 

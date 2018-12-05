@@ -5,7 +5,7 @@
 #include "lwip/sockets.h"
 #include "lwip/api.h"
 #include "liblwm2m.h"
-#include "communication_config.h"
+#include "default_config.h"
 #include "binary_download.h"
 #include "errno.h"
 #include "usb_host.h"

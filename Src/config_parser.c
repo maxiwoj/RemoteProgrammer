@@ -1,5 +1,5 @@
 #include "config_parser.h"
-#include "communication_config.h"
+#include "default_config.h"
 #include "fatfs.h"
 #include "cmsis_os.h"
 #include "communication/term_io.h"
@@ -137,8 +137,8 @@ int parse_config() {
         printf("%s: Set %s to \"%s\" \n", __FUNCTION__, FN_DEVICE_NAME, value);
         copy_value(&(configuration.device_name), value, value_len);
       }
-      IF_MATCH(key, FN_SERVER_URI) {
-        printf("%s: Set %s to \"%s\" \n", __FUNCTION__, FN_SERVER_URI, value);
+      IF_MATCH(key, FN_LWM2M_SERVER_URI) {
+        printf("%s: Set %s to \"%s\" \n", __FUNCTION__, FN_LWM2M_SERVER_URI, value);
         copy_value(&(configuration.server_uri), value, value_len);
       }
       IF_MATCH(key, FN_LOCAL_PORT) {

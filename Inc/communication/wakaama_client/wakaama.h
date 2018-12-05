@@ -3,7 +3,7 @@
 
 #include "connection.h"
 #include "objects.h"
-#include "communication_config.h"
+#include "default_config.h"
 
 typedef struct
 {

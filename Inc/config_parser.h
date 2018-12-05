@@ -14,7 +14,7 @@
 
 #define FN_DEVICE_NAME "device_name"
 
-#define FN_SERVER_URI "server_uri"
+#define FN_LWM2M_SERVER_URI "lwm2m_server_uri"
 #define FN_LOCAL_PORT "local_port"
 
 #define FN_WAKAAMA_SHORT_ID "wakaama_short_id"
