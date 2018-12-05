@@ -1,6 +1,5 @@
-#ifndef __CLIENT_CONFIG_H
-#define __CLIENT_CONFIG_H
-
+#ifndef __DEFAULT_CONFIG_H
+#define __DEFAULT_CONFIG_H
 
 #define DEVICE_NAME "Remote Programmer"
 

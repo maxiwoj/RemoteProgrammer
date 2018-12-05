@@ -46,7 +46,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "communication_config.h"
+#include "config_parser.h"
 
 
 typedef struct _security_instance_
@@ -213,9 +213,9 @@ lwm2m_object_t * get_security_object()
 
         memset(targetP, 0, sizeof(security_instance_t));
         targetP->instanceId = 0;
-        targetP->uri = SERVER_URI;
+        targetP->uri = configuration.server_uri;
         targetP->isBootstrap = false;
-        targetP->shortID = WAKAAMA_SHORT_ID;
+        targetP->shortID = configuration.wakaama_short_id;
         targetP->clientHoldOffTime = 10;
 
         securityObj->instanceList = LWM2M_LIST_ADD(securityObj->instanceList, targetP);
