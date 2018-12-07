@@ -21,9 +21,10 @@
 /*
  * What has been modified by Tomasz Michalec:
  *   -- Underling API changed to jtag_low_level module implemented in this project (RemoteProgrammer)
- *   -- Delete *post/prescan fields from jtag_dev_t. Now it jtag_dev_write_ir
+ *   -- Delete *post/prescan fields from jtag_dev_t. Now jtag_dev_write_ir
  *      and jtag_dev_shift_dr calculate it in runtime.
  *   -- jtag_scan is splited into functions and limited to minimal functional part.
+ *   -- jtag_test added for debuging purpose.
  */
 #include "main.h"
 #include "stm32f4xx_it.h"
