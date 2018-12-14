@@ -22,7 +22,7 @@
 #ifndef __DEFAULT_CONFIG_H
 #define __DEFAULT_CONFIG_H
 
-#define DEVICE_NAME "Remote Programmer"
+#define DEVICE_NAME "Remote Programmer Device"
 
 #define SERVER_URI "coap://192.168.2.1:5683"
 #define LOCAL_PORT 5683
