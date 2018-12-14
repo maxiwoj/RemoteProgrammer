@@ -35,11 +35,11 @@
 #ifdef LWM2M_MEMORY_TRACE
 void * lwm2m_trace_malloc(size_t s, const char * file, const char * function, int lineno) {
   printf("lwm2m_malloc: \"%s\" : \"%s\" : %d \n", file, function, lineno);
-  return mem_malloc(s);
+  return pvPortMalloc(s);
 }
 #else 
 void * lwm2m_malloc(size_t s){
-  return mem_malloc(s);
+  return pvPortMalloc(s);
 }
 #endif
 
@@ -47,11 +47,11 @@ void * lwm2m_malloc(size_t s){
 #ifdef LWM2M_MEMORY_TRACE
 void lwm2m_trace_free(void * p, const char * file, const char * function, int lineno) {
   printf("lwm2m_free: \"%s\" : \"%s\" : %d \n", file, function, lineno);
-  mem_free(p);
+  vPortFree(p);
 }
 #else 
 void lwm2m_free(void * p) {
-  mem_free(p);
+  vPortFree(p);
 }
 #endif
 
@@ -59,12 +59,12 @@ void lwm2m_free(void * p) {
 #ifdef LWM2M_MEMORY_TRACE
 char * lwm2m_trace_strdup(const char * str, const char * file, const char * function, int lineno) {
   printf("lwm2m_strdup: \"%s\" : \"%s\" : %d \n", file, function, lineno);
-  char *dup = mem_malloc(strlen(str) + 1);
+  char *dup = pvPortMalloc(strlen(str) + 1);
   return dup ? strcpy(dup, str) : dup;
 }
 #else
 char * lwm2m_strdup(const char * str) {
-  char *dup = mem_malloc(strlen(str) + 1);
+  char *dup = pvPortMalloc(strlen(str) + 1);
   return dup ? strcpy(dup, str) : dup;
 }
 #endif

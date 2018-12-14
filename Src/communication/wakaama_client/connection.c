@@ -92,7 +92,7 @@ connection_t * connection_create(connection_t * connList,
         lwip_close(s);
     }
     if (NULL != servinfo) {
-        lwm2m_free(servinfo);
+        lwip_freeaddrinfo(servinfo);
     }
 
     return connP;
