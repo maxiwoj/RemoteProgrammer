@@ -35,7 +35,9 @@ Optional:
 - program the board (later: Remote Programming Device) with `st-flash` utility: ```st-flash write RemoteProgrammer.bin 0x8000000```
 - attach a flash memory stick to the Remote Programming Device's USB Host with a configuration file named `config`. More about configuration you can find below
 - connect the target board to the Remote Programming Device using it's JTAG pins. Remote Programming Device pins are as follows: 
-# TODO
+
+
+--------------------TODO--------------------
 
 #### LwM2M server
 To be able to use Remote Programmer you need a LWM2M server, we recommend using leshan with our custom object. To run this, type:
@@ -46,7 +48,7 @@ $ java -jar ./leshan-server-demo.jar -m .
 ```
 This will download run a demo leshan server with our custom model definition. The flag -m specifies custom models directory location.
 
-#### Configuration
+## Configuration
 Remote Programming Device requires a basic configuration file on attached USB memory. Possible fields are described below:
 | field name 	| default value		| description 		|
 |---			|---				| 					|
@@ -124,7 +126,7 @@ Compiled Binary for the target device should be placed on a http server. To star
 
 ### Reference
 
-# TODO: ERROR CODES?
+------------------TODO: ERROR CODES?--------------
 
 
 ## Development setup
@@ -137,7 +139,8 @@ make
 The programming algorithm is structured in layers, so as to maximize the number of reusing the code. Layers are shown below:
 ![structure](https://raw.githubusercontent.com/maxiwoj/RemoteProgrammer/cleanup/img/structure.png). 
 
-# TODO maybe something more?
+
+--------------- TODO maybe something more? ----------
 
 
 ## Functionalities:
@@ -150,10 +153,10 @@ The programming algorithm is structured in layers, so as to maximize the number 
   - STM32L4x
 
 ## License
-![MIT License](https://github.com/maxiwoj/RemoteProgrammer/blob/master/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/maxiwoj/RemoteProgrammer/blob/master/LICENSE)
 
 ## TODOs:
-- Adding SWD interface
+- Adding support SWD interface
 - USB operations optimalisation, parraleling some operations
 - add possibility for monitoring connected devices
 - Remote Programming Device management support (reset etc.)
