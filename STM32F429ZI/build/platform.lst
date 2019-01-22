@@ -1,0 +1,313 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"platform.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.lwm2m_malloc,"ax",%progbits
+  18              		.align	1
+  19              		.global	lwm2m_malloc
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	lwm2m_malloc:
+  26              	.LFB147:
+  27              		.file 1 "Src/communication/wakaama_client/platform/platform.c"
+   1:Src/communication/wakaama_client/platform/platform.c **** /* Copyright 2018 Maksymilian Wojczuk and Tomasz Michalec
+   2:Src/communication/wakaama_client/platform/platform.c ****  *
+   3:Src/communication/wakaama_client/platform/platform.c ****  * Permission is hereby granted, free of charge, to any person obtaining a copy
+   4:Src/communication/wakaama_client/platform/platform.c ****  * of this software and associated documentation files (the "Software"), to deal
+   5:Src/communication/wakaama_client/platform/platform.c ****  * in the Software without restriction, including without limitation the rights
+   6:Src/communication/wakaama_client/platform/platform.c ****  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   7:Src/communication/wakaama_client/platform/platform.c ****  * copies of the Software, and to permit persons to whom the Software is
+   8:Src/communication/wakaama_client/platform/platform.c ****  * furnished to do so, subject to the following conditions:
+   9:Src/communication/wakaama_client/platform/platform.c ****  *
+  10:Src/communication/wakaama_client/platform/platform.c ****  * The above copyright notice and this permission notice shall be included in
+  11:Src/communication/wakaama_client/platform/platform.c ****  * all copies or substantial portions of the Software.
+  12:Src/communication/wakaama_client/platform/platform.c ****  *
+  13:Src/communication/wakaama_client/platform/platform.c ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  14:Src/communication/wakaama_client/platform/platform.c ****  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  15:Src/communication/wakaama_client/platform/platform.c ****  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  16:Src/communication/wakaama_client/platform/platform.c ****  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  17:Src/communication/wakaama_client/platform/platform.c ****  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  18:Src/communication/wakaama_client/platform/platform.c ****  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  19:Src/communication/wakaama_client/platform/platform.c ****  * SOFTWARE.
+  20:Src/communication/wakaama_client/platform/platform.c ****  */
+  21:Src/communication/wakaama_client/platform/platform.c **** 
+  22:Src/communication/wakaama_client/platform/platform.c **** /*
+  23:Src/communication/wakaama_client/platform/platform.c ****  * NOTE: Comments over functions implementations are copied from liblw2m.h
+  24:Src/communication/wakaama_client/platform/platform.c ****  *       and should be on par with this header but if not, then liblw2m.h
+  25:Src/communication/wakaama_client/platform/platform.c ****  *       is right.
+  26:Src/communication/wakaama_client/platform/platform.c ****  */
+  27:Src/communication/wakaama_client/platform/platform.c **** #include <liblwm2m.h>
+  28:Src/communication/wakaama_client/platform/platform.c **** #include "cmsis_os.h"
+  29:Src/communication/wakaama_client/platform/platform.c **** #include <string.h>
+  30:Src/communication/wakaama_client/platform/platform.c **** #include "stm32f4xx_hal.h"
+  31:Src/communication/wakaama_client/platform/platform.c **** #include "mem.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s 			page 2
+
+
+  32:Src/communication/wakaama_client/platform/platform.c **** #include <stdarg.h>
+  33:Src/communication/wakaama_client/platform/platform.c **** 
+  34:Src/communication/wakaama_client/platform/platform.c **** // Allocate a block of size bytes of memory, returning a pointer to the beginning of the block.
+  35:Src/communication/wakaama_client/platform/platform.c **** #ifdef LWM2M_MEMORY_TRACE
+  36:Src/communication/wakaama_client/platform/platform.c **** void * lwm2m_trace_malloc(size_t s, const char * file, const char * function, int lineno) {
+  37:Src/communication/wakaama_client/platform/platform.c ****   printf("lwm2m_malloc: \"%s\" : \"%s\" : %d \n", file, function, lineno);
+  38:Src/communication/wakaama_client/platform/platform.c ****   return pvPortMalloc(s);
+  39:Src/communication/wakaama_client/platform/platform.c **** }
+  40:Src/communication/wakaama_client/platform/platform.c **** #else 
+  41:Src/communication/wakaama_client/platform/platform.c **** void * lwm2m_malloc(size_t s){
+  28              		.loc 1 41 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  42:Src/communication/wakaama_client/platform/platform.c ****   return pvPortMalloc(s);
+  38              		.loc 1 42 0
+  39 0002 FFF7FEFF 		bl	pvPortMalloc
+  40              	.LVL1:
+  43:Src/communication/wakaama_client/platform/platform.c **** }
+  41              		.loc 1 43 0
+  42 0006 08BD     		pop	{r3, pc}
+  43              		.cfi_endproc
+  44              	.LFE147:
+  46              		.section	.text.lwm2m_free,"ax",%progbits
+  47              		.align	1
+  48              		.global	lwm2m_free
+  49              		.syntax unified
+  50              		.thumb
+  51              		.thumb_func
+  52              		.fpu fpv4-sp-d16
+  54              	lwm2m_free:
+  55              	.LFB148:
+  44:Src/communication/wakaama_client/platform/platform.c **** #endif
+  45:Src/communication/wakaama_client/platform/platform.c **** 
+  46:Src/communication/wakaama_client/platform/platform.c **** // Deallocate a block of memory previously allocated by lwm2m_malloc() or lwm2m_strdup()
+  47:Src/communication/wakaama_client/platform/platform.c **** #ifdef LWM2M_MEMORY_TRACE
+  48:Src/communication/wakaama_client/platform/platform.c **** void lwm2m_trace_free(void * p, const char * file, const char * function, int lineno) {
+  49:Src/communication/wakaama_client/platform/platform.c ****   printf("lwm2m_free: \"%s\" : \"%s\" : %d \n", file, function, lineno);
+  50:Src/communication/wakaama_client/platform/platform.c ****   vPortFree(p);
+  51:Src/communication/wakaama_client/platform/platform.c **** }
+  52:Src/communication/wakaama_client/platform/platform.c **** #else 
+  53:Src/communication/wakaama_client/platform/platform.c **** void lwm2m_free(void * p) {
+  56              		.loc 1 53 0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60              	.LVL2:
+  61 0000 08B5     		push	{r3, lr}
+  62              	.LCFI1:
+  63              		.cfi_def_cfa_offset 8
+  64              		.cfi_offset 3, -8
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s 			page 3
+
+
+  65              		.cfi_offset 14, -4
+  54:Src/communication/wakaama_client/platform/platform.c ****   vPortFree(p);
+  66              		.loc 1 54 0
+  67 0002 FFF7FEFF 		bl	vPortFree
+  68              	.LVL3:
+  55:Src/communication/wakaama_client/platform/platform.c **** }
+  69              		.loc 1 55 0
+  70 0006 08BD     		pop	{r3, pc}
+  71              		.cfi_endproc
+  72              	.LFE148:
+  74              		.section	.text.lwm2m_strdup,"ax",%progbits
+  75              		.align	1
+  76              		.global	lwm2m_strdup
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  80              		.fpu fpv4-sp-d16
+  82              	lwm2m_strdup:
+  83              	.LFB149:
+  56:Src/communication/wakaama_client/platform/platform.c **** #endif
+  57:Src/communication/wakaama_client/platform/platform.c **** 
+  58:Src/communication/wakaama_client/platform/platform.c **** // Allocate a memory block, duplicate the string str in it and return a pointer to this new block.
+  59:Src/communication/wakaama_client/platform/platform.c **** #ifdef LWM2M_MEMORY_TRACE
+  60:Src/communication/wakaama_client/platform/platform.c **** char * lwm2m_trace_strdup(const char * str, const char * file, const char * function, int lineno) {
+  61:Src/communication/wakaama_client/platform/platform.c ****   printf("lwm2m_strdup: \"%s\" : \"%s\" : %d \n", file, function, lineno);
+  62:Src/communication/wakaama_client/platform/platform.c ****   char *dup = pvPortMalloc(strlen(str) + 1);
+  63:Src/communication/wakaama_client/platform/platform.c ****   return dup ? strcpy(dup, str) : dup;
+  64:Src/communication/wakaama_client/platform/platform.c **** }
+  65:Src/communication/wakaama_client/platform/platform.c **** #else
+  66:Src/communication/wakaama_client/platform/platform.c **** char * lwm2m_strdup(const char * str) {
+  84              		.loc 1 66 0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              	.LVL4:
+  89 0000 10B5     		push	{r4, lr}
+  90              	.LCFI2:
+  91              		.cfi_def_cfa_offset 8
+  92              		.cfi_offset 4, -8
+  93              		.cfi_offset 14, -4
+  94 0002 0446     		mov	r4, r0
+  67:Src/communication/wakaama_client/platform/platform.c ****   char *dup = pvPortMalloc(strlen(str) + 1);
+  95              		.loc 1 67 0
+  96 0004 FFF7FEFF 		bl	strlen
+  97              	.LVL5:
+  98 0008 0130     		adds	r0, r0, #1
+  99 000a FFF7FEFF 		bl	pvPortMalloc
+ 100              	.LVL6:
+  68:Src/communication/wakaama_client/platform/platform.c ****   return dup ? strcpy(dup, str) : dup;
+ 101              		.loc 1 68 0
+ 102 000e 0346     		mov	r3, r0
+ 103 0010 18B1     		cbz	r0, .L5
+ 104              		.loc 1 68 0 is_stmt 0 discriminator 1
+ 105 0012 2146     		mov	r1, r4
+ 106 0014 FFF7FEFF 		bl	strcpy
+ 107              	.LVL7:
+ 108 0018 0346     		mov	r3, r0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s 			page 4
+
+
+ 109              	.L5:
+  69:Src/communication/wakaama_client/platform/platform.c **** }
+ 110              		.loc 1 69 0 is_stmt 1
+ 111 001a 1846     		mov	r0, r3
+ 112 001c 10BD     		pop	{r4, pc}
+ 113              		.cfi_endproc
+ 114              	.LFE149:
+ 116              		.section	.text.lwm2m_strncmp,"ax",%progbits
+ 117              		.align	1
+ 118              		.global	lwm2m_strncmp
+ 119              		.syntax unified
+ 120              		.thumb
+ 121              		.thumb_func
+ 122              		.fpu fpv4-sp-d16
+ 124              	lwm2m_strncmp:
+ 125              	.LFB150:
+  70:Src/communication/wakaama_client/platform/platform.c **** #endif
+  71:Src/communication/wakaama_client/platform/platform.c **** 
+  72:Src/communication/wakaama_client/platform/platform.c **** // Compare at most the n first bytes of s1 and s2, return 0 if they match
+  73:Src/communication/wakaama_client/platform/platform.c **** int lwm2m_strncmp(const char * s1, const char * s2, size_t n) {
+ 126              		.loc 1 73 0
+ 127              		.cfi_startproc
+ 128              		@ args = 0, pretend = 0, frame = 0
+ 129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 130              	.LVL8:
+ 131 0000 08B5     		push	{r3, lr}
+ 132              	.LCFI3:
+ 133              		.cfi_def_cfa_offset 8
+ 134              		.cfi_offset 3, -8
+ 135              		.cfi_offset 14, -4
+  74:Src/communication/wakaama_client/platform/platform.c ****   return strncmp(s1, s2, n);
+ 136              		.loc 1 74 0
+ 137 0002 FFF7FEFF 		bl	strncmp
+ 138              	.LVL9:
+  75:Src/communication/wakaama_client/platform/platform.c **** }
+ 139              		.loc 1 75 0
+ 140 0006 08BD     		pop	{r3, pc}
+ 141              		.cfi_endproc
+ 142              	.LFE150:
+ 144              		.section	.text.lwm2m_gettime,"ax",%progbits
+ 145              		.align	1
+ 146              		.global	lwm2m_gettime
+ 147              		.syntax unified
+ 148              		.thumb
+ 149              		.thumb_func
+ 150              		.fpu fpv4-sp-d16
+ 152              	lwm2m_gettime:
+ 153              	.LFB151:
+  76:Src/communication/wakaama_client/platform/platform.c **** 
+  77:Src/communication/wakaama_client/platform/platform.c **** // This function must return the number of seconds elapsed since origin.
+  78:Src/communication/wakaama_client/platform/platform.c **** // The origin (Epoch, system boot, etc...) does not matter as this
+  79:Src/communication/wakaama_client/platform/platform.c **** // function is used only to determine the elapsed time since the last
+  80:Src/communication/wakaama_client/platform/platform.c **** // call to it.
+  81:Src/communication/wakaama_client/platform/platform.c **** // In case of error, this must return a negative value.
+  82:Src/communication/wakaama_client/platform/platform.c **** // Per POSIX specifications, time_t is a signed integer.
+  83:Src/communication/wakaama_client/platform/platform.c **** time_t lwm2m_gettime(void) {
+ 154              		.loc 1 83 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s 			page 5
+
+
+ 155              		.cfi_startproc
+ 156              		@ args = 0, pretend = 0, frame = 0
+ 157              		@ frame_needed = 0, uses_anonymous_args = 0
+ 158 0000 08B5     		push	{r3, lr}
+ 159              	.LCFI4:
+ 160              		.cfi_def_cfa_offset 8
+ 161              		.cfi_offset 3, -8
+ 162              		.cfi_offset 14, -4
+  84:Src/communication/wakaama_client/platform/platform.c ****   // TODO: Now we use 32bit counter and it will overflow.
+  85:Src/communication/wakaama_client/platform/platform.c ****   //       Maybe export xNumOfOverflows from tasks.c and do something like that:
+  86:Src/communication/wakaama_client/platform/platform.c ****   //       return (xNumOfOverflows << 16) | (xTaskGetTickCount >> 16)
+  87:Src/communication/wakaama_client/platform/platform.c ****   return xTaskGetTickCount() / configTICK_RATE_HZ;
+ 163              		.loc 1 87 0
+ 164 0002 FFF7FEFF 		bl	xTaskGetTickCount
+ 165              	.LVL10:
+ 166 0006 034B     		ldr	r3, .L12
+ 167 0008 A3FB0030 		umull	r3, r0, r3, r0
+  88:Src/communication/wakaama_client/platform/platform.c **** }
+ 168              		.loc 1 88 0
+ 169 000c 8009     		lsrs	r0, r0, #6
+ 170 000e 0021     		movs	r1, #0
+ 171 0010 08BD     		pop	{r3, pc}
+ 172              	.L13:
+ 173 0012 00BF     		.align	2
+ 174              	.L12:
+ 175 0014 D34D6210 		.word	274877907
+ 176              		.cfi_endproc
+ 177              	.LFE151:
+ 179              		.text
+ 180              	.Letext0:
+ 181              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 182              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 183              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 184              		.file 5 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 185              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 186              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 187              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_timeval.h
+ 188              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 189              		.file 10 "Inc/FreeRTOSConfig.h"
+ 190              		.file 11 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h"
+ 191              		.file 12 "Drivers/CMSIS/Include/core_cm4.h"
+ 192              		.file 13 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 193              		.file 14 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 194              		.file 15 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 195              		.file 16 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 196              		.file 17 "Middlewares/Third_Party/FreeRTOS/Source/include/portable.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 platform.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:18     .text.lwm2m_malloc:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:25     .text.lwm2m_malloc:0000000000000000 lwm2m_malloc
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:47     .text.lwm2m_free:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:54     .text.lwm2m_free:0000000000000000 lwm2m_free
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:75     .text.lwm2m_strdup:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:82     .text.lwm2m_strdup:0000000000000000 lwm2m_strdup
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:117    .text.lwm2m_strncmp:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:124    .text.lwm2m_strncmp:0000000000000000 lwm2m_strncmp
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:145    .text.lwm2m_gettime:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:152    .text.lwm2m_gettime:0000000000000000 lwm2m_gettime
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRxo5AB.s:175    .text.lwm2m_gettime:0000000000000014 $d
+
+UNDEFINED SYMBOLS
+pvPortMalloc
+vPortFree
+strlen
+strcpy
+strncmp
+xTaskGetTickCount

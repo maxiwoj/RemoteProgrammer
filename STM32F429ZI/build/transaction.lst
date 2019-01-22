@@ -1,0 +1,1674 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"transaction.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.prv_checkFinished,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	prv_checkFinished:
+  25              	.LFB3:
+  26              		.file 1 "Middlewares/Third_Party/wakaama/transaction.c"
+   1:Middlewares/Third_Party/wakaama/transaction.c **** /*******************************************************************************
+   2:Middlewares/Third_Party/wakaama/transaction.c ****  *
+   3:Middlewares/Third_Party/wakaama/transaction.c ****  * Copyright (c) 2013, 2014 Intel Corporation and others.
+   4:Middlewares/Third_Party/wakaama/transaction.c ****  * All rights reserved. This program and the accompanying materials
+   5:Middlewares/Third_Party/wakaama/transaction.c ****  * are made available under the terms of the Eclipse Public License v1.0
+   6:Middlewares/Third_Party/wakaama/transaction.c ****  * and Eclipse Distribution License v1.0 which accompany this distribution.
+   7:Middlewares/Third_Party/wakaama/transaction.c ****  *
+   8:Middlewares/Third_Party/wakaama/transaction.c ****  * The Eclipse Public License is available at
+   9:Middlewares/Third_Party/wakaama/transaction.c ****  *    http://www.eclipse.org/legal/epl-v10.html
+  10:Middlewares/Third_Party/wakaama/transaction.c ****  * The Eclipse Distribution License is available at
+  11:Middlewares/Third_Party/wakaama/transaction.c ****  *    http://www.eclipse.org/org/documents/edl-v10.php.
+  12:Middlewares/Third_Party/wakaama/transaction.c ****  *
+  13:Middlewares/Third_Party/wakaama/transaction.c ****  * Contributors:
+  14:Middlewares/Third_Party/wakaama/transaction.c ****  *    David Navarro, Intel Corporation - initial API and implementation
+  15:Middlewares/Third_Party/wakaama/transaction.c ****  *    Simon Bernard - Please refer to git log
+  16:Middlewares/Third_Party/wakaama/transaction.c ****  *    Toby Jaffey - Please refer to git log
+  17:Middlewares/Third_Party/wakaama/transaction.c ****  *    Pascal Rieux - Please refer to git log
+  18:Middlewares/Third_Party/wakaama/transaction.c ****  *    Bosch Software Innovations GmbH - Please refer to git log
+  19:Middlewares/Third_Party/wakaama/transaction.c ****  *
+  20:Middlewares/Third_Party/wakaama/transaction.c ****  *******************************************************************************/
+  21:Middlewares/Third_Party/wakaama/transaction.c **** 
+  22:Middlewares/Third_Party/wakaama/transaction.c **** /*
+  23:Middlewares/Third_Party/wakaama/transaction.c ****  Copyright (c) 2013, 2014 Intel Corporation
+  24:Middlewares/Third_Party/wakaama/transaction.c **** 
+  25:Middlewares/Third_Party/wakaama/transaction.c ****  Redistribution and use in source and binary forms, with or without modification,
+  26:Middlewares/Third_Party/wakaama/transaction.c ****  are permitted provided that the following conditions are met:
+  27:Middlewares/Third_Party/wakaama/transaction.c **** 
+  28:Middlewares/Third_Party/wakaama/transaction.c ****      * Redistributions of source code must retain the above copyright notice,
+  29:Middlewares/Third_Party/wakaama/transaction.c ****        this list of conditions and the following disclaimer.
+  30:Middlewares/Third_Party/wakaama/transaction.c ****      * Redistributions in binary form must reproduce the above copyright notice,
+  31:Middlewares/Third_Party/wakaama/transaction.c ****        this list of conditions and the following disclaimer in the documentation
+  32:Middlewares/Third_Party/wakaama/transaction.c ****        and/or other materials provided with the distribution.
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 2
+
+
+  33:Middlewares/Third_Party/wakaama/transaction.c ****      * Neither the name of Intel Corporation nor the names of its contributors
+  34:Middlewares/Third_Party/wakaama/transaction.c ****        may be used to endorse or promote products derived from this software
+  35:Middlewares/Third_Party/wakaama/transaction.c ****        without specific prior written permission.
+  36:Middlewares/Third_Party/wakaama/transaction.c **** 
+  37:Middlewares/Third_Party/wakaama/transaction.c ****  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  38:Middlewares/Third_Party/wakaama/transaction.c ****  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  39:Middlewares/Third_Party/wakaama/transaction.c ****  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  40:Middlewares/Third_Party/wakaama/transaction.c ****  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  41:Middlewares/Third_Party/wakaama/transaction.c ****  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  42:Middlewares/Third_Party/wakaama/transaction.c ****  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  43:Middlewares/Third_Party/wakaama/transaction.c ****  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  44:Middlewares/Third_Party/wakaama/transaction.c ****  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  45:Middlewares/Third_Party/wakaama/transaction.c ****  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+  46:Middlewares/Third_Party/wakaama/transaction.c ****  THE POSSIBILITY OF SUCH DAMAGE.
+  47:Middlewares/Third_Party/wakaama/transaction.c **** 
+  48:Middlewares/Third_Party/wakaama/transaction.c ****  David Navarro <david.navarro@intel.com>
+  49:Middlewares/Third_Party/wakaama/transaction.c **** 
+  50:Middlewares/Third_Party/wakaama/transaction.c **** */
+  51:Middlewares/Third_Party/wakaama/transaction.c **** 
+  52:Middlewares/Third_Party/wakaama/transaction.c **** /*
+  53:Middlewares/Third_Party/wakaama/transaction.c **** Contains code snippets which are:
+  54:Middlewares/Third_Party/wakaama/transaction.c **** 
+  55:Middlewares/Third_Party/wakaama/transaction.c ****  * Copyright (c) 2013, Institute for Pervasive Computing, ETH Zurich
+  56:Middlewares/Third_Party/wakaama/transaction.c ****  * All rights reserved.
+  57:Middlewares/Third_Party/wakaama/transaction.c ****  *
+  58:Middlewares/Third_Party/wakaama/transaction.c ****  * Redistribution and use in source and binary forms, with or without
+  59:Middlewares/Third_Party/wakaama/transaction.c ****  * modification, are permitted provided that the following conditions
+  60:Middlewares/Third_Party/wakaama/transaction.c ****  * are met:
+  61:Middlewares/Third_Party/wakaama/transaction.c ****  * 1. Redistributions of source code must retain the above copyright
+  62:Middlewares/Third_Party/wakaama/transaction.c ****  *    notice, this list of conditions and the following disclaimer.
+  63:Middlewares/Third_Party/wakaama/transaction.c ****  * 2. Redistributions in binary form must reproduce the above copyright
+  64:Middlewares/Third_Party/wakaama/transaction.c ****  *    notice, this list of conditions and the following disclaimer in the
+  65:Middlewares/Third_Party/wakaama/transaction.c ****  *    documentation and/or other materials provided with the distribution.
+  66:Middlewares/Third_Party/wakaama/transaction.c ****  * 3. Neither the name of the Institute nor the names of its contributors
+  67:Middlewares/Third_Party/wakaama/transaction.c ****  *    may be used to endorse or promote products derived from this software
+  68:Middlewares/Third_Party/wakaama/transaction.c ****  *    without specific prior written permission.
+  69:Middlewares/Third_Party/wakaama/transaction.c ****  *
+  70:Middlewares/Third_Party/wakaama/transaction.c ****  * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
+  71:Middlewares/Third_Party/wakaama/transaction.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  72:Middlewares/Third_Party/wakaama/transaction.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  73:Middlewares/Third_Party/wakaama/transaction.c ****  * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
+  74:Middlewares/Third_Party/wakaama/transaction.c ****  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  75:Middlewares/Third_Party/wakaama/transaction.c ****  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+  76:Middlewares/Third_Party/wakaama/transaction.c ****  * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  77:Middlewares/Third_Party/wakaama/transaction.c ****  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  78:Middlewares/Third_Party/wakaama/transaction.c ****  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  79:Middlewares/Third_Party/wakaama/transaction.c ****  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  80:Middlewares/Third_Party/wakaama/transaction.c ****  * SUCH DAMAGE.
+  81:Middlewares/Third_Party/wakaama/transaction.c **** 
+  82:Middlewares/Third_Party/wakaama/transaction.c **** */
+  83:Middlewares/Third_Party/wakaama/transaction.c **** 
+  84:Middlewares/Third_Party/wakaama/transaction.c **** /************************************************************************
+  85:Middlewares/Third_Party/wakaama/transaction.c ****  *  Function for communications transactions.
+  86:Middlewares/Third_Party/wakaama/transaction.c ****  *
+  87:Middlewares/Third_Party/wakaama/transaction.c ****  *  Basic specification: rfc7252
+  88:Middlewares/Third_Party/wakaama/transaction.c ****  *
+  89:Middlewares/Third_Party/wakaama/transaction.c ****  *  Transaction implements processing of piggybacked and separate response communication
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 3
+
+
+  90:Middlewares/Third_Party/wakaama/transaction.c ****  *  dialogs specified in section 2.2 of the above specification.
+  91:Middlewares/Third_Party/wakaama/transaction.c ****  *  The caller registers a callback function, which is called, when either the result is
+  92:Middlewares/Third_Party/wakaama/transaction.c ****  *  received or a timeout occurs.
+  93:Middlewares/Third_Party/wakaama/transaction.c ****  *
+  94:Middlewares/Third_Party/wakaama/transaction.c ****  *  Supported dialogs:
+  95:Middlewares/Third_Party/wakaama/transaction.c ****  *  Requests (GET - DELETE):
+  96:Middlewares/Third_Party/wakaama/transaction.c ****  *  - CON with mid, without token => regular finished with corresponding ACK.MID
+  97:Middlewares/Third_Party/wakaama/transaction.c ****  *  - CON with mid, with token => regular finished with corresponding ACK.MID and response containi
+  98:Middlewares/Third_Party/wakaama/transaction.c ****  *                  the token. Supports both versions, with piggybacked ACK and separate ACK/respon
+  99:Middlewares/Third_Party/wakaama/transaction.c ****  *                  Though the ACK.MID may be lost in the separate version, a matching response may
+ 100:Middlewares/Third_Party/wakaama/transaction.c ****  *                  finish the transaction even without the ACK.MID.
+ 101:Middlewares/Third_Party/wakaama/transaction.c ****  *  - NON without token => no transaction, no result expected!
+ 102:Middlewares/Third_Party/wakaama/transaction.c ****  *  - NON with token => regular finished with response containing the token.
+ 103:Middlewares/Third_Party/wakaama/transaction.c ****  *  Responses (COAP_201_CREATED - ?):
+ 104:Middlewares/Third_Party/wakaama/transaction.c ****  *  - CON with mid => regular finished with corresponding ACK.MID
+ 105:Middlewares/Third_Party/wakaama/transaction.c ****  */
+ 106:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 107:Middlewares/Third_Party/wakaama/transaction.c **** #include "internals.h"
+ 108:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 109:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 110:Middlewares/Third_Party/wakaama/transaction.c **** /*
+ 111:Middlewares/Third_Party/wakaama/transaction.c ****  * Modulo mask (+1 and +0.5 for rounding) for a random number to get the tick number for the random
+ 112:Middlewares/Third_Party/wakaama/transaction.c ****  * retransmission time between COAP_RESPONSE_TIMEOUT and COAP_RESPONSE_TIMEOUT*COAP_RESPONSE_RANDOM
+ 113:Middlewares/Third_Party/wakaama/transaction.c ****  */
+ 114:Middlewares/Third_Party/wakaama/transaction.c **** #define COAP_RESPONSE_TIMEOUT_TICKS         (CLOCK_SECOND * COAP_RESPONSE_TIMEOUT)
+ 115:Middlewares/Third_Party/wakaama/transaction.c **** #define COAP_RESPONSE_TIMEOUT_BACKOFF_MASK  ((CLOCK_SECOND * COAP_RESPONSE_TIMEOUT * (COAP_RESPONSE
+ 116:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 117:Middlewares/Third_Party/wakaama/transaction.c **** static int prv_checkFinished(lwm2m_transaction_t * transacP,
+ 118:Middlewares/Third_Party/wakaama/transaction.c ****                              coap_packet_t * receivedMessage)
+ 119:Middlewares/Third_Party/wakaama/transaction.c **** {
+  27              		.loc 1 119 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 8
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 10B5     		push	{r4, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 4, -8
+  36              		.cfi_offset 14, -4
+  37 0002 82B0     		sub	sp, sp, #8
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_offset 16
+ 120:Middlewares/Third_Party/wakaama/transaction.c ****     int len;
+ 121:Middlewares/Third_Party/wakaama/transaction.c ****     const uint8_t* token;
+ 122:Middlewares/Third_Party/wakaama/transaction.c ****     coap_packet_t * transactionMessage = transacP->message;
+  40              		.loc 1 122 0
+  41 0004 846A     		ldr	r4, [r0, #40]
+  42              	.LVL1:
+ 123:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 124:Middlewares/Third_Party/wakaama/transaction.c ****     if (COAP_DELETE < transactionMessage->code)
+  43              		.loc 1 124 0
+  44 0006 A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+  45 0008 042B     		cmp	r3, #4
+  46 000a 08D8     		bhi	.L8
+ 125:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 126:Middlewares/Third_Party/wakaama/transaction.c ****         // response
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 4
+
+
+ 127:Middlewares/Third_Party/wakaama/transaction.c ****         return transacP->ack_received ? 1 : 0;
+ 128:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 129:Middlewares/Third_Party/wakaama/transaction.c ****     if (!IS_OPTION(transactionMessage, COAP_OPTION_TOKEN))
+  47              		.loc 1 129 0
+  48 000c 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+  49 000e 13F0080F 		tst	r3, #8
+  50 0012 0AD1     		bne	.L4
+ 130:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 131:Middlewares/Third_Party/wakaama/transaction.c ****         // request without token
+ 132:Middlewares/Third_Party/wakaama/transaction.c ****         return transacP->ack_received ? 1 : 0;
+  51              		.loc 1 132 0
+  52 0014 007B     		ldrb	r0, [r0, #12]	@ zero_extendqisi2
+  53              	.LVL2:
+  54 0016 0030     		adds	r0, r0, #0
+  55 0018 18BF     		it	ne
+  56 001a 0120     		movne	r0, #1
+  57 001c 03E0     		b	.L1
+  58              	.LVL3:
+  59              	.L8:
+ 127:Middlewares/Third_Party/wakaama/transaction.c ****     }
+  60              		.loc 1 127 0
+  61 001e 007B     		ldrb	r0, [r0, #12]	@ zero_extendqisi2
+  62              	.LVL4:
+  63 0020 0030     		adds	r0, r0, #0
+  64 0022 18BF     		it	ne
+  65 0024 0120     		movne	r0, #1
+  66              	.LVL5:
+  67              	.L1:
+ 133:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 134:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 135:Middlewares/Third_Party/wakaama/transaction.c ****     len = coap_get_header_token(receivedMessage, &token);
+ 136:Middlewares/Third_Party/wakaama/transaction.c ****     if (transactionMessage->token_len == len)
+ 137:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 138:Middlewares/Third_Party/wakaama/transaction.c ****         if (memcmp(transactionMessage->token, token, len)==0) return 1;
+ 139:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 140:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 141:Middlewares/Third_Party/wakaama/transaction.c ****     return 0;
+ 142:Middlewares/Third_Party/wakaama/transaction.c **** }
+  68              		.loc 1 142 0
+  69 0026 02B0     		add	sp, sp, #8
+  70              	.LCFI2:
+  71              		.cfi_remember_state
+  72              		.cfi_def_cfa_offset 8
+  73              		@ sp needed
+  74 0028 10BD     		pop	{r4, pc}
+  75              	.LVL6:
+  76              	.L4:
+  77              	.LCFI3:
+  78              		.cfi_restore_state
+  79 002a 0846     		mov	r0, r1
+  80              	.LVL7:
+ 135:Middlewares/Third_Party/wakaama/transaction.c ****     if (transactionMessage->token_len == len)
+  81              		.loc 1 135 0
+  82 002c 01A9     		add	r1, sp, #4
+  83              	.LVL8:
+  84 002e FFF7FEFF 		bl	coap_get_header_token
+  85              	.LVL9:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 5
+
+
+ 136:Middlewares/Third_Party/wakaama/transaction.c ****     {
+  86              		.loc 1 136 0
+  87 0032 94F84C30 		ldrb	r3, [r4, #76]	@ zero_extendqisi2
+  88 0036 8342     		cmp	r3, r0
+  89 0038 01D0     		beq	.L9
+ 141:Middlewares/Third_Party/wakaama/transaction.c **** }
+  90              		.loc 1 141 0
+  91 003a 0020     		movs	r0, #0
+  92              	.LVL10:
+  93 003c F3E7     		b	.L1
+  94              	.LVL11:
+  95              	.L9:
+ 138:Middlewares/Third_Party/wakaama/transaction.c ****     }
+  96              		.loc 1 138 0
+  97 003e 0246     		mov	r2, r0
+  98 0040 0199     		ldr	r1, [sp, #4]
+  99 0042 04F14D00 		add	r0, r4, #77
+ 100              	.LVL12:
+ 101 0046 FFF7FEFF 		bl	memcmp
+ 102              	.LVL13:
+ 103 004a 08B1     		cbz	r0, .L6
+ 141:Middlewares/Third_Party/wakaama/transaction.c **** }
+ 104              		.loc 1 141 0
+ 105 004c 0020     		movs	r0, #0
+ 106 004e EAE7     		b	.L1
+ 107              	.L6:
+ 138:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 108              		.loc 1 138 0
+ 109 0050 0120     		movs	r0, #1
+ 110 0052 E8E7     		b	.L1
+ 111              		.cfi_endproc
+ 112              	.LFE3:
+ 114              		.section	.text.transaction_new,"ax",%progbits
+ 115              		.align	1
+ 116              		.global	transaction_new
+ 117              		.syntax unified
+ 118              		.thumb
+ 119              		.thumb_func
+ 120              		.fpu fpv4-sp-d16
+ 122              	transaction_new:
+ 123              	.LFB4:
+ 143:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 144:Middlewares/Third_Party/wakaama/transaction.c **** lwm2m_transaction_t * transaction_new(void * sessionH,
+ 145:Middlewares/Third_Party/wakaama/transaction.c ****                                       coap_method_t method,
+ 146:Middlewares/Third_Party/wakaama/transaction.c ****                                       char * altPath,
+ 147:Middlewares/Third_Party/wakaama/transaction.c ****                                       lwm2m_uri_t * uriP,
+ 148:Middlewares/Third_Party/wakaama/transaction.c ****                                       uint16_t mID,
+ 149:Middlewares/Third_Party/wakaama/transaction.c ****                                       uint8_t token_len,
+ 150:Middlewares/Third_Party/wakaama/transaction.c ****                                       uint8_t* token)
+ 151:Middlewares/Third_Party/wakaama/transaction.c **** {
+ 124              		.loc 1 151 0
+ 125              		.cfi_startproc
+ 126              		@ args = 12, pretend = 0, frame = 8
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128              	.LVL14:
+ 129 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 130              	.LCFI4:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 6
+
+
+ 131              		.cfi_def_cfa_offset 32
+ 132              		.cfi_offset 4, -32
+ 133              		.cfi_offset 5, -28
+ 134              		.cfi_offset 6, -24
+ 135              		.cfi_offset 7, -20
+ 136              		.cfi_offset 8, -16
+ 137              		.cfi_offset 9, -12
+ 138              		.cfi_offset 10, -8
+ 139              		.cfi_offset 14, -4
+ 140 0004 82B0     		sub	sp, sp, #8
+ 141              	.LCFI5:
+ 142              		.cfi_def_cfa_offset 40
+ 143 0006 BDF82890 		ldrh	r9, [sp, #40]
+ 144 000a 9DF82CA0 		ldrb	r10, [sp, #44]	@ zero_extendqisi2
+ 152:Middlewares/Third_Party/wakaama/transaction.c ****     lwm2m_transaction_t * transacP;
+ 153:Middlewares/Third_Party/wakaama/transaction.c ****     int result;
+ 154:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 155:Middlewares/Third_Party/wakaama/transaction.c ****     LOG_ARG("method: %d, altPath: \"%s\", mID: %d, token_len: %d",
+ 156:Middlewares/Third_Party/wakaama/transaction.c ****             method, altPath, mID, token_len);
+ 157:Middlewares/Third_Party/wakaama/transaction.c ****     LOG_URI(uriP);
+ 158:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 159:Middlewares/Third_Party/wakaama/transaction.c ****     // no transactions without peer
+ 160:Middlewares/Third_Party/wakaama/transaction.c ****     if (NULL == sessionH) return NULL;
+ 145              		.loc 1 160 0
+ 146 000e 0028     		cmp	r0, #0
+ 147 0010 00F09580 		beq	.L20
+ 148 0014 0746     		mov	r7, r0
+ 149 0016 1D46     		mov	r5, r3
+ 150 0018 1646     		mov	r6, r2
+ 151 001a 8846     		mov	r8, r1
+ 161:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 162:Middlewares/Third_Party/wakaama/transaction.c ****     transacP = (lwm2m_transaction_t *)lwm2m_malloc(sizeof(lwm2m_transaction_t));
+ 152              		.loc 1 162 0
+ 153 001c 4020     		movs	r0, #64
+ 154              	.LVL15:
+ 155 001e FFF7FEFF 		bl	lwm2m_malloc
+ 156              	.LVL16:
+ 163:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 164:Middlewares/Third_Party/wakaama/transaction.c ****     if (NULL == transacP) return NULL;
+ 157              		.loc 1 164 0
+ 158 0022 0446     		mov	r4, r0
+ 159 0024 0028     		cmp	r0, #0
+ 160 0026 3ED0     		beq	.L10
+ 165:Middlewares/Third_Party/wakaama/transaction.c ****     memset(transacP, 0, sizeof(lwm2m_transaction_t));
+ 161              		.loc 1 165 0
+ 162 0028 4022     		movs	r2, #64
+ 163 002a 0021     		movs	r1, #0
+ 164 002c FFF7FEFF 		bl	memset
+ 165              	.LVL17:
+ 166:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 167:Middlewares/Third_Party/wakaama/transaction.c ****     transacP->message = lwm2m_malloc(sizeof(coap_packet_t));
+ 166              		.loc 1 167 0
+ 167 0030 8C20     		movs	r0, #140
+ 168 0032 FFF7FEFF 		bl	lwm2m_malloc
+ 169              	.LVL18:
+ 170 0036 A062     		str	r0, [r4, #40]
+ 168:Middlewares/Third_Party/wakaama/transaction.c ****     if (NULL == transacP->message) goto error;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 7
+
+
+ 171              		.loc 1 168 0
+ 172 0038 0028     		cmp	r0, #0
+ 173 003a 7BD0     		beq	.L12
+ 169:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 170:Middlewares/Third_Party/wakaama/transaction.c ****     coap_init_message(transacP->message, COAP_TYPE_CON, method, mID);
+ 174              		.loc 1 170 0
+ 175 003c 4B46     		mov	r3, r9
+ 176 003e 4246     		mov	r2, r8
+ 177 0040 0021     		movs	r1, #0
+ 178 0042 FFF7FEFF 		bl	coap_init_message
+ 179              	.LVL19:
+ 171:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 172:Middlewares/Third_Party/wakaama/transaction.c ****     transacP->peerH = sessionH;
+ 180              		.loc 1 172 0
+ 181 0046 A760     		str	r7, [r4, #8]
+ 173:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 174:Middlewares/Third_Party/wakaama/transaction.c ****     transacP->mID = mID;
+ 182              		.loc 1 174 0
+ 183 0048 A4F80490 		strh	r9, [r4, #4]	@ movhi
+ 175:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 176:Middlewares/Third_Party/wakaama/transaction.c ****     if (altPath != NULL)
+ 184              		.loc 1 176 0
+ 185 004c 1EB1     		cbz	r6, .L13
+ 177:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 178:Middlewares/Third_Party/wakaama/transaction.c ****         // TODO: Support multi-segment alternative path
+ 179:Middlewares/Third_Party/wakaama/transaction.c ****         coap_set_header_uri_path_segment(transacP->message, altPath + 1);
+ 186              		.loc 1 179 0
+ 187 004e 711C     		adds	r1, r6, #1
+ 188 0050 A06A     		ldr	r0, [r4, #40]
+ 189 0052 FFF7FEFF 		bl	coap_set_header_uri_path_segment
+ 190              	.LVL20:
+ 191              	.L13:
+ 180:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 181:Middlewares/Third_Party/wakaama/transaction.c ****     if (NULL != uriP)
+ 192              		.loc 1 181 0
+ 193 0056 E5B1     		cbz	r5, .L14
+ 194              	.LBB2:
+ 182:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 183:Middlewares/Third_Party/wakaama/transaction.c ****         char stringID[LWM2M_STRING_ID_MAX_LEN];
+ 184:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 185:Middlewares/Third_Party/wakaama/transaction.c ****         result = utils_intToText(uriP->objectId, (uint8_t*)stringID, LWM2M_STRING_ID_MAX_LEN);
+ 195              		.loc 1 185 0
+ 196 0058 0623     		movs	r3, #6
+ 197 005a 6A46     		mov	r2, sp
+ 198 005c 6888     		ldrh	r0, [r5, #2]
+ 199 005e 0021     		movs	r1, #0
+ 200 0060 FFF7FEFF 		bl	utils_intToText
+ 201              	.LVL21:
+ 186:Middlewares/Third_Party/wakaama/transaction.c ****         if (result == 0) goto error;
+ 202              		.loc 1 186 0
+ 203 0064 0346     		mov	r3, r0
+ 204 0066 0028     		cmp	r0, #0
+ 205 0068 64D0     		beq	.L12
+ 187:Middlewares/Third_Party/wakaama/transaction.c ****         stringID[result] = 0;
+ 206              		.loc 1 187 0
+ 207 006a 02AA     		add	r2, sp, #8
+ 208 006c 1344     		add	r3, r3, r2
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 8
+
+
+ 209 006e 0022     		movs	r2, #0
+ 210 0070 03F8082C 		strb	r2, [r3, #-8]
+ 188:Middlewares/Third_Party/wakaama/transaction.c ****         coap_set_header_uri_path_segment(transacP->message, stringID);
+ 211              		.loc 1 188 0
+ 212 0074 6946     		mov	r1, sp
+ 213 0076 A06A     		ldr	r0, [r4, #40]
+ 214              	.LVL22:
+ 215 0078 FFF7FEFF 		bl	coap_set_header_uri_path_segment
+ 216              	.LVL23:
+ 189:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 190:Middlewares/Third_Party/wakaama/transaction.c ****         if (LWM2M_URI_IS_SET_INSTANCE(uriP))
+ 217              		.loc 1 190 0
+ 218 007c 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 219 007e 13F0020F 		tst	r3, #2
+ 220 0082 14D1     		bne	.L22
+ 191:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 192:Middlewares/Third_Party/wakaama/transaction.c ****             result = utils_intToText(uriP->instanceId, (uint8_t*)stringID, LWM2M_STRING_ID_MAX_LEN)
+ 193:Middlewares/Third_Party/wakaama/transaction.c ****             if (result == 0) goto error;
+ 194:Middlewares/Third_Party/wakaama/transaction.c ****             stringID[result] = 0;
+ 195:Middlewares/Third_Party/wakaama/transaction.c ****             coap_set_header_uri_path_segment(transacP->message, stringID);
+ 196:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 197:Middlewares/Third_Party/wakaama/transaction.c ****         else
+ 198:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 199:Middlewares/Third_Party/wakaama/transaction.c ****             if (LWM2M_URI_IS_SET_RESOURCE(uriP))
+ 221              		.loc 1 199 0
+ 222 0084 13F0010F 		tst	r3, #1
+ 223 0088 24D1     		bne	.L23
+ 224              	.L17:
+ 200:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 201:Middlewares/Third_Party/wakaama/transaction.c ****                 coap_set_header_uri_path_segment(transacP->message, NULL);
+ 202:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 203:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 204:Middlewares/Third_Party/wakaama/transaction.c ****         if (LWM2M_URI_IS_SET_RESOURCE(uriP))
+ 225              		.loc 1 204 0
+ 226 008a 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 227 008c 13F0010F 		tst	r3, #1
+ 228 0090 25D1     		bne	.L24
+ 229              	.L14:
+ 230              	.LBE2:
+ 205:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 206:Middlewares/Third_Party/wakaama/transaction.c ****             result = utils_intToText(uriP->resourceId, (uint8_t*)stringID, LWM2M_STRING_ID_MAX_LEN)
+ 207:Middlewares/Third_Party/wakaama/transaction.c ****             if (result == 0) goto error;
+ 208:Middlewares/Third_Party/wakaama/transaction.c ****             stringID[result] = 0;
+ 209:Middlewares/Third_Party/wakaama/transaction.c ****             coap_set_header_uri_path_segment(transacP->message, stringID);
+ 210:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 211:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 212:Middlewares/Third_Party/wakaama/transaction.c ****     if (0 < token_len)
+ 231              		.loc 1 212 0
+ 232 0092 BAF1000F 		cmp	r10, #0
+ 233 0096 06D0     		beq	.L10
+ 213:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 214:Middlewares/Third_Party/wakaama/transaction.c ****         if (NULL != token)
+ 234              		.loc 1 214 0
+ 235 0098 0C9B     		ldr	r3, [sp, #48]
+ 236 009a 93B3     		cbz	r3, .L19
+ 215:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 216:Middlewares/Third_Party/wakaama/transaction.c ****             coap_set_header_token(transacP->message, token, token_len);
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 9
+
+
+ 237              		.loc 1 216 0
+ 238 009c 5246     		mov	r2, r10
+ 239 009e 1946     		mov	r1, r3
+ 240 00a0 A06A     		ldr	r0, [r4, #40]
+ 241 00a2 FFF7FEFF 		bl	coap_set_header_token
+ 242              	.LVL24:
+ 243              	.L10:
+ 217:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 218:Middlewares/Third_Party/wakaama/transaction.c ****         else {
+ 219:Middlewares/Third_Party/wakaama/transaction.c ****             // generate a token
+ 220:Middlewares/Third_Party/wakaama/transaction.c ****             uint8_t temp_token[COAP_TOKEN_LEN];
+ 221:Middlewares/Third_Party/wakaama/transaction.c ****             time_t tv_sec = lwm2m_gettime();
+ 222:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 223:Middlewares/Third_Party/wakaama/transaction.c ****             // initialize first 6 bytes, leave the last 2 random
+ 224:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[0] = mID;
+ 225:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[1] = mID >> 8;
+ 226:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[2] = tv_sec;
+ 227:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[3] = tv_sec >> 8;
+ 228:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[4] = tv_sec >> 16;
+ 229:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[5] = tv_sec >> 24;
+ 230:Middlewares/Third_Party/wakaama/transaction.c ****             // use just the provided amount of bytes
+ 231:Middlewares/Third_Party/wakaama/transaction.c ****             coap_set_header_token(transacP->message, temp_token, token_len);
+ 232:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 233:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 234:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 235:Middlewares/Third_Party/wakaama/transaction.c ****     LOG("Exiting on success");
+ 236:Middlewares/Third_Party/wakaama/transaction.c ****     return transacP;
+ 237:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 238:Middlewares/Third_Party/wakaama/transaction.c **** error:
+ 239:Middlewares/Third_Party/wakaama/transaction.c ****     LOG("Exiting on failure");
+ 240:Middlewares/Third_Party/wakaama/transaction.c ****     lwm2m_free(transacP);
+ 241:Middlewares/Third_Party/wakaama/transaction.c ****     return NULL;
+ 242:Middlewares/Third_Party/wakaama/transaction.c **** }
+ 244              		.loc 1 242 0
+ 245 00a6 2046     		mov	r0, r4
+ 246 00a8 02B0     		add	sp, sp, #8
+ 247              	.LCFI6:
+ 248              		.cfi_remember_state
+ 249              		.cfi_def_cfa_offset 32
+ 250              		@ sp needed
+ 251 00aa BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 252              	.LVL25:
+ 253              	.L22:
+ 254              	.LCFI7:
+ 255              		.cfi_restore_state
+ 256              	.LBB3:
+ 192:Middlewares/Third_Party/wakaama/transaction.c ****             if (result == 0) goto error;
+ 257              		.loc 1 192 0
+ 258 00ae 0623     		movs	r3, #6
+ 259 00b0 6A46     		mov	r2, sp
+ 260 00b2 A888     		ldrh	r0, [r5, #4]
+ 261 00b4 0021     		movs	r1, #0
+ 262 00b6 FFF7FEFF 		bl	utils_intToText
+ 263              	.LVL26:
+ 193:Middlewares/Third_Party/wakaama/transaction.c ****             stringID[result] = 0;
+ 264              		.loc 1 193 0
+ 265 00ba 0346     		mov	r3, r0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 10
+
+
+ 266 00bc 0028     		cmp	r0, #0
+ 267 00be 39D0     		beq	.L12
+ 194:Middlewares/Third_Party/wakaama/transaction.c ****             coap_set_header_uri_path_segment(transacP->message, stringID);
+ 268              		.loc 1 194 0
+ 269 00c0 02AA     		add	r2, sp, #8
+ 270 00c2 1344     		add	r3, r3, r2
+ 271 00c4 0022     		movs	r2, #0
+ 272 00c6 03F8082C 		strb	r2, [r3, #-8]
+ 195:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 273              		.loc 1 195 0
+ 274 00ca 6946     		mov	r1, sp
+ 275 00cc A06A     		ldr	r0, [r4, #40]
+ 276              	.LVL27:
+ 277 00ce FFF7FEFF 		bl	coap_set_header_uri_path_segment
+ 278              	.LVL28:
+ 279 00d2 DAE7     		b	.L17
+ 280              	.L23:
+ 201:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 281              		.loc 1 201 0
+ 282 00d4 0021     		movs	r1, #0
+ 283 00d6 A06A     		ldr	r0, [r4, #40]
+ 284 00d8 FFF7FEFF 		bl	coap_set_header_uri_path_segment
+ 285              	.LVL29:
+ 286 00dc D5E7     		b	.L17
+ 287              	.L24:
+ 206:Middlewares/Third_Party/wakaama/transaction.c ****             if (result == 0) goto error;
+ 288              		.loc 1 206 0
+ 289 00de 0623     		movs	r3, #6
+ 290 00e0 6A46     		mov	r2, sp
+ 291 00e2 E888     		ldrh	r0, [r5, #6]
+ 292 00e4 0021     		movs	r1, #0
+ 293 00e6 FFF7FEFF 		bl	utils_intToText
+ 294              	.LVL30:
+ 207:Middlewares/Third_Party/wakaama/transaction.c ****             stringID[result] = 0;
+ 295              		.loc 1 207 0
+ 296 00ea 0346     		mov	r3, r0
+ 297 00ec 10B3     		cbz	r0, .L12
+ 208:Middlewares/Third_Party/wakaama/transaction.c ****             coap_set_header_uri_path_segment(transacP->message, stringID);
+ 298              		.loc 1 208 0
+ 299 00ee 02AA     		add	r2, sp, #8
+ 300 00f0 1344     		add	r3, r3, r2
+ 301 00f2 0022     		movs	r2, #0
+ 302 00f4 03F8082C 		strb	r2, [r3, #-8]
+ 209:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 303              		.loc 1 209 0
+ 304 00f8 6946     		mov	r1, sp
+ 305 00fa A06A     		ldr	r0, [r4, #40]
+ 306              	.LVL31:
+ 307 00fc FFF7FEFF 		bl	coap_set_header_uri_path_segment
+ 308              	.LVL32:
+ 309 0100 C7E7     		b	.L14
+ 310              	.L19:
+ 311              	.LBE3:
+ 312              	.LBB4:
+ 221:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 313              		.loc 1 221 0
+ 314 0102 FFF7FEFF 		bl	lwm2m_gettime
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 11
+
+
+ 315              	.LVL33:
+ 224:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[1] = mID >> 8;
+ 316              		.loc 1 224 0
+ 317 0106 8DF80090 		strb	r9, [sp]
+ 225:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[2] = tv_sec;
+ 318              		.loc 1 225 0
+ 319 010a 4FEA1929 		lsr	r9, r9, #8
+ 320 010e 8DF80190 		strb	r9, [sp, #1]
+ 226:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[3] = tv_sec >> 8;
+ 321              		.loc 1 226 0
+ 322 0112 8DF80200 		strb	r0, [sp, #2]
+ 227:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[4] = tv_sec >> 16;
+ 323              		.loc 1 227 0
+ 324 0116 030A     		lsrs	r3, r0, #8
+ 325 0118 8DF80330 		strb	r3, [sp, #3]
+ 228:Middlewares/Third_Party/wakaama/transaction.c ****             temp_token[5] = tv_sec >> 24;
+ 326              		.loc 1 228 0
+ 327 011c 030C     		lsrs	r3, r0, #16
+ 328 011e 8DF80430 		strb	r3, [sp, #4]
+ 229:Middlewares/Third_Party/wakaama/transaction.c ****             // use just the provided amount of bytes
+ 329              		.loc 1 229 0
+ 330 0122 000E     		lsrs	r0, r0, #24
+ 331              	.LVL34:
+ 332 0124 8DF80500 		strb	r0, [sp, #5]
+ 231:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 333              		.loc 1 231 0
+ 334 0128 5246     		mov	r2, r10
+ 335 012a 6946     		mov	r1, sp
+ 336 012c A06A     		ldr	r0, [r4, #40]
+ 337 012e FFF7FEFF 		bl	coap_set_header_token
+ 338              	.LVL35:
+ 339 0132 B8E7     		b	.L10
+ 340              	.L12:
+ 341              	.LBE4:
+ 240:Middlewares/Third_Party/wakaama/transaction.c ****     return NULL;
+ 342              		.loc 1 240 0
+ 343 0134 2046     		mov	r0, r4
+ 344 0136 FFF7FEFF 		bl	lwm2m_free
+ 345              	.LVL36:
+ 241:Middlewares/Third_Party/wakaama/transaction.c **** }
+ 346              		.loc 1 241 0
+ 347 013a 0024     		movs	r4, #0
+ 348              	.LVL37:
+ 349 013c B3E7     		b	.L10
+ 350              	.LVL38:
+ 351              	.L20:
+ 160:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 352              		.loc 1 160 0
+ 353 013e 0024     		movs	r4, #0
+ 354 0140 B1E7     		b	.L10
+ 355              		.cfi_endproc
+ 356              	.LFE4:
+ 358              		.section	.text.transaction_free,"ax",%progbits
+ 359              		.align	1
+ 360              		.global	transaction_free
+ 361              		.syntax unified
+ 362              		.thumb
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 12
+
+
+ 363              		.thumb_func
+ 364              		.fpu fpv4-sp-d16
+ 366              	transaction_free:
+ 367              	.LFB5:
+ 243:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 244:Middlewares/Third_Party/wakaama/transaction.c **** void transaction_free(lwm2m_transaction_t * transacP)
+ 245:Middlewares/Third_Party/wakaama/transaction.c **** {
+ 368              		.loc 1 245 0
+ 369              		.cfi_startproc
+ 370              		@ args = 0, pretend = 0, frame = 0
+ 371              		@ frame_needed = 0, uses_anonymous_args = 0
+ 372              	.LVL39:
+ 373 0000 10B5     		push	{r4, lr}
+ 374              	.LCFI8:
+ 375              		.cfi_def_cfa_offset 8
+ 376              		.cfi_offset 4, -8
+ 377              		.cfi_offset 14, -4
+ 378 0002 0446     		mov	r4, r0
+ 246:Middlewares/Third_Party/wakaama/transaction.c ****     LOG("Entering");
+ 247:Middlewares/Third_Party/wakaama/transaction.c ****     if (transacP->message)
+ 379              		.loc 1 247 0
+ 380 0004 806A     		ldr	r0, [r0, #40]
+ 381              	.LVL40:
+ 382 0006 20B1     		cbz	r0, .L26
+ 248:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 249:Middlewares/Third_Party/wakaama/transaction.c ****        coap_free_header(transacP->message);
+ 383              		.loc 1 249 0
+ 384 0008 FFF7FEFF 		bl	coap_free_header
+ 385              	.LVL41:
+ 250:Middlewares/Third_Party/wakaama/transaction.c ****        lwm2m_free(transacP->message);
+ 386              		.loc 1 250 0
+ 387 000c A06A     		ldr	r0, [r4, #40]
+ 388 000e FFF7FEFF 		bl	lwm2m_free
+ 389              	.LVL42:
+ 390              	.L26:
+ 251:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 252:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 253:Middlewares/Third_Party/wakaama/transaction.c ****     if (transacP->buffer) lwm2m_free(transacP->buffer);
+ 391              		.loc 1 253 0
+ 392 0012 206B     		ldr	r0, [r4, #48]
+ 393 0014 08B1     		cbz	r0, .L27
+ 394              		.loc 1 253 0 is_stmt 0 discriminator 1
+ 395 0016 FFF7FEFF 		bl	lwm2m_free
+ 396              	.LVL43:
+ 397              	.L27:
+ 254:Middlewares/Third_Party/wakaama/transaction.c ****     lwm2m_free(transacP);
+ 398              		.loc 1 254 0 is_stmt 1
+ 399 001a 2046     		mov	r0, r4
+ 400 001c FFF7FEFF 		bl	lwm2m_free
+ 401              	.LVL44:
+ 255:Middlewares/Third_Party/wakaama/transaction.c **** }
+ 402              		.loc 1 255 0
+ 403 0020 10BD     		pop	{r4, pc}
+ 404              		.cfi_endproc
+ 405              	.LFE5:
+ 407              		.section	.text.transaction_remove,"ax",%progbits
+ 408              		.align	1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 13
+
+
+ 409              		.global	transaction_remove
+ 410              		.syntax unified
+ 411              		.thumb
+ 412              		.thumb_func
+ 413              		.fpu fpv4-sp-d16
+ 415              	transaction_remove:
+ 416              	.LFB6:
+ 256:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 257:Middlewares/Third_Party/wakaama/transaction.c **** void transaction_remove(lwm2m_context_t * contextP,
+ 258:Middlewares/Third_Party/wakaama/transaction.c ****                         lwm2m_transaction_t * transacP)
+ 259:Middlewares/Third_Party/wakaama/transaction.c **** {
+ 417              		.loc 1 259 0
+ 418              		.cfi_startproc
+ 419              		@ args = 0, pretend = 0, frame = 0
+ 420              		@ frame_needed = 0, uses_anonymous_args = 0
+ 421              	.LVL45:
+ 422 0000 38B5     		push	{r3, r4, r5, lr}
+ 423              	.LCFI9:
+ 424              		.cfi_def_cfa_offset 16
+ 425              		.cfi_offset 3, -16
+ 426              		.cfi_offset 4, -12
+ 427              		.cfi_offset 5, -8
+ 428              		.cfi_offset 14, -4
+ 429 0002 0546     		mov	r5, r0
+ 430 0004 0C46     		mov	r4, r1
+ 260:Middlewares/Third_Party/wakaama/transaction.c ****     LOG("Entering");
+ 261:Middlewares/Third_Party/wakaama/transaction.c ****     contextP->transactionList = (lwm2m_transaction_t *) LWM2M_LIST_RM(contextP->transactionList, tr
+ 431              		.loc 1 261 0
+ 432 0006 0022     		movs	r2, #0
+ 433 0008 8988     		ldrh	r1, [r1, #4]
+ 434              	.LVL46:
+ 435 000a 406A     		ldr	r0, [r0, #36]
+ 436              	.LVL47:
+ 437 000c FFF7FEFF 		bl	lwm2m_list_remove
+ 438              	.LVL48:
+ 439 0010 6862     		str	r0, [r5, #36]
+ 262:Middlewares/Third_Party/wakaama/transaction.c ****     transaction_free(transacP);
+ 440              		.loc 1 262 0
+ 441 0012 2046     		mov	r0, r4
+ 442 0014 FFF7FEFF 		bl	transaction_free
+ 443              	.LVL49:
+ 263:Middlewares/Third_Party/wakaama/transaction.c **** }
+ 444              		.loc 1 263 0
+ 445 0018 38BD     		pop	{r3, r4, r5, pc}
+ 446              		.cfi_endproc
+ 447              	.LFE6:
+ 449              		.section	.text.transaction_handleResponse,"ax",%progbits
+ 450              		.align	1
+ 451              		.global	transaction_handleResponse
+ 452              		.syntax unified
+ 453              		.thumb
+ 454              		.thumb_func
+ 455              		.fpu fpv4-sp-d16
+ 457              	transaction_handleResponse:
+ 458              	.LFB7:
+ 264:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 265:Middlewares/Third_Party/wakaama/transaction.c **** bool transaction_handleResponse(lwm2m_context_t * contextP,
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 14
+
+
+ 266:Middlewares/Third_Party/wakaama/transaction.c ****                                  void * fromSessionH,
+ 267:Middlewares/Third_Party/wakaama/transaction.c ****                                  coap_packet_t * message,
+ 268:Middlewares/Third_Party/wakaama/transaction.c ****                                  coap_packet_t * response)
+ 269:Middlewares/Third_Party/wakaama/transaction.c **** {
+ 459              		.loc 1 269 0
+ 460              		.cfi_startproc
+ 461              		@ args = 0, pretend = 0, frame = 0
+ 462              		@ frame_needed = 0, uses_anonymous_args = 0
+ 463              	.LVL50:
+ 464 0000 2DE9F84F 		push	{r3, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 465              	.LCFI10:
+ 466              		.cfi_def_cfa_offset 40
+ 467              		.cfi_offset 3, -40
+ 468              		.cfi_offset 4, -36
+ 469              		.cfi_offset 5, -32
+ 470              		.cfi_offset 6, -28
+ 471              		.cfi_offset 7, -24
+ 472              		.cfi_offset 8, -20
+ 473              		.cfi_offset 9, -16
+ 474              		.cfi_offset 10, -12
+ 475              		.cfi_offset 11, -8
+ 476              		.cfi_offset 14, -4
+ 477 0004 0546     		mov	r5, r0
+ 478 0006 0F46     		mov	r7, r1
+ 479 0008 9046     		mov	r8, r2
+ 480 000a 9B46     		mov	fp, r3
+ 481              	.LVL51:
+ 270:Middlewares/Third_Party/wakaama/transaction.c ****     bool found = false;
+ 271:Middlewares/Third_Party/wakaama/transaction.c ****     bool reset = false;
+ 272:Middlewares/Third_Party/wakaama/transaction.c ****     lwm2m_transaction_t * transacP;
+ 273:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 274:Middlewares/Third_Party/wakaama/transaction.c ****     LOG("Entering");
+ 275:Middlewares/Third_Party/wakaama/transaction.c ****     transacP = contextP->transactionList;
+ 482              		.loc 1 275 0
+ 483 000c 446A     		ldr	r4, [r0, #36]
+ 484              	.LVL52:
+ 271:Middlewares/Third_Party/wakaama/transaction.c ****     lwm2m_transaction_t * transacP;
+ 485              		.loc 1 271 0
+ 486 000e 4FF00009 		mov	r9, #0
+ 270:Middlewares/Third_Party/wakaama/transaction.c ****     bool found = false;
+ 487              		.loc 1 270 0
+ 488 0012 CA46     		mov	r10, r9
+ 276:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 277:Middlewares/Third_Party/wakaama/transaction.c ****     while (NULL != transacP)
+ 489              		.loc 1 277 0
+ 490 0014 0BE0     		b	.L32
+ 491              	.LVL53:
+ 492              	.L34:
+ 278:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 279:Middlewares/Third_Party/wakaama/transaction.c ****         if (lwm2m_session_is_equal(fromSessionH, transacP->peerH, contextP->userData) == true)
+ 280:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 281:Middlewares/Third_Party/wakaama/transaction.c ****             if (!transacP->ack_received)
+ 282:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 283:Middlewares/Third_Party/wakaama/transaction.c ****                 if ((COAP_TYPE_ACK == message->type) || (COAP_TYPE_RST == message->type))
+ 284:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 285:Middlewares/Third_Party/wakaama/transaction.c ****                     if (transacP->mID == message->mid)
+ 286:Middlewares/Third_Party/wakaama/transaction.c **** 	                {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 15
+
+
+ 287:Middlewares/Third_Party/wakaama/transaction.c ****     	                found = true;
+ 288:Middlewares/Third_Party/wakaama/transaction.c ****         	            transacP->ack_received = true;
+ 289:Middlewares/Third_Party/wakaama/transaction.c ****             	        reset = COAP_TYPE_RST == message->type;
+ 290:Middlewares/Third_Party/wakaama/transaction.c ****             	    }
+ 291:Middlewares/Third_Party/wakaama/transaction.c ****                 }
+ 292:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 293:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 294:Middlewares/Third_Party/wakaama/transaction.c ****             if (reset || prv_checkFinished(transacP, message))
+ 493              		.loc 1 294 0
+ 494 0016 B9F1000F 		cmp	r9, #0
+ 495 001a 2DD1     		bne	.L35
+ 496              		.loc 1 294 0 is_stmt 0 discriminator 1
+ 497 001c 4146     		mov	r1, r8
+ 498 001e 2046     		mov	r0, r4
+ 499 0020 FFF7FEFF 		bl	prv_checkFinished
+ 500              	.LVL54:
+ 501 0024 40BB     		cbnz	r0, .L35
+ 295:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 296:Middlewares/Third_Party/wakaama/transaction.c ****                 // HACK: If a message is sent from the monitor callback,
+ 297:Middlewares/Third_Party/wakaama/transaction.c ****                 // it will arrive before the registration ACK.
+ 298:Middlewares/Third_Party/wakaama/transaction.c ****                 // So we resend transaction that were denied for authentication reason.
+ 299:Middlewares/Third_Party/wakaama/transaction.c ****                 if (!reset)
+ 300:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 301:Middlewares/Third_Party/wakaama/transaction.c ****                     if (COAP_TYPE_CON == message->type && NULL != response)
+ 302:Middlewares/Third_Party/wakaama/transaction.c ****                     {
+ 303:Middlewares/Third_Party/wakaama/transaction.c ****                         coap_init_message(response, COAP_TYPE_ACK, 0, message->mid);
+ 304:Middlewares/Third_Party/wakaama/transaction.c ****                         message_send(contextP, response, fromSessionH);
+ 305:Middlewares/Third_Party/wakaama/transaction.c ****                     }
+ 306:Middlewares/Third_Party/wakaama/transaction.c ****                 
+ 307:Middlewares/Third_Party/wakaama/transaction.c **** 	                if ((COAP_401_UNAUTHORIZED == message->code) && (COAP_MAX_RETRANSMIT > transacP->r
+ 308:Middlewares/Third_Party/wakaama/transaction.c ****     	            {
+ 309:Middlewares/Third_Party/wakaama/transaction.c ****         	            transacP->ack_received = false;
+ 310:Middlewares/Third_Party/wakaama/transaction.c ****             	        transacP->retrans_time += COAP_RESPONSE_TIMEOUT;
+ 311:Middlewares/Third_Party/wakaama/transaction.c ****                 	    return true;
+ 312:Middlewares/Third_Party/wakaama/transaction.c ****                 	}
+ 313:Middlewares/Third_Party/wakaama/transaction.c **** 				}       
+ 314:Middlewares/Third_Party/wakaama/transaction.c ****                 if (transacP->callback != NULL)
+ 315:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 316:Middlewares/Third_Party/wakaama/transaction.c ****                     transacP->callback(transacP, message);
+ 317:Middlewares/Third_Party/wakaama/transaction.c ****                 }
+ 318:Middlewares/Third_Party/wakaama/transaction.c ****                 transaction_remove(contextP, transacP);
+ 319:Middlewares/Third_Party/wakaama/transaction.c ****                 return true;
+ 320:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 321:Middlewares/Third_Party/wakaama/transaction.c ****             // if we found our guy, exit
+ 322:Middlewares/Third_Party/wakaama/transaction.c ****             if (found)
+ 502              		.loc 1 322 0 is_stmt 1
+ 503 0026 BAF1000F 		cmp	r10, #0
+ 504 002a 55D1     		bne	.L45
+ 505              	.L33:
+ 323:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 324:Middlewares/Third_Party/wakaama/transaction.c ****                 time_t tv_sec = lwm2m_gettime();
+ 325:Middlewares/Third_Party/wakaama/transaction.c ****                 if (0 <= tv_sec)
+ 326:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 327:Middlewares/Third_Party/wakaama/transaction.c ****                     transacP->retrans_time = tv_sec;
+ 328:Middlewares/Third_Party/wakaama/transaction.c ****                 }
+ 329:Middlewares/Third_Party/wakaama/transaction.c ****                 if (transacP->response_timeout)
+ 330:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 16
+
+
+ 331:Middlewares/Third_Party/wakaama/transaction.c ****                     transacP->retrans_time += transacP->response_timeout;
+ 332:Middlewares/Third_Party/wakaama/transaction.c ****                 }
+ 333:Middlewares/Third_Party/wakaama/transaction.c ****                 else
+ 334:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 335:Middlewares/Third_Party/wakaama/transaction.c ****                     transacP->retrans_time += COAP_RESPONSE_TIMEOUT * transacP->retrans_counter;
+ 336:Middlewares/Third_Party/wakaama/transaction.c ****                 }
+ 337:Middlewares/Third_Party/wakaama/transaction.c ****                 return true;
+ 338:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 339:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 340:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 341:Middlewares/Third_Party/wakaama/transaction.c ****         transacP = transacP->next;
+ 506              		.loc 1 341 0
+ 507 002c 2468     		ldr	r4, [r4]
+ 508              	.LVL55:
+ 509              	.L32:
+ 277:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 510              		.loc 1 277 0
+ 511 002e 002C     		cmp	r4, #0
+ 512 0030 73D0     		beq	.L46
+ 279:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 513              		.loc 1 279 0
+ 514 0032 AA6A     		ldr	r2, [r5, #40]
+ 515 0034 A168     		ldr	r1, [r4, #8]
+ 516 0036 3846     		mov	r0, r7
+ 517 0038 FFF7FEFF 		bl	lwm2m_session_is_equal
+ 518              	.LVL56:
+ 519 003c 0646     		mov	r6, r0
+ 520 003e 0028     		cmp	r0, #0
+ 521 0040 F4D0     		beq	.L33
+ 281:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 522              		.loc 1 281 0
+ 523 0042 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 524 0044 002B     		cmp	r3, #0
+ 525 0046 E6D1     		bne	.L34
+ 283:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 526              		.loc 1 283 0
+ 527 0048 98F80530 		ldrb	r3, [r8, #5]	@ zero_extendqisi2
+ 528 004c 023B     		subs	r3, r3, #2
+ 529 004e DBB2     		uxtb	r3, r3
+ 530 0050 012B     		cmp	r3, #1
+ 531 0052 E0D8     		bhi	.L34
+ 285:Middlewares/Third_Party/wakaama/transaction.c **** 	                {
+ 532              		.loc 1 285 0
+ 533 0054 A288     		ldrh	r2, [r4, #4]
+ 534 0056 B8F80830 		ldrh	r3, [r8, #8]
+ 535 005a 9A42     		cmp	r2, r3
+ 536 005c DBD1     		bne	.L34
+ 537              	.LVL57:
+ 288:Middlewares/Third_Party/wakaama/transaction.c ****             	        reset = COAP_TYPE_RST == message->type;
+ 538              		.loc 1 288 0
+ 539 005e 0123     		movs	r3, #1
+ 540 0060 2373     		strb	r3, [r4, #12]
+ 289:Middlewares/Third_Party/wakaama/transaction.c ****             	    }
+ 541              		.loc 1 289 0
+ 542 0062 98F80590 		ldrb	r9, [r8, #5]	@ zero_extendqisi2
+ 543              	.LVL58:
+ 544 0066 B9F1030F 		cmp	r9, #3
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 17
+
+
+ 545 006a 14BF     		ite	ne
+ 546 006c 4FF00009 		movne	r9, #0
+ 547 0070 4FF00109 		moveq	r9, #1
+ 548              	.LVL59:
+ 287:Middlewares/Third_Party/wakaama/transaction.c ****         	            transacP->ack_received = true;
+ 549              		.loc 1 287 0
+ 550 0074 8246     		mov	r10, r0
+ 551 0076 CEE7     		b	.L34
+ 552              	.LVL60:
+ 553              	.L35:
+ 299:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 554              		.loc 1 299 0
+ 555 0078 B9F1000F 		cmp	r9, #0
+ 556 007c 15D1     		bne	.L37
+ 301:Middlewares/Third_Party/wakaama/transaction.c ****                     {
+ 557              		.loc 1 301 0
+ 558 007e 98F80530 		ldrb	r3, [r8, #5]	@ zero_extendqisi2
+ 559 0082 73B9     		cbnz	r3, .L38
+ 301:Middlewares/Third_Party/wakaama/transaction.c ****                     {
+ 560              		.loc 1 301 0 is_stmt 0 discriminator 1
+ 561 0084 BBF1000F 		cmp	fp, #0
+ 562 0088 0BD0     		beq	.L38
+ 303:Middlewares/Third_Party/wakaama/transaction.c ****                         message_send(contextP, response, fromSessionH);
+ 563              		.loc 1 303 0 is_stmt 1
+ 564 008a B8F80830 		ldrh	r3, [r8, #8]
+ 565 008e 0022     		movs	r2, #0
+ 566 0090 0221     		movs	r1, #2
+ 567 0092 5846     		mov	r0, fp
+ 568 0094 FFF7FEFF 		bl	coap_init_message
+ 569              	.LVL61:
+ 304:Middlewares/Third_Party/wakaama/transaction.c ****                     }
+ 570              		.loc 1 304 0
+ 571 0098 3A46     		mov	r2, r7
+ 572 009a 5946     		mov	r1, fp
+ 573 009c 2846     		mov	r0, r5
+ 574 009e FFF7FEFF 		bl	message_send
+ 575              	.LVL62:
+ 576              	.L38:
+ 307:Middlewares/Third_Party/wakaama/transaction.c ****     	            {
+ 577              		.loc 1 307 0
+ 578 00a2 98F80630 		ldrb	r3, [r8, #6]	@ zero_extendqisi2
+ 579 00a6 812B     		cmp	r3, #129
+ 580 00a8 09D0     		beq	.L47
+ 581              	.L37:
+ 314:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 582              		.loc 1 314 0
+ 583 00aa 636B     		ldr	r3, [r4, #52]
+ 584 00ac 13B1     		cbz	r3, .L40
+ 316:Middlewares/Third_Party/wakaama/transaction.c ****                 }
+ 585              		.loc 1 316 0
+ 586 00ae 4146     		mov	r1, r8
+ 587 00b0 2046     		mov	r0, r4
+ 588 00b2 9847     		blx	r3
+ 589              	.LVL63:
+ 590              	.L40:
+ 318:Middlewares/Third_Party/wakaama/transaction.c ****                 return true;
+ 591              		.loc 1 318 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 18
+
+
+ 592 00b4 2146     		mov	r1, r4
+ 593 00b6 2846     		mov	r0, r5
+ 594 00b8 FFF7FEFF 		bl	transaction_remove
+ 595              	.LVL64:
+ 319:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 596              		.loc 1 319 0
+ 597 00bc 2EE0     		b	.L39
+ 598              	.L47:
+ 307:Middlewares/Third_Party/wakaama/transaction.c ****     	            {
+ 599              		.loc 1 307 0 discriminator 1
+ 600 00be 237E     		ldrb	r3, [r4, #24]	@ zero_extendqisi2
+ 601 00c0 032B     		cmp	r3, #3
+ 602 00c2 F2D8     		bhi	.L37
+ 309:Middlewares/Third_Party/wakaama/transaction.c ****             	        transacP->retrans_time += COAP_RESPONSE_TIMEOUT;
+ 603              		.loc 1 309 0
+ 604 00c4 0023     		movs	r3, #0
+ 605 00c6 2373     		strb	r3, [r4, #12]
+ 310:Middlewares/Third_Party/wakaama/transaction.c ****                 	    return true;
+ 606              		.loc 1 310 0
+ 607 00c8 D4E90823 		ldrd	r2, [r4, #32]
+ 608 00cc 901C     		adds	r0, r2, #2
+ 609 00ce 43F10001 		adc	r1, r3, #0
+ 610 00d2 C4E90801 		strd	r0, [r4, #32]
+ 311:Middlewares/Third_Party/wakaama/transaction.c ****                 	}
+ 611              		.loc 1 311 0
+ 612 00d6 21E0     		b	.L39
+ 613              	.L45:
+ 614              	.LBB5:
+ 324:Middlewares/Third_Party/wakaama/transaction.c ****                 if (0 <= tv_sec)
+ 615              		.loc 1 324 0
+ 616 00d8 FFF7FEFF 		bl	lwm2m_gettime
+ 617              	.LVL65:
+ 325:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 618              		.loc 1 325 0
+ 619 00dc 0028     		cmp	r0, #0
+ 620 00de 71F10003 		sbcs	r3, r1, #0
+ 621 00e2 01DB     		blt	.L41
+ 327:Middlewares/Third_Party/wakaama/transaction.c ****                 }
+ 622              		.loc 1 327 0
+ 623 00e4 C4E90801 		strd	r0, [r4, #32]
+ 624              	.L41:
+ 329:Middlewares/Third_Party/wakaama/transaction.c ****                 {
+ 625              		.loc 1 329 0
+ 626 00e8 D4E90401 		ldrd	r0, [r4, #16]
+ 627              	.LVL66:
+ 628 00ec 50EA0103 		orrs	r3, r0, r1
+ 629 00f0 08D0     		beq	.L42
+ 331:Middlewares/Third_Party/wakaama/transaction.c ****                 }
+ 630              		.loc 1 331 0
+ 631 00f2 D4E90823 		ldrd	r2, [r4, #32]
+ 632 00f6 1518     		adds	r5, r2, r0
+ 633              	.LVL67:
+ 634 00f8 43EB0106 		adc	r6, r3, r1
+ 635 00fc C4E90856 		strd	r5, [r4, #32]
+ 337:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 636              		.loc 1 337 0
+ 637 0100 5646     		mov	r6, r10
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 19
+
+
+ 638 0102 0BE0     		b	.L39
+ 639              	.LVL68:
+ 640              	.L42:
+ 335:Middlewares/Third_Party/wakaama/transaction.c ****                 }
+ 641              		.loc 1 335 0
+ 642 0104 217E     		ldrb	r1, [r4, #24]	@ zero_extendqisi2
+ 643 0106 4900     		lsls	r1, r1, #1
+ 644 0108 D4E90823 		ldrd	r2, [r4, #32]
+ 645 010c 5518     		adds	r5, r2, r1
+ 646              	.LVL69:
+ 647 010e 43EBE176 		adc	r6, r3, r1, asr #31
+ 648 0112 C4E90856 		strd	r5, [r4, #32]
+ 337:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 649              		.loc 1 337 0
+ 650 0116 5646     		mov	r6, r10
+ 651 0118 00E0     		b	.L39
+ 652              	.LVL70:
+ 653              	.L46:
+ 654              	.LBE5:
+ 342:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 343:Middlewares/Third_Party/wakaama/transaction.c ****     return false;
+ 655              		.loc 1 343 0
+ 656 011a 0026     		movs	r6, #0
+ 657              	.LVL71:
+ 658              	.L39:
+ 344:Middlewares/Third_Party/wakaama/transaction.c **** }
+ 659              		.loc 1 344 0
+ 660 011c 3046     		mov	r0, r6
+ 661 011e BDE8F88F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 662              		.cfi_endproc
+ 663              	.LFE7:
+ 665              		.section	.text.transaction_send,"ax",%progbits
+ 666              		.align	1
+ 667              		.global	transaction_send
+ 668              		.syntax unified
+ 669              		.thumb
+ 670              		.thumb_func
+ 671              		.fpu fpv4-sp-d16
+ 673              	transaction_send:
+ 674              	.LFB8:
+ 345:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 346:Middlewares/Third_Party/wakaama/transaction.c **** int transaction_send(lwm2m_context_t * contextP,
+ 347:Middlewares/Third_Party/wakaama/transaction.c ****                      lwm2m_transaction_t * transacP)
+ 348:Middlewares/Third_Party/wakaama/transaction.c **** {
+ 675              		.loc 1 348 0
+ 676              		.cfi_startproc
+ 677              		@ args = 0, pretend = 0, frame = 0
+ 678              		@ frame_needed = 0, uses_anonymous_args = 0
+ 679              	.LVL72:
+ 680 0000 2DE9F048 		push	{r4, r5, r6, r7, fp, lr}
+ 681              	.LCFI11:
+ 682              		.cfi_def_cfa_offset 24
+ 683              		.cfi_offset 4, -24
+ 684              		.cfi_offset 5, -20
+ 685              		.cfi_offset 6, -16
+ 686              		.cfi_offset 7, -12
+ 687              		.cfi_offset 11, -8
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 20
+
+
+ 688              		.cfi_offset 14, -4
+ 689 0004 0646     		mov	r6, r0
+ 690 0006 0C46     		mov	r4, r1
+ 691              	.LVL73:
+ 349:Middlewares/Third_Party/wakaama/transaction.c ****     bool maxRetriesReached = false;
+ 350:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 351:Middlewares/Third_Party/wakaama/transaction.c ****     LOG("Entering");
+ 352:Middlewares/Third_Party/wakaama/transaction.c ****     if (transacP->buffer == NULL)
+ 692              		.loc 1 352 0
+ 693 0008 0B6B     		ldr	r3, [r1, #48]
+ 694 000a 6BB1     		cbz	r3, .L63
+ 695              	.LVL74:
+ 696              	.L49:
+ 353:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 354:Middlewares/Third_Party/wakaama/transaction.c ****         transacP->buffer_len = coap_serialize_get_size(transacP->message);
+ 355:Middlewares/Third_Party/wakaama/transaction.c ****         if (transacP->buffer_len == 0)
+ 356:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 357:Middlewares/Third_Party/wakaama/transaction.c ****            transaction_remove(contextP, transacP);
+ 358:Middlewares/Third_Party/wakaama/transaction.c ****            return COAP_500_INTERNAL_SERVER_ERROR;
+ 359:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 360:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 361:Middlewares/Third_Party/wakaama/transaction.c ****         transacP->buffer = (uint8_t*)lwm2m_malloc(transacP->buffer_len);
+ 362:Middlewares/Third_Party/wakaama/transaction.c ****         if (transacP->buffer == NULL)
+ 363:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 364:Middlewares/Third_Party/wakaama/transaction.c ****            transaction_remove(contextP, transacP);
+ 365:Middlewares/Third_Party/wakaama/transaction.c ****            return COAP_500_INTERNAL_SERVER_ERROR;
+ 366:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 367:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 368:Middlewares/Third_Party/wakaama/transaction.c ****         transacP->buffer_len = coap_serialize_message(transacP->message, transacP->buffer);
+ 369:Middlewares/Third_Party/wakaama/transaction.c ****         if (transacP->buffer_len == 0)
+ 370:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 371:Middlewares/Third_Party/wakaama/transaction.c ****             lwm2m_free(transacP->buffer);
+ 372:Middlewares/Third_Party/wakaama/transaction.c ****             transacP->buffer = NULL;
+ 373:Middlewares/Third_Party/wakaama/transaction.c ****             transaction_remove(contextP, transacP);
+ 374:Middlewares/Third_Party/wakaama/transaction.c ****             return COAP_500_INTERNAL_SERVER_ERROR;
+ 375:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 376:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 377:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 378:Middlewares/Third_Party/wakaama/transaction.c ****     if (!transacP->ack_received)
+ 697              		.loc 1 378 0
+ 698 000c 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 699 000e 002B     		cmp	r3, #0
+ 700 0010 56D1     		bne	.L58
+ 701              	.LBB6:
+ 379:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 380:Middlewares/Third_Party/wakaama/transaction.c ****         long unsigned timeout;
+ 381:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 382:Middlewares/Third_Party/wakaama/transaction.c ****         if (0 == transacP->retrans_counter)
+ 702              		.loc 1 382 0
+ 703 0012 237E     		ldrb	r3, [r4, #24]	@ zero_extendqisi2
+ 704 0014 8BB3     		cbz	r3, .L64
+ 383:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 384:Middlewares/Third_Party/wakaama/transaction.c ****             time_t tv_sec = lwm2m_gettime();
+ 385:Middlewares/Third_Party/wakaama/transaction.c ****             if (0 <= tv_sec)
+ 386:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 387:Middlewares/Third_Party/wakaama/transaction.c ****                 transacP->retrans_time = tv_sec + COAP_RESPONSE_TIMEOUT;
+ 388:Middlewares/Third_Party/wakaama/transaction.c ****                 transacP->retrans_counter = 1;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 21
+
+
+ 389:Middlewares/Third_Party/wakaama/transaction.c ****                 timeout = 0;
+ 390:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 391:Middlewares/Third_Party/wakaama/transaction.c ****             else
+ 392:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 393:Middlewares/Third_Party/wakaama/transaction.c ****                 maxRetriesReached = true;
+ 394:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 395:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 396:Middlewares/Third_Party/wakaama/transaction.c ****         else
+ 397:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 398:Middlewares/Third_Party/wakaama/transaction.c ****             timeout = COAP_RESPONSE_TIMEOUT << (transacP->retrans_counter - 1);
+ 705              		.loc 1 398 0
+ 706 0016 013B     		subs	r3, r3, #1
+ 707 0018 0227     		movs	r7, #2
+ 708 001a 9F40     		lsls	r7, r7, r3
+ 709              	.LVL75:
+ 710              	.LBE6:
+ 349:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 711              		.loc 1 349 0
+ 712 001c 0025     		movs	r5, #0
+ 713              	.LVL76:
+ 714              	.L55:
+ 715              	.LBB9:
+ 399:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 400:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 401:Middlewares/Third_Party/wakaama/transaction.c ****         if (COAP_MAX_RETRANSMIT + 1 >= transacP->retrans_counter)
+ 716              		.loc 1 401 0
+ 717 001e 237E     		ldrb	r3, [r4, #24]	@ zero_extendqisi2
+ 718 0020 052B     		cmp	r3, #5
+ 719 0022 3CD9     		bls	.L65
+ 402:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 403:Middlewares/Third_Party/wakaama/transaction.c ****             (void)lwm2m_buffer_send(transacP->peerH, transacP->buffer, transacP->buffer_len, contex
+ 404:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 405:Middlewares/Third_Party/wakaama/transaction.c ****             transacP->retrans_time += timeout;
+ 406:Middlewares/Third_Party/wakaama/transaction.c ****             transacP->retrans_counter += 1;
+ 407:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 408:Middlewares/Third_Party/wakaama/transaction.c ****         else
+ 409:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 410:Middlewares/Third_Party/wakaama/transaction.c ****             maxRetriesReached = true;
+ 720              		.loc 1 410 0
+ 721 0024 0125     		movs	r5, #1
+ 722              	.LVL77:
+ 723 0026 4CE0     		b	.L53
+ 724              	.LVL78:
+ 725              	.L63:
+ 726              	.LBE9:
+ 354:Middlewares/Third_Party/wakaama/transaction.c ****         if (transacP->buffer_len == 0)
+ 727              		.loc 1 354 0
+ 728 0028 886A     		ldr	r0, [r1, #40]
+ 729              	.LVL79:
+ 730 002a FFF7FEFF 		bl	coap_serialize_get_size
+ 731              	.LVL80:
+ 732 002e 80B2     		uxth	r0, r0
+ 733 0030 A085     		strh	r0, [r4, #44]	@ movhi
+ 355:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 734              		.loc 1 355 0
+ 735 0032 B0B1     		cbz	r0, .L66
+ 361:Middlewares/Third_Party/wakaama/transaction.c ****         if (transacP->buffer == NULL)
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 22
+
+
+ 736              		.loc 1 361 0
+ 737 0034 FFF7FEFF 		bl	lwm2m_malloc
+ 738              	.LVL81:
+ 739 0038 2063     		str	r0, [r4, #48]
+ 362:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 740              		.loc 1 362 0
+ 741 003a C0B1     		cbz	r0, .L67
+ 368:Middlewares/Third_Party/wakaama/transaction.c ****         if (transacP->buffer_len == 0)
+ 742              		.loc 1 368 0
+ 743 003c 0146     		mov	r1, r0
+ 744 003e A06A     		ldr	r0, [r4, #40]
+ 745 0040 FFF7FEFF 		bl	coap_serialize_message
+ 746              	.LVL82:
+ 747 0044 80B2     		uxth	r0, r0
+ 748 0046 A085     		strh	r0, [r4, #44]	@ movhi
+ 369:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 749              		.loc 1 369 0
+ 750 0048 0028     		cmp	r0, #0
+ 751 004a DFD1     		bne	.L49
+ 371:Middlewares/Third_Party/wakaama/transaction.c ****             transacP->buffer = NULL;
+ 752              		.loc 1 371 0
+ 753 004c 206B     		ldr	r0, [r4, #48]
+ 754 004e FFF7FEFF 		bl	lwm2m_free
+ 755              	.LVL83:
+ 372:Middlewares/Third_Party/wakaama/transaction.c ****             transaction_remove(contextP, transacP);
+ 756              		.loc 1 372 0
+ 757 0052 0023     		movs	r3, #0
+ 758 0054 2363     		str	r3, [r4, #48]
+ 373:Middlewares/Third_Party/wakaama/transaction.c ****             return COAP_500_INTERNAL_SERVER_ERROR;
+ 759              		.loc 1 373 0
+ 760 0056 2146     		mov	r1, r4
+ 761 0058 3046     		mov	r0, r6
+ 762 005a FFF7FEFF 		bl	transaction_remove
+ 763              	.LVL84:
+ 374:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 764              		.loc 1 374 0
+ 765 005e A020     		movs	r0, #160
+ 766 0060 33E0     		b	.L48
+ 767              	.L66:
+ 357:Middlewares/Third_Party/wakaama/transaction.c ****            return COAP_500_INTERNAL_SERVER_ERROR;
+ 768              		.loc 1 357 0
+ 769 0062 2146     		mov	r1, r4
+ 770 0064 3046     		mov	r0, r6
+ 771 0066 FFF7FEFF 		bl	transaction_remove
+ 772              	.LVL85:
+ 358:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 773              		.loc 1 358 0
+ 774 006a A020     		movs	r0, #160
+ 775 006c 2DE0     		b	.L48
+ 776              	.L67:
+ 364:Middlewares/Third_Party/wakaama/transaction.c ****            return COAP_500_INTERNAL_SERVER_ERROR;
+ 777              		.loc 1 364 0
+ 778 006e 2146     		mov	r1, r4
+ 779 0070 3046     		mov	r0, r6
+ 780 0072 FFF7FEFF 		bl	transaction_remove
+ 781              	.LVL86:
+ 365:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 23
+
+
+ 782              		.loc 1 365 0
+ 783 0076 A020     		movs	r0, #160
+ 784 0078 27E0     		b	.L48
+ 785              	.L64:
+ 786              	.LBB10:
+ 787              	.LBB7:
+ 384:Middlewares/Third_Party/wakaama/transaction.c ****             if (0 <= tv_sec)
+ 788              		.loc 1 384 0
+ 789 007a FFF7FEFF 		bl	lwm2m_gettime
+ 790              	.LVL87:
+ 385:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 791              		.loc 1 385 0
+ 792 007e 0028     		cmp	r0, #0
+ 793 0080 71F10003 		sbcs	r3, r1, #0
+ 794 0084 09DB     		blt	.L59
+ 387:Middlewares/Third_Party/wakaama/transaction.c ****                 transacP->retrans_counter = 1;
+ 795              		.loc 1 387 0
+ 796 0086 0230     		adds	r0, r0, #2
+ 797 0088 41F10001 		adc	r1, r1, #0
+ 798 008c C4E90801 		strd	r0, [r4, #32]
+ 388:Middlewares/Third_Party/wakaama/transaction.c ****                 timeout = 0;
+ 799              		.loc 1 388 0
+ 800 0090 0123     		movs	r3, #1
+ 801 0092 2376     		strb	r3, [r4, #24]
+ 802              	.LVL88:
+ 389:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 803              		.loc 1 389 0
+ 804 0094 0027     		movs	r7, #0
+ 805              	.LBE7:
+ 806              	.LBE10:
+ 349:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 807              		.loc 1 349 0
+ 808 0096 3D46     		mov	r5, r7
+ 809              	.LBB11:
+ 810              	.LBB8:
+ 811 0098 C1E7     		b	.L55
+ 812              	.LVL89:
+ 813              	.L59:
+ 393:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 814              		.loc 1 393 0
+ 815 009a 0125     		movs	r5, #1
+ 816 009c BFE7     		b	.L55
+ 817              	.LVL90:
+ 818              	.L65:
+ 819              	.LBE8:
+ 403:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 820              		.loc 1 403 0
+ 821 009e B36A     		ldr	r3, [r6, #40]
+ 822 00a0 A28D     		ldrh	r2, [r4, #44]
+ 823 00a2 216B     		ldr	r1, [r4, #48]
+ 824 00a4 A068     		ldr	r0, [r4, #8]
+ 825 00a6 FFF7FEFF 		bl	lwm2m_buffer_send
+ 826              	.LVL91:
+ 405:Middlewares/Third_Party/wakaama/transaction.c ****             transacP->retrans_counter += 1;
+ 827              		.loc 1 405 0
+ 828 00aa D4E90823 		ldrd	r2, [r4, #32]
+ 829 00ae D019     		adds	r0, r2, r7
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 24
+
+
+ 830 00b0 43F10001 		adc	r1, r3, #0
+ 831 00b4 C4E90801 		strd	r0, [r4, #32]
+ 406:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 832              		.loc 1 406 0
+ 833 00b8 237E     		ldrb	r3, [r4, #24]	@ zero_extendqisi2
+ 834 00ba 0133     		adds	r3, r3, #1
+ 835 00bc 2376     		strb	r3, [r4, #24]
+ 836 00be 00E0     		b	.L53
+ 837              	.LVL92:
+ 838              	.L58:
+ 839              	.LBE11:
+ 349:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 840              		.loc 1 349 0
+ 841 00c0 0025     		movs	r5, #0
+ 842              	.LVL93:
+ 843              	.L53:
+ 411:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 412:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 413:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 414:Middlewares/Third_Party/wakaama/transaction.c ****     if (transacP->ack_received || maxRetriesReached)
+ 844              		.loc 1 414 0
+ 845 00c2 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 846 00c4 1BB9     		cbnz	r3, .L56
+ 847              		.loc 1 414 0 is_stmt 0 discriminator 1
+ 848 00c6 15B9     		cbnz	r5, .L56
+ 415:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 416:Middlewares/Third_Party/wakaama/transaction.c ****         if (transacP->callback)
+ 417:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 418:Middlewares/Third_Party/wakaama/transaction.c ****             transacP->callback(transacP, NULL);
+ 419:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 420:Middlewares/Third_Party/wakaama/transaction.c ****         transaction_remove(contextP, transacP);
+ 421:Middlewares/Third_Party/wakaama/transaction.c ****         return -1;
+ 422:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 423:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 424:Middlewares/Third_Party/wakaama/transaction.c ****     return 0;
+ 849              		.loc 1 424 0 is_stmt 1
+ 850 00c8 0020     		movs	r0, #0
+ 851              	.LVL94:
+ 852              	.L48:
+ 425:Middlewares/Third_Party/wakaama/transaction.c **** }
+ 853              		.loc 1 425 0
+ 854 00ca BDE8F088 		pop	{r4, r5, r6, r7, fp, pc}
+ 855              	.LVL95:
+ 856              	.L56:
+ 416:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 857              		.loc 1 416 0
+ 858 00ce 636B     		ldr	r3, [r4, #52]
+ 859 00d0 13B1     		cbz	r3, .L57
+ 418:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 860              		.loc 1 418 0
+ 861 00d2 0021     		movs	r1, #0
+ 862 00d4 2046     		mov	r0, r4
+ 863 00d6 9847     		blx	r3
+ 864              	.LVL96:
+ 865              	.L57:
+ 420:Middlewares/Third_Party/wakaama/transaction.c ****         return -1;
+ 866              		.loc 1 420 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 25
+
+
+ 867 00d8 2146     		mov	r1, r4
+ 868 00da 3046     		mov	r0, r6
+ 869 00dc FFF7FEFF 		bl	transaction_remove
+ 870              	.LVL97:
+ 421:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 871              		.loc 1 421 0
+ 872 00e0 4FF0FF30 		mov	r0, #-1
+ 873 00e4 F1E7     		b	.L48
+ 874              		.cfi_endproc
+ 875              	.LFE8:
+ 877              		.section	.text.transaction_step,"ax",%progbits
+ 878              		.align	1
+ 879              		.global	transaction_step
+ 880              		.syntax unified
+ 881              		.thumb
+ 882              		.thumb_func
+ 883              		.fpu fpv4-sp-d16
+ 885              	transaction_step:
+ 886              	.LFB9:
+ 426:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 427:Middlewares/Third_Party/wakaama/transaction.c **** void transaction_step(lwm2m_context_t * contextP,
+ 428:Middlewares/Third_Party/wakaama/transaction.c ****                       time_t currentTime,
+ 429:Middlewares/Third_Party/wakaama/transaction.c ****                       time_t * timeoutP)
+ 430:Middlewares/Third_Party/wakaama/transaction.c **** {
+ 887              		.loc 1 430 0
+ 888              		.cfi_startproc
+ 889              		@ args = 4, pretend = 0, frame = 0
+ 890              		@ frame_needed = 0, uses_anonymous_args = 0
+ 891              	.LVL98:
+ 892 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 893              	.LCFI12:
+ 894              		.cfi_def_cfa_offset 32
+ 895              		.cfi_offset 3, -32
+ 896              		.cfi_offset 4, -28
+ 897              		.cfi_offset 5, -24
+ 898              		.cfi_offset 6, -20
+ 899              		.cfi_offset 7, -16
+ 900              		.cfi_offset 8, -12
+ 901              		.cfi_offset 9, -8
+ 902              		.cfi_offset 14, -4
+ 903 0004 8146     		mov	r9, r0
+ 904 0006 1646     		mov	r6, r2
+ 905 0008 1F46     		mov	r7, r3
+ 906 000a DDF82080 		ldr	r8, [sp, #32]
+ 431:Middlewares/Third_Party/wakaama/transaction.c ****     lwm2m_transaction_t * transacP;
+ 432:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 433:Middlewares/Third_Party/wakaama/transaction.c ****     LOG("Entering");
+ 434:Middlewares/Third_Party/wakaama/transaction.c ****     transacP = contextP->transactionList;
+ 907              		.loc 1 434 0
+ 908 000e 446A     		ldr	r4, [r0, #36]
+ 909              	.LVL99:
+ 435:Middlewares/Third_Party/wakaama/transaction.c ****     while (transacP != NULL)
+ 910              		.loc 1 435 0
+ 911 0010 09E0     		b	.L69
+ 912              	.LVL100:
+ 913              	.L78:
+ 914              	.LBB12:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 26
+
+
+ 436:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 437:Middlewares/Third_Party/wakaama/transaction.c ****         // transaction_send() may remove transaction from the linked list
+ 438:Middlewares/Third_Party/wakaama/transaction.c ****         lwm2m_transaction_t * nextP = transacP->next;
+ 439:Middlewares/Third_Party/wakaama/transaction.c ****         int removed = 0;
+ 440:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 441:Middlewares/Third_Party/wakaama/transaction.c ****         if (transacP->retrans_time <= currentTime)
+ 442:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 443:Middlewares/Third_Party/wakaama/transaction.c ****             removed = transaction_send(contextP, transacP);
+ 915              		.loc 1 443 0
+ 916 0012 2146     		mov	r1, r4
+ 917 0014 4846     		mov	r0, r9
+ 918 0016 FFF7FEFF 		bl	transaction_send
+ 919              	.LVL101:
+ 444:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 445:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 446:Middlewares/Third_Party/wakaama/transaction.c ****         if (0 == removed)
+ 920              		.loc 1 446 0
+ 921 001a 60B1     		cbz	r0, .L70
+ 447:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 448:Middlewares/Third_Party/wakaama/transaction.c ****             time_t interval;
+ 449:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 450:Middlewares/Third_Party/wakaama/transaction.c ****             if (transacP->retrans_time > currentTime)
+ 451:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 452:Middlewares/Third_Party/wakaama/transaction.c ****                 interval = transacP->retrans_time - currentTime;
+ 453:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 454:Middlewares/Third_Party/wakaama/transaction.c ****             else
+ 455:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 456:Middlewares/Third_Party/wakaama/transaction.c ****                 interval = 1;
+ 457:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 458:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 459:Middlewares/Third_Party/wakaama/transaction.c ****             if (*timeoutP > interval)
+ 460:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 461:Middlewares/Third_Party/wakaama/transaction.c ****                 *timeoutP = interval;
+ 462:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 463:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 464:Middlewares/Third_Party/wakaama/transaction.c ****         else
+ 465:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 466:Middlewares/Third_Party/wakaama/transaction.c ****             *timeoutP = 1;
+ 922              		.loc 1 466 0
+ 923 001c 0122     		movs	r2, #1
+ 924 001e 0023     		movs	r3, #0
+ 925 0020 C8E90023 		strd	r2, [r8]
+ 926              	.LVL102:
+ 927              	.L73:
+ 928              	.LBB13:
+ 456:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 929              		.loc 1 456 0
+ 930 0024 2C46     		mov	r4, r5
+ 931              	.LVL103:
+ 932              	.L69:
+ 933              	.LBE13:
+ 934              	.LBE12:
+ 435:Middlewares/Third_Party/wakaama/transaction.c ****     {
+ 935              		.loc 1 435 0
+ 936 0026 DCB1     		cbz	r4, .L77
+ 937              	.LBB15:
+ 438:Middlewares/Third_Party/wakaama/transaction.c ****         int removed = 0;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 27
+
+
+ 938              		.loc 1 438 0
+ 939 0028 2568     		ldr	r5, [r4]
+ 940              	.LVL104:
+ 441:Middlewares/Third_Party/wakaama/transaction.c ****         {
+ 941              		.loc 1 441 0
+ 942 002a D4E90823 		ldrd	r2, [r4, #32]
+ 943 002e 9642     		cmp	r6, r2
+ 944 0030 77EB0303 		sbcs	r3, r7, r3
+ 945 0034 EDDA     		bge	.L78
+ 946              	.LVL105:
+ 947              	.L70:
+ 948              	.LBB14:
+ 450:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 949              		.loc 1 450 0
+ 950 0036 D4E90801 		ldrd	r0, [r4, #32]
+ 951 003a 8642     		cmp	r6, r0
+ 952 003c 77EB0103 		sbcs	r3, r7, r1
+ 953 0040 0BDA     		bge	.L75
+ 452:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 954              		.loc 1 452 0
+ 955 0042 821B     		subs	r2, r0, r6
+ 956 0044 61EB0703 		sbc	r3, r1, r7
+ 957              	.LVL106:
+ 958              	.L72:
+ 459:Middlewares/Third_Party/wakaama/transaction.c ****             {
+ 959              		.loc 1 459 0
+ 960 0048 D8E90001 		ldrd	r0, [r8]
+ 961 004c 8242     		cmp	r2, r0
+ 962 004e 73EB0101 		sbcs	r1, r3, r1
+ 963 0052 E7DA     		bge	.L73
+ 461:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 964              		.loc 1 461 0
+ 965 0054 C8E90023 		strd	r2, [r8]
+ 966 0058 E4E7     		b	.L73
+ 967              	.LVL107:
+ 968              	.L75:
+ 456:Middlewares/Third_Party/wakaama/transaction.c ****             }
+ 969              		.loc 1 456 0
+ 970 005a 0122     		movs	r2, #1
+ 971 005c 0023     		movs	r3, #0
+ 972 005e F3E7     		b	.L72
+ 973              	.LVL108:
+ 974              	.L77:
+ 975              	.LBE14:
+ 976              	.LBE15:
+ 467:Middlewares/Third_Party/wakaama/transaction.c ****         }
+ 468:Middlewares/Third_Party/wakaama/transaction.c **** 
+ 469:Middlewares/Third_Party/wakaama/transaction.c ****         transacP = nextP;
+ 470:Middlewares/Third_Party/wakaama/transaction.c ****     }
+ 471:Middlewares/Third_Party/wakaama/transaction.c **** }
+ 977              		.loc 1 471 0
+ 978 0060 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 979              		.cfi_endproc
+ 980              	.LFE9:
+ 982              		.text
+ 983              	.Letext0:
+ 984              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 28
+
+
+ 985              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 986              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 987              		.file 5 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 988              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 989              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 990              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_timeval.h
+ 991              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 992              		.file 10 "Middlewares/Third_Party/wakaama/liblwm2m.h"
+ 993              		.file 11 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 994              		.file 12 "Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.h"
+ 995              		.file 13 "Middlewares/Third_Party/wakaama/internals.h"
+ 996              		.file 14 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 997              		.file 15 "<built-in>"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s 			page 29
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 transaction.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:18     .text.prv_checkFinished:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:24     .text.prv_checkFinished:0000000000000000 prv_checkFinished
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:115    .text.transaction_new:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:122    .text.transaction_new:0000000000000000 transaction_new
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:359    .text.transaction_free:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:366    .text.transaction_free:0000000000000000 transaction_free
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:408    .text.transaction_remove:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:415    .text.transaction_remove:0000000000000000 transaction_remove
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:450    .text.transaction_handleResponse:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:457    .text.transaction_handleResponse:0000000000000000 transaction_handleResponse
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:666    .text.transaction_send:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:673    .text.transaction_send:0000000000000000 transaction_send
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:878    .text.transaction_step:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMmwpDP.s:885    .text.transaction_step:0000000000000000 transaction_step
+
+UNDEFINED SYMBOLS
+coap_get_header_token
+memcmp
+lwm2m_malloc
+memset
+coap_init_message
+coap_set_header_uri_path_segment
+utils_intToText
+coap_set_header_token
+lwm2m_gettime
+lwm2m_free
+coap_free_header
+lwm2m_list_remove
+lwm2m_session_is_equal
+message_send
+coap_serialize_get_size
+coap_serialize_message
+lwm2m_buffer_send

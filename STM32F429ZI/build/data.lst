@@ -1,0 +1,2660 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"data.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.prv_setBuffer,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	prv_setBuffer:
+  25              	.LFB4:
+  26              		.file 1 "Middlewares/Third_Party/wakaama/data.c"
+   1:Middlewares/Third_Party/wakaama/data.c **** /*******************************************************************************
+   2:Middlewares/Third_Party/wakaama/data.c **** *
+   3:Middlewares/Third_Party/wakaama/data.c **** * Copyright (c) 2013, 2014 Intel Corporation and others.
+   4:Middlewares/Third_Party/wakaama/data.c **** * All rights reserved. This program and the accompanying materials
+   5:Middlewares/Third_Party/wakaama/data.c **** * are made available under the terms of the Eclipse Public License v1.0
+   6:Middlewares/Third_Party/wakaama/data.c **** * and Eclipse Distribution License v1.0 which accompany this distribution.
+   7:Middlewares/Third_Party/wakaama/data.c **** *
+   8:Middlewares/Third_Party/wakaama/data.c **** * The Eclipse Public License is available at
+   9:Middlewares/Third_Party/wakaama/data.c **** *    http://www.eclipse.org/legal/epl-v10.html
+  10:Middlewares/Third_Party/wakaama/data.c **** * The Eclipse Distribution License is available at
+  11:Middlewares/Third_Party/wakaama/data.c **** *    http://www.eclipse.org/org/documents/edl-v10.php.
+  12:Middlewares/Third_Party/wakaama/data.c **** *
+  13:Middlewares/Third_Party/wakaama/data.c **** * Contributors:
+  14:Middlewares/Third_Party/wakaama/data.c **** *    David Navarro, Intel Corporation - initial API and implementation
+  15:Middlewares/Third_Party/wakaama/data.c **** *    Fabien Fleutot - Please refer to git log
+  16:Middlewares/Third_Party/wakaama/data.c **** *    Bosch Software Innovations GmbH - Please refer to git log
+  17:Middlewares/Third_Party/wakaama/data.c **** *
+  18:Middlewares/Third_Party/wakaama/data.c **** *******************************************************************************/
+  19:Middlewares/Third_Party/wakaama/data.c **** 
+  20:Middlewares/Third_Party/wakaama/data.c **** #include "internals.h"
+  21:Middlewares/Third_Party/wakaama/data.c **** #include <float.h>
+  22:Middlewares/Third_Party/wakaama/data.c **** 
+  23:Middlewares/Third_Party/wakaama/data.c **** #define _PRV_STR_LENGTH 32
+  24:Middlewares/Third_Party/wakaama/data.c **** 
+  25:Middlewares/Third_Party/wakaama/data.c **** // dataP array length is assumed to be 1.
+  26:Middlewares/Third_Party/wakaama/data.c **** static int prv_textSerialize(lwm2m_data_t * dataP,
+  27:Middlewares/Third_Party/wakaama/data.c ****                              uint8_t ** bufferP)
+  28:Middlewares/Third_Party/wakaama/data.c **** {
+  29:Middlewares/Third_Party/wakaama/data.c ****     size_t res;
+  30:Middlewares/Third_Party/wakaama/data.c **** 
+  31:Middlewares/Third_Party/wakaama/data.c ****     switch (dataP->type)
+  32:Middlewares/Third_Party/wakaama/data.c ****     {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 2
+
+
+  33:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_STRING:
+  34:Middlewares/Third_Party/wakaama/data.c ****         *bufferP = (uint8_t *)lwm2m_malloc(dataP->value.asBuffer.length);
+  35:Middlewares/Third_Party/wakaama/data.c ****         if (*bufferP == NULL) return 0;
+  36:Middlewares/Third_Party/wakaama/data.c ****         memcpy(*bufferP, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+  37:Middlewares/Third_Party/wakaama/data.c ****         return (int)dataP->value.asBuffer.length;
+  38:Middlewares/Third_Party/wakaama/data.c **** 
+  39:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_INTEGER:
+  40:Middlewares/Third_Party/wakaama/data.c ****     {
+  41:Middlewares/Third_Party/wakaama/data.c ****         uint8_t intString[_PRV_STR_LENGTH];
+  42:Middlewares/Third_Party/wakaama/data.c **** 
+  43:Middlewares/Third_Party/wakaama/data.c ****         res = utils_intToText(dataP->value.asInteger, intString, _PRV_STR_LENGTH);
+  44:Middlewares/Third_Party/wakaama/data.c ****         if (res == 0) return -1;
+  45:Middlewares/Third_Party/wakaama/data.c **** 
+  46:Middlewares/Third_Party/wakaama/data.c ****         *bufferP = (uint8_t *)lwm2m_malloc(res);
+  47:Middlewares/Third_Party/wakaama/data.c ****         if (NULL == *bufferP) return -1;
+  48:Middlewares/Third_Party/wakaama/data.c **** 
+  49:Middlewares/Third_Party/wakaama/data.c ****         memcpy(*bufferP, intString, res);
+  50:Middlewares/Third_Party/wakaama/data.c **** 
+  51:Middlewares/Third_Party/wakaama/data.c ****         return (int)res;
+  52:Middlewares/Third_Party/wakaama/data.c ****     }
+  53:Middlewares/Third_Party/wakaama/data.c **** 
+  54:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_FLOAT:
+  55:Middlewares/Third_Party/wakaama/data.c ****     {
+  56:Middlewares/Third_Party/wakaama/data.c ****         uint8_t floatString[_PRV_STR_LENGTH * 2];
+  57:Middlewares/Third_Party/wakaama/data.c **** 
+  58:Middlewares/Third_Party/wakaama/data.c ****         res = utils_floatToText(dataP->value.asFloat, floatString, _PRV_STR_LENGTH * 2);
+  59:Middlewares/Third_Party/wakaama/data.c ****         if (res == 0) return -1;
+  60:Middlewares/Third_Party/wakaama/data.c **** 
+  61:Middlewares/Third_Party/wakaama/data.c ****         *bufferP = (uint8_t *)lwm2m_malloc(res);
+  62:Middlewares/Third_Party/wakaama/data.c ****         if (NULL == *bufferP) return -1;
+  63:Middlewares/Third_Party/wakaama/data.c **** 
+  64:Middlewares/Third_Party/wakaama/data.c ****         memcpy(*bufferP, floatString, res);
+  65:Middlewares/Third_Party/wakaama/data.c **** 
+  66:Middlewares/Third_Party/wakaama/data.c ****         return (int)res;
+  67:Middlewares/Third_Party/wakaama/data.c ****     }
+  68:Middlewares/Third_Party/wakaama/data.c **** 
+  69:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_BOOLEAN:
+  70:Middlewares/Third_Party/wakaama/data.c ****         *bufferP = (uint8_t *)lwm2m_malloc(1);
+  71:Middlewares/Third_Party/wakaama/data.c ****         if (NULL == *bufferP) return -1;
+  72:Middlewares/Third_Party/wakaama/data.c **** 
+  73:Middlewares/Third_Party/wakaama/data.c ****         *bufferP[0] = dataP->value.asBoolean ? '1' : '0';
+  74:Middlewares/Third_Party/wakaama/data.c **** 
+  75:Middlewares/Third_Party/wakaama/data.c ****         return 1;
+  76:Middlewares/Third_Party/wakaama/data.c **** 
+  77:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_OBJECT_LINK:
+  78:Middlewares/Third_Party/wakaama/data.c ****     {
+  79:Middlewares/Third_Party/wakaama/data.c ****         char stringBuffer[11];
+  80:Middlewares/Third_Party/wakaama/data.c ****         size_t length;
+  81:Middlewares/Third_Party/wakaama/data.c ****         
+  82:Middlewares/Third_Party/wakaama/data.c ****         length = utils_intToText(dataP->value.asObjLink.objectId, (uint8_t*)stringBuffer, 5);
+  83:Middlewares/Third_Party/wakaama/data.c ****         if (length == 0) return -1;
+  84:Middlewares/Third_Party/wakaama/data.c **** 
+  85:Middlewares/Third_Party/wakaama/data.c ****         stringBuffer[5] = ':';
+  86:Middlewares/Third_Party/wakaama/data.c ****         res = length + 1;
+  87:Middlewares/Third_Party/wakaama/data.c **** 
+  88:Middlewares/Third_Party/wakaama/data.c ****         length = utils_intToText(dataP->value.asObjLink.objectInstanceId, (uint8_t*)stringBuffer + 
+  89:Middlewares/Third_Party/wakaama/data.c ****         if (length == 0) return -1;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 3
+
+
+  90:Middlewares/Third_Party/wakaama/data.c **** 
+  91:Middlewares/Third_Party/wakaama/data.c ****         res += length;
+  92:Middlewares/Third_Party/wakaama/data.c **** 
+  93:Middlewares/Third_Party/wakaama/data.c ****         *bufferP = (uint8_t *)lwm2m_malloc(res);
+  94:Middlewares/Third_Party/wakaama/data.c ****         if (*bufferP == NULL) return -1;
+  95:Middlewares/Third_Party/wakaama/data.c **** 
+  96:Middlewares/Third_Party/wakaama/data.c ****         memcpy(*bufferP, stringBuffer, res);
+  97:Middlewares/Third_Party/wakaama/data.c **** 
+  98:Middlewares/Third_Party/wakaama/data.c ****         return res;
+  99:Middlewares/Third_Party/wakaama/data.c ****     }
+ 100:Middlewares/Third_Party/wakaama/data.c **** 
+ 101:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_OPAQUE:
+ 102:Middlewares/Third_Party/wakaama/data.c ****     {
+ 103:Middlewares/Third_Party/wakaama/data.c ****         size_t length;
+ 104:Middlewares/Third_Party/wakaama/data.c **** 
+ 105:Middlewares/Third_Party/wakaama/data.c ****         length = utils_base64GetSize(dataP->value.asBuffer.length);
+ 106:Middlewares/Third_Party/wakaama/data.c ****         *bufferP = (uint8_t *)lwm2m_malloc(length);
+ 107:Middlewares/Third_Party/wakaama/data.c ****         if (*bufferP == NULL) return 0;
+ 108:Middlewares/Third_Party/wakaama/data.c ****         length = utils_base64Encode(dataP->value.asBuffer.buffer, dataP->value.asBuffer.length, *bu
+ 109:Middlewares/Third_Party/wakaama/data.c ****         if (length == 0)
+ 110:Middlewares/Third_Party/wakaama/data.c ****         {
+ 111:Middlewares/Third_Party/wakaama/data.c ****             lwm2m_free(*bufferP);
+ 112:Middlewares/Third_Party/wakaama/data.c ****             *bufferP = NULL;
+ 113:Middlewares/Third_Party/wakaama/data.c ****             return 0;
+ 114:Middlewares/Third_Party/wakaama/data.c ****         }
+ 115:Middlewares/Third_Party/wakaama/data.c ****         return (int)length;
+ 116:Middlewares/Third_Party/wakaama/data.c ****     }
+ 117:Middlewares/Third_Party/wakaama/data.c **** 
+ 118:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_UNDEFINED:
+ 119:Middlewares/Third_Party/wakaama/data.c ****     default:
+ 120:Middlewares/Third_Party/wakaama/data.c ****         return -1;
+ 121:Middlewares/Third_Party/wakaama/data.c ****     }
+ 122:Middlewares/Third_Party/wakaama/data.c **** }
+ 123:Middlewares/Third_Party/wakaama/data.c **** 
+ 124:Middlewares/Third_Party/wakaama/data.c **** static int prv_setBuffer(lwm2m_data_t * dataP,
+ 125:Middlewares/Third_Party/wakaama/data.c ****                          uint8_t * buffer,
+ 126:Middlewares/Third_Party/wakaama/data.c ****                          size_t bufferLen)
+ 127:Middlewares/Third_Party/wakaama/data.c **** {
+  27              		.loc 1 127 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 70B5     		push	{r4, r5, r6, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 4, -16
+  36              		.cfi_offset 5, -12
+  37              		.cfi_offset 6, -8
+  38              		.cfi_offset 14, -4
+  39 0002 0546     		mov	r5, r0
+  40 0004 0E46     		mov	r6, r1
+  41 0006 1446     		mov	r4, r2
+ 128:Middlewares/Third_Party/wakaama/data.c ****     dataP->value.asBuffer.buffer = (uint8_t *)lwm2m_malloc(bufferLen);
+  42              		.loc 1 128 0
+  43 0008 1046     		mov	r0, r2
+  44              	.LVL1:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 4
+
+
+  45 000a FFF7FEFF 		bl	lwm2m_malloc
+  46              	.LVL2:
+  47 000e E860     		str	r0, [r5, #12]
+ 129:Middlewares/Third_Party/wakaama/data.c ****     if (dataP->value.asBuffer.buffer == NULL)
+  48              		.loc 1 129 0
+  49 0010 30B1     		cbz	r0, .L3
+ 130:Middlewares/Third_Party/wakaama/data.c ****     {
+ 131:Middlewares/Third_Party/wakaama/data.c ****         return 0;
+ 132:Middlewares/Third_Party/wakaama/data.c ****     }
+ 133:Middlewares/Third_Party/wakaama/data.c ****     dataP->value.asBuffer.length = bufferLen;
+  50              		.loc 1 133 0
+  51 0012 AC60     		str	r4, [r5, #8]
+ 134:Middlewares/Third_Party/wakaama/data.c ****     memcpy(dataP->value.asBuffer.buffer, buffer, bufferLen);
+  52              		.loc 1 134 0
+  53 0014 2246     		mov	r2, r4
+  54 0016 3146     		mov	r1, r6
+  55 0018 FFF7FEFF 		bl	memcpy
+  56              	.LVL3:
+ 135:Middlewares/Third_Party/wakaama/data.c **** 
+ 136:Middlewares/Third_Party/wakaama/data.c ****     return 1;
+  57              		.loc 1 136 0
+  58 001c 0120     		movs	r0, #1
+  59              	.L1:
+ 137:Middlewares/Third_Party/wakaama/data.c **** }
+  60              		.loc 1 137 0
+  61 001e 70BD     		pop	{r4, r5, r6, pc}
+  62              	.LVL4:
+  63              	.L3:
+ 131:Middlewares/Third_Party/wakaama/data.c ****     }
+  64              		.loc 1 131 0
+  65 0020 0020     		movs	r0, #0
+  66 0022 FCE7     		b	.L1
+  67              		.cfi_endproc
+  68              	.LFE4:
+  70              		.section	.text.prv_textSerialize,"ax",%progbits
+  71              		.align	1
+  72              		.syntax unified
+  73              		.thumb
+  74              		.thumb_func
+  75              		.fpu fpv4-sp-d16
+  77              	prv_textSerialize:
+  78              	.LFB3:
+  28:Middlewares/Third_Party/wakaama/data.c ****     size_t res;
+  79              		.loc 1 28 0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 64
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  83              	.LVL5:
+  84 0000 70B5     		push	{r4, r5, r6, lr}
+  85              	.LCFI1:
+  86              		.cfi_def_cfa_offset 16
+  87              		.cfi_offset 4, -16
+  88              		.cfi_offset 5, -12
+  89              		.cfi_offset 6, -8
+  90              		.cfi_offset 14, -4
+  91 0002 90B0     		sub	sp, sp, #64
+  92              	.LCFI2:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 5
+
+
+  93              		.cfi_def_cfa_offset 80
+  94 0004 0446     		mov	r4, r0
+  95 0006 0D46     		mov	r5, r1
+  31:Middlewares/Third_Party/wakaama/data.c ****     {
+  96              		.loc 1 31 0
+  97 0008 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+  98 000a 043B     		subs	r3, r3, #4
+  99 000c 052B     		cmp	r3, #5
+ 100 000e 00F29080 		bhi	.L19
+ 101 0012 DFE803F0 		tbb	[pc, r3]
+ 102              	.L8:
+ 103 0016 03       		.byte	(.L7-.L8)/2
+ 104 0017 78       		.byte	(.L9-.L8)/2
+ 105 0018 10       		.byte	(.L10-.L8)/2
+ 106 0019 28       		.byte	(.L11-.L8)/2
+ 107 001a 40       		.byte	(.L12-.L8)/2
+ 108 001b 4F       		.byte	(.L13-.L8)/2
+ 109              		.p2align 1
+ 110              	.L7:
+  34:Middlewares/Third_Party/wakaama/data.c ****         if (*bufferP == NULL) return 0;
+ 111              		.loc 1 34 0
+ 112 001c 8068     		ldr	r0, [r0, #8]
+ 113              	.LVL6:
+ 114 001e FFF7FEFF 		bl	lwm2m_malloc
+ 115              	.LVL7:
+ 116 0022 2860     		str	r0, [r5]
+  35:Middlewares/Third_Party/wakaama/data.c ****         memcpy(*bufferP, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 117              		.loc 1 35 0
+ 118 0024 0028     		cmp	r0, #0
+ 119 0026 00F08780 		beq	.L20
+  36:Middlewares/Third_Party/wakaama/data.c ****         return (int)dataP->value.asBuffer.length;
+ 120              		.loc 1 36 0
+ 121 002a A268     		ldr	r2, [r4, #8]
+ 122 002c E168     		ldr	r1, [r4, #12]
+ 123 002e FFF7FEFF 		bl	memcpy
+ 124              	.LVL8:
+  37:Middlewares/Third_Party/wakaama/data.c **** 
+ 125              		.loc 1 37 0
+ 126 0032 A068     		ldr	r0, [r4, #8]
+ 127 0034 3AE0     		b	.L5
+ 128              	.LVL9:
+ 129              	.L10:
+ 130              	.LBB2:
+  43:Middlewares/Third_Party/wakaama/data.c ****         if (res == 0) return -1;
+ 131              		.loc 1 43 0
+ 132 0036 2023     		movs	r3, #32
+ 133 0038 6A46     		mov	r2, sp
+ 134 003a D0E90201 		ldrd	r0, [r0, #8]
+ 135              	.LVL10:
+ 136 003e FFF7FEFF 		bl	utils_intToText
+ 137              	.LVL11:
+  44:Middlewares/Third_Party/wakaama/data.c **** 
+ 138              		.loc 1 44 0
+ 139 0042 0446     		mov	r4, r0
+ 140              	.LVL12:
+ 141 0044 10B9     		cbnz	r0, .L32
+ 142 0046 4FF0FF30 		mov	r0, #-1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 6
+
+
+ 143              	.LVL13:
+ 144 004a 2FE0     		b	.L5
+ 145              	.LVL14:
+ 146              	.L32:
+  46:Middlewares/Third_Party/wakaama/data.c ****         if (NULL == *bufferP) return -1;
+ 147              		.loc 1 46 0
+ 148 004c FFF7FEFF 		bl	lwm2m_malloc
+ 149              	.LVL15:
+ 150 0050 2860     		str	r0, [r5]
+  47:Middlewares/Third_Party/wakaama/data.c **** 
+ 151              		.loc 1 47 0
+ 152 0052 28B1     		cbz	r0, .L22
+  49:Middlewares/Third_Party/wakaama/data.c **** 
+ 153              		.loc 1 49 0
+ 154 0054 2246     		mov	r2, r4
+ 155 0056 6946     		mov	r1, sp
+ 156 0058 FFF7FEFF 		bl	memcpy
+ 157              	.LVL16:
+  51:Middlewares/Third_Party/wakaama/data.c ****     }
+ 158              		.loc 1 51 0
+ 159 005c 2046     		mov	r0, r4
+ 160 005e 25E0     		b	.L5
+ 161              	.L22:
+  47:Middlewares/Third_Party/wakaama/data.c **** 
+ 162              		.loc 1 47 0
+ 163 0060 4FF0FF30 		mov	r0, #-1
+ 164 0064 22E0     		b	.L5
+ 165              	.LVL17:
+ 166              	.L11:
+ 167              	.LBE2:
+ 168              	.LBB3:
+  58:Middlewares/Third_Party/wakaama/data.c ****         if (res == 0) return -1;
+ 169              		.loc 1 58 0
+ 170 0066 4021     		movs	r1, #64
+ 171              	.LVL18:
+ 172 0068 6846     		mov	r0, sp
+ 173              	.LVL19:
+ 174 006a 94ED020B 		vldr.64	d0, [r4, #8]
+ 175 006e FFF7FEFF 		bl	utils_floatToText
+ 176              	.LVL20:
+  59:Middlewares/Third_Party/wakaama/data.c **** 
+ 177              		.loc 1 59 0
+ 178 0072 0446     		mov	r4, r0
+ 179              	.LVL21:
+ 180 0074 10B9     		cbnz	r0, .L33
+ 181 0076 4FF0FF30 		mov	r0, #-1
+ 182              	.LVL22:
+ 183 007a 17E0     		b	.L5
+ 184              	.LVL23:
+ 185              	.L33:
+  61:Middlewares/Third_Party/wakaama/data.c ****         if (NULL == *bufferP) return -1;
+ 186              		.loc 1 61 0
+ 187 007c FFF7FEFF 		bl	lwm2m_malloc
+ 188              	.LVL24:
+ 189 0080 2860     		str	r0, [r5]
+  62:Middlewares/Third_Party/wakaama/data.c **** 
+ 190              		.loc 1 62 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 7
+
+
+ 191 0082 28B1     		cbz	r0, .L24
+  64:Middlewares/Third_Party/wakaama/data.c **** 
+ 192              		.loc 1 64 0
+ 193 0084 2246     		mov	r2, r4
+ 194 0086 6946     		mov	r1, sp
+ 195 0088 FFF7FEFF 		bl	memcpy
+ 196              	.LVL25:
+  66:Middlewares/Third_Party/wakaama/data.c ****     }
+ 197              		.loc 1 66 0
+ 198 008c 2046     		mov	r0, r4
+ 199 008e 0DE0     		b	.L5
+ 200              	.L24:
+  62:Middlewares/Third_Party/wakaama/data.c **** 
+ 201              		.loc 1 62 0
+ 202 0090 4FF0FF30 		mov	r0, #-1
+ 203 0094 0AE0     		b	.L5
+ 204              	.LVL26:
+ 205              	.L12:
+ 206              	.LBE3:
+  70:Middlewares/Third_Party/wakaama/data.c ****         if (NULL == *bufferP) return -1;
+ 207              		.loc 1 70 0
+ 208 0096 0120     		movs	r0, #1
+ 209              	.LVL27:
+ 210 0098 FFF7FEFF 		bl	lwm2m_malloc
+ 211              	.LVL28:
+ 212 009c 2860     		str	r0, [r5]
+  71:Middlewares/Third_Party/wakaama/data.c **** 
+ 213              		.loc 1 71 0
+ 214 009e 0028     		cmp	r0, #0
+ 215 00a0 4CD0     		beq	.L25
+  73:Middlewares/Third_Party/wakaama/data.c **** 
+ 216              		.loc 1 73 0
+ 217 00a2 237A     		ldrb	r3, [r4, #8]	@ zero_extendqisi2
+ 218 00a4 23B9     		cbnz	r3, .L34
+ 219 00a6 3023     		movs	r3, #48
+ 220              	.L16:
+  73:Middlewares/Third_Party/wakaama/data.c **** 
+ 221              		.loc 1 73 0 is_stmt 0 discriminator 4
+ 222 00a8 0370     		strb	r3, [r0]
+  75:Middlewares/Third_Party/wakaama/data.c **** 
+ 223              		.loc 1 75 0 is_stmt 1 discriminator 4
+ 224 00aa 0120     		movs	r0, #1
+ 225              	.LVL29:
+ 226              	.L5:
+ 122:Middlewares/Third_Party/wakaama/data.c **** 
+ 227              		.loc 1 122 0
+ 228 00ac 10B0     		add	sp, sp, #64
+ 229              	.LCFI3:
+ 230              		.cfi_remember_state
+ 231              		.cfi_def_cfa_offset 16
+ 232              		@ sp needed
+ 233 00ae 70BD     		pop	{r4, r5, r6, pc}
+ 234              	.LVL30:
+ 235              	.L34:
+ 236              	.LCFI4:
+ 237              		.cfi_restore_state
+  73:Middlewares/Third_Party/wakaama/data.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 8
+
+
+ 238              		.loc 1 73 0
+ 239 00b0 3123     		movs	r3, #49
+ 240 00b2 F9E7     		b	.L16
+ 241              	.LVL31:
+ 242              	.L13:
+ 243              	.LBB4:
+  82:Middlewares/Third_Party/wakaama/data.c ****         if (length == 0) return -1;
+ 244              		.loc 1 82 0
+ 245 00b4 0523     		movs	r3, #5
+ 246 00b6 6A46     		mov	r2, sp
+ 247 00b8 2089     		ldrh	r0, [r4, #8]
+ 248              	.LVL32:
+ 249 00ba 0021     		movs	r1, #0
+ 250              	.LVL33:
+ 251 00bc FFF7FEFF 		bl	utils_intToText
+ 252              	.LVL34:
+  83:Middlewares/Third_Party/wakaama/data.c **** 
+ 253              		.loc 1 83 0
+ 254 00c0 0646     		mov	r6, r0
+ 255 00c2 10B9     		cbnz	r0, .L35
+ 256 00c4 4FF0FF30 		mov	r0, #-1
+ 257              	.LVL35:
+ 258 00c8 F0E7     		b	.L5
+ 259              	.LVL36:
+ 260              	.L35:
+  85:Middlewares/Third_Party/wakaama/data.c ****         res = length + 1;
+ 261              		.loc 1 85 0
+ 262 00ca 3A22     		movs	r2, #58
+ 263 00cc 8DF80520 		strb	r2, [sp, #5]
+  86:Middlewares/Third_Party/wakaama/data.c **** 
+ 264              		.loc 1 86 0
+ 265 00d0 0136     		adds	r6, r6, #1
+ 266              	.LVL37:
+  88:Middlewares/Third_Party/wakaama/data.c ****         if (length == 0) return -1;
+ 267              		.loc 1 88 0
+ 268 00d2 0523     		movs	r3, #5
+ 269 00d4 0DEB0602 		add	r2, sp, r6
+ 270 00d8 6089     		ldrh	r0, [r4, #10]
+ 271              	.LVL38:
+ 272 00da 0021     		movs	r1, #0
+ 273 00dc FFF7FEFF 		bl	utils_intToText
+ 274              	.LVL39:
+  89:Middlewares/Third_Party/wakaama/data.c **** 
+ 275              		.loc 1 89 0
+ 276 00e0 10B9     		cbnz	r0, .L36
+ 277 00e2 4FF0FF30 		mov	r0, #-1
+ 278              	.LVL40:
+ 279 00e6 E1E7     		b	.L5
+ 280              	.LVL41:
+ 281              	.L36:
+  91:Middlewares/Third_Party/wakaama/data.c **** 
+ 282              		.loc 1 91 0
+ 283 00e8 0644     		add	r6, r6, r0
+ 284              	.LVL42:
+  93:Middlewares/Third_Party/wakaama/data.c ****         if (*bufferP == NULL) return -1;
+ 285              		.loc 1 93 0
+ 286 00ea 3046     		mov	r0, r6
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 9
+
+
+ 287              	.LVL43:
+ 288 00ec FFF7FEFF 		bl	lwm2m_malloc
+ 289              	.LVL44:
+ 290 00f0 2860     		str	r0, [r5]
+  94:Middlewares/Third_Party/wakaama/data.c **** 
+ 291              		.loc 1 94 0
+ 292 00f2 28B1     		cbz	r0, .L29
+  96:Middlewares/Third_Party/wakaama/data.c **** 
+ 293              		.loc 1 96 0
+ 294 00f4 3246     		mov	r2, r6
+ 295 00f6 6946     		mov	r1, sp
+ 296 00f8 FFF7FEFF 		bl	memcpy
+ 297              	.LVL45:
+  98:Middlewares/Third_Party/wakaama/data.c ****     }
+ 298              		.loc 1 98 0
+ 299 00fc 3046     		mov	r0, r6
+ 300 00fe D5E7     		b	.L5
+ 301              	.L29:
+  94:Middlewares/Third_Party/wakaama/data.c **** 
+ 302              		.loc 1 94 0
+ 303 0100 4FF0FF30 		mov	r0, #-1
+ 304 0104 D2E7     		b	.L5
+ 305              	.LVL46:
+ 306              	.L9:
+ 307              	.LBE4:
+ 308              	.LBB5:
+ 105:Middlewares/Third_Party/wakaama/data.c ****         *bufferP = (uint8_t *)lwm2m_malloc(length);
+ 309              		.loc 1 105 0
+ 310 0106 8068     		ldr	r0, [r0, #8]
+ 311              	.LVL47:
+ 312 0108 FFF7FEFF 		bl	utils_base64GetSize
+ 313              	.LVL48:
+ 314 010c 0646     		mov	r6, r0
+ 315              	.LVL49:
+ 106:Middlewares/Third_Party/wakaama/data.c ****         if (*bufferP == NULL) return 0;
+ 316              		.loc 1 106 0
+ 317 010e FFF7FEFF 		bl	lwm2m_malloc
+ 318              	.LVL50:
+ 319 0112 2860     		str	r0, [r5]
+ 107:Middlewares/Third_Party/wakaama/data.c ****         length = utils_base64Encode(dataP->value.asBuffer.buffer, dataP->value.asBuffer.length, *bu
+ 320              		.loc 1 107 0
+ 321 0114 A8B1     		cbz	r0, .L30
+ 108:Middlewares/Third_Party/wakaama/data.c ****         if (length == 0)
+ 322              		.loc 1 108 0
+ 323 0116 3346     		mov	r3, r6
+ 324 0118 0246     		mov	r2, r0
+ 325 011a A168     		ldr	r1, [r4, #8]
+ 326 011c E068     		ldr	r0, [r4, #12]
+ 327 011e FFF7FEFF 		bl	utils_base64Encode
+ 328              	.LVL51:
+ 109:Middlewares/Third_Party/wakaama/data.c ****         {
+ 329              		.loc 1 109 0
+ 330 0122 0028     		cmp	r0, #0
+ 331 0124 C2D1     		bne	.L5
+ 111:Middlewares/Third_Party/wakaama/data.c ****             *bufferP = NULL;
+ 332              		.loc 1 111 0
+ 333 0126 2868     		ldr	r0, [r5]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 10
+
+
+ 334              	.LVL52:
+ 335 0128 FFF7FEFF 		bl	lwm2m_free
+ 336              	.LVL53:
+ 112:Middlewares/Third_Party/wakaama/data.c ****             return 0;
+ 337              		.loc 1 112 0
+ 338 012c 0020     		movs	r0, #0
+ 339 012e 2860     		str	r0, [r5]
+ 113:Middlewares/Third_Party/wakaama/data.c ****         }
+ 340              		.loc 1 113 0
+ 341 0130 BCE7     		b	.L5
+ 342              	.LVL54:
+ 343              	.L19:
+ 344              	.LBE5:
+ 120:Middlewares/Third_Party/wakaama/data.c ****     }
+ 345              		.loc 1 120 0
+ 346 0132 4FF0FF30 		mov	r0, #-1
+ 347              	.LVL55:
+ 348 0136 B9E7     		b	.L5
+ 349              	.LVL56:
+ 350              	.L20:
+  35:Middlewares/Third_Party/wakaama/data.c ****         memcpy(*bufferP, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 351              		.loc 1 35 0
+ 352 0138 0020     		movs	r0, #0
+ 353 013a B7E7     		b	.L5
+ 354              	.L25:
+  71:Middlewares/Third_Party/wakaama/data.c **** 
+ 355              		.loc 1 71 0
+ 356 013c 4FF0FF30 		mov	r0, #-1
+ 357 0140 B4E7     		b	.L5
+ 358              	.LVL57:
+ 359              	.L30:
+ 360              	.LBB6:
+ 107:Middlewares/Third_Party/wakaama/data.c ****         length = utils_base64Encode(dataP->value.asBuffer.buffer, dataP->value.asBuffer.length, *bu
+ 361              		.loc 1 107 0
+ 362 0142 0020     		movs	r0, #0
+ 363 0144 B2E7     		b	.L5
+ 364              	.LBE6:
+ 365              		.cfi_endproc
+ 366              	.LFE3:
+ 368              		.section	.text.lwm2m_data_new,"ax",%progbits
+ 369              		.align	1
+ 370              		.global	lwm2m_data_new
+ 371              		.syntax unified
+ 372              		.thumb
+ 373              		.thumb_func
+ 374              		.fpu fpv4-sp-d16
+ 376              	lwm2m_data_new:
+ 377              	.LFB5:
+ 138:Middlewares/Third_Party/wakaama/data.c **** 
+ 139:Middlewares/Third_Party/wakaama/data.c **** lwm2m_data_t * lwm2m_data_new(int size)
+ 140:Middlewares/Third_Party/wakaama/data.c **** {
+ 378              		.loc 1 140 0
+ 379              		.cfi_startproc
+ 380              		@ args = 0, pretend = 0, frame = 0
+ 381              		@ frame_needed = 0, uses_anonymous_args = 0
+ 382              	.LVL58:
+ 383 0000 38B5     		push	{r3, r4, r5, lr}
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 11
+
+
+ 384              	.LCFI5:
+ 385              		.cfi_def_cfa_offset 16
+ 386              		.cfi_offset 3, -16
+ 387              		.cfi_offset 4, -12
+ 388              		.cfi_offset 5, -8
+ 389              		.cfi_offset 14, -4
+ 141:Middlewares/Third_Party/wakaama/data.c ****     lwm2m_data_t * dataP;
+ 142:Middlewares/Third_Party/wakaama/data.c **** 
+ 143:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("size: %d", size);
+ 144:Middlewares/Third_Party/wakaama/data.c ****     if (size <= 0) return NULL;
+ 390              		.loc 1 144 0
+ 391 0002 041E     		subs	r4, r0, #0
+ 392 0004 0BDD     		ble	.L39
+ 145:Middlewares/Third_Party/wakaama/data.c **** 
+ 146:Middlewares/Third_Party/wakaama/data.c ****     dataP = (lwm2m_data_t *)lwm2m_malloc(size * sizeof(lwm2m_data_t));
+ 393              		.loc 1 146 0
+ 394 0006 2401     		lsls	r4, r4, #4
+ 395 0008 2046     		mov	r0, r4
+ 396              	.LVL59:
+ 397 000a FFF7FEFF 		bl	lwm2m_malloc
+ 398              	.LVL60:
+ 147:Middlewares/Third_Party/wakaama/data.c **** 
+ 148:Middlewares/Third_Party/wakaama/data.c ****     if (dataP != NULL)
+ 399              		.loc 1 148 0
+ 400 000e 0546     		mov	r5, r0
+ 401 0010 18B1     		cbz	r0, .L37
+ 149:Middlewares/Third_Party/wakaama/data.c ****     {
+ 150:Middlewares/Third_Party/wakaama/data.c ****         memset(dataP, 0, size * sizeof(lwm2m_data_t));
+ 402              		.loc 1 150 0
+ 403 0012 2246     		mov	r2, r4
+ 404 0014 0021     		movs	r1, #0
+ 405 0016 FFF7FEFF 		bl	memset
+ 406              	.LVL61:
+ 407              	.L37:
+ 151:Middlewares/Third_Party/wakaama/data.c ****     }
+ 152:Middlewares/Third_Party/wakaama/data.c **** 
+ 153:Middlewares/Third_Party/wakaama/data.c ****     return dataP;
+ 154:Middlewares/Third_Party/wakaama/data.c **** }
+ 408              		.loc 1 154 0
+ 409 001a 2846     		mov	r0, r5
+ 410 001c 38BD     		pop	{r3, r4, r5, pc}
+ 411              	.LVL62:
+ 412              	.L39:
+ 144:Middlewares/Third_Party/wakaama/data.c **** 
+ 413              		.loc 1 144 0
+ 414 001e 0025     		movs	r5, #0
+ 415 0020 FBE7     		b	.L37
+ 416              		.cfi_endproc
+ 417              	.LFE5:
+ 419              		.section	.text.lwm2m_data_free,"ax",%progbits
+ 420              		.align	1
+ 421              		.global	lwm2m_data_free
+ 422              		.syntax unified
+ 423              		.thumb
+ 424              		.thumb_func
+ 425              		.fpu fpv4-sp-d16
+ 427              	lwm2m_data_free:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 12
+
+
+ 428              	.LFB6:
+ 155:Middlewares/Third_Party/wakaama/data.c **** 
+ 156:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_free(int size,
+ 157:Middlewares/Third_Party/wakaama/data.c ****                      lwm2m_data_t * dataP)
+ 158:Middlewares/Third_Party/wakaama/data.c **** {
+ 429              		.loc 1 158 0
+ 430              		.cfi_startproc
+ 431              		@ args = 0, pretend = 0, frame = 0
+ 432              		@ frame_needed = 0, uses_anonymous_args = 0
+ 433              	.LVL63:
+ 159:Middlewares/Third_Party/wakaama/data.c ****     int i;
+ 160:Middlewares/Third_Party/wakaama/data.c **** 
+ 161:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("size: %d", size);
+ 162:Middlewares/Third_Party/wakaama/data.c ****     if (size == 0 || dataP == NULL) return;
+ 434              		.loc 1 162 0
+ 435 0000 50B3     		cbz	r0, .L50
+ 158:Middlewares/Third_Party/wakaama/data.c ****     int i;
+ 436              		.loc 1 158 0 discriminator 1
+ 437 0002 70B5     		push	{r4, r5, r6, lr}
+ 438              	.LCFI6:
+ 439              		.cfi_def_cfa_offset 16
+ 440              		.cfi_offset 4, -16
+ 441              		.cfi_offset 5, -12
+ 442              		.cfi_offset 6, -8
+ 443              		.cfi_offset 14, -4
+ 444 0004 0646     		mov	r6, r0
+ 445              		.loc 1 162 0 discriminator 1
+ 446 0006 31B3     		cbz	r1, .L41
+ 447 0008 0D46     		mov	r5, r1
+ 163:Middlewares/Third_Party/wakaama/data.c **** 
+ 164:Middlewares/Third_Party/wakaama/data.c ****     for (i = 0; i < size; i++)
+ 448              		.loc 1 164 0
+ 449 000a 0024     		movs	r4, #0
+ 450 000c 04E0     		b	.L43
+ 451              	.LVL64:
+ 452              	.L45:
+ 165:Middlewares/Third_Party/wakaama/data.c ****     {
+ 166:Middlewares/Third_Party/wakaama/data.c ****         switch (dataP[i].type)
+ 167:Middlewares/Third_Party/wakaama/data.c ****         {
+ 168:Middlewares/Third_Party/wakaama/data.c ****         case LWM2M_TYPE_MULTIPLE_RESOURCE:
+ 169:Middlewares/Third_Party/wakaama/data.c ****         case LWM2M_TYPE_OBJECT_INSTANCE:
+ 170:Middlewares/Third_Party/wakaama/data.c ****         case LWM2M_TYPE_OBJECT:
+ 171:Middlewares/Third_Party/wakaama/data.c ****             lwm2m_data_free(dataP[i].value.asChildren.count, dataP[i].value.asChildren.array);
+ 453              		.loc 1 171 0
+ 454 000e D168     		ldr	r1, [r2, #12]
+ 455 0010 9068     		ldr	r0, [r2, #8]
+ 456 0012 FFF7FEFF 		bl	lwm2m_data_free
+ 457              	.LVL65:
+ 458              	.L44:
+ 164:Middlewares/Third_Party/wakaama/data.c ****     {
+ 459              		.loc 1 164 0 discriminator 2
+ 460 0016 0134     		adds	r4, r4, #1
+ 461              	.LVL66:
+ 462              	.L43:
+ 164:Middlewares/Third_Party/wakaama/data.c ****     {
+ 463              		.loc 1 164 0 is_stmt 0 discriminator 1
+ 464 0018 B442     		cmp	r4, r6
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 13
+
+
+ 465 001a 19DA     		bge	.L53
+ 166:Middlewares/Third_Party/wakaama/data.c ****         {
+ 466              		.loc 1 166 0 is_stmt 1
+ 467 001c 2301     		lsls	r3, r4, #4
+ 468 001e EA18     		adds	r2, r5, r3
+ 469 0020 EB5C     		ldrb	r3, [r5, r3]	@ zero_extendqisi2
+ 470 0022 013B     		subs	r3, r3, #1
+ 471 0024 042B     		cmp	r3, #4
+ 472 0026 F6D8     		bhi	.L44
+ 473 0028 01A1     		adr	r1, .L46
+ 474 002a 51F823F0 		ldr	pc, [r1, r3, lsl #2]
+ 475 002e 00BF     		.p2align 2
+ 476              	.L46:
+ 477 0030 0F000000 		.word	.L45+1
+ 478 0034 0F000000 		.word	.L45+1
+ 479 0038 0F000000 		.word	.L45+1
+ 480 003c 45000000 		.word	.L47+1
+ 481 0040 45000000 		.word	.L47+1
+ 482              		.p2align 1
+ 483              	.L47:
+ 172:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 173:Middlewares/Third_Party/wakaama/data.c **** 
+ 174:Middlewares/Third_Party/wakaama/data.c ****         case LWM2M_TYPE_STRING:
+ 175:Middlewares/Third_Party/wakaama/data.c ****         case LWM2M_TYPE_OPAQUE:
+ 176:Middlewares/Third_Party/wakaama/data.c ****             if (dataP[i].value.asBuffer.buffer != NULL)
+ 484              		.loc 1 176 0
+ 485 0044 D068     		ldr	r0, [r2, #12]
+ 486 0046 0028     		cmp	r0, #0
+ 487 0048 E5D0     		beq	.L44
+ 177:Middlewares/Third_Party/wakaama/data.c ****             {
+ 178:Middlewares/Third_Party/wakaama/data.c ****                 lwm2m_free(dataP[i].value.asBuffer.buffer);
+ 488              		.loc 1 178 0
+ 489 004a FFF7FEFF 		bl	lwm2m_free
+ 490              	.LVL67:
+ 491 004e E2E7     		b	.L44
+ 492              	.L53:
+ 179:Middlewares/Third_Party/wakaama/data.c ****             }
+ 180:Middlewares/Third_Party/wakaama/data.c **** 
+ 181:Middlewares/Third_Party/wakaama/data.c ****         default:
+ 182:Middlewares/Third_Party/wakaama/data.c ****             // do nothing
+ 183:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 184:Middlewares/Third_Party/wakaama/data.c ****         }
+ 185:Middlewares/Third_Party/wakaama/data.c ****     }
+ 186:Middlewares/Third_Party/wakaama/data.c ****     lwm2m_free(dataP);
+ 493              		.loc 1 186 0
+ 494 0050 2846     		mov	r0, r5
+ 495 0052 FFF7FEFF 		bl	lwm2m_free
+ 496              	.LVL68:
+ 497              	.L41:
+ 187:Middlewares/Third_Party/wakaama/data.c **** }
+ 498              		.loc 1 187 0
+ 499 0056 70BD     		pop	{r4, r5, r6, pc}
+ 500              	.LVL69:
+ 501              	.L50:
+ 502              	.LCFI7:
+ 503              		.cfi_def_cfa_offset 0
+ 504              		.cfi_restore 4
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 14
+
+
+ 505              		.cfi_restore 5
+ 506              		.cfi_restore 6
+ 507              		.cfi_restore 14
+ 508 0058 7047     		bx	lr
+ 509              		.cfi_endproc
+ 510              	.LFE6:
+ 512 005a 00BF     		.section	.text.lwm2m_data_encode_string,"ax",%progbits
+ 513              		.align	1
+ 514              		.global	lwm2m_data_encode_string
+ 515              		.syntax unified
+ 516              		.thumb
+ 517              		.thumb_func
+ 518              		.fpu fpv4-sp-d16
+ 520              	lwm2m_data_encode_string:
+ 521              	.LFB7:
+ 188:Middlewares/Third_Party/wakaama/data.c **** 
+ 189:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_encode_string(const char * string,
+ 190:Middlewares/Third_Party/wakaama/data.c ****                               lwm2m_data_t * dataP)
+ 191:Middlewares/Third_Party/wakaama/data.c **** {
+ 522              		.loc 1 191 0
+ 523              		.cfi_startproc
+ 524              		@ args = 0, pretend = 0, frame = 0
+ 525              		@ frame_needed = 0, uses_anonymous_args = 0
+ 526              	.LVL70:
+ 527 0000 10B5     		push	{r4, lr}
+ 528              	.LCFI8:
+ 529              		.cfi_def_cfa_offset 8
+ 530              		.cfi_offset 4, -8
+ 531              		.cfi_offset 14, -4
+ 532 0002 0C46     		mov	r4, r1
+ 192:Middlewares/Third_Party/wakaama/data.c ****     size_t len;
+ 193:Middlewares/Third_Party/wakaama/data.c ****     int res;
+ 194:Middlewares/Third_Party/wakaama/data.c **** 
+ 195:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("\"%s\"", string);
+ 196:Middlewares/Third_Party/wakaama/data.c ****     if (string == NULL)
+ 533              		.loc 1 196 0
+ 534 0004 38B1     		cbz	r0, .L55
+ 535 0006 0146     		mov	r1, r0
+ 536              	.LVL71:
+ 197:Middlewares/Third_Party/wakaama/data.c ****     {
+ 198:Middlewares/Third_Party/wakaama/data.c ****         len = 0;
+ 199:Middlewares/Third_Party/wakaama/data.c ****     }
+ 200:Middlewares/Third_Party/wakaama/data.c ****     else
+ 201:Middlewares/Third_Party/wakaama/data.c ****     {
+ 202:Middlewares/Third_Party/wakaama/data.c ****         for (len = 0; string[len] != 0; len++);
+ 537              		.loc 1 202 0
+ 538 0008 0022     		movs	r2, #0
+ 539 000a 00E0     		b	.L56
+ 540              	.LVL72:
+ 541              	.L57:
+ 542              		.loc 1 202 0 is_stmt 0 discriminator 3
+ 543 000c 0132     		adds	r2, r2, #1
+ 544              	.LVL73:
+ 545              	.L56:
+ 546              		.loc 1 202 0 discriminator 1
+ 547 000e 8B5C     		ldrb	r3, [r1, r2]	@ zero_extendqisi2
+ 548 0010 002B     		cmp	r3, #0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 15
+
+
+ 549 0012 FBD1     		bne	.L57
+ 203:Middlewares/Third_Party/wakaama/data.c ****     }
+ 204:Middlewares/Third_Party/wakaama/data.c **** 
+ 205:Middlewares/Third_Party/wakaama/data.c ****     if (len == 0)
+ 550              		.loc 1 205 0 is_stmt 1
+ 551 0014 2AB9     		cbnz	r2, .L58
+ 552              	.LVL74:
+ 553              	.L55:
+ 206:Middlewares/Third_Party/wakaama/data.c ****     {
+ 207:Middlewares/Third_Party/wakaama/data.c ****         dataP->value.asBuffer.length = 0;
+ 554              		.loc 1 207 0
+ 555 0016 0023     		movs	r3, #0
+ 556 0018 A360     		str	r3, [r4, #8]
+ 208:Middlewares/Third_Party/wakaama/data.c ****         dataP->value.asBuffer.buffer = NULL;
+ 557              		.loc 1 208 0
+ 558 001a E360     		str	r3, [r4, #12]
+ 559              	.LVL75:
+ 560              	.L59:
+ 209:Middlewares/Third_Party/wakaama/data.c ****         res = 1;
+ 210:Middlewares/Third_Party/wakaama/data.c ****     }
+ 211:Middlewares/Third_Party/wakaama/data.c ****     else
+ 212:Middlewares/Third_Party/wakaama/data.c ****     {
+ 213:Middlewares/Third_Party/wakaama/data.c ****         res = prv_setBuffer(dataP, (uint8_t *)string, len);
+ 214:Middlewares/Third_Party/wakaama/data.c ****     }
+ 215:Middlewares/Third_Party/wakaama/data.c **** 
+ 216:Middlewares/Third_Party/wakaama/data.c ****     if (res == 1)
+ 217:Middlewares/Third_Party/wakaama/data.c ****     {
+ 218:Middlewares/Third_Party/wakaama/data.c ****         dataP->type = LWM2M_TYPE_STRING;
+ 561              		.loc 1 218 0
+ 562 001c 0423     		movs	r3, #4
+ 563 001e 2370     		strb	r3, [r4]
+ 564              	.L54:
+ 219:Middlewares/Third_Party/wakaama/data.c ****     }
+ 220:Middlewares/Third_Party/wakaama/data.c ****     else
+ 221:Middlewares/Third_Party/wakaama/data.c ****     {
+ 222:Middlewares/Third_Party/wakaama/data.c ****         dataP->type = LWM2M_TYPE_UNDEFINED;
+ 223:Middlewares/Third_Party/wakaama/data.c ****     }
+ 224:Middlewares/Third_Party/wakaama/data.c **** }
+ 565              		.loc 1 224 0
+ 566 0020 10BD     		pop	{r4, pc}
+ 567              	.LVL76:
+ 568              	.L58:
+ 213:Middlewares/Third_Party/wakaama/data.c ****     }
+ 569              		.loc 1 213 0
+ 570 0022 2046     		mov	r0, r4
+ 571              	.LVL77:
+ 572 0024 FFF7FEFF 		bl	prv_setBuffer
+ 573              	.LVL78:
+ 216:Middlewares/Third_Party/wakaama/data.c ****     {
+ 574              		.loc 1 216 0
+ 575 0028 0128     		cmp	r0, #1
+ 576 002a F7D0     		beq	.L59
+ 222:Middlewares/Third_Party/wakaama/data.c ****     }
+ 577              		.loc 1 222 0
+ 578 002c 0023     		movs	r3, #0
+ 579 002e 2370     		strb	r3, [r4]
+ 580              		.loc 1 224 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 16
+
+
+ 581 0030 F6E7     		b	.L54
+ 582              		.cfi_endproc
+ 583              	.LFE7:
+ 585              		.section	.text.lwm2m_data_encode_opaque,"ax",%progbits
+ 586              		.align	1
+ 587              		.global	lwm2m_data_encode_opaque
+ 588              		.syntax unified
+ 589              		.thumb
+ 590              		.thumb_func
+ 591              		.fpu fpv4-sp-d16
+ 593              	lwm2m_data_encode_opaque:
+ 594              	.LFB8:
+ 225:Middlewares/Third_Party/wakaama/data.c **** 
+ 226:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_encode_opaque(uint8_t * buffer,
+ 227:Middlewares/Third_Party/wakaama/data.c ****                               size_t length,
+ 228:Middlewares/Third_Party/wakaama/data.c ****                               lwm2m_data_t * dataP)
+ 229:Middlewares/Third_Party/wakaama/data.c **** {
+ 595              		.loc 1 229 0
+ 596              		.cfi_startproc
+ 597              		@ args = 0, pretend = 0, frame = 0
+ 598              		@ frame_needed = 0, uses_anonymous_args = 0
+ 599              	.LVL79:
+ 600 0000 10B5     		push	{r4, lr}
+ 601              	.LCFI9:
+ 602              		.cfi_def_cfa_offset 8
+ 603              		.cfi_offset 4, -8
+ 604              		.cfi_offset 14, -4
+ 605 0002 1446     		mov	r4, r2
+ 230:Middlewares/Third_Party/wakaama/data.c ****     int res;
+ 231:Middlewares/Third_Party/wakaama/data.c **** 
+ 232:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("length: %d", length);
+ 233:Middlewares/Third_Party/wakaama/data.c ****     if (length == 0)
+ 606              		.loc 1 233 0
+ 607 0004 29B9     		cbnz	r1, .L64
+ 234:Middlewares/Third_Party/wakaama/data.c ****     {
+ 235:Middlewares/Third_Party/wakaama/data.c ****         dataP->value.asBuffer.length = 0;
+ 608              		.loc 1 235 0
+ 609 0006 0023     		movs	r3, #0
+ 610 0008 9360     		str	r3, [r2, #8]
+ 236:Middlewares/Third_Party/wakaama/data.c ****         dataP->value.asBuffer.buffer = NULL;
+ 611              		.loc 1 236 0
+ 612 000a D360     		str	r3, [r2, #12]
+ 613              	.LVL80:
+ 614              	.L65:
+ 237:Middlewares/Third_Party/wakaama/data.c ****         res = 1;
+ 238:Middlewares/Third_Party/wakaama/data.c ****     }
+ 239:Middlewares/Third_Party/wakaama/data.c ****     else
+ 240:Middlewares/Third_Party/wakaama/data.c ****     {
+ 241:Middlewares/Third_Party/wakaama/data.c ****         res = prv_setBuffer(dataP, buffer, length);
+ 242:Middlewares/Third_Party/wakaama/data.c ****     }
+ 243:Middlewares/Third_Party/wakaama/data.c **** 
+ 244:Middlewares/Third_Party/wakaama/data.c ****     if (res == 1)
+ 245:Middlewares/Third_Party/wakaama/data.c ****     {
+ 246:Middlewares/Third_Party/wakaama/data.c ****         dataP->type = LWM2M_TYPE_OPAQUE;
+ 615              		.loc 1 246 0
+ 616 000c 0523     		movs	r3, #5
+ 617 000e 2370     		strb	r3, [r4]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 17
+
+
+ 618              	.L63:
+ 247:Middlewares/Third_Party/wakaama/data.c ****     }
+ 248:Middlewares/Third_Party/wakaama/data.c ****     else
+ 249:Middlewares/Third_Party/wakaama/data.c ****     {
+ 250:Middlewares/Third_Party/wakaama/data.c ****         dataP->type = LWM2M_TYPE_UNDEFINED;
+ 251:Middlewares/Third_Party/wakaama/data.c ****     }
+ 252:Middlewares/Third_Party/wakaama/data.c **** }
+ 619              		.loc 1 252 0
+ 620 0010 10BD     		pop	{r4, pc}
+ 621              	.LVL81:
+ 622              	.L64:
+ 623 0012 0A46     		mov	r2, r1
+ 624              	.LVL82:
+ 241:Middlewares/Third_Party/wakaama/data.c ****     }
+ 625              		.loc 1 241 0
+ 626 0014 0146     		mov	r1, r0
+ 627              	.LVL83:
+ 628 0016 2046     		mov	r0, r4
+ 629              	.LVL84:
+ 630 0018 FFF7FEFF 		bl	prv_setBuffer
+ 631              	.LVL85:
+ 244:Middlewares/Third_Party/wakaama/data.c ****     {
+ 632              		.loc 1 244 0
+ 633 001c 0128     		cmp	r0, #1
+ 634 001e F5D0     		beq	.L65
+ 250:Middlewares/Third_Party/wakaama/data.c ****     }
+ 635              		.loc 1 250 0
+ 636 0020 0023     		movs	r3, #0
+ 637 0022 2370     		strb	r3, [r4]
+ 638              		.loc 1 252 0
+ 639 0024 F4E7     		b	.L63
+ 640              		.cfi_endproc
+ 641              	.LFE8:
+ 643              		.section	.text.lwm2m_data_encode_nstring,"ax",%progbits
+ 644              		.align	1
+ 645              		.global	lwm2m_data_encode_nstring
+ 646              		.syntax unified
+ 647              		.thumb
+ 648              		.thumb_func
+ 649              		.fpu fpv4-sp-d16
+ 651              	lwm2m_data_encode_nstring:
+ 652              	.LFB9:
+ 253:Middlewares/Third_Party/wakaama/data.c **** 
+ 254:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_encode_nstring(const char * string,
+ 255:Middlewares/Third_Party/wakaama/data.c ****                                size_t length,
+ 256:Middlewares/Third_Party/wakaama/data.c ****                                lwm2m_data_t * dataP)
+ 257:Middlewares/Third_Party/wakaama/data.c **** {
+ 653              		.loc 1 257 0
+ 654              		.cfi_startproc
+ 655              		@ args = 0, pretend = 0, frame = 0
+ 656              		@ frame_needed = 0, uses_anonymous_args = 0
+ 657              	.LVL86:
+ 658 0000 10B5     		push	{r4, lr}
+ 659              	.LCFI10:
+ 660              		.cfi_def_cfa_offset 8
+ 661              		.cfi_offset 4, -8
+ 662              		.cfi_offset 14, -4
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 18
+
+
+ 663 0002 1446     		mov	r4, r2
+ 258:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("length: %d, string: \"%s\"", length, string);
+ 259:Middlewares/Third_Party/wakaama/data.c ****     lwm2m_data_encode_opaque((uint8_t *)string, length, dataP);
+ 664              		.loc 1 259 0
+ 665 0004 FFF7FEFF 		bl	lwm2m_data_encode_opaque
+ 666              	.LVL87:
+ 260:Middlewares/Third_Party/wakaama/data.c **** 
+ 261:Middlewares/Third_Party/wakaama/data.c ****     if (dataP->type == LWM2M_TYPE_OPAQUE)
+ 667              		.loc 1 261 0
+ 668 0008 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 669 000a 052B     		cmp	r3, #5
+ 670 000c 00D0     		beq	.L72
+ 671              	.L69:
+ 262:Middlewares/Third_Party/wakaama/data.c ****     {
+ 263:Middlewares/Third_Party/wakaama/data.c ****         dataP->type = LWM2M_TYPE_STRING;
+ 264:Middlewares/Third_Party/wakaama/data.c ****     }
+ 265:Middlewares/Third_Party/wakaama/data.c **** }
+ 672              		.loc 1 265 0
+ 673 000e 10BD     		pop	{r4, pc}
+ 674              	.LVL88:
+ 675              	.L72:
+ 263:Middlewares/Third_Party/wakaama/data.c ****     }
+ 676              		.loc 1 263 0
+ 677 0010 0423     		movs	r3, #4
+ 678 0012 2370     		strb	r3, [r4]
+ 679              		.loc 1 265 0
+ 680 0014 FBE7     		b	.L69
+ 681              		.cfi_endproc
+ 682              	.LFE9:
+ 684              		.section	.text.lwm2m_data_encode_int,"ax",%progbits
+ 685              		.align	1
+ 686              		.global	lwm2m_data_encode_int
+ 687              		.syntax unified
+ 688              		.thumb
+ 689              		.thumb_func
+ 690              		.fpu fpv4-sp-d16
+ 692              	lwm2m_data_encode_int:
+ 693              	.LFB10:
+ 266:Middlewares/Third_Party/wakaama/data.c **** 
+ 267:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_encode_int(int64_t value,
+ 268:Middlewares/Third_Party/wakaama/data.c ****                            lwm2m_data_t * dataP)
+ 269:Middlewares/Third_Party/wakaama/data.c **** {
+ 694              		.loc 1 269 0
+ 695              		.cfi_startproc
+ 696              		@ args = 0, pretend = 0, frame = 0
+ 697              		@ frame_needed = 0, uses_anonymous_args = 0
+ 698              		@ link register save eliminated.
+ 699              	.LVL89:
+ 270:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("value: %" PRId64 "", value);
+ 271:Middlewares/Third_Party/wakaama/data.c ****     dataP->type = LWM2M_TYPE_INTEGER;
+ 700              		.loc 1 271 0
+ 701 0000 0623     		movs	r3, #6
+ 702 0002 1370     		strb	r3, [r2]
+ 272:Middlewares/Third_Party/wakaama/data.c ****     dataP->value.asInteger = value;
+ 703              		.loc 1 272 0
+ 704 0004 C2E90201 		strd	r0, [r2, #8]
+ 273:Middlewares/Third_Party/wakaama/data.c **** }
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 19
+
+
+ 705              		.loc 1 273 0
+ 706 0008 7047     		bx	lr
+ 707              		.cfi_endproc
+ 708              	.LFE10:
+ 710              		.section	.text.lwm2m_data_decode_int,"ax",%progbits
+ 711              		.align	1
+ 712              		.global	lwm2m_data_decode_int
+ 713              		.syntax unified
+ 714              		.thumb
+ 715              		.thumb_func
+ 716              		.fpu fpv4-sp-d16
+ 718              	lwm2m_data_decode_int:
+ 719              	.LFB11:
+ 274:Middlewares/Third_Party/wakaama/data.c **** 
+ 275:Middlewares/Third_Party/wakaama/data.c **** int lwm2m_data_decode_int(const lwm2m_data_t * dataP,
+ 276:Middlewares/Third_Party/wakaama/data.c ****                           int64_t * valueP)
+ 277:Middlewares/Third_Party/wakaama/data.c **** {
+ 720              		.loc 1 277 0
+ 721              		.cfi_startproc
+ 722              		@ args = 0, pretend = 0, frame = 8
+ 723              		@ frame_needed = 0, uses_anonymous_args = 0
+ 724              	.LVL90:
+ 725 0000 10B5     		push	{r4, lr}
+ 726              	.LCFI11:
+ 727              		.cfi_def_cfa_offset 8
+ 728              		.cfi_offset 4, -8
+ 729              		.cfi_offset 14, -4
+ 730 0002 82B0     		sub	sp, sp, #8
+ 731              	.LCFI12:
+ 732              		.cfi_def_cfa_offset 16
+ 733 0004 0C46     		mov	r4, r1
+ 278:Middlewares/Third_Party/wakaama/data.c ****     int result;
+ 279:Middlewares/Third_Party/wakaama/data.c **** 
+ 280:Middlewares/Third_Party/wakaama/data.c ****     LOG("Entering");
+ 281:Middlewares/Third_Party/wakaama/data.c ****     switch (dataP->type)
+ 734              		.loc 1 281 0
+ 735 0006 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 736 0008 052B     		cmp	r3, #5
+ 737 000a 12D0     		beq	.L76
+ 738 000c 062B     		cmp	r3, #6
+ 739 000e 03D0     		beq	.L77
+ 740 0010 042B     		cmp	r3, #4
+ 741 0012 08D0     		beq	.L88
+ 282:Middlewares/Third_Party/wakaama/data.c ****     {
+ 283:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_INTEGER:
+ 284:Middlewares/Third_Party/wakaama/data.c ****         *valueP = dataP->value.asInteger;
+ 285:Middlewares/Third_Party/wakaama/data.c ****         result = 1;
+ 286:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 287:Middlewares/Third_Party/wakaama/data.c **** 
+ 288:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_STRING:
+ 289:Middlewares/Third_Party/wakaama/data.c ****         result = utils_textToInt(dataP->value.asBuffer.buffer, dataP->value.asBuffer.length, valueP
+ 290:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 291:Middlewares/Third_Party/wakaama/data.c **** 
+ 292:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_OPAQUE:
+ 293:Middlewares/Third_Party/wakaama/data.c ****         switch (dataP->value.asBuffer.length)
+ 294:Middlewares/Third_Party/wakaama/data.c ****         {
+ 295:Middlewares/Third_Party/wakaama/data.c ****         case 1:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 20
+
+
+ 296:Middlewares/Third_Party/wakaama/data.c ****             *valueP = (int8_t)dataP->value.asBuffer.buffer[0];
+ 297:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 298:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 299:Middlewares/Third_Party/wakaama/data.c **** 
+ 300:Middlewares/Third_Party/wakaama/data.c ****         case 2:
+ 301:Middlewares/Third_Party/wakaama/data.c ****         {
+ 302:Middlewares/Third_Party/wakaama/data.c ****             int16_t value;
+ 303:Middlewares/Third_Party/wakaama/data.c **** 
+ 304:Middlewares/Third_Party/wakaama/data.c ****             utils_copyValue(&value, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 305:Middlewares/Third_Party/wakaama/data.c **** 
+ 306:Middlewares/Third_Party/wakaama/data.c ****             *valueP = value;
+ 307:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 308:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 309:Middlewares/Third_Party/wakaama/data.c ****         }
+ 310:Middlewares/Third_Party/wakaama/data.c **** 
+ 311:Middlewares/Third_Party/wakaama/data.c ****         case 4:
+ 312:Middlewares/Third_Party/wakaama/data.c ****         {
+ 313:Middlewares/Third_Party/wakaama/data.c ****             int32_t value;
+ 314:Middlewares/Third_Party/wakaama/data.c **** 
+ 315:Middlewares/Third_Party/wakaama/data.c ****             utils_copyValue(&value, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 316:Middlewares/Third_Party/wakaama/data.c **** 
+ 317:Middlewares/Third_Party/wakaama/data.c ****             *valueP = value;
+ 318:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 319:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 320:Middlewares/Third_Party/wakaama/data.c ****         }
+ 321:Middlewares/Third_Party/wakaama/data.c **** 
+ 322:Middlewares/Third_Party/wakaama/data.c ****         case 8:
+ 323:Middlewares/Third_Party/wakaama/data.c ****             utils_copyValue(valueP, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 324:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 325:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 326:Middlewares/Third_Party/wakaama/data.c **** 
+ 327:Middlewares/Third_Party/wakaama/data.c ****         default:
+ 328:Middlewares/Third_Party/wakaama/data.c ****             result = 0;
+ 329:Middlewares/Third_Party/wakaama/data.c ****         }
+ 330:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 331:Middlewares/Third_Party/wakaama/data.c **** 
+ 332:Middlewares/Third_Party/wakaama/data.c ****     default:
+ 333:Middlewares/Third_Party/wakaama/data.c ****         return 0;
+ 742              		.loc 1 333 0
+ 743 0014 0020     		movs	r0, #0
+ 744              	.LVL91:
+ 745 0016 04E0     		b	.L74
+ 746              	.LVL92:
+ 747              	.L77:
+ 284:Middlewares/Third_Party/wakaama/data.c ****         result = 1;
+ 748              		.loc 1 284 0
+ 749 0018 D0E90223 		ldrd	r2, [r0, #8]
+ 750 001c C1E90023 		strd	r2, [r1]
+ 751              	.LVL93:
+ 285:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 752              		.loc 1 285 0
+ 753 0020 0120     		movs	r0, #1
+ 754              	.LVL94:
+ 755              	.L74:
+ 334:Middlewares/Third_Party/wakaama/data.c ****     }
+ 335:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("result: %d, value: %" PRId64, result, *valueP);
+ 336:Middlewares/Third_Party/wakaama/data.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 21
+
+
+ 337:Middlewares/Third_Party/wakaama/data.c ****     return result;
+ 338:Middlewares/Third_Party/wakaama/data.c **** }
+ 756              		.loc 1 338 0
+ 757 0022 02B0     		add	sp, sp, #8
+ 758              	.LCFI13:
+ 759              		.cfi_remember_state
+ 760              		.cfi_def_cfa_offset 8
+ 761              		@ sp needed
+ 762 0024 10BD     		pop	{r4, pc}
+ 763              	.LVL95:
+ 764              	.L88:
+ 765              	.LCFI14:
+ 766              		.cfi_restore_state
+ 289:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 767              		.loc 1 289 0
+ 768 0026 0A46     		mov	r2, r1
+ 769 0028 8168     		ldr	r1, [r0, #8]
+ 770              	.LVL96:
+ 771 002a C068     		ldr	r0, [r0, #12]
+ 772              	.LVL97:
+ 773 002c FFF7FEFF 		bl	utils_textToInt
+ 774              	.LVL98:
+ 290:Middlewares/Third_Party/wakaama/data.c **** 
+ 775              		.loc 1 290 0
+ 776 0030 F7E7     		b	.L74
+ 777              	.LVL99:
+ 778              	.L76:
+ 293:Middlewares/Third_Party/wakaama/data.c ****         {
+ 779              		.loc 1 293 0
+ 780 0032 8268     		ldr	r2, [r0, #8]
+ 781 0034 531E     		subs	r3, r2, #1
+ 782 0036 072B     		cmp	r3, #7
+ 783 0038 28D8     		bhi	.L85
+ 784 003a DFE803F0 		tbb	[pc, r3]
+ 785              	.LVL100:
+ 786              	.L80:
+ 787 003e 04       		.byte	(.L79-.L80)/2
+ 788 003f 0C       		.byte	(.L81-.L80)/2
+ 789 0040 27       		.byte	(.L85-.L80)/2
+ 790 0041 17       		.byte	(.L82-.L80)/2
+ 791 0042 27       		.byte	(.L85-.L80)/2
+ 792 0043 27       		.byte	(.L85-.L80)/2
+ 793 0044 27       		.byte	(.L85-.L80)/2
+ 794 0045 21       		.byte	(.L83-.L80)/2
+ 795              		.p2align 1
+ 796              	.L79:
+ 296:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 797              		.loc 1 296 0
+ 798 0046 C368     		ldr	r3, [r0, #12]
+ 799 0048 93F90020 		ldrsb	r2, [r3]
+ 800 004c D317     		asrs	r3, r2, #31
+ 801 004e C4E90023 		strd	r2, [r4]
+ 802              	.LVL101:
+ 297:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 803              		.loc 1 297 0
+ 804 0052 0120     		movs	r0, #1
+ 805              	.LVL102:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 22
+
+
+ 298:Middlewares/Third_Party/wakaama/data.c **** 
+ 806              		.loc 1 298 0
+ 807 0054 E5E7     		b	.L74
+ 808              	.LVL103:
+ 809              	.L81:
+ 810              	.LBB7:
+ 304:Middlewares/Third_Party/wakaama/data.c **** 
+ 811              		.loc 1 304 0
+ 812 0056 C168     		ldr	r1, [r0, #12]
+ 813 0058 01A8     		add	r0, sp, #4
+ 814              	.LVL104:
+ 815 005a FFF7FEFF 		bl	utils_copyValue
+ 816              	.LVL105:
+ 306:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 817              		.loc 1 306 0
+ 818 005e BDF90420 		ldrsh	r2, [sp, #4]
+ 819 0062 D317     		asrs	r3, r2, #31
+ 820 0064 C4E90023 		strd	r2, [r4]
+ 821              	.LVL106:
+ 307:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 822              		.loc 1 307 0
+ 823 0068 0120     		movs	r0, #1
+ 824 006a DAE7     		b	.L74
+ 825              	.LVL107:
+ 826              	.L82:
+ 827              	.LBE7:
+ 828              	.LBB8:
+ 315:Middlewares/Third_Party/wakaama/data.c **** 
+ 829              		.loc 1 315 0
+ 830 006c C168     		ldr	r1, [r0, #12]
+ 831 006e 01A8     		add	r0, sp, #4
+ 832              	.LVL108:
+ 833 0070 FFF7FEFF 		bl	utils_copyValue
+ 834              	.LVL109:
+ 317:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 835              		.loc 1 317 0
+ 836 0074 019A     		ldr	r2, [sp, #4]
+ 837 0076 D317     		asrs	r3, r2, #31
+ 838 0078 C4E90023 		strd	r2, [r4]
+ 839              	.LVL110:
+ 318:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 840              		.loc 1 318 0
+ 841 007c 0120     		movs	r0, #1
+ 842 007e D0E7     		b	.L74
+ 843              	.LVL111:
+ 844              	.L83:
+ 845              	.LBE8:
+ 323:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 846              		.loc 1 323 0
+ 847 0080 C168     		ldr	r1, [r0, #12]
+ 848 0082 2046     		mov	r0, r4
+ 849              	.LVL112:
+ 850 0084 FFF7FEFF 		bl	utils_copyValue
+ 851              	.LVL113:
+ 324:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 852              		.loc 1 324 0
+ 853 0088 0120     		movs	r0, #1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 23
+
+
+ 325:Middlewares/Third_Party/wakaama/data.c **** 
+ 854              		.loc 1 325 0
+ 855 008a CAE7     		b	.L74
+ 856              	.LVL114:
+ 857              	.L85:
+ 328:Middlewares/Third_Party/wakaama/data.c ****         }
+ 858              		.loc 1 328 0
+ 859 008c 0020     		movs	r0, #0
+ 860              	.LVL115:
+ 861 008e C8E7     		b	.L74
+ 862              		.cfi_endproc
+ 863              	.LFE11:
+ 865              		.section	.text.lwm2m_data_encode_float,"ax",%progbits
+ 866              		.align	1
+ 867              		.global	lwm2m_data_encode_float
+ 868              		.syntax unified
+ 869              		.thumb
+ 870              		.thumb_func
+ 871              		.fpu fpv4-sp-d16
+ 873              	lwm2m_data_encode_float:
+ 874              	.LFB12:
+ 339:Middlewares/Third_Party/wakaama/data.c **** 
+ 340:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_encode_float(double value,
+ 341:Middlewares/Third_Party/wakaama/data.c ****                              lwm2m_data_t * dataP)
+ 342:Middlewares/Third_Party/wakaama/data.c **** {
+ 875              		.loc 1 342 0
+ 876              		.cfi_startproc
+ 877              		@ args = 0, pretend = 0, frame = 0
+ 878              		@ frame_needed = 0, uses_anonymous_args = 0
+ 879              		@ link register save eliminated.
+ 880              	.LVL116:
+ 343:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("value: %f", value);
+ 344:Middlewares/Third_Party/wakaama/data.c ****     dataP->type = LWM2M_TYPE_FLOAT;
+ 881              		.loc 1 344 0
+ 882 0000 0723     		movs	r3, #7
+ 883 0002 0370     		strb	r3, [r0]
+ 345:Middlewares/Third_Party/wakaama/data.c ****     dataP->value.asFloat = value;
+ 884              		.loc 1 345 0
+ 885 0004 80ED020B 		vstr.64	d0, [r0, #8]
+ 346:Middlewares/Third_Party/wakaama/data.c **** }
+ 886              		.loc 1 346 0
+ 887 0008 7047     		bx	lr
+ 888              		.cfi_endproc
+ 889              	.LFE12:
+ 891              		.global	__aeabi_l2d
+ 892              		.global	__aeabi_f2d
+ 893              		.section	.text.lwm2m_data_decode_float,"ax",%progbits
+ 894              		.align	1
+ 895              		.global	lwm2m_data_decode_float
+ 896              		.syntax unified
+ 897              		.thumb
+ 898              		.thumb_func
+ 899              		.fpu fpv4-sp-d16
+ 901              	lwm2m_data_decode_float:
+ 902              	.LFB13:
+ 347:Middlewares/Third_Party/wakaama/data.c **** 
+ 348:Middlewares/Third_Party/wakaama/data.c **** int lwm2m_data_decode_float(const lwm2m_data_t * dataP,
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 24
+
+
+ 349:Middlewares/Third_Party/wakaama/data.c ****                             double * valueP)
+ 350:Middlewares/Third_Party/wakaama/data.c **** {
+ 903              		.loc 1 350 0
+ 904              		.cfi_startproc
+ 905              		@ args = 0, pretend = 0, frame = 8
+ 906              		@ frame_needed = 0, uses_anonymous_args = 0
+ 907              	.LVL117:
+ 908 0000 10B5     		push	{r4, lr}
+ 909              	.LCFI15:
+ 910              		.cfi_def_cfa_offset 8
+ 911              		.cfi_offset 4, -8
+ 912              		.cfi_offset 14, -4
+ 913 0002 82B0     		sub	sp, sp, #8
+ 914              	.LCFI16:
+ 915              		.cfi_def_cfa_offset 16
+ 916 0004 0C46     		mov	r4, r1
+ 351:Middlewares/Third_Party/wakaama/data.c ****     int result;
+ 352:Middlewares/Third_Party/wakaama/data.c **** 
+ 353:Middlewares/Third_Party/wakaama/data.c ****     LOG("Entering");
+ 354:Middlewares/Third_Party/wakaama/data.c ****     switch (dataP->type)
+ 917              		.loc 1 354 0
+ 918 0006 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 919 0008 043B     		subs	r3, r3, #4
+ 920 000a 032B     		cmp	r3, #3
+ 921 000c 30D8     		bhi	.L99
+ 922 000e DFE803F0 		tbb	[pc, r3]
+ 923              	.L93:
+ 924 0012 11       		.byte	(.L92-.L93)/2
+ 925 0013 17       		.byte	(.L94-.L93)/2
+ 926 0014 09       		.byte	(.L95-.L93)/2
+ 927 0015 02       		.byte	(.L96-.L93)/2
+ 928              		.p2align 1
+ 929              	.L96:
+ 355:Middlewares/Third_Party/wakaama/data.c ****     {
+ 356:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_FLOAT:
+ 357:Middlewares/Third_Party/wakaama/data.c ****         *valueP = dataP->value.asFloat;
+ 930              		.loc 1 357 0
+ 931 0016 D0E90223 		ldrd	r2, [r0, #8]
+ 932 001a C1E90023 		strd	r2, [r1]
+ 933              	.LVL118:
+ 358:Middlewares/Third_Party/wakaama/data.c ****         result = 1;
+ 934              		.loc 1 358 0
+ 935 001e 0120     		movs	r0, #1
+ 936              	.LVL119:
+ 937              	.L90:
+ 359:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 360:Middlewares/Third_Party/wakaama/data.c **** 
+ 361:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_INTEGER:
+ 362:Middlewares/Third_Party/wakaama/data.c ****         *valueP = (double)dataP->value.asInteger;
+ 363:Middlewares/Third_Party/wakaama/data.c ****         result = 1;
+ 364:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 365:Middlewares/Third_Party/wakaama/data.c **** 
+ 366:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_STRING:
+ 367:Middlewares/Third_Party/wakaama/data.c ****         result = utils_textToFloat(dataP->value.asBuffer.buffer, dataP->value.asBuffer.length, valu
+ 368:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 369:Middlewares/Third_Party/wakaama/data.c **** 
+ 370:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_OPAQUE:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 25
+
+
+ 371:Middlewares/Third_Party/wakaama/data.c ****         switch (dataP->value.asBuffer.length)
+ 372:Middlewares/Third_Party/wakaama/data.c ****         {
+ 373:Middlewares/Third_Party/wakaama/data.c ****         case 4:
+ 374:Middlewares/Third_Party/wakaama/data.c ****         {
+ 375:Middlewares/Third_Party/wakaama/data.c ****             float temp;
+ 376:Middlewares/Third_Party/wakaama/data.c **** 
+ 377:Middlewares/Third_Party/wakaama/data.c ****             utils_copyValue(&temp, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 378:Middlewares/Third_Party/wakaama/data.c **** 
+ 379:Middlewares/Third_Party/wakaama/data.c ****             *valueP = temp;
+ 380:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 381:Middlewares/Third_Party/wakaama/data.c ****         }
+ 382:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 383:Middlewares/Third_Party/wakaama/data.c **** 
+ 384:Middlewares/Third_Party/wakaama/data.c ****         case 8:
+ 385:Middlewares/Third_Party/wakaama/data.c ****             utils_copyValue(valueP, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 386:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 387:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 388:Middlewares/Third_Party/wakaama/data.c **** 
+ 389:Middlewares/Third_Party/wakaama/data.c ****         default:
+ 390:Middlewares/Third_Party/wakaama/data.c ****             result = 0;
+ 391:Middlewares/Third_Party/wakaama/data.c ****         }
+ 392:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 393:Middlewares/Third_Party/wakaama/data.c **** 
+ 394:Middlewares/Third_Party/wakaama/data.c ****     default:
+ 395:Middlewares/Third_Party/wakaama/data.c ****         result = 0;
+ 396:Middlewares/Third_Party/wakaama/data.c ****     }
+ 397:Middlewares/Third_Party/wakaama/data.c **** 
+ 398:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("result: %d, value: %f", result, *valueP);
+ 399:Middlewares/Third_Party/wakaama/data.c **** 
+ 400:Middlewares/Third_Party/wakaama/data.c ****     return result;
+ 401:Middlewares/Third_Party/wakaama/data.c **** }
+ 938              		.loc 1 401 0
+ 939 0020 02B0     		add	sp, sp, #8
+ 940              	.LCFI17:
+ 941              		.cfi_remember_state
+ 942              		.cfi_def_cfa_offset 8
+ 943              		@ sp needed
+ 944 0022 10BD     		pop	{r4, pc}
+ 945              	.LVL120:
+ 946              	.L95:
+ 947              	.LCFI18:
+ 948              		.cfi_restore_state
+ 362:Middlewares/Third_Party/wakaama/data.c ****         result = 1;
+ 949              		.loc 1 362 0
+ 950 0024 D0E90201 		ldrd	r0, [r0, #8]
+ 951              	.LVL121:
+ 952 0028 FFF7FEFF 		bl	__aeabi_l2d
+ 953              	.LVL122:
+ 954 002c C4E90001 		strd	r0, [r4]
+ 955              	.LVL123:
+ 363:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 956              		.loc 1 363 0
+ 957 0030 0120     		movs	r0, #1
+ 364:Middlewares/Third_Party/wakaama/data.c **** 
+ 958              		.loc 1 364 0
+ 959 0032 F5E7     		b	.L90
+ 960              	.LVL124:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 26
+
+
+ 961              	.L92:
+ 367:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 962              		.loc 1 367 0
+ 963 0034 0A46     		mov	r2, r1
+ 964 0036 8168     		ldr	r1, [r0, #8]
+ 965              	.LVL125:
+ 966 0038 C068     		ldr	r0, [r0, #12]
+ 967              	.LVL126:
+ 968 003a FFF7FEFF 		bl	utils_textToFloat
+ 969              	.LVL127:
+ 368:Middlewares/Third_Party/wakaama/data.c **** 
+ 970              		.loc 1 368 0
+ 971 003e EFE7     		b	.L90
+ 972              	.LVL128:
+ 973              	.L94:
+ 371:Middlewares/Third_Party/wakaama/data.c ****         {
+ 974              		.loc 1 371 0
+ 975 0040 8268     		ldr	r2, [r0, #8]
+ 976 0042 042A     		cmp	r2, #4
+ 977 0044 03D0     		beq	.L97
+ 978 0046 082A     		cmp	r2, #8
+ 979 0048 0CD0     		beq	.L98
+ 390:Middlewares/Third_Party/wakaama/data.c ****         }
+ 980              		.loc 1 390 0
+ 981 004a 0020     		movs	r0, #0
+ 982              	.LVL129:
+ 400:Middlewares/Third_Party/wakaama/data.c **** }
+ 983              		.loc 1 400 0
+ 984 004c E8E7     		b	.L90
+ 985              	.LVL130:
+ 986              	.L97:
+ 987              	.LBB9:
+ 377:Middlewares/Third_Party/wakaama/data.c **** 
+ 988              		.loc 1 377 0
+ 989 004e C168     		ldr	r1, [r0, #12]
+ 990              	.LVL131:
+ 991 0050 01A8     		add	r0, sp, #4
+ 992              	.LVL132:
+ 993 0052 FFF7FEFF 		bl	utils_copyValue
+ 994              	.LVL133:
+ 379:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 995              		.loc 1 379 0
+ 996 0056 0198     		ldr	r0, [sp, #4]	@ float
+ 997 0058 FFF7FEFF 		bl	__aeabi_f2d
+ 998              	.LVL134:
+ 999 005c C4E90001 		strd	r0, [r4]
+ 1000              	.LVL135:
+ 380:Middlewares/Third_Party/wakaama/data.c ****         }
+ 1001              		.loc 1 380 0
+ 1002 0060 0120     		movs	r0, #1
+ 1003              	.LBE9:
+ 382:Middlewares/Third_Party/wakaama/data.c **** 
+ 1004              		.loc 1 382 0
+ 1005 0062 DDE7     		b	.L90
+ 1006              	.LVL136:
+ 1007              	.L98:
+ 385:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 27
+
+
+ 1008              		.loc 1 385 0
+ 1009 0064 C168     		ldr	r1, [r0, #12]
+ 1010              	.LVL137:
+ 1011 0066 2046     		mov	r0, r4
+ 1012              	.LVL138:
+ 1013 0068 FFF7FEFF 		bl	utils_copyValue
+ 1014              	.LVL139:
+ 386:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 1015              		.loc 1 386 0
+ 1016 006c 0120     		movs	r0, #1
+ 387:Middlewares/Third_Party/wakaama/data.c **** 
+ 1017              		.loc 1 387 0
+ 1018 006e D7E7     		b	.L90
+ 1019              	.LVL140:
+ 1020              	.L99:
+ 395:Middlewares/Third_Party/wakaama/data.c ****     }
+ 1021              		.loc 1 395 0
+ 1022 0070 0020     		movs	r0, #0
+ 1023              	.LVL141:
+ 1024 0072 D5E7     		b	.L90
+ 1025              		.cfi_endproc
+ 1026              	.LFE13:
+ 1028              		.section	.text.lwm2m_data_encode_bool,"ax",%progbits
+ 1029              		.align	1
+ 1030              		.global	lwm2m_data_encode_bool
+ 1031              		.syntax unified
+ 1032              		.thumb
+ 1033              		.thumb_func
+ 1034              		.fpu fpv4-sp-d16
+ 1036              	lwm2m_data_encode_bool:
+ 1037              	.LFB14:
+ 402:Middlewares/Third_Party/wakaama/data.c **** 
+ 403:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_encode_bool(bool value,
+ 404:Middlewares/Third_Party/wakaama/data.c ****                             lwm2m_data_t * dataP)
+ 405:Middlewares/Third_Party/wakaama/data.c **** {
+ 1038              		.loc 1 405 0
+ 1039              		.cfi_startproc
+ 1040              		@ args = 0, pretend = 0, frame = 0
+ 1041              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1042              		@ link register save eliminated.
+ 1043              	.LVL142:
+ 406:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("value: %s", value?"true":"false");
+ 407:Middlewares/Third_Party/wakaama/data.c ****     dataP->type = LWM2M_TYPE_BOOLEAN;
+ 1044              		.loc 1 407 0
+ 1045 0000 0823     		movs	r3, #8
+ 1046 0002 0B70     		strb	r3, [r1]
+ 408:Middlewares/Third_Party/wakaama/data.c ****     dataP->value.asBoolean = value;
+ 1047              		.loc 1 408 0
+ 1048 0004 0872     		strb	r0, [r1, #8]
+ 409:Middlewares/Third_Party/wakaama/data.c **** }
+ 1049              		.loc 1 409 0
+ 1050 0006 7047     		bx	lr
+ 1051              		.cfi_endproc
+ 1052              	.LFE14:
+ 1054              		.section	.text.lwm2m_data_decode_bool,"ax",%progbits
+ 1055              		.align	1
+ 1056              		.global	lwm2m_data_decode_bool
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 28
+
+
+ 1057              		.syntax unified
+ 1058              		.thumb
+ 1059              		.thumb_func
+ 1060              		.fpu fpv4-sp-d16
+ 1062              	lwm2m_data_decode_bool:
+ 1063              	.LFB15:
+ 410:Middlewares/Third_Party/wakaama/data.c **** 
+ 411:Middlewares/Third_Party/wakaama/data.c **** int lwm2m_data_decode_bool(const lwm2m_data_t * dataP,
+ 412:Middlewares/Third_Party/wakaama/data.c ****                            bool * valueP)
+ 413:Middlewares/Third_Party/wakaama/data.c **** {
+ 1064              		.loc 1 413 0
+ 1065              		.cfi_startproc
+ 1066              		@ args = 0, pretend = 0, frame = 0
+ 1067              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1068              		@ link register save eliminated.
+ 1069              	.LVL143:
+ 414:Middlewares/Third_Party/wakaama/data.c ****     int result;
+ 415:Middlewares/Third_Party/wakaama/data.c **** 
+ 416:Middlewares/Third_Party/wakaama/data.c ****     LOG("Entering");
+ 417:Middlewares/Third_Party/wakaama/data.c ****     switch (dataP->type)
+ 1070              		.loc 1 417 0
+ 1071 0000 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 1072 0002 052B     		cmp	r3, #5
+ 1073 0004 1DD0     		beq	.L106
+ 1074 0006 082B     		cmp	r3, #8
+ 1075 0008 03D0     		beq	.L107
+ 1076 000a 042B     		cmp	r3, #4
+ 1077 000c 05D0     		beq	.L121
+ 418:Middlewares/Third_Party/wakaama/data.c ****     {
+ 419:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_BOOLEAN:
+ 420:Middlewares/Third_Party/wakaama/data.c ****         *valueP = dataP->value.asBoolean;
+ 421:Middlewares/Third_Party/wakaama/data.c ****         result = 1;
+ 422:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 423:Middlewares/Third_Party/wakaama/data.c **** 
+ 424:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_STRING:
+ 425:Middlewares/Third_Party/wakaama/data.c ****         if (dataP->value.asBuffer.length != 1) return 0;
+ 426:Middlewares/Third_Party/wakaama/data.c **** 
+ 427:Middlewares/Third_Party/wakaama/data.c ****         switch (dataP->value.asBuffer.buffer[0])
+ 428:Middlewares/Third_Party/wakaama/data.c ****         {
+ 429:Middlewares/Third_Party/wakaama/data.c ****         case '0':
+ 430:Middlewares/Third_Party/wakaama/data.c ****             *valueP = false;
+ 431:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 432:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 433:Middlewares/Third_Party/wakaama/data.c ****         case '1':
+ 434:Middlewares/Third_Party/wakaama/data.c ****             *valueP = true;
+ 435:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 436:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 437:Middlewares/Third_Party/wakaama/data.c ****         default:
+ 438:Middlewares/Third_Party/wakaama/data.c ****             result = 0;
+ 439:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 440:Middlewares/Third_Party/wakaama/data.c ****         }
+ 441:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 442:Middlewares/Third_Party/wakaama/data.c **** 
+ 443:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_OPAQUE:
+ 444:Middlewares/Third_Party/wakaama/data.c ****         if (dataP->value.asBuffer.length != 1) return 0;
+ 445:Middlewares/Third_Party/wakaama/data.c **** 
+ 446:Middlewares/Third_Party/wakaama/data.c ****         switch (dataP->value.asBuffer.buffer[0])
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 29
+
+
+ 447:Middlewares/Third_Party/wakaama/data.c ****         {
+ 448:Middlewares/Third_Party/wakaama/data.c ****         case 0:
+ 449:Middlewares/Third_Party/wakaama/data.c ****             *valueP = false;
+ 450:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 451:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 452:Middlewares/Third_Party/wakaama/data.c ****         case 1:
+ 453:Middlewares/Third_Party/wakaama/data.c ****             *valueP = true;
+ 454:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 455:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 456:Middlewares/Third_Party/wakaama/data.c ****         default:
+ 457:Middlewares/Third_Party/wakaama/data.c ****             result = 0;
+ 458:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 459:Middlewares/Third_Party/wakaama/data.c ****         }
+ 460:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 461:Middlewares/Third_Party/wakaama/data.c **** 
+ 462:Middlewares/Third_Party/wakaama/data.c ****     default:
+ 463:Middlewares/Third_Party/wakaama/data.c ****         result = 0;
+ 1078              		.loc 1 463 0
+ 1079 000e 0020     		movs	r0, #0
+ 1080              	.LVL144:
+ 1081 0010 7047     		bx	lr
+ 1082              	.LVL145:
+ 1083              	.L107:
+ 420:Middlewares/Third_Party/wakaama/data.c ****         result = 1;
+ 1084              		.loc 1 420 0
+ 1085 0012 037A     		ldrb	r3, [r0, #8]	@ zero_extendqisi2
+ 1086 0014 0B70     		strb	r3, [r1]
+ 1087              	.LVL146:
+ 421:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 1088              		.loc 1 421 0
+ 1089 0016 0120     		movs	r0, #1
+ 1090              	.LVL147:
+ 422:Middlewares/Third_Party/wakaama/data.c **** 
+ 1091              		.loc 1 422 0
+ 1092 0018 7047     		bx	lr
+ 1093              	.LVL148:
+ 1094              	.L121:
+ 425:Middlewares/Third_Party/wakaama/data.c **** 
+ 1095              		.loc 1 425 0
+ 1096 001a 8368     		ldr	r3, [r0, #8]
+ 1097 001c 012B     		cmp	r3, #1
+ 1098 001e 01D0     		beq	.L122
+ 1099 0020 0020     		movs	r0, #0
+ 1100              	.LVL149:
+ 1101 0022 7047     		bx	lr
+ 1102              	.LVL150:
+ 1103              	.L122:
+ 427:Middlewares/Third_Party/wakaama/data.c ****         {
+ 1104              		.loc 1 427 0
+ 1105 0024 C368     		ldr	r3, [r0, #12]
+ 1106 0026 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1107 0028 302B     		cmp	r3, #48
+ 1108 002a 03D0     		beq	.L109
+ 1109 002c 312B     		cmp	r3, #49
+ 1110 002e 05D0     		beq	.L110
+ 438:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 1111              		.loc 1 438 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 30
+
+
+ 1112 0030 0020     		movs	r0, #0
+ 1113              	.LVL151:
+ 1114 0032 7047     		bx	lr
+ 1115              	.LVL152:
+ 1116              	.L109:
+ 430:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 1117              		.loc 1 430 0
+ 1118 0034 0023     		movs	r3, #0
+ 1119 0036 0B70     		strb	r3, [r1]
+ 1120              	.LVL153:
+ 431:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 1121              		.loc 1 431 0
+ 1122 0038 0120     		movs	r0, #1
+ 1123              	.LVL154:
+ 432:Middlewares/Third_Party/wakaama/data.c ****         case '1':
+ 1124              		.loc 1 432 0
+ 1125 003a 7047     		bx	lr
+ 1126              	.LVL155:
+ 1127              	.L110:
+ 434:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 1128              		.loc 1 434 0
+ 1129 003c 0120     		movs	r0, #1
+ 1130              	.LVL156:
+ 1131 003e 0870     		strb	r0, [r1]
+ 1132              	.LVL157:
+ 436:Middlewares/Third_Party/wakaama/data.c ****         default:
+ 1133              		.loc 1 436 0
+ 1134 0040 7047     		bx	lr
+ 1135              	.LVL158:
+ 1136              	.L106:
+ 444:Middlewares/Third_Party/wakaama/data.c **** 
+ 1137              		.loc 1 444 0
+ 1138 0042 8368     		ldr	r3, [r0, #8]
+ 1139 0044 012B     		cmp	r3, #1
+ 1140 0046 01D0     		beq	.L123
+ 1141 0048 0020     		movs	r0, #0
+ 1142              	.LVL159:
+ 1143 004a 7047     		bx	lr
+ 1144              	.LVL160:
+ 1145              	.L123:
+ 446:Middlewares/Third_Party/wakaama/data.c ****         {
+ 1146              		.loc 1 446 0
+ 1147 004c C368     		ldr	r3, [r0, #12]
+ 1148 004e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1149 0050 1BB1     		cbz	r3, .L111
+ 1150 0052 012B     		cmp	r3, #1
+ 1151 0054 05D0     		beq	.L112
+ 457:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 1152              		.loc 1 457 0
+ 1153 0056 0020     		movs	r0, #0
+ 1154              	.LVL161:
+ 464:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 465:Middlewares/Third_Party/wakaama/data.c ****     }
+ 466:Middlewares/Third_Party/wakaama/data.c **** 
+ 467:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("result: %d, value: %s", result, *valueP ? "true" : "false");
+ 468:Middlewares/Third_Party/wakaama/data.c **** 
+ 469:Middlewares/Third_Party/wakaama/data.c ****     return result;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 31
+
+
+ 470:Middlewares/Third_Party/wakaama/data.c **** }
+ 1155              		.loc 1 470 0
+ 1156 0058 7047     		bx	lr
+ 1157              	.LVL162:
+ 1158              	.L111:
+ 449:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 1159              		.loc 1 449 0
+ 1160 005a 0023     		movs	r3, #0
+ 1161 005c 0B70     		strb	r3, [r1]
+ 1162              	.LVL163:
+ 450:Middlewares/Third_Party/wakaama/data.c ****             break;
+ 1163              		.loc 1 450 0
+ 1164 005e 0120     		movs	r0, #1
+ 1165              	.LVL164:
+ 451:Middlewares/Third_Party/wakaama/data.c ****         case 1:
+ 1166              		.loc 1 451 0
+ 1167 0060 7047     		bx	lr
+ 1168              	.LVL165:
+ 1169              	.L112:
+ 453:Middlewares/Third_Party/wakaama/data.c ****             result = 1;
+ 1170              		.loc 1 453 0
+ 1171 0062 0120     		movs	r0, #1
+ 1172              	.LVL166:
+ 1173 0064 0870     		strb	r0, [r1]
+ 1174              	.LVL167:
+ 455:Middlewares/Third_Party/wakaama/data.c ****         default:
+ 1175              		.loc 1 455 0
+ 1176 0066 7047     		bx	lr
+ 1177              		.cfi_endproc
+ 1178              	.LFE15:
+ 1180              		.section	.text.lwm2m_data_encode_objlink,"ax",%progbits
+ 1181              		.align	1
+ 1182              		.global	lwm2m_data_encode_objlink
+ 1183              		.syntax unified
+ 1184              		.thumb
+ 1185              		.thumb_func
+ 1186              		.fpu fpv4-sp-d16
+ 1188              	lwm2m_data_encode_objlink:
+ 1189              	.LFB16:
+ 471:Middlewares/Third_Party/wakaama/data.c **** 
+ 472:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_encode_objlink(uint16_t objectId,
+ 473:Middlewares/Third_Party/wakaama/data.c ****                            uint16_t objectInstanceId,
+ 474:Middlewares/Third_Party/wakaama/data.c ****                            lwm2m_data_t * dataP)
+ 475:Middlewares/Third_Party/wakaama/data.c **** {
+ 1190              		.loc 1 475 0
+ 1191              		.cfi_startproc
+ 1192              		@ args = 0, pretend = 0, frame = 0
+ 1193              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1194              		@ link register save eliminated.
+ 1195              	.LVL168:
+ 476:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("value: %d/%d", objectId, objectInstanceId);
+ 477:Middlewares/Third_Party/wakaama/data.c ****     dataP->type = LWM2M_TYPE_OBJECT_LINK;
+ 1196              		.loc 1 477 0
+ 1197 0000 0923     		movs	r3, #9
+ 1198 0002 1370     		strb	r3, [r2]
+ 478:Middlewares/Third_Party/wakaama/data.c ****     dataP->value.asObjLink.objectId = objectId;
+ 1199              		.loc 1 478 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 32
+
+
+ 1200 0004 1081     		strh	r0, [r2, #8]	@ movhi
+ 479:Middlewares/Third_Party/wakaama/data.c ****     dataP->value.asObjLink.objectInstanceId = objectInstanceId;
+ 1201              		.loc 1 479 0
+ 1202 0006 5181     		strh	r1, [r2, #10]	@ movhi
+ 480:Middlewares/Third_Party/wakaama/data.c **** }
+ 1203              		.loc 1 480 0
+ 1204 0008 7047     		bx	lr
+ 1205              		.cfi_endproc
+ 1206              	.LFE16:
+ 1208              		.section	.text.lwm2m_data_include,"ax",%progbits
+ 1209              		.align	1
+ 1210              		.global	lwm2m_data_include
+ 1211              		.syntax unified
+ 1212              		.thumb
+ 1213              		.thumb_func
+ 1214              		.fpu fpv4-sp-d16
+ 1216              	lwm2m_data_include:
+ 1217              	.LFB17:
+ 481:Middlewares/Third_Party/wakaama/data.c **** 
+ 482:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_include(lwm2m_data_t * subDataP,
+ 483:Middlewares/Third_Party/wakaama/data.c ****                         size_t count,
+ 484:Middlewares/Third_Party/wakaama/data.c ****                         lwm2m_data_t * dataP)
+ 485:Middlewares/Third_Party/wakaama/data.c **** {
+ 1218              		.loc 1 485 0
+ 1219              		.cfi_startproc
+ 1220              		@ args = 0, pretend = 0, frame = 0
+ 1221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1222              		@ link register save eliminated.
+ 1223              	.LVL169:
+ 486:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("count: %d", count);
+ 487:Middlewares/Third_Party/wakaama/data.c ****     if (subDataP == NULL || count == 0) return;
+ 1224              		.loc 1 487 0
+ 1225 0000 0346     		mov	r3, r0
+ 1226 0002 50B1     		cbz	r0, .L125
+ 1227              		.loc 1 487 0 is_stmt 0 discriminator 1
+ 1228 0004 49B1     		cbz	r1, .L125
+ 488:Middlewares/Third_Party/wakaama/data.c **** 
+ 489:Middlewares/Third_Party/wakaama/data.c ****     switch (subDataP[0].type)
+ 1229              		.loc 1 489 0 is_stmt 1
+ 1230 0006 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 1231              	.LVL170:
+ 1232 0008 0228     		cmp	r0, #2
+ 1233 000a 07D0     		beq	.L127
+ 1234 000c 05D3     		bcc	.L125
+ 1235 000e 0928     		cmp	r0, #9
+ 1236 0010 03D8     		bhi	.L125
+ 490:Middlewares/Third_Party/wakaama/data.c ****     {
+ 491:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_STRING:
+ 492:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_OPAQUE:
+ 493:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_INTEGER:
+ 494:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_FLOAT:
+ 495:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_BOOLEAN:
+ 496:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_OBJECT_LINK:
+ 497:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_MULTIPLE_RESOURCE:
+ 498:Middlewares/Third_Party/wakaama/data.c ****         dataP->type = LWM2M_TYPE_OBJECT_INSTANCE;
+ 1237              		.loc 1 498 0
+ 1238 0012 0220     		movs	r0, #2
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 33
+
+
+ 1239 0014 1070     		strb	r0, [r2]
+ 1240              	.L129:
+ 499:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 500:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_TYPE_OBJECT_INSTANCE:
+ 501:Middlewares/Third_Party/wakaama/data.c ****         dataP->type = LWM2M_TYPE_OBJECT;
+ 502:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 503:Middlewares/Third_Party/wakaama/data.c ****     default:
+ 504:Middlewares/Third_Party/wakaama/data.c ****         return;
+ 505:Middlewares/Third_Party/wakaama/data.c ****     }
+ 506:Middlewares/Third_Party/wakaama/data.c ****     dataP->value.asChildren.count = count;
+ 1241              		.loc 1 506 0
+ 1242 0016 9160     		str	r1, [r2, #8]
+ 507:Middlewares/Third_Party/wakaama/data.c ****     dataP->value.asChildren.array = subDataP;
+ 1243              		.loc 1 507 0
+ 1244 0018 D360     		str	r3, [r2, #12]
+ 1245              	.L125:
+ 508:Middlewares/Third_Party/wakaama/data.c **** }
+ 1246              		.loc 1 508 0
+ 1247 001a 7047     		bx	lr
+ 1248              	.L127:
+ 501:Middlewares/Third_Party/wakaama/data.c ****         break;
+ 1249              		.loc 1 501 0
+ 1250 001c 0120     		movs	r0, #1
+ 1251 001e 1070     		strb	r0, [r2]
+ 502:Middlewares/Third_Party/wakaama/data.c ****     default:
+ 1252              		.loc 1 502 0
+ 1253 0020 F9E7     		b	.L129
+ 1254              		.cfi_endproc
+ 1255              	.LFE17:
+ 1257              		.section	.text.lwm2m_data_encode_instances,"ax",%progbits
+ 1258              		.align	1
+ 1259              		.global	lwm2m_data_encode_instances
+ 1260              		.syntax unified
+ 1261              		.thumb
+ 1262              		.thumb_func
+ 1263              		.fpu fpv4-sp-d16
+ 1265              	lwm2m_data_encode_instances:
+ 1266              	.LFB18:
+ 509:Middlewares/Third_Party/wakaama/data.c **** 
+ 510:Middlewares/Third_Party/wakaama/data.c **** void lwm2m_data_encode_instances(lwm2m_data_t * subDataP,
+ 511:Middlewares/Third_Party/wakaama/data.c ****                                  size_t count,
+ 512:Middlewares/Third_Party/wakaama/data.c ****                                  lwm2m_data_t * dataP)
+ 513:Middlewares/Third_Party/wakaama/data.c **** {
+ 1267              		.loc 1 513 0
+ 1268              		.cfi_startproc
+ 1269              		@ args = 0, pretend = 0, frame = 0
+ 1270              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1271              	.LVL171:
+ 1272 0000 10B5     		push	{r4, lr}
+ 1273              	.LCFI19:
+ 1274              		.cfi_def_cfa_offset 8
+ 1275              		.cfi_offset 4, -8
+ 1276              		.cfi_offset 14, -4
+ 1277 0002 1446     		mov	r4, r2
+ 514:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("count: %d", count);
+ 515:Middlewares/Third_Party/wakaama/data.c ****     lwm2m_data_include(subDataP, count, dataP);
+ 1278              		.loc 1 515 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 34
+
+
+ 1279 0004 FFF7FEFF 		bl	lwm2m_data_include
+ 1280              	.LVL172:
+ 516:Middlewares/Third_Party/wakaama/data.c ****     dataP->type = LWM2M_TYPE_MULTIPLE_RESOURCE;
+ 1281              		.loc 1 516 0
+ 1282 0008 0323     		movs	r3, #3
+ 1283 000a 2370     		strb	r3, [r4]
+ 517:Middlewares/Third_Party/wakaama/data.c **** }
+ 1284              		.loc 1 517 0
+ 1285 000c 10BD     		pop	{r4, pc}
+ 1286              		.cfi_endproc
+ 1287              	.LFE18:
+ 1289              		.section	.text.lwm2m_data_parse,"ax",%progbits
+ 1290              		.align	1
+ 1291              		.global	lwm2m_data_parse
+ 1292              		.syntax unified
+ 1293              		.thumb
+ 1294              		.thumb_func
+ 1295              		.fpu fpv4-sp-d16
+ 1297              	lwm2m_data_parse:
+ 1298              	.LFB19:
+ 518:Middlewares/Third_Party/wakaama/data.c **** 
+ 519:Middlewares/Third_Party/wakaama/data.c **** int lwm2m_data_parse(lwm2m_uri_t * uriP,
+ 520:Middlewares/Third_Party/wakaama/data.c ****                      uint8_t * buffer,
+ 521:Middlewares/Third_Party/wakaama/data.c ****                      size_t bufferLen,
+ 522:Middlewares/Third_Party/wakaama/data.c ****                      lwm2m_media_type_t format,
+ 523:Middlewares/Third_Party/wakaama/data.c ****                      lwm2m_data_t ** dataP)
+ 524:Middlewares/Third_Party/wakaama/data.c **** {
+ 1299              		.loc 1 524 0
+ 1300              		.cfi_startproc
+ 1301              		@ args = 4, pretend = 0, frame = 0
+ 1302              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1303              	.LVL173:
+ 1304 0000 70B5     		push	{r4, r5, r6, lr}
+ 1305              	.LCFI20:
+ 1306              		.cfi_def_cfa_offset 16
+ 1307              		.cfi_offset 4, -16
+ 1308              		.cfi_offset 5, -12
+ 1309              		.cfi_offset 6, -8
+ 1310              		.cfi_offset 14, -4
+ 1311 0002 0446     		mov	r4, r0
+ 1312 0004 0D46     		mov	r5, r1
+ 1313 0006 1646     		mov	r6, r2
+ 525:Middlewares/Third_Party/wakaama/data.c ****     int res;
+ 526:Middlewares/Third_Party/wakaama/data.c **** 
+ 527:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("format: %s, bufferLen: %d", STR_MEDIA_TYPE(format), bufferLen);
+ 528:Middlewares/Third_Party/wakaama/data.c ****     LOG_URI(uriP);
+ 529:Middlewares/Third_Party/wakaama/data.c ****     switch (format)
+ 1314              		.loc 1 529 0
+ 1315 0008 2A2B     		cmp	r3, #42
+ 1316 000a 2BD0     		beq	.L134
+ 1317 000c 42F61652 		movw	r2, #11542
+ 1318              	.LVL174:
+ 1319 0010 9342     		cmp	r3, r2
+ 1320 0012 4AD0     		beq	.L135
+ 1321 0014 0BB1     		cbz	r3, .L144
+ 530:Middlewares/Third_Party/wakaama/data.c ****     {
+ 531:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_TEXT:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 35
+
+
+ 532:Middlewares/Third_Party/wakaama/data.c ****         if (!LWM2M_URI_IS_SET_RESOURCE(uriP)) return 0;
+ 533:Middlewares/Third_Party/wakaama/data.c ****         *dataP = lwm2m_data_new(1);
+ 534:Middlewares/Third_Party/wakaama/data.c ****         if (*dataP == NULL) return 0;
+ 535:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->id = uriP->resourceId;
+ 536:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->type = LWM2M_TYPE_STRING;
+ 537:Middlewares/Third_Party/wakaama/data.c ****         res = prv_setBuffer(*dataP, buffer, bufferLen);
+ 538:Middlewares/Third_Party/wakaama/data.c ****         if (res == 0)
+ 539:Middlewares/Third_Party/wakaama/data.c ****         {
+ 540:Middlewares/Third_Party/wakaama/data.c ****             lwm2m_data_free(1, *dataP);
+ 541:Middlewares/Third_Party/wakaama/data.c ****             *dataP = NULL;
+ 542:Middlewares/Third_Party/wakaama/data.c ****         }
+ 543:Middlewares/Third_Party/wakaama/data.c ****         return res;
+ 544:Middlewares/Third_Party/wakaama/data.c **** 
+ 545:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_OPAQUE:
+ 546:Middlewares/Third_Party/wakaama/data.c ****         if (!LWM2M_URI_IS_SET_RESOURCE(uriP)) return 0;
+ 547:Middlewares/Third_Party/wakaama/data.c ****         *dataP = lwm2m_data_new(1);
+ 548:Middlewares/Third_Party/wakaama/data.c ****         if (*dataP == NULL) return 0;
+ 549:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->id = uriP->resourceId;
+ 550:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->type = LWM2M_TYPE_OPAQUE;
+ 551:Middlewares/Third_Party/wakaama/data.c ****         res = prv_setBuffer(*dataP, buffer, bufferLen);
+ 552:Middlewares/Third_Party/wakaama/data.c ****         if (res == 0)
+ 553:Middlewares/Third_Party/wakaama/data.c ****         {
+ 554:Middlewares/Third_Party/wakaama/data.c ****             lwm2m_data_free(1, *dataP);
+ 555:Middlewares/Third_Party/wakaama/data.c ****             *dataP = NULL;
+ 556:Middlewares/Third_Party/wakaama/data.c ****     }
+ 557:Middlewares/Third_Party/wakaama/data.c ****         return res;
+ 558:Middlewares/Third_Party/wakaama/data.c **** 
+ 559:Middlewares/Third_Party/wakaama/data.c **** #ifdef LWM2M_OLD_CONTENT_FORMAT_SUPPORT
+ 560:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_TLV_OLD:
+ 561:Middlewares/Third_Party/wakaama/data.c **** #endif
+ 562:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_TLV:
+ 563:Middlewares/Third_Party/wakaama/data.c ****         return tlv_parse(buffer, bufferLen, dataP);
+ 564:Middlewares/Third_Party/wakaama/data.c **** 
+ 565:Middlewares/Third_Party/wakaama/data.c **** #ifdef LWM2M_SUPPORT_JSON
+ 566:Middlewares/Third_Party/wakaama/data.c **** #ifdef LWM2M_OLD_CONTENT_FORMAT_SUPPORT
+ 567:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_JSON_OLD:
+ 568:Middlewares/Third_Party/wakaama/data.c **** #endif
+ 569:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_JSON:
+ 570:Middlewares/Third_Party/wakaama/data.c ****         return json_parse(uriP, buffer, bufferLen, dataP);
+ 571:Middlewares/Third_Party/wakaama/data.c **** #endif
+ 572:Middlewares/Third_Party/wakaama/data.c **** 
+ 573:Middlewares/Third_Party/wakaama/data.c ****     default:
+ 574:Middlewares/Third_Party/wakaama/data.c ****         return 0;
+ 1322              		.loc 1 574 0
+ 1323 0016 0024     		movs	r4, #0
+ 1324 0018 4DE0     		b	.L132
+ 1325              	.L144:
+ 532:Middlewares/Third_Party/wakaama/data.c ****         *dataP = lwm2m_data_new(1);
+ 1326              		.loc 1 532 0
+ 1327 001a 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 1328              	.LVL175:
+ 1329 001c 13F0010F 		tst	r3, #1
+ 1330 0020 01D1     		bne	.L145
+ 1331 0022 0024     		movs	r4, #0
+ 1332 0024 47E0     		b	.L132
+ 1333              	.L145:
+ 533:Middlewares/Third_Party/wakaama/data.c ****         if (*dataP == NULL) return 0;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 36
+
+
+ 1334              		.loc 1 533 0
+ 1335 0026 0120     		movs	r0, #1
+ 1336              	.LVL176:
+ 1337 0028 FFF7FEFF 		bl	lwm2m_data_new
+ 1338              	.LVL177:
+ 1339 002c 049B     		ldr	r3, [sp, #16]
+ 1340 002e 1860     		str	r0, [r3]
+ 534:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->id = uriP->resourceId;
+ 1341              		.loc 1 534 0
+ 1342 0030 0028     		cmp	r0, #0
+ 1343 0032 42D0     		beq	.L139
+ 535:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->type = LWM2M_TYPE_STRING;
+ 1344              		.loc 1 535 0
+ 1345 0034 E388     		ldrh	r3, [r4, #6]
+ 1346 0036 4380     		strh	r3, [r0, #2]	@ movhi
+ 536:Middlewares/Third_Party/wakaama/data.c ****         res = prv_setBuffer(*dataP, buffer, bufferLen);
+ 1347              		.loc 1 536 0
+ 1348 0038 049B     		ldr	r3, [sp, #16]
+ 1349 003a 1B68     		ldr	r3, [r3]
+ 1350 003c 0422     		movs	r2, #4
+ 1351 003e 1A70     		strb	r2, [r3]
+ 537:Middlewares/Third_Party/wakaama/data.c ****         if (res == 0)
+ 1352              		.loc 1 537 0
+ 1353 0040 3246     		mov	r2, r6
+ 1354 0042 2946     		mov	r1, r5
+ 1355 0044 049B     		ldr	r3, [sp, #16]
+ 1356 0046 1868     		ldr	r0, [r3]
+ 1357 0048 FFF7FEFF 		bl	prv_setBuffer
+ 1358              	.LVL178:
+ 538:Middlewares/Third_Party/wakaama/data.c ****         {
+ 1359              		.loc 1 538 0
+ 1360 004c 0446     		mov	r4, r0
+ 1361              	.LVL179:
+ 1362 004e 0028     		cmp	r0, #0
+ 1363 0050 31D1     		bne	.L132
+ 540:Middlewares/Third_Party/wakaama/data.c ****             *dataP = NULL;
+ 1364              		.loc 1 540 0
+ 1365 0052 049B     		ldr	r3, [sp, #16]
+ 1366 0054 1968     		ldr	r1, [r3]
+ 1367 0056 0120     		movs	r0, #1
+ 1368              	.LVL180:
+ 1369 0058 FFF7FEFF 		bl	lwm2m_data_free
+ 1370              	.LVL181:
+ 541:Middlewares/Third_Party/wakaama/data.c ****         }
+ 1371              		.loc 1 541 0
+ 1372 005c 0023     		movs	r3, #0
+ 1373 005e 049A     		ldr	r2, [sp, #16]
+ 1374 0060 1360     		str	r3, [r2]
+ 1375 0062 28E0     		b	.L132
+ 1376              	.LVL182:
+ 1377              	.L134:
+ 546:Middlewares/Third_Party/wakaama/data.c ****         *dataP = lwm2m_data_new(1);
+ 1378              		.loc 1 546 0
+ 1379 0064 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 1380              	.LVL183:
+ 1381 0066 13F0010F 		tst	r3, #1
+ 1382 006a 01D1     		bne	.L146
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 37
+
+
+ 1383 006c 0024     		movs	r4, #0
+ 1384 006e 22E0     		b	.L132
+ 1385              	.L146:
+ 547:Middlewares/Third_Party/wakaama/data.c ****         if (*dataP == NULL) return 0;
+ 1386              		.loc 1 547 0
+ 1387 0070 0120     		movs	r0, #1
+ 1388              	.LVL184:
+ 1389 0072 FFF7FEFF 		bl	lwm2m_data_new
+ 1390              	.LVL185:
+ 1391 0076 049B     		ldr	r3, [sp, #16]
+ 1392 0078 1860     		str	r0, [r3]
+ 548:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->id = uriP->resourceId;
+ 1393              		.loc 1 548 0
+ 1394 007a 00B3     		cbz	r0, .L141
+ 549:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->type = LWM2M_TYPE_OPAQUE;
+ 1395              		.loc 1 549 0
+ 1396 007c E388     		ldrh	r3, [r4, #6]
+ 1397 007e 4380     		strh	r3, [r0, #2]	@ movhi
+ 550:Middlewares/Third_Party/wakaama/data.c ****         res = prv_setBuffer(*dataP, buffer, bufferLen);
+ 1398              		.loc 1 550 0
+ 1399 0080 049B     		ldr	r3, [sp, #16]
+ 1400 0082 1B68     		ldr	r3, [r3]
+ 1401 0084 0522     		movs	r2, #5
+ 1402 0086 1A70     		strb	r2, [r3]
+ 551:Middlewares/Third_Party/wakaama/data.c ****         if (res == 0)
+ 1403              		.loc 1 551 0
+ 1404 0088 3246     		mov	r2, r6
+ 1405 008a 2946     		mov	r1, r5
+ 1406 008c 049B     		ldr	r3, [sp, #16]
+ 1407 008e 1868     		ldr	r0, [r3]
+ 1408 0090 FFF7FEFF 		bl	prv_setBuffer
+ 1409              	.LVL186:
+ 552:Middlewares/Third_Party/wakaama/data.c ****         {
+ 1410              		.loc 1 552 0
+ 1411 0094 0446     		mov	r4, r0
+ 1412              	.LVL187:
+ 1413 0096 70B9     		cbnz	r0, .L132
+ 554:Middlewares/Third_Party/wakaama/data.c ****             *dataP = NULL;
+ 1414              		.loc 1 554 0
+ 1415 0098 049B     		ldr	r3, [sp, #16]
+ 1416 009a 1968     		ldr	r1, [r3]
+ 1417 009c 0120     		movs	r0, #1
+ 1418              	.LVL188:
+ 1419 009e FFF7FEFF 		bl	lwm2m_data_free
+ 1420              	.LVL189:
+ 555:Middlewares/Third_Party/wakaama/data.c ****     }
+ 1421              		.loc 1 555 0
+ 1422 00a2 0023     		movs	r3, #0
+ 1423 00a4 049A     		ldr	r2, [sp, #16]
+ 1424 00a6 1360     		str	r3, [r2]
+ 1425 00a8 05E0     		b	.L132
+ 1426              	.LVL190:
+ 1427              	.L135:
+ 563:Middlewares/Third_Party/wakaama/data.c **** 
+ 1428              		.loc 1 563 0
+ 1429 00aa 049A     		ldr	r2, [sp, #16]
+ 1430 00ac 3146     		mov	r1, r6
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 38
+
+
+ 1431              	.LVL191:
+ 1432 00ae 2846     		mov	r0, r5
+ 1433              	.LVL192:
+ 1434 00b0 FFF7FEFF 		bl	tlv_parse
+ 1435              	.LVL193:
+ 1436 00b4 0446     		mov	r4, r0
+ 1437              	.LVL194:
+ 1438              	.L132:
+ 575:Middlewares/Third_Party/wakaama/data.c ****     }
+ 576:Middlewares/Third_Party/wakaama/data.c **** }
+ 1439              		.loc 1 576 0
+ 1440 00b6 2046     		mov	r0, r4
+ 1441 00b8 70BD     		pop	{r4, r5, r6, pc}
+ 1442              	.LVL195:
+ 1443              	.L139:
+ 534:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->id = uriP->resourceId;
+ 1444              		.loc 1 534 0
+ 1445 00ba 0024     		movs	r4, #0
+ 1446              	.LVL196:
+ 1447 00bc FBE7     		b	.L132
+ 1448              	.LVL197:
+ 1449              	.L141:
+ 548:Middlewares/Third_Party/wakaama/data.c ****         (*dataP)->id = uriP->resourceId;
+ 1450              		.loc 1 548 0
+ 1451 00be 0024     		movs	r4, #0
+ 1452              	.LVL198:
+ 1453 00c0 F9E7     		b	.L132
+ 1454              		.cfi_endproc
+ 1455              	.LFE19:
+ 1457              		.section	.text.lwm2m_data_serialize,"ax",%progbits
+ 1458              		.align	1
+ 1459              		.global	lwm2m_data_serialize
+ 1460              		.syntax unified
+ 1461              		.thumb
+ 1462              		.thumb_func
+ 1463              		.fpu fpv4-sp-d16
+ 1465              	lwm2m_data_serialize:
+ 1466              	.LFB20:
+ 577:Middlewares/Third_Party/wakaama/data.c **** 
+ 578:Middlewares/Third_Party/wakaama/data.c **** int lwm2m_data_serialize(lwm2m_uri_t * uriP,
+ 579:Middlewares/Third_Party/wakaama/data.c ****                          int size,
+ 580:Middlewares/Third_Party/wakaama/data.c ****                          lwm2m_data_t * dataP,
+ 581:Middlewares/Third_Party/wakaama/data.c ****                          lwm2m_media_type_t * formatP,
+ 582:Middlewares/Third_Party/wakaama/data.c ****                          uint8_t ** bufferP)
+ 583:Middlewares/Third_Party/wakaama/data.c **** {
+ 1467              		.loc 1 583 0
+ 1468              		.cfi_startproc
+ 1469              		@ args = 4, pretend = 0, frame = 0
+ 1470              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1471              	.LVL199:
+ 1472 0000 30B5     		push	{r4, r5, lr}
+ 1473              	.LCFI21:
+ 1474              		.cfi_def_cfa_offset 12
+ 1475              		.cfi_offset 4, -12
+ 1476              		.cfi_offset 5, -8
+ 1477              		.cfi_offset 14, -4
+ 1478 0002 83B0     		sub	sp, sp, #12
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 39
+
+
+ 1479              	.LCFI22:
+ 1480              		.cfi_def_cfa_offset 24
+ 584:Middlewares/Third_Party/wakaama/data.c ****     LOG_URI(uriP);
+ 585:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("size: %d, formatP: %s", size, STR_MEDIA_TYPE(*formatP));
+ 586:Middlewares/Third_Party/wakaama/data.c **** 
+ 587:Middlewares/Third_Party/wakaama/data.c ****     // Check format
+ 588:Middlewares/Third_Party/wakaama/data.c ****     if (*formatP == LWM2M_CONTENT_TEXT
+ 1481              		.loc 1 588 0
+ 1482 0004 1C88     		ldrh	r4, [r3]
+ 1483 0006 0CB1     		cbz	r4, .L148
+ 589:Middlewares/Third_Party/wakaama/data.c ****      || *formatP == LWM2M_CONTENT_OPAQUE)
+ 1484              		.loc 1 589 0
+ 1485 0008 2A2C     		cmp	r4, #42
+ 1486 000a 04D1     		bne	.L149
+ 1487              	.L148:
+ 590:Middlewares/Third_Party/wakaama/data.c ****     {
+ 591:Middlewares/Third_Party/wakaama/data.c ****         if (size != 1
+ 1488              		.loc 1 591 0
+ 1489 000c 0129     		cmp	r1, #1
+ 1490 000e 16D0     		beq	.L168
+ 1491              	.L150:
+ 592:Middlewares/Third_Party/wakaama/data.c ****          || (uriP != NULL && !LWM2M_URI_IS_SET_RESOURCE(uriP))
+ 593:Middlewares/Third_Party/wakaama/data.c ****          || dataP->type == LWM2M_TYPE_OBJECT
+ 594:Middlewares/Third_Party/wakaama/data.c ****          || dataP->type == LWM2M_TYPE_OBJECT_INSTANCE
+ 595:Middlewares/Third_Party/wakaama/data.c ****          || dataP->type == LWM2M_TYPE_MULTIPLE_RESOURCE)
+ 596:Middlewares/Third_Party/wakaama/data.c ****         {
+ 597:Middlewares/Third_Party/wakaama/data.c **** #ifdef LWM2M_SUPPORT_JSON
+ 598:Middlewares/Third_Party/wakaama/data.c ****             *formatP = LWM2M_CONTENT_JSON;
+ 599:Middlewares/Third_Party/wakaama/data.c **** #else
+ 600:Middlewares/Third_Party/wakaama/data.c ****             *formatP = LWM2M_CONTENT_TLV;
+ 1492              		.loc 1 600 0
+ 1493 0010 42F61654 		movw	r4, #11542
+ 1494 0014 1C80     		strh	r4, [r3]	@ movhi
+ 1495              	.L149:
+ 601:Middlewares/Third_Party/wakaama/data.c **** #endif
+ 602:Middlewares/Third_Party/wakaama/data.c ****         }
+ 603:Middlewares/Third_Party/wakaama/data.c ****     }
+ 604:Middlewares/Third_Party/wakaama/data.c **** 
+ 605:Middlewares/Third_Party/wakaama/data.c ****     if (*formatP == LWM2M_CONTENT_OPAQUE
+ 1496              		.loc 1 605 0
+ 1497 0016 1C88     		ldrh	r4, [r3]
+ 1498 0018 2A2C     		cmp	r4, #42
+ 1499 001a 1DD0     		beq	.L169
+ 1500              	.LVL200:
+ 1501              	.L152:
+ 1502 001c 1546     		mov	r5, r2
+ 606:Middlewares/Third_Party/wakaama/data.c ****      && dataP->type != LWM2M_TYPE_OPAQUE)
+ 607:Middlewares/Third_Party/wakaama/data.c ****     {
+ 608:Middlewares/Third_Party/wakaama/data.c ****         LOG("Opaque format is reserved to opaque resources.");
+ 609:Middlewares/Third_Party/wakaama/data.c ****         return -1;
+ 610:Middlewares/Third_Party/wakaama/data.c ****     }
+ 611:Middlewares/Third_Party/wakaama/data.c **** 
+ 612:Middlewares/Third_Party/wakaama/data.c ****     LOG_ARG("Final format: %s", STR_MEDIA_TYPE(*formatP));
+ 613:Middlewares/Third_Party/wakaama/data.c **** 
+ 614:Middlewares/Third_Party/wakaama/data.c ****     switch (*formatP)
+ 1503              		.loc 1 614 0
+ 1504 001e 2A2C     		cmp	r4, #42
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 40
+
+
+ 1505 0020 31D0     		beq	.L154
+ 1506 0022 1FD8     		bhi	.L155
+ 1507 0024 4CB3     		cbz	r4, .L156
+ 1508 0026 282C     		cmp	r4, #40
+ 1509 0028 24D1     		bne	.L161
+ 615:Middlewares/Third_Party/wakaama/data.c ****     {
+ 616:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_TEXT:
+ 617:Middlewares/Third_Party/wakaama/data.c ****         return prv_textSerialize(dataP, bufferP);
+ 618:Middlewares/Third_Party/wakaama/data.c **** 
+ 619:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_OPAQUE:
+ 620:Middlewares/Third_Party/wakaama/data.c ****         *bufferP = (uint8_t *)lwm2m_malloc(dataP->value.asBuffer.length);
+ 621:Middlewares/Third_Party/wakaama/data.c ****         if (*bufferP == NULL) return -1;
+ 622:Middlewares/Third_Party/wakaama/data.c ****         memcpy(*bufferP, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 623:Middlewares/Third_Party/wakaama/data.c ****         return (int)dataP->value.asBuffer.length;
+ 624:Middlewares/Third_Party/wakaama/data.c **** 
+ 625:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_TLV:
+ 626:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_TLV_OLD:
+ 627:Middlewares/Third_Party/wakaama/data.c ****     {
+ 628:Middlewares/Third_Party/wakaama/data.c ****             bool isResourceInstance;
+ 629:Middlewares/Third_Party/wakaama/data.c **** 
+ 630:Middlewares/Third_Party/wakaama/data.c ****             if (uriP != NULL && LWM2M_URI_IS_SET_RESOURCE(uriP)
+ 631:Middlewares/Third_Party/wakaama/data.c ****              && (size != 1 || dataP->id != uriP->resourceId))
+ 632:Middlewares/Third_Party/wakaama/data.c ****             {
+ 633:Middlewares/Third_Party/wakaama/data.c ****                 isResourceInstance = true;
+ 634:Middlewares/Third_Party/wakaama/data.c ****             }
+ 635:Middlewares/Third_Party/wakaama/data.c ****             else
+ 636:Middlewares/Third_Party/wakaama/data.c ****             {
+ 637:Middlewares/Third_Party/wakaama/data.c ****                 isResourceInstance = false;
+ 638:Middlewares/Third_Party/wakaama/data.c ****             }
+ 639:Middlewares/Third_Party/wakaama/data.c ****             return tlv_serialize(isResourceInstance, size, dataP, bufferP);
+ 640:Middlewares/Third_Party/wakaama/data.c ****         }
+ 641:Middlewares/Third_Party/wakaama/data.c **** 
+ 642:Middlewares/Third_Party/wakaama/data.c **** #ifdef LWM2M_CLIENT_MODE
+ 643:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_LINK:
+ 644:Middlewares/Third_Party/wakaama/data.c ****         return discover_serialize(NULL, uriP, NULL, size, dataP, bufferP);
+ 1510              		.loc 1 644 0
+ 1511 002a 069B     		ldr	r3, [sp, #24]
+ 1512 002c 0193     		str	r3, [sp, #4]
+ 1513 002e 0092     		str	r2, [sp]
+ 1514 0030 0B46     		mov	r3, r1
+ 1515 0032 0022     		movs	r2, #0
+ 1516              	.LVL201:
+ 1517 0034 0146     		mov	r1, r0
+ 1518              	.LVL202:
+ 1519 0036 1046     		mov	r0, r2
+ 1520              	.LVL203:
+ 1521 0038 FFF7FEFF 		bl	discover_serialize
+ 1522              	.LVL204:
+ 1523 003c 21E0     		b	.L147
+ 1524              	.LVL205:
+ 1525              	.L168:
+ 592:Middlewares/Third_Party/wakaama/data.c ****          || dataP->type == LWM2M_TYPE_OBJECT
+ 1526              		.loc 1 592 0
+ 1527 003e 18B1     		cbz	r0, .L151
+ 592:Middlewares/Third_Party/wakaama/data.c ****          || dataP->type == LWM2M_TYPE_OBJECT
+ 1528              		.loc 1 592 0 is_stmt 0 discriminator 1
+ 1529 0040 0478     		ldrb	r4, [r0]	@ zero_extendqisi2
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 41
+
+
+ 1530 0042 14F0010F 		tst	r4, #1
+ 1531 0046 E3D0     		beq	.L150
+ 1532              	.L151:
+ 593:Middlewares/Third_Party/wakaama/data.c ****          || dataP->type == LWM2M_TYPE_OBJECT_INSTANCE
+ 1533              		.loc 1 593 0 is_stmt 1
+ 1534 0048 1478     		ldrb	r4, [r2]	@ zero_extendqisi2
+ 1535 004a 012C     		cmp	r4, #1
+ 1536 004c E0D0     		beq	.L150
+ 594:Middlewares/Third_Party/wakaama/data.c ****          || dataP->type == LWM2M_TYPE_MULTIPLE_RESOURCE)
+ 1537              		.loc 1 594 0
+ 1538 004e 022C     		cmp	r4, #2
+ 1539 0050 DED0     		beq	.L150
+ 595:Middlewares/Third_Party/wakaama/data.c ****         {
+ 1540              		.loc 1 595 0
+ 1541 0052 032C     		cmp	r4, #3
+ 1542 0054 DFD1     		bne	.L149
+ 1543 0056 DBE7     		b	.L150
+ 1544              	.L169:
+ 606:Middlewares/Third_Party/wakaama/data.c ****     {
+ 1545              		.loc 1 606 0
+ 1546 0058 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 1547              	.LVL206:
+ 1548 005a 052B     		cmp	r3, #5
+ 1549 005c DED0     		beq	.L152
+ 609:Middlewares/Third_Party/wakaama/data.c ****     }
+ 1550              		.loc 1 609 0
+ 1551 005e 4FF0FF30 		mov	r0, #-1
+ 1552              	.LVL207:
+ 1553 0062 0EE0     		b	.L147
+ 1554              	.LVL208:
+ 1555              	.L155:
+ 614:Middlewares/Third_Party/wakaama/data.c ****     {
+ 1556              		.loc 1 614 0
+ 1557 0064 40F20663 		movw	r3, #1542
+ 1558 0068 9C42     		cmp	r4, r3
+ 1559 006a 18D0     		beq	.L158
+ 1560 006c 42F61653 		movw	r3, #11542
+ 1561 0070 9C42     		cmp	r4, r3
+ 1562 0072 14D0     		beq	.L158
+ 1563              	.L161:
+ 645:Middlewares/Third_Party/wakaama/data.c **** #endif
+ 646:Middlewares/Third_Party/wakaama/data.c **** #ifdef LWM2M_SUPPORT_JSON
+ 647:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_JSON:
+ 648:Middlewares/Third_Party/wakaama/data.c ****     case LWM2M_CONTENT_JSON_OLD:
+ 649:Middlewares/Third_Party/wakaama/data.c ****         return json_serialize(uriP, size, dataP, bufferP);
+ 650:Middlewares/Third_Party/wakaama/data.c **** #endif
+ 651:Middlewares/Third_Party/wakaama/data.c **** 
+ 652:Middlewares/Third_Party/wakaama/data.c ****     default:
+ 653:Middlewares/Third_Party/wakaama/data.c ****         return -1;
+ 1564              		.loc 1 653 0
+ 1565 0074 4FF0FF30 		mov	r0, #-1
+ 1566              	.LVL209:
+ 1567 0078 03E0     		b	.L147
+ 1568              	.LVL210:
+ 1569              	.L156:
+ 617:Middlewares/Third_Party/wakaama/data.c **** 
+ 1570              		.loc 1 617 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 42
+
+
+ 1571 007a 0699     		ldr	r1, [sp, #24]
+ 1572              	.LVL211:
+ 1573 007c 1046     		mov	r0, r2
+ 1574              	.LVL212:
+ 1575 007e FFF7FEFF 		bl	prv_textSerialize
+ 1576              	.LVL213:
+ 1577              	.L147:
+ 654:Middlewares/Third_Party/wakaama/data.c ****     }
+ 655:Middlewares/Third_Party/wakaama/data.c **** }
+ 1578              		.loc 1 655 0
+ 1579 0082 03B0     		add	sp, sp, #12
+ 1580              	.LCFI23:
+ 1581              		.cfi_remember_state
+ 1582              		.cfi_def_cfa_offset 12
+ 1583              		@ sp needed
+ 1584 0084 30BD     		pop	{r4, r5, pc}
+ 1585              	.LVL214:
+ 1586              	.L154:
+ 1587              	.LCFI24:
+ 1588              		.cfi_restore_state
+ 620:Middlewares/Third_Party/wakaama/data.c ****         if (*bufferP == NULL) return -1;
+ 1589              		.loc 1 620 0
+ 1590 0086 9068     		ldr	r0, [r2, #8]
+ 1591              	.LVL215:
+ 1592 0088 FFF7FEFF 		bl	lwm2m_malloc
+ 1593              	.LVL216:
+ 1594 008c 069B     		ldr	r3, [sp, #24]
+ 1595 008e 1860     		str	r0, [r3]
+ 621:Middlewares/Third_Party/wakaama/data.c ****         memcpy(*bufferP, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 1596              		.loc 1 621 0
+ 1597 0090 F0B1     		cbz	r0, .L162
+ 622:Middlewares/Third_Party/wakaama/data.c ****         return (int)dataP->value.asBuffer.length;
+ 1598              		.loc 1 622 0
+ 1599 0092 AA68     		ldr	r2, [r5, #8]
+ 1600 0094 E968     		ldr	r1, [r5, #12]
+ 1601 0096 FFF7FEFF 		bl	memcpy
+ 1602              	.LVL217:
+ 623:Middlewares/Third_Party/wakaama/data.c **** 
+ 1603              		.loc 1 623 0
+ 1604 009a A868     		ldr	r0, [r5, #8]
+ 1605 009c F1E7     		b	.L147
+ 1606              	.LVL218:
+ 1607              	.L158:
+ 1608              	.LBB10:
+ 630:Middlewares/Third_Party/wakaama/data.c ****              && (size != 1 || dataP->id != uriP->resourceId))
+ 1609              		.loc 1 630 0
+ 1610 009e 78B1     		cbz	r0, .L163
+ 630:Middlewares/Third_Party/wakaama/data.c ****              && (size != 1 || dataP->id != uriP->resourceId))
+ 1611              		.loc 1 630 0 is_stmt 0 discriminator 1
+ 1612 00a0 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 1613 00a2 13F0010F 		tst	r3, #1
+ 1614 00a6 0DD0     		beq	.L164
+ 631:Middlewares/Third_Party/wakaama/data.c ****             {
+ 1615              		.loc 1 631 0 is_stmt 1
+ 1616 00a8 0129     		cmp	r1, #1
+ 1617 00aa 01D0     		beq	.L170
+ 633:Middlewares/Third_Party/wakaama/data.c ****             }
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 43
+
+
+ 1618              		.loc 1 633 0
+ 1619 00ac 0120     		movs	r0, #1
+ 1620              	.LVL219:
+ 1621 00ae 0AE0     		b	.L159
+ 1622              	.LVL220:
+ 1623              	.L170:
+ 631:Middlewares/Third_Party/wakaama/data.c ****             {
+ 1624              		.loc 1 631 0 discriminator 1
+ 1625 00b0 6A88     		ldrh	r2, [r5, #2]
+ 1626              	.LVL221:
+ 1627 00b2 C388     		ldrh	r3, [r0, #6]
+ 1628 00b4 9A42     		cmp	r2, r3
+ 1629 00b6 01D0     		beq	.L171
+ 633:Middlewares/Third_Party/wakaama/data.c ****             }
+ 1630              		.loc 1 633 0
+ 1631 00b8 0120     		movs	r0, #1
+ 1632              	.LVL222:
+ 1633 00ba 04E0     		b	.L159
+ 1634              	.LVL223:
+ 1635              	.L171:
+ 637:Middlewares/Third_Party/wakaama/data.c ****             }
+ 1636              		.loc 1 637 0
+ 1637 00bc 0020     		movs	r0, #0
+ 1638              	.LVL224:
+ 1639 00be 02E0     		b	.L159
+ 1640              	.LVL225:
+ 1641              	.L163:
+ 1642 00c0 0020     		movs	r0, #0
+ 1643              	.LVL226:
+ 1644 00c2 00E0     		b	.L159
+ 1645              	.LVL227:
+ 1646              	.L164:
+ 1647 00c4 0020     		movs	r0, #0
+ 1648              	.LVL228:
+ 1649              	.L159:
+ 639:Middlewares/Third_Party/wakaama/data.c ****         }
+ 1650              		.loc 1 639 0
+ 1651 00c6 069B     		ldr	r3, [sp, #24]
+ 1652 00c8 2A46     		mov	r2, r5
+ 1653 00ca FFF7FEFF 		bl	tlv_serialize
+ 1654              	.LVL229:
+ 1655 00ce D8E7     		b	.L147
+ 1656              	.L162:
+ 1657              	.LBE10:
+ 621:Middlewares/Third_Party/wakaama/data.c ****         memcpy(*bufferP, dataP->value.asBuffer.buffer, dataP->value.asBuffer.length);
+ 1658              		.loc 1 621 0
+ 1659 00d0 4FF0FF30 		mov	r0, #-1
+ 1660 00d4 D5E7     		b	.L147
+ 1661              		.cfi_endproc
+ 1662              	.LFE20:
+ 1664              		.text
+ 1665              	.Letext0:
+ 1666              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 1667              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1668              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 1669              		.file 5 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1670              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 44
+
+
+ 1671              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1672              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 1673              		.file 9 "Middlewares/Third_Party/wakaama/liblwm2m.h"
+ 1674              		.file 10 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 1675              		.file 11 "Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.h"
+ 1676              		.file 12 "Middlewares/Third_Party/wakaama/internals.h"
+ 1677              		.file 13 "<built-in>"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 45
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 data.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:18     .text.prv_setBuffer:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:24     .text.prv_setBuffer:0000000000000000 prv_setBuffer
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:71     .text.prv_textSerialize:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:77     .text.prv_textSerialize:0000000000000000 prv_textSerialize
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:103    .text.prv_textSerialize:0000000000000016 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:109    .text.prv_textSerialize:000000000000001c $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:369    .text.lwm2m_data_new:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:376    .text.lwm2m_data_new:0000000000000000 lwm2m_data_new
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:420    .text.lwm2m_data_free:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:427    .text.lwm2m_data_free:0000000000000000 lwm2m_data_free
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:477    .text.lwm2m_data_free:0000000000000030 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:482    .text.lwm2m_data_free:0000000000000044 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:513    .text.lwm2m_data_encode_string:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:520    .text.lwm2m_data_encode_string:0000000000000000 lwm2m_data_encode_string
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:586    .text.lwm2m_data_encode_opaque:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:593    .text.lwm2m_data_encode_opaque:0000000000000000 lwm2m_data_encode_opaque
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:644    .text.lwm2m_data_encode_nstring:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:651    .text.lwm2m_data_encode_nstring:0000000000000000 lwm2m_data_encode_nstring
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:685    .text.lwm2m_data_encode_int:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:692    .text.lwm2m_data_encode_int:0000000000000000 lwm2m_data_encode_int
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:711    .text.lwm2m_data_decode_int:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:718    .text.lwm2m_data_decode_int:0000000000000000 lwm2m_data_decode_int
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:787    .text.lwm2m_data_decode_int:000000000000003e $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:795    .text.lwm2m_data_decode_int:0000000000000046 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:866    .text.lwm2m_data_encode_float:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:873    .text.lwm2m_data_encode_float:0000000000000000 lwm2m_data_encode_float
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:894    .text.lwm2m_data_decode_float:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:901    .text.lwm2m_data_decode_float:0000000000000000 lwm2m_data_decode_float
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:924    .text.lwm2m_data_decode_float:0000000000000012 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:928    .text.lwm2m_data_decode_float:0000000000000016 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1029   .text.lwm2m_data_encode_bool:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1036   .text.lwm2m_data_encode_bool:0000000000000000 lwm2m_data_encode_bool
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1055   .text.lwm2m_data_decode_bool:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1062   .text.lwm2m_data_decode_bool:0000000000000000 lwm2m_data_decode_bool
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1181   .text.lwm2m_data_encode_objlink:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1188   .text.lwm2m_data_encode_objlink:0000000000000000 lwm2m_data_encode_objlink
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1209   .text.lwm2m_data_include:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1216   .text.lwm2m_data_include:0000000000000000 lwm2m_data_include
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1258   .text.lwm2m_data_encode_instances:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1265   .text.lwm2m_data_encode_instances:0000000000000000 lwm2m_data_encode_instances
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1290   .text.lwm2m_data_parse:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1297   .text.lwm2m_data_parse:0000000000000000 lwm2m_data_parse
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1458   .text.lwm2m_data_serialize:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s:1465   .text.lwm2m_data_serialize:0000000000000000 lwm2m_data_serialize
+
+UNDEFINED SYMBOLS
+lwm2m_malloc
+memcpy
+utils_intToText
+utils_floatToText
+utils_base64GetSize
+utils_base64Encode
+lwm2m_free
+memset
+utils_textToInt
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cck8SvQk.s 			page 46
+
+
+utils_copyValue
+__aeabi_l2d
+__aeabi_f2d
+utils_textToFloat
+tlv_parse
+discover_serialize
+tlv_serialize

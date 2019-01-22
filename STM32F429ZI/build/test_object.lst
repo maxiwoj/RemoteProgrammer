@@ -1,0 +1,1741 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"test_object.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.prv_discover,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	prv_discover:
+  25              	.LFB5:
+  26              		.file 1 "Src/communication/wakaama_client/objects/test_object.c"
+   1:Src/communication/wakaama_client/objects/test_object.c **** /*******************************************************************************
+   2:Src/communication/wakaama_client/objects/test_object.c ****  *
+   3:Src/communication/wakaama_client/objects/test_object.c ****  * Copyright (c) 2013, 2014 Intel Corporation and others.
+   4:Src/communication/wakaama_client/objects/test_object.c ****  * All rights reserved. This program and the accompanying materials
+   5:Src/communication/wakaama_client/objects/test_object.c ****  * are made available under the terms of the Eclipse Public License v1.0
+   6:Src/communication/wakaama_client/objects/test_object.c ****  * and Eclipse Distribution License v1.0 which accompany this distribution.
+   7:Src/communication/wakaama_client/objects/test_object.c ****  *
+   8:Src/communication/wakaama_client/objects/test_object.c ****  * The Eclipse Public License is available at
+   9:Src/communication/wakaama_client/objects/test_object.c ****  *    http://www.eclipse.org/legal/epl-v10.html
+  10:Src/communication/wakaama_client/objects/test_object.c ****  * The Eclipse Distribution License is available at
+  11:Src/communication/wakaama_client/objects/test_object.c ****  *    http://www.eclipse.org/org/documents/edl-v10.php.
+  12:Src/communication/wakaama_client/objects/test_object.c ****  *
+  13:Src/communication/wakaama_client/objects/test_object.c ****  * Contributors:
+  14:Src/communication/wakaama_client/objects/test_object.c ****  *    David Navarro, Intel Corporation - initial API and implementation
+  15:Src/communication/wakaama_client/objects/test_object.c ****  *    domedambrosio - Please refer to git log
+  16:Src/communication/wakaama_client/objects/test_object.c ****  *    Fabien Fleutot - Please refer to git log
+  17:Src/communication/wakaama_client/objects/test_object.c ****  *    Axel Lorente - Please refer to git log
+  18:Src/communication/wakaama_client/objects/test_object.c ****  *    Achim Kraus, Bosch Software Innovations GmbH - Please refer to git log
+  19:Src/communication/wakaama_client/objects/test_object.c ****  *    Pascal Rieux - Please refer to git log
+  20:Src/communication/wakaama_client/objects/test_object.c ****  *    Ville Skyttä - Please refer to git log
+  21:Src/communication/wakaama_client/objects/test_object.c ****  *    
+  22:Src/communication/wakaama_client/objects/test_object.c ****  *******************************************************************************/
+  23:Src/communication/wakaama_client/objects/test_object.c **** 
+  24:Src/communication/wakaama_client/objects/test_object.c **** /*
+  25:Src/communication/wakaama_client/objects/test_object.c ****  Copyright (c) 2013, 2014 Intel Corporation
+  26:Src/communication/wakaama_client/objects/test_object.c **** 
+  27:Src/communication/wakaama_client/objects/test_object.c ****  Redistribution and use in source and binary forms, with or without modification,
+  28:Src/communication/wakaama_client/objects/test_object.c ****  are permitted provided that the following conditions are met:
+  29:Src/communication/wakaama_client/objects/test_object.c **** 
+  30:Src/communication/wakaama_client/objects/test_object.c ****      * Redistributions of source code must retain the above copyright notice,
+  31:Src/communication/wakaama_client/objects/test_object.c ****        this list of conditions and the following disclaimer.
+  32:Src/communication/wakaama_client/objects/test_object.c ****      * Redistributions in binary form must reproduce the above copyright notice,
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 2
+
+
+  33:Src/communication/wakaama_client/objects/test_object.c ****        this list of conditions and the following disclaimer in the documentation
+  34:Src/communication/wakaama_client/objects/test_object.c ****        and/or other materials provided with the distribution.
+  35:Src/communication/wakaama_client/objects/test_object.c ****      * Neither the name of Intel Corporation nor the names of its contributors
+  36:Src/communication/wakaama_client/objects/test_object.c ****        may be used to endorse or promote products derived from this software
+  37:Src/communication/wakaama_client/objects/test_object.c ****        without specific prior written permission.
+  38:Src/communication/wakaama_client/objects/test_object.c **** 
+  39:Src/communication/wakaama_client/objects/test_object.c ****  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  40:Src/communication/wakaama_client/objects/test_object.c ****  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  41:Src/communication/wakaama_client/objects/test_object.c ****  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  42:Src/communication/wakaama_client/objects/test_object.c ****  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  43:Src/communication/wakaama_client/objects/test_object.c ****  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  44:Src/communication/wakaama_client/objects/test_object.c ****  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  45:Src/communication/wakaama_client/objects/test_object.c ****  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  46:Src/communication/wakaama_client/objects/test_object.c ****  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  47:Src/communication/wakaama_client/objects/test_object.c ****  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+  48:Src/communication/wakaama_client/objects/test_object.c ****  THE POSSIBILITY OF SUCH DAMAGE.
+  49:Src/communication/wakaama_client/objects/test_object.c **** 
+  50:Src/communication/wakaama_client/objects/test_object.c ****  David Navarro <david.navarro@intel.com>
+  51:Src/communication/wakaama_client/objects/test_object.c **** 
+  52:Src/communication/wakaama_client/objects/test_object.c **** */
+  53:Src/communication/wakaama_client/objects/test_object.c **** 
+  54:Src/communication/wakaama_client/objects/test_object.c **** /*
+  55:Src/communication/wakaama_client/objects/test_object.c ****  * Implements an object for testing purpose
+  56:Src/communication/wakaama_client/objects/test_object.c ****  *
+  57:Src/communication/wakaama_client/objects/test_object.c ****  *                  Multiple
+  58:Src/communication/wakaama_client/objects/test_object.c ****  * Object |  ID   | Instances | Mandatory |
+  59:Src/communication/wakaama_client/objects/test_object.c ****  *  Test  | 31024 |    Yes    |    No     |
+  60:Src/communication/wakaama_client/objects/test_object.c ****  *
+  61:Src/communication/wakaama_client/objects/test_object.c ****  *  Resources:
+  62:Src/communication/wakaama_client/objects/test_object.c ****  *              Supported    Multiple
+  63:Src/communication/wakaama_client/objects/test_object.c ****  *  Name | ID | Operations | Instances | Mandatory |  Type   | Range | Units |      Description    
+  64:Src/communication/wakaama_client/objects/test_object.c ****  *  test |  1 |    R/W     |    No     |    Yes    | Integer | 0-255 |       |                     
+  65:Src/communication/wakaama_client/objects/test_object.c ****  *  exec |  2 |     E      |    No     |    Yes    |         |       |       |                     
+  66:Src/communication/wakaama_client/objects/test_object.c ****  *  dec  |  3 |    R/W     |    No     |    Yes    |  Float  |       |       |                     
+  67:Src/communication/wakaama_client/objects/test_object.c ****  *  sig  |  4 |    R/W     |    No     |    Yes    | Integer |       |       | 16-bit signed intege
+  68:Src/communication/wakaama_client/objects/test_object.c ****  *
+  69:Src/communication/wakaama_client/objects/test_object.c ****  */
+  70:Src/communication/wakaama_client/objects/test_object.c **** 
+  71:Src/communication/wakaama_client/objects/test_object.c **** #include "liblwm2m.h"
+  72:Src/communication/wakaama_client/objects/test_object.c **** 
+  73:Src/communication/wakaama_client/objects/test_object.c **** #include <stdio.h>
+  74:Src/communication/wakaama_client/objects/test_object.c **** #include <stdlib.h>
+  75:Src/communication/wakaama_client/objects/test_object.c **** #include <string.h>
+  76:Src/communication/wakaama_client/objects/test_object.c **** #include <ctype.h>
+  77:Src/communication/wakaama_client/objects/test_object.c **** #include <limits.h>
+  78:Src/communication/wakaama_client/objects/test_object.c **** 
+  79:Src/communication/wakaama_client/objects/test_object.c **** static void prv_output_buffer(uint8_t * buffer,
+  80:Src/communication/wakaama_client/objects/test_object.c ****                               int length)
+  81:Src/communication/wakaama_client/objects/test_object.c **** {
+  82:Src/communication/wakaama_client/objects/test_object.c ****     int i;
+  83:Src/communication/wakaama_client/objects/test_object.c ****     uint8_t array[16];
+  84:Src/communication/wakaama_client/objects/test_object.c **** 
+  85:Src/communication/wakaama_client/objects/test_object.c ****     i = 0;
+  86:Src/communication/wakaama_client/objects/test_object.c ****     while (i < length)
+  87:Src/communication/wakaama_client/objects/test_object.c ****     {
+  88:Src/communication/wakaama_client/objects/test_object.c ****         int j;
+  89:Src/communication/wakaama_client/objects/test_object.c ****         fprintf(stderr, "  ");
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 3
+
+
+  90:Src/communication/wakaama_client/objects/test_object.c **** 
+  91:Src/communication/wakaama_client/objects/test_object.c ****         memcpy(array, buffer+i, 16);
+  92:Src/communication/wakaama_client/objects/test_object.c **** 
+  93:Src/communication/wakaama_client/objects/test_object.c ****         for (j = 0 ; j < 16 && i+j < length; j++)
+  94:Src/communication/wakaama_client/objects/test_object.c ****         {
+  95:Src/communication/wakaama_client/objects/test_object.c ****             fprintf(stderr, "%02X ", array[j]);
+  96:Src/communication/wakaama_client/objects/test_object.c ****         }
+  97:Src/communication/wakaama_client/objects/test_object.c ****         while (j < 16)
+  98:Src/communication/wakaama_client/objects/test_object.c ****         {
+  99:Src/communication/wakaama_client/objects/test_object.c ****             fprintf(stderr, "   ");
+ 100:Src/communication/wakaama_client/objects/test_object.c ****             j++;
+ 101:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 102:Src/communication/wakaama_client/objects/test_object.c ****         fprintf(stderr, "  ");
+ 103:Src/communication/wakaama_client/objects/test_object.c ****         for (j = 0 ; j < 16 && i+j < length; j++)
+ 104:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 105:Src/communication/wakaama_client/objects/test_object.c ****             if (isprint(array[j]))
+ 106:Src/communication/wakaama_client/objects/test_object.c ****                 fprintf(stderr, "%c ", array[j]);
+ 107:Src/communication/wakaama_client/objects/test_object.c ****             else
+ 108:Src/communication/wakaama_client/objects/test_object.c ****                 fprintf(stderr, ". ");
+ 109:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 110:Src/communication/wakaama_client/objects/test_object.c ****         fprintf(stderr, "\n");
+ 111:Src/communication/wakaama_client/objects/test_object.c **** 
+ 112:Src/communication/wakaama_client/objects/test_object.c ****         i += 16;
+ 113:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 114:Src/communication/wakaama_client/objects/test_object.c **** }
+ 115:Src/communication/wakaama_client/objects/test_object.c **** 
+ 116:Src/communication/wakaama_client/objects/test_object.c **** /*
+ 117:Src/communication/wakaama_client/objects/test_object.c ****  * Multiple instance objects can use userdata to store data that will be shared between the differe
+ 118:Src/communication/wakaama_client/objects/test_object.c ****  * The lwm2m_object_t object structure - which represent every object of the liblwm2m as seen in th
+ 119:Src/communication/wakaama_client/objects/test_object.c ****  * object - contain a chained list called instanceList with the object specific structure prv_insta
+ 120:Src/communication/wakaama_client/objects/test_object.c ****  */
+ 121:Src/communication/wakaama_client/objects/test_object.c **** typedef struct _prv_instance_
+ 122:Src/communication/wakaama_client/objects/test_object.c **** {
+ 123:Src/communication/wakaama_client/objects/test_object.c ****     /*
+ 124:Src/communication/wakaama_client/objects/test_object.c ****      * The first two are mandatories and represent the pointer to the next instance and the ID of t
+ 125:Src/communication/wakaama_client/objects/test_object.c ****      * is the instance scope user data (uint8_t test in this case)
+ 126:Src/communication/wakaama_client/objects/test_object.c ****      */
+ 127:Src/communication/wakaama_client/objects/test_object.c ****     struct _prv_instance_ * next;   // matches lwm2m_list_t::next
+ 128:Src/communication/wakaama_client/objects/test_object.c ****     uint16_t shortID;               // matches lwm2m_list_t::id
+ 129:Src/communication/wakaama_client/objects/test_object.c ****     uint8_t  test;
+ 130:Src/communication/wakaama_client/objects/test_object.c ****     double   dec;
+ 131:Src/communication/wakaama_client/objects/test_object.c ****     int16_t  sig;
+ 132:Src/communication/wakaama_client/objects/test_object.c **** } prv_instance_t;
+ 133:Src/communication/wakaama_client/objects/test_object.c **** 
+ 134:Src/communication/wakaama_client/objects/test_object.c **** static uint8_t prv_read(uint16_t instanceId,
+ 135:Src/communication/wakaama_client/objects/test_object.c ****                         int * numDataP,
+ 136:Src/communication/wakaama_client/objects/test_object.c ****                         lwm2m_data_t ** dataArrayP,
+ 137:Src/communication/wakaama_client/objects/test_object.c ****                         lwm2m_object_t * objectP)
+ 138:Src/communication/wakaama_client/objects/test_object.c **** {
+ 139:Src/communication/wakaama_client/objects/test_object.c ****     prv_instance_t * targetP;
+ 140:Src/communication/wakaama_client/objects/test_object.c ****     int i;
+ 141:Src/communication/wakaama_client/objects/test_object.c **** 
+ 142:Src/communication/wakaama_client/objects/test_object.c ****     targetP = (prv_instance_t *)lwm2m_list_find(objectP->instanceList, instanceId);
+ 143:Src/communication/wakaama_client/objects/test_object.c ****     if (NULL == targetP) return COAP_404_NOT_FOUND;
+ 144:Src/communication/wakaama_client/objects/test_object.c **** 
+ 145:Src/communication/wakaama_client/objects/test_object.c ****     if (*numDataP == 0)
+ 146:Src/communication/wakaama_client/objects/test_object.c ****     {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 4
+
+
+ 147:Src/communication/wakaama_client/objects/test_object.c ****         *dataArrayP = lwm2m_data_new(3);
+ 148:Src/communication/wakaama_client/objects/test_object.c ****         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 149:Src/communication/wakaama_client/objects/test_object.c ****         *numDataP = 3;
+ 150:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[0].id = 1;
+ 151:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[1].id = 3;
+ 152:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[2].id = 4;
+ 153:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 154:Src/communication/wakaama_client/objects/test_object.c **** 
+ 155:Src/communication/wakaama_client/objects/test_object.c ****     for (i = 0 ; i < *numDataP ; i++)
+ 156:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 157:Src/communication/wakaama_client/objects/test_object.c ****         switch ((*dataArrayP)[i].id)
+ 158:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 159:Src/communication/wakaama_client/objects/test_object.c ****         case 1:
+ 160:Src/communication/wakaama_client/objects/test_object.c ****             lwm2m_data_encode_int(targetP->test, *dataArrayP + i);
+ 161:Src/communication/wakaama_client/objects/test_object.c ****             break;
+ 162:Src/communication/wakaama_client/objects/test_object.c ****         case 2:
+ 163:Src/communication/wakaama_client/objects/test_object.c ****             return COAP_405_METHOD_NOT_ALLOWED;
+ 164:Src/communication/wakaama_client/objects/test_object.c ****         case 3:
+ 165:Src/communication/wakaama_client/objects/test_object.c ****             lwm2m_data_encode_float(targetP->dec, *dataArrayP + i);
+ 166:Src/communication/wakaama_client/objects/test_object.c ****             break;
+ 167:Src/communication/wakaama_client/objects/test_object.c ****         case 4:
+ 168:Src/communication/wakaama_client/objects/test_object.c ****             lwm2m_data_encode_int(targetP->sig, *dataArrayP + i);
+ 169:Src/communication/wakaama_client/objects/test_object.c ****             break;
+ 170:Src/communication/wakaama_client/objects/test_object.c ****         default:
+ 171:Src/communication/wakaama_client/objects/test_object.c ****             return COAP_404_NOT_FOUND;
+ 172:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 173:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 174:Src/communication/wakaama_client/objects/test_object.c **** 
+ 175:Src/communication/wakaama_client/objects/test_object.c ****     return COAP_205_CONTENT;
+ 176:Src/communication/wakaama_client/objects/test_object.c **** }
+ 177:Src/communication/wakaama_client/objects/test_object.c **** 
+ 178:Src/communication/wakaama_client/objects/test_object.c **** static uint8_t prv_discover(uint16_t instanceId,
+ 179:Src/communication/wakaama_client/objects/test_object.c ****                             int * numDataP,
+ 180:Src/communication/wakaama_client/objects/test_object.c ****                             lwm2m_data_t ** dataArrayP,
+ 181:Src/communication/wakaama_client/objects/test_object.c ****                             lwm2m_object_t * objectP)
+ 182:Src/communication/wakaama_client/objects/test_object.c **** {
+  27              		.loc 1 182 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 38B5     		push	{r3, r4, r5, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 3, -16
+  36              		.cfi_offset 4, -12
+  37              		.cfi_offset 5, -8
+  38              		.cfi_offset 14, -4
+ 183:Src/communication/wakaama_client/objects/test_object.c ****     int i;
+ 184:Src/communication/wakaama_client/objects/test_object.c **** 
+ 185:Src/communication/wakaama_client/objects/test_object.c ****     // is the server asking for the full object ?
+ 186:Src/communication/wakaama_client/objects/test_object.c ****     if (*numDataP == 0)
+  39              		.loc 1 186 0
+  40 0002 0868     		ldr	r0, [r1]
+  41              	.LVL1:
+  42 0004 58B1     		cbz	r0, .L10
+ 187:Src/communication/wakaama_client/objects/test_object.c ****     {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 5
+
+
+ 188:Src/communication/wakaama_client/objects/test_object.c ****         *dataArrayP = lwm2m_data_new(4);
+ 189:Src/communication/wakaama_client/objects/test_object.c ****         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 190:Src/communication/wakaama_client/objects/test_object.c ****         *numDataP = 4;
+ 191:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[0].id = 1;
+ 192:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[1].id = 2;
+ 193:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[2].id = 3;
+ 194:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[3].id = 4;
+ 195:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 196:Src/communication/wakaama_client/objects/test_object.c ****     else
+ 197:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 198:Src/communication/wakaama_client/objects/test_object.c ****         for (i = 0; i < *numDataP; i++)
+  43              		.loc 1 198 0
+  44 0006 0023     		movs	r3, #0
+  45              	.LVL2:
+  46              	.L2:
+  47              		.loc 1 198 0 is_stmt 0 discriminator 1
+  48 0008 9842     		cmp	r0, r3
+  49 000a 1EDD     		ble	.L11
+ 199:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 200:Src/communication/wakaama_client/objects/test_object.c ****             switch ((*dataArrayP)[i].id)
+  50              		.loc 1 200 0 is_stmt 1
+  51 000c 1168     		ldr	r1, [r2]
+  52 000e 01EB0311 		add	r1, r1, r3, lsl #4
+  53 0012 4988     		ldrh	r1, [r1, #2]
+  54 0014 0139     		subs	r1, r1, #1
+  55 0016 0329     		cmp	r1, #3
+  56 0018 1BD8     		bhi	.L8
+ 198:Src/communication/wakaama_client/objects/test_object.c ****         {
+  57              		.loc 1 198 0 discriminator 2
+  58 001a 0133     		adds	r3, r3, #1
+  59              	.LVL3:
+  60 001c F4E7     		b	.L2
+  61              	.LVL4:
+  62              	.L10:
+  63 001e 1446     		mov	r4, r2
+  64 0020 0D46     		mov	r5, r1
+ 188:Src/communication/wakaama_client/objects/test_object.c ****         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+  65              		.loc 1 188 0
+  66 0022 0420     		movs	r0, #4
+  67 0024 FFF7FEFF 		bl	lwm2m_data_new
+  68              	.LVL5:
+  69 0028 2060     		str	r0, [r4]
+ 189:Src/communication/wakaama_client/objects/test_object.c ****         *numDataP = 4;
+  70              		.loc 1 189 0
+  71 002a 80B1     		cbz	r0, .L7
+ 190:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[0].id = 1;
+  72              		.loc 1 190 0
+  73 002c 0423     		movs	r3, #4
+  74 002e 2B60     		str	r3, [r5]
+ 191:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[1].id = 2;
+  75              		.loc 1 191 0
+  76 0030 2268     		ldr	r2, [r4]
+  77 0032 0121     		movs	r1, #1
+  78 0034 5180     		strh	r1, [r2, #2]	@ movhi
+ 192:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[2].id = 3;
+  79              		.loc 1 192 0
+  80 0036 2268     		ldr	r2, [r4]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 6
+
+
+  81 0038 0221     		movs	r1, #2
+  82 003a 5182     		strh	r1, [r2, #18]	@ movhi
+ 193:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[3].id = 4;
+  83              		.loc 1 193 0
+  84 003c 2268     		ldr	r2, [r4]
+  85 003e 0321     		movs	r1, #3
+  86 0040 5184     		strh	r1, [r2, #34]	@ movhi
+ 194:Src/communication/wakaama_client/objects/test_object.c ****     }
+  87              		.loc 1 194 0
+  88 0042 2268     		ldr	r2, [r4]
+  89 0044 5386     		strh	r3, [r2, #50]	@ movhi
+ 201:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 202:Src/communication/wakaama_client/objects/test_object.c ****             case 1:
+ 203:Src/communication/wakaama_client/objects/test_object.c ****             case 2:
+ 204:Src/communication/wakaama_client/objects/test_object.c ****             case 3:
+ 205:Src/communication/wakaama_client/objects/test_object.c ****             case 4:
+ 206:Src/communication/wakaama_client/objects/test_object.c ****                 break;
+ 207:Src/communication/wakaama_client/objects/test_object.c ****             default:
+ 208:Src/communication/wakaama_client/objects/test_object.c ****                 return COAP_404_NOT_FOUND;
+ 209:Src/communication/wakaama_client/objects/test_object.c ****             }
+ 210:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 211:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 212:Src/communication/wakaama_client/objects/test_object.c ****     return COAP_205_CONTENT;
+  90              		.loc 1 212 0
+  91 0046 4520     		movs	r0, #69
+  92 0048 00E0     		b	.L3
+  93              	.LVL6:
+  94              	.L11:
+  95 004a 4520     		movs	r0, #69
+  96              	.LVL7:
+  97              	.L3:
+ 213:Src/communication/wakaama_client/objects/test_object.c **** }
+  98              		.loc 1 213 0
+  99 004c 38BD     		pop	{r3, r4, r5, pc}
+ 100              	.LVL8:
+ 101              	.L7:
+ 189:Src/communication/wakaama_client/objects/test_object.c ****         *numDataP = 4;
+ 102              		.loc 1 189 0
+ 103 004e A020     		movs	r0, #160
+ 104 0050 FCE7     		b	.L3
+ 105              	.LVL9:
+ 106              	.L8:
+ 208:Src/communication/wakaama_client/objects/test_object.c ****             }
+ 107              		.loc 1 208 0
+ 108 0052 8420     		movs	r0, #132
+ 109 0054 FAE7     		b	.L3
+ 110              		.cfi_endproc
+ 111              	.LFE5:
+ 113              		.section	.text.prv_delete,"ax",%progbits
+ 114              		.align	1
+ 115              		.syntax unified
+ 116              		.thumb
+ 117              		.thumb_func
+ 118              		.fpu fpv4-sp-d16
+ 120              	prv_delete:
+ 121              	.LFB7:
+ 214:Src/communication/wakaama_client/objects/test_object.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 7
+
+
+ 215:Src/communication/wakaama_client/objects/test_object.c **** static uint8_t prv_write(uint16_t instanceId,
+ 216:Src/communication/wakaama_client/objects/test_object.c ****                          int numData,
+ 217:Src/communication/wakaama_client/objects/test_object.c ****                          lwm2m_data_t * dataArray,
+ 218:Src/communication/wakaama_client/objects/test_object.c ****                          lwm2m_object_t * objectP)
+ 219:Src/communication/wakaama_client/objects/test_object.c **** {
+ 220:Src/communication/wakaama_client/objects/test_object.c ****     prv_instance_t * targetP;
+ 221:Src/communication/wakaama_client/objects/test_object.c ****     int i;
+ 222:Src/communication/wakaama_client/objects/test_object.c **** 
+ 223:Src/communication/wakaama_client/objects/test_object.c ****     targetP = (prv_instance_t *)lwm2m_list_find(objectP->instanceList, instanceId);
+ 224:Src/communication/wakaama_client/objects/test_object.c ****     if (NULL == targetP) return COAP_404_NOT_FOUND;
+ 225:Src/communication/wakaama_client/objects/test_object.c **** 
+ 226:Src/communication/wakaama_client/objects/test_object.c ****     for (i = 0 ; i < numData ; i++)
+ 227:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 228:Src/communication/wakaama_client/objects/test_object.c ****         switch (dataArray[i].id)
+ 229:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 230:Src/communication/wakaama_client/objects/test_object.c ****         case 1:
+ 231:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 232:Src/communication/wakaama_client/objects/test_object.c ****             int64_t value;
+ 233:Src/communication/wakaama_client/objects/test_object.c **** 
+ 234:Src/communication/wakaama_client/objects/test_object.c ****             if (1 != lwm2m_data_decode_int(dataArray + i, &value) || value < 0 || value > 0xFF)
+ 235:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 236:Src/communication/wakaama_client/objects/test_object.c ****                 return COAP_400_BAD_REQUEST;
+ 237:Src/communication/wakaama_client/objects/test_object.c ****             }
+ 238:Src/communication/wakaama_client/objects/test_object.c ****             targetP->test = (uint8_t)value;
+ 239:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 240:Src/communication/wakaama_client/objects/test_object.c ****         break;
+ 241:Src/communication/wakaama_client/objects/test_object.c ****         case 2:
+ 242:Src/communication/wakaama_client/objects/test_object.c ****             return COAP_405_METHOD_NOT_ALLOWED;
+ 243:Src/communication/wakaama_client/objects/test_object.c ****         case 3:
+ 244:Src/communication/wakaama_client/objects/test_object.c ****             if (1 != lwm2m_data_decode_float(dataArray + i, &(targetP->dec)))
+ 245:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 246:Src/communication/wakaama_client/objects/test_object.c ****                 return COAP_400_BAD_REQUEST;
+ 247:Src/communication/wakaama_client/objects/test_object.c ****             }
+ 248:Src/communication/wakaama_client/objects/test_object.c ****             break;
+ 249:Src/communication/wakaama_client/objects/test_object.c ****         case 4:
+ 250:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 251:Src/communication/wakaama_client/objects/test_object.c ****             int64_t value;
+ 252:Src/communication/wakaama_client/objects/test_object.c **** 
+ 253:Src/communication/wakaama_client/objects/test_object.c ****             if (1 != lwm2m_data_decode_int(dataArray + i, &value) || value < INT16_MIN || value > I
+ 254:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 255:Src/communication/wakaama_client/objects/test_object.c ****                 return COAP_400_BAD_REQUEST;
+ 256:Src/communication/wakaama_client/objects/test_object.c ****             }
+ 257:Src/communication/wakaama_client/objects/test_object.c ****             targetP->sig = (int16_t)value;
+ 258:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 259:Src/communication/wakaama_client/objects/test_object.c ****         break;
+ 260:Src/communication/wakaama_client/objects/test_object.c ****         default:
+ 261:Src/communication/wakaama_client/objects/test_object.c ****             return COAP_404_NOT_FOUND;
+ 262:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 263:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 264:Src/communication/wakaama_client/objects/test_object.c **** 
+ 265:Src/communication/wakaama_client/objects/test_object.c ****     return COAP_204_CHANGED;
+ 266:Src/communication/wakaama_client/objects/test_object.c **** }
+ 267:Src/communication/wakaama_client/objects/test_object.c **** 
+ 268:Src/communication/wakaama_client/objects/test_object.c **** static uint8_t prv_delete(uint16_t id,
+ 269:Src/communication/wakaama_client/objects/test_object.c ****                           lwm2m_object_t * objectP)
+ 270:Src/communication/wakaama_client/objects/test_object.c **** {
+ 122              		.loc 1 270 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 8
+
+
+ 123              		.cfi_startproc
+ 124              		@ args = 0, pretend = 0, frame = 8
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126              	.LVL10:
+ 127 0000 10B5     		push	{r4, lr}
+ 128              	.LCFI1:
+ 129              		.cfi_def_cfa_offset 8
+ 130              		.cfi_offset 4, -8
+ 131              		.cfi_offset 14, -4
+ 132 0002 82B0     		sub	sp, sp, #8
+ 133              	.LCFI2:
+ 134              		.cfi_def_cfa_offset 16
+ 135 0004 0C46     		mov	r4, r1
+ 271:Src/communication/wakaama_client/objects/test_object.c ****     prv_instance_t * targetP;
+ 272:Src/communication/wakaama_client/objects/test_object.c **** 
+ 273:Src/communication/wakaama_client/objects/test_object.c ****     objectP->instanceList = lwm2m_list_remove(objectP->instanceList, id, (lwm2m_list_t **)&targetP)
+ 136              		.loc 1 273 0
+ 137 0006 01AA     		add	r2, sp, #4
+ 138 0008 0146     		mov	r1, r0
+ 139              	.LVL11:
+ 140 000a A068     		ldr	r0, [r4, #8]
+ 141              	.LVL12:
+ 142 000c FFF7FEFF 		bl	lwm2m_list_remove
+ 143              	.LVL13:
+ 144 0010 A060     		str	r0, [r4, #8]
+ 274:Src/communication/wakaama_client/objects/test_object.c ****     if (NULL == targetP) return COAP_404_NOT_FOUND;
+ 145              		.loc 1 274 0
+ 146 0012 0198     		ldr	r0, [sp, #4]
+ 147 0014 20B1     		cbz	r0, .L14
+ 275:Src/communication/wakaama_client/objects/test_object.c **** 
+ 276:Src/communication/wakaama_client/objects/test_object.c ****     lwm2m_free(targetP);
+ 148              		.loc 1 276 0
+ 149 0016 FFF7FEFF 		bl	lwm2m_free
+ 150              	.LVL14:
+ 277:Src/communication/wakaama_client/objects/test_object.c **** 
+ 278:Src/communication/wakaama_client/objects/test_object.c ****     return COAP_202_DELETED;
+ 151              		.loc 1 278 0
+ 152 001a 4220     		movs	r0, #66
+ 153              	.L13:
+ 279:Src/communication/wakaama_client/objects/test_object.c **** }
+ 154              		.loc 1 279 0
+ 155 001c 02B0     		add	sp, sp, #8
+ 156              	.LCFI3:
+ 157              		.cfi_remember_state
+ 158              		.cfi_def_cfa_offset 8
+ 159              		@ sp needed
+ 160 001e 10BD     		pop	{r4, pc}
+ 161              	.LVL15:
+ 162              	.L14:
+ 163              	.LCFI4:
+ 164              		.cfi_restore_state
+ 274:Src/communication/wakaama_client/objects/test_object.c **** 
+ 165              		.loc 1 274 0
+ 166 0020 8420     		movs	r0, #132
+ 167 0022 FBE7     		b	.L13
+ 168              		.cfi_endproc
+ 169              	.LFE7:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 9
+
+
+ 171              		.section	.text.prv_output_buffer,"ax",%progbits
+ 172              		.align	1
+ 173              		.syntax unified
+ 174              		.thumb
+ 175              		.thumb_func
+ 176              		.fpu fpv4-sp-d16
+ 178              	prv_output_buffer:
+ 179              	.LFB3:
+  81:Src/communication/wakaama_client/objects/test_object.c ****     int i;
+ 180              		.loc 1 81 0
+ 181              		.cfi_startproc
+ 182              		@ args = 0, pretend = 0, frame = 16
+ 183              		@ frame_needed = 0, uses_anonymous_args = 0
+ 184              	.LVL16:
+ 185 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 186              	.LCFI5:
+ 187              		.cfi_def_cfa_offset 20
+ 188              		.cfi_offset 4, -20
+ 189              		.cfi_offset 5, -16
+ 190              		.cfi_offset 6, -12
+ 191              		.cfi_offset 7, -8
+ 192              		.cfi_offset 14, -4
+ 193 0002 85B0     		sub	sp, sp, #20
+ 194              	.LCFI6:
+ 195              		.cfi_def_cfa_offset 40
+ 196 0004 0746     		mov	r7, r0
+ 197 0006 0E46     		mov	r6, r1
+ 198              	.LVL17:
+  85:Src/communication/wakaama_client/objects/test_object.c ****     while (i < length)
+ 199              		.loc 1 85 0
+ 200 0008 0025     		movs	r5, #0
+  86:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 201              		.loc 1 86 0
+ 202 000a 4CE0     		b	.L17
+ 203              	.LVL18:
+ 204              	.L20:
+ 205              	.LBB2:
+  95:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 206              		.loc 1 95 0 discriminator 4
+ 207 000c 304B     		ldr	r3, .L31
+ 208 000e 1B68     		ldr	r3, [r3]
+ 209 0010 04AA     		add	r2, sp, #16
+ 210 0012 2244     		add	r2, r2, r4
+ 211 0014 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ 212 0018 2E49     		ldr	r1, .L31+4
+ 213 001a D868     		ldr	r0, [r3, #12]
+ 214 001c FFF7FEFF 		bl	fprintf
+ 215              	.LVL19:
+  93:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 216              		.loc 1 93 0 discriminator 4
+ 217 0020 0134     		adds	r4, r4, #1
+ 218              	.LVL20:
+ 219              	.L18:
+  93:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 220              		.loc 1 93 0 is_stmt 0 discriminator 1
+ 221 0022 0F2C     		cmp	r4, #15
+ 222 0024 0CDC     		bgt	.L21
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 10
+
+
+  93:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 223              		.loc 1 93 0 discriminator 3
+ 224 0026 2B19     		adds	r3, r5, r4
+ 225 0028 B342     		cmp	r3, r6
+ 226 002a EFDB     		blt	.L20
+ 227 002c 08E0     		b	.L21
+ 228              	.L22:
+  99:Src/communication/wakaama_client/objects/test_object.c ****             j++;
+ 229              		.loc 1 99 0 is_stmt 1
+ 230 002e 284B     		ldr	r3, .L31
+ 231 0030 1B68     		ldr	r3, [r3]
+ 232 0032 DB68     		ldr	r3, [r3, #12]
+ 233 0034 0322     		movs	r2, #3
+ 234 0036 0121     		movs	r1, #1
+ 235 0038 2748     		ldr	r0, .L31+8
+ 236 003a FFF7FEFF 		bl	fwrite
+ 237              	.LVL21:
+ 100:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 238              		.loc 1 100 0
+ 239 003e 0134     		adds	r4, r4, #1
+ 240              	.LVL22:
+ 241              	.L21:
+  97:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 242              		.loc 1 97 0
+ 243 0040 0F2C     		cmp	r4, #15
+ 244 0042 F4DD     		ble	.L22
+ 102:Src/communication/wakaama_client/objects/test_object.c ****         for (j = 0 ; j < 16 && i+j < length; j++)
+ 245              		.loc 1 102 0
+ 246 0044 224B     		ldr	r3, .L31
+ 247 0046 1B68     		ldr	r3, [r3]
+ 248 0048 DB68     		ldr	r3, [r3, #12]
+ 249 004a 0222     		movs	r2, #2
+ 250 004c 0121     		movs	r1, #1
+ 251 004e 2348     		ldr	r0, .L31+12
+ 252 0050 FFF7FEFF 		bl	fwrite
+ 253              	.LVL23:
+ 103:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 254              		.loc 1 103 0
+ 255 0054 0024     		movs	r4, #0
+ 256 0056 08E0     		b	.L23
+ 257              	.LVL24:
+ 258              	.L24:
+ 108:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 259              		.loc 1 108 0
+ 260 0058 1D4B     		ldr	r3, .L31
+ 261 005a 1B68     		ldr	r3, [r3]
+ 262 005c DB68     		ldr	r3, [r3, #12]
+ 263 005e 0222     		movs	r2, #2
+ 264 0060 0121     		movs	r1, #1
+ 265 0062 1F48     		ldr	r0, .L31+16
+ 266 0064 FFF7FEFF 		bl	fwrite
+ 267              	.LVL25:
+ 268              	.L25:
+ 103:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 269              		.loc 1 103 0 discriminator 2
+ 270 0068 0134     		adds	r4, r4, #1
+ 271              	.LVL26:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 11
+
+
+ 272              	.L23:
+ 103:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 273              		.loc 1 103 0 is_stmt 0 discriminator 1
+ 274 006a 0F2C     		cmp	r4, #15
+ 275 006c 14DC     		bgt	.L26
+ 103:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 276              		.loc 1 103 0 discriminator 3
+ 277 006e 2B19     		adds	r3, r5, r4
+ 278 0070 B342     		cmp	r3, r6
+ 279 0072 11DA     		bge	.L26
+ 105:Src/communication/wakaama_client/objects/test_object.c ****                 fprintf(stderr, "%c ", array[j]);
+ 280              		.loc 1 105 0 is_stmt 1
+ 281 0074 FFF7FEFF 		bl	__locale_ctype_ptr
+ 282              	.LVL27:
+ 283 0078 04AB     		add	r3, sp, #16
+ 284 007a 2344     		add	r3, r3, r4
+ 285 007c 13F8102C 		ldrb	r2, [r3, #-16]	@ zero_extendqisi2
+ 286 0080 1044     		add	r0, r0, r2
+ 287 0082 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 288 0084 13F0970F 		tst	r3, #151
+ 289 0088 E6D0     		beq	.L24
+ 106:Src/communication/wakaama_client/objects/test_object.c ****             else
+ 290              		.loc 1 106 0
+ 291 008a 114B     		ldr	r3, .L31
+ 292 008c 1B68     		ldr	r3, [r3]
+ 293 008e 1549     		ldr	r1, .L31+20
+ 294 0090 D868     		ldr	r0, [r3, #12]
+ 295 0092 FFF7FEFF 		bl	fprintf
+ 296              	.LVL28:
+ 297 0096 E7E7     		b	.L25
+ 298              	.L26:
+ 110:Src/communication/wakaama_client/objects/test_object.c **** 
+ 299              		.loc 1 110 0
+ 300 0098 0D4B     		ldr	r3, .L31
+ 301 009a 1B68     		ldr	r3, [r3]
+ 302 009c D968     		ldr	r1, [r3, #12]
+ 303 009e 0A20     		movs	r0, #10
+ 304 00a0 FFF7FEFF 		bl	fputc
+ 305              	.LVL29:
+ 112:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 306              		.loc 1 112 0
+ 307 00a4 1035     		adds	r5, r5, #16
+ 308              	.LVL30:
+ 309              	.L17:
+ 310              	.LBE2:
+  86:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 311              		.loc 1 86 0
+ 312 00a6 B542     		cmp	r5, r6
+ 313 00a8 10DA     		bge	.L30
+ 314              	.LBB3:
+  89:Src/communication/wakaama_client/objects/test_object.c **** 
+ 315              		.loc 1 89 0
+ 316 00aa 094B     		ldr	r3, .L31
+ 317 00ac 1B68     		ldr	r3, [r3]
+ 318 00ae DB68     		ldr	r3, [r3, #12]
+ 319 00b0 0222     		movs	r2, #2
+ 320 00b2 0121     		movs	r1, #1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 12
+
+
+ 321 00b4 0948     		ldr	r0, .L31+12
+ 322 00b6 FFF7FEFF 		bl	fwrite
+ 323              	.LVL31:
+  91:Src/communication/wakaama_client/objects/test_object.c **** 
+ 324              		.loc 1 91 0
+ 325 00ba 7B19     		adds	r3, r7, r5
+ 326 00bc 6C46     		mov	r4, sp
+ 327 00be 1868     		ldr	r0, [r3]	@ unaligned
+ 328 00c0 5968     		ldr	r1, [r3, #4]	@ unaligned
+ 329 00c2 9A68     		ldr	r2, [r3, #8]	@ unaligned
+ 330 00c4 DB68     		ldr	r3, [r3, #12]	@ unaligned
+ 331 00c6 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 332              	.LVL32:
+  93:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 333              		.loc 1 93 0
+ 334 00c8 0024     		movs	r4, #0
+ 335 00ca AAE7     		b	.L18
+ 336              	.LVL33:
+ 337              	.L30:
+ 338              	.LBE3:
+ 114:Src/communication/wakaama_client/objects/test_object.c **** 
+ 339              		.loc 1 114 0
+ 340 00cc 05B0     		add	sp, sp, #20
+ 341              	.LCFI7:
+ 342              		.cfi_def_cfa_offset 20
+ 343              		@ sp needed
+ 344 00ce F0BD     		pop	{r4, r5, r6, r7, pc}
+ 345              	.LVL34:
+ 346              	.L32:
+ 347              		.align	2
+ 348              	.L31:
+ 349 00d0 00000000 		.word	_impure_ptr
+ 350 00d4 04000000 		.word	.LC1
+ 351 00d8 0C000000 		.word	.LC2
+ 352 00dc 00000000 		.word	.LC0
+ 353 00e0 14000000 		.word	.LC4
+ 354 00e4 10000000 		.word	.LC3
+ 355              		.cfi_endproc
+ 356              	.LFE3:
+ 358              		.section	.text.prv_exec,"ax",%progbits
+ 359              		.align	1
+ 360              		.syntax unified
+ 361              		.thumb
+ 362              		.thumb_func
+ 363              		.fpu fpv4-sp-d16
+ 365              	prv_exec:
+ 366              	.LFB9:
+ 280:Src/communication/wakaama_client/objects/test_object.c **** 
+ 281:Src/communication/wakaama_client/objects/test_object.c **** static uint8_t prv_create(uint16_t instanceId,
+ 282:Src/communication/wakaama_client/objects/test_object.c ****                           int numData,
+ 283:Src/communication/wakaama_client/objects/test_object.c ****                           lwm2m_data_t * dataArray,
+ 284:Src/communication/wakaama_client/objects/test_object.c ****                           lwm2m_object_t * objectP)
+ 285:Src/communication/wakaama_client/objects/test_object.c **** {
+ 286:Src/communication/wakaama_client/objects/test_object.c ****     prv_instance_t * targetP;
+ 287:Src/communication/wakaama_client/objects/test_object.c ****     uint8_t result;
+ 288:Src/communication/wakaama_client/objects/test_object.c **** 
+ 289:Src/communication/wakaama_client/objects/test_object.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 13
+
+
+ 290:Src/communication/wakaama_client/objects/test_object.c ****     targetP = (prv_instance_t *)lwm2m_malloc(sizeof(prv_instance_t));
+ 291:Src/communication/wakaama_client/objects/test_object.c ****     if (NULL == targetP) return COAP_500_INTERNAL_SERVER_ERROR;
+ 292:Src/communication/wakaama_client/objects/test_object.c ****     memset(targetP, 0, sizeof(prv_instance_t));
+ 293:Src/communication/wakaama_client/objects/test_object.c **** 
+ 294:Src/communication/wakaama_client/objects/test_object.c ****     targetP->shortID = instanceId;
+ 295:Src/communication/wakaama_client/objects/test_object.c ****     objectP->instanceList = LWM2M_LIST_ADD(objectP->instanceList, targetP);
+ 296:Src/communication/wakaama_client/objects/test_object.c **** 
+ 297:Src/communication/wakaama_client/objects/test_object.c ****     result = prv_write(instanceId, numData, dataArray, objectP);
+ 298:Src/communication/wakaama_client/objects/test_object.c **** 
+ 299:Src/communication/wakaama_client/objects/test_object.c ****     if (result != COAP_204_CHANGED)
+ 300:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 301:Src/communication/wakaama_client/objects/test_object.c ****         (void)prv_delete(instanceId, objectP);
+ 302:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 303:Src/communication/wakaama_client/objects/test_object.c ****     else
+ 304:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 305:Src/communication/wakaama_client/objects/test_object.c ****         result = COAP_201_CREATED;
+ 306:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 307:Src/communication/wakaama_client/objects/test_object.c **** 
+ 308:Src/communication/wakaama_client/objects/test_object.c ****     return result;
+ 309:Src/communication/wakaama_client/objects/test_object.c **** }
+ 310:Src/communication/wakaama_client/objects/test_object.c **** 
+ 311:Src/communication/wakaama_client/objects/test_object.c **** static uint8_t prv_exec(uint16_t instanceId,
+ 312:Src/communication/wakaama_client/objects/test_object.c ****                         uint16_t resourceId,
+ 313:Src/communication/wakaama_client/objects/test_object.c ****                         uint8_t * buffer,
+ 314:Src/communication/wakaama_client/objects/test_object.c ****                         int length,
+ 315:Src/communication/wakaama_client/objects/test_object.c ****                         lwm2m_object_t * objectP)
+ 316:Src/communication/wakaama_client/objects/test_object.c **** {
+ 367              		.loc 1 316 0
+ 368              		.cfi_startproc
+ 369              		@ args = 4, pretend = 0, frame = 0
+ 370              		@ frame_needed = 0, uses_anonymous_args = 0
+ 371              	.LVL35:
+ 372 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 373              	.LCFI8:
+ 374              		.cfi_def_cfa_offset 28
+ 375              		.cfi_offset 4, -28
+ 376              		.cfi_offset 5, -24
+ 377              		.cfi_offset 6, -20
+ 378              		.cfi_offset 7, -16
+ 379              		.cfi_offset 8, -12
+ 380              		.cfi_offset 9, -8
+ 381              		.cfi_offset 14, -4
+ 382 0004 83B0     		sub	sp, sp, #12
+ 383              	.LCFI9:
+ 384              		.cfi_def_cfa_offset 40
+ 385 0006 0546     		mov	r5, r0
+ 386 0008 0C46     		mov	r4, r1
+ 387 000a 9046     		mov	r8, r2
+ 388 000c 1F46     		mov	r7, r3
+ 389 000e 0A9E     		ldr	r6, [sp, #40]
+ 317:Src/communication/wakaama_client/objects/test_object.c **** 
+ 318:Src/communication/wakaama_client/objects/test_object.c ****     if (NULL == lwm2m_list_find(objectP->instanceList, instanceId)) return COAP_404_NOT_FOUND;
+ 390              		.loc 1 318 0
+ 391 0010 0146     		mov	r1, r0
+ 392              	.LVL36:
+ 393 0012 B068     		ldr	r0, [r6, #8]
+ 394              	.LVL37:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 14
+
+
+ 395 0014 FFF7FEFF 		bl	lwm2m_list_find
+ 396              	.LVL38:
+ 397 0018 18B3     		cbz	r0, .L37
+ 319:Src/communication/wakaama_client/objects/test_object.c **** 
+ 320:Src/communication/wakaama_client/objects/test_object.c ****     switch (resourceId)
+ 398              		.loc 1 320 0
+ 399 001a 022C     		cmp	r4, #2
+ 400 001c 07D0     		beq	.L35
+ 401 001e 032C     		cmp	r4, #3
+ 402 0020 03D0     		beq	.L36
+ 403 0022 012C     		cmp	r4, #1
+ 404 0024 01D0     		beq	.L36
+ 321:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 322:Src/communication/wakaama_client/objects/test_object.c ****     case 1:
+ 323:Src/communication/wakaama_client/objects/test_object.c ****         return COAP_405_METHOD_NOT_ALLOWED;
+ 324:Src/communication/wakaama_client/objects/test_object.c ****     case 2:
+ 325:Src/communication/wakaama_client/objects/test_object.c ****         fprintf(stdout, "\r\n-----------------\r\n"
+ 326:Src/communication/wakaama_client/objects/test_object.c ****                         "Execute on %hu/%d/%d\r\n"
+ 327:Src/communication/wakaama_client/objects/test_object.c ****                         " Parameter (%d bytes):\r\n",
+ 328:Src/communication/wakaama_client/objects/test_object.c ****                         objectP->objID, instanceId, resourceId, length);
+ 329:Src/communication/wakaama_client/objects/test_object.c ****         prv_output_buffer((uint8_t*)buffer, length);
+ 330:Src/communication/wakaama_client/objects/test_object.c ****         fprintf(stdout, "-----------------\r\n\r\n");
+ 331:Src/communication/wakaama_client/objects/test_object.c ****         return COAP_204_CHANGED;
+ 332:Src/communication/wakaama_client/objects/test_object.c ****     case 3:
+ 333:Src/communication/wakaama_client/objects/test_object.c ****         return COAP_405_METHOD_NOT_ALLOWED;
+ 334:Src/communication/wakaama_client/objects/test_object.c ****     default:
+ 335:Src/communication/wakaama_client/objects/test_object.c ****         return COAP_404_NOT_FOUND;
+ 405              		.loc 1 335 0
+ 406 0026 8420     		movs	r0, #132
+ 407 0028 1CE0     		b	.L34
+ 408              	.L36:
+ 323:Src/communication/wakaama_client/objects/test_object.c ****     case 2:
+ 409              		.loc 1 323 0
+ 410 002a 8520     		movs	r0, #133
+ 411 002c 1AE0     		b	.L34
+ 412              	.L35:
+ 325:Src/communication/wakaama_client/objects/test_object.c ****                         "Execute on %hu/%d/%d\r\n"
+ 413              		.loc 1 325 0
+ 414 002e DFF84490 		ldr	r9, .L41+8
+ 415 0032 D9F80030 		ldr	r3, [r9]
+ 416 0036 9868     		ldr	r0, [r3, #8]
+ 328:Src/communication/wakaama_client/objects/test_object.c ****         prv_output_buffer((uint8_t*)buffer, length);
+ 417              		.loc 1 328 0
+ 418 0038 B288     		ldrh	r2, [r6, #4]
+ 325:Src/communication/wakaama_client/objects/test_object.c ****                         "Execute on %hu/%d/%d\r\n"
+ 419              		.loc 1 325 0
+ 420 003a 0197     		str	r7, [sp, #4]
+ 421 003c 0094     		str	r4, [sp]
+ 422 003e 2B46     		mov	r3, r5
+ 423 0040 0A49     		ldr	r1, .L41
+ 424 0042 FFF7FEFF 		bl	fprintf
+ 425              	.LVL39:
+ 329:Src/communication/wakaama_client/objects/test_object.c ****         fprintf(stdout, "-----------------\r\n\r\n");
+ 426              		.loc 1 329 0
+ 427 0046 3946     		mov	r1, r7
+ 428 0048 4046     		mov	r0, r8
+ 429 004a FFF7FEFF 		bl	prv_output_buffer
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 15
+
+
+ 430              	.LVL40:
+ 330:Src/communication/wakaama_client/objects/test_object.c ****         return COAP_204_CHANGED;
+ 431              		.loc 1 330 0
+ 432 004e D9F80030 		ldr	r3, [r9]
+ 433 0052 9B68     		ldr	r3, [r3, #8]
+ 434 0054 1522     		movs	r2, #21
+ 435 0056 0121     		movs	r1, #1
+ 436 0058 0548     		ldr	r0, .L41+4
+ 437 005a FFF7FEFF 		bl	fwrite
+ 438              	.LVL41:
+ 331:Src/communication/wakaama_client/objects/test_object.c ****     case 3:
+ 439              		.loc 1 331 0
+ 440 005e 4420     		movs	r0, #68
+ 441 0060 00E0     		b	.L34
+ 442              	.L37:
+ 318:Src/communication/wakaama_client/objects/test_object.c **** 
+ 443              		.loc 1 318 0
+ 444 0062 8420     		movs	r0, #132
+ 445              	.L34:
+ 336:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 337:Src/communication/wakaama_client/objects/test_object.c **** }
+ 446              		.loc 1 337 0
+ 447 0064 03B0     		add	sp, sp, #12
+ 448              	.LCFI10:
+ 449              		.cfi_def_cfa_offset 28
+ 450              		@ sp needed
+ 451 0066 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 452              	.LVL42:
+ 453              	.L42:
+ 454 006a 00BF     		.align	2
+ 455              	.L41:
+ 456 006c 00000000 		.word	.LC5
+ 457 0070 44000000 		.word	.LC6
+ 458 0074 00000000 		.word	_impure_ptr
+ 459              		.cfi_endproc
+ 460              	.LFE9:
+ 462              		.section	.text.prv_write,"ax",%progbits
+ 463              		.align	1
+ 464              		.syntax unified
+ 465              		.thumb
+ 466              		.thumb_func
+ 467              		.fpu fpv4-sp-d16
+ 469              	prv_write:
+ 470              	.LFB6:
+ 219:Src/communication/wakaama_client/objects/test_object.c ****     prv_instance_t * targetP;
+ 471              		.loc 1 219 0
+ 472              		.cfi_startproc
+ 473              		@ args = 0, pretend = 0, frame = 8
+ 474              		@ frame_needed = 0, uses_anonymous_args = 0
+ 475              	.LVL43:
+ 476 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 477              	.LCFI11:
+ 478              		.cfi_def_cfa_offset 20
+ 479              		.cfi_offset 4, -20
+ 480              		.cfi_offset 5, -16
+ 481              		.cfi_offset 6, -12
+ 482              		.cfi_offset 7, -8
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 16
+
+
+ 483              		.cfi_offset 14, -4
+ 484 0002 83B0     		sub	sp, sp, #12
+ 485              	.LCFI12:
+ 486              		.cfi_def_cfa_offset 32
+ 487 0004 0D46     		mov	r5, r1
+ 488 0006 1646     		mov	r6, r2
+ 223:Src/communication/wakaama_client/objects/test_object.c ****     if (NULL == targetP) return COAP_404_NOT_FOUND;
+ 489              		.loc 1 223 0
+ 490 0008 0146     		mov	r1, r0
+ 491              	.LVL44:
+ 492 000a 9868     		ldr	r0, [r3, #8]
+ 493              	.LVL45:
+ 494 000c FFF7FEFF 		bl	lwm2m_list_find
+ 495              	.LVL46:
+ 224:Src/communication/wakaama_client/objects/test_object.c **** 
+ 496              		.loc 1 224 0
+ 497 0010 0028     		cmp	r0, #0
+ 498 0012 4CD0     		beq	.L57
+ 499 0014 0746     		mov	r7, r0
+ 226:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 500              		.loc 1 226 0
+ 501 0016 0024     		movs	r4, #0
+ 502 0018 1DE0     		b	.L45
+ 503              	.LVL47:
+ 504              	.L48:
+ 242:Src/communication/wakaama_client/objects/test_object.c ****         case 3:
+ 505              		.loc 1 242 0
+ 506 001a 8520     		movs	r0, #133
+ 507              	.LVL48:
+ 508              	.L44:
+ 266:Src/communication/wakaama_client/objects/test_object.c **** 
+ 509              		.loc 1 266 0
+ 510 001c 03B0     		add	sp, sp, #12
+ 511              	.LCFI13:
+ 512              		.cfi_remember_state
+ 513              		.cfi_def_cfa_offset 20
+ 514              		@ sp needed
+ 515 001e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 516              	.LVL49:
+ 517              	.L46:
+ 518              	.LCFI14:
+ 519              		.cfi_restore_state
+ 520              	.LBB4:
+ 234:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 521              		.loc 1 234 0
+ 522 0020 6946     		mov	r1, sp
+ 523 0022 FFF7FEFF 		bl	lwm2m_data_decode_int
+ 524              	.LVL50:
+ 525 0026 0128     		cmp	r0, #1
+ 526 0028 0CD1     		bne	.L51
+ 234:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 527              		.loc 1 234 0 is_stmt 0 discriminator 1
+ 528 002a DDE90023 		ldrd	r2, [sp]
+ 529 002e 002A     		cmp	r2, #0
+ 530 0030 73F10001 		sbcs	r1, r3, #0
+ 531 0034 06DB     		blt	.L51
+ 234:Src/communication/wakaama_client/objects/test_object.c ****             {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 17
+
+
+ 532              		.loc 1 234 0 discriminator 2
+ 533 0036 B2F5807F 		cmp	r2, #256
+ 534 003a 73F10001 		sbcs	r1, r3, #0
+ 535 003e 01DA     		bge	.L51
+ 238:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 536              		.loc 1 238 0 is_stmt 1
+ 537 0040 BA71     		strb	r2, [r7, #6]
+ 538              	.LBE4:
+ 240:Src/communication/wakaama_client/objects/test_object.c ****         case 2:
+ 539              		.loc 1 240 0
+ 540 0042 07E0     		b	.L53
+ 541              	.L51:
+ 542              	.LBB5:
+ 236:Src/communication/wakaama_client/objects/test_object.c ****             }
+ 543              		.loc 1 236 0
+ 544 0044 8020     		movs	r0, #128
+ 545 0046 E9E7     		b	.L44
+ 546              	.L49:
+ 547              	.LBE5:
+ 244:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 548              		.loc 1 244 0
+ 549 0048 07F10801 		add	r1, r7, #8
+ 550 004c FFF7FEFF 		bl	lwm2m_data_decode_float
+ 551              	.LVL51:
+ 552 0050 0128     		cmp	r0, #1
+ 553 0052 30D1     		bne	.L61
+ 554              	.L53:
+ 226:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 555              		.loc 1 226 0 discriminator 2
+ 556 0054 0134     		adds	r4, r4, #1
+ 557              	.LVL52:
+ 558              	.L45:
+ 226:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 559              		.loc 1 226 0 is_stmt 0 discriminator 1
+ 560 0056 AC42     		cmp	r4, r5
+ 561 0058 27DA     		bge	.L62
+ 228:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 562              		.loc 1 228 0 is_stmt 1
+ 563 005a 06EB0410 		add	r0, r6, r4, lsl #4
+ 564 005e 4388     		ldrh	r3, [r0, #2]
+ 565 0060 013B     		subs	r3, r3, #1
+ 566 0062 032B     		cmp	r3, #3
+ 567 0064 25D8     		bhi	.L58
+ 568 0066 01A2     		adr	r2, .L47
+ 569 0068 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 570              		.p2align 2
+ 571              	.L47:
+ 572 006c 21000000 		.word	.L46+1
+ 573 0070 1B000000 		.word	.L48+1
+ 574 0074 49000000 		.word	.L49+1
+ 575 0078 7D000000 		.word	.L50+1
+ 576              		.p2align 1
+ 577              	.L50:
+ 578              	.LBB6:
+ 253:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 579              		.loc 1 253 0
+ 580 007c 6946     		mov	r1, sp
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 18
+
+
+ 581 007e FFF7FEFF 		bl	lwm2m_data_decode_int
+ 582              	.LVL53:
+ 583 0082 0128     		cmp	r0, #1
+ 584 0084 0FD1     		bne	.L54
+ 253:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 585              		.loc 1 253 0 is_stmt 0 discriminator 1
+ 586 0086 DDE90023 		ldrd	r2, [sp]
+ 587 008a 0C48     		ldr	r0, .L63
+ 588 008c 4FF0FF31 		mov	r1, #-1
+ 589 0090 8242     		cmp	r2, r0
+ 590 0092 73EB0101 		sbcs	r1, r3, r1
+ 591 0096 06DB     		blt	.L54
+ 253:Src/communication/wakaama_client/objects/test_object.c ****             {
+ 592              		.loc 1 253 0 discriminator 2
+ 593 0098 B2F5004F 		cmp	r2, #32768
+ 594 009c 73F10001 		sbcs	r1, r3, #0
+ 595 00a0 01DA     		bge	.L54
+ 257:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 596              		.loc 1 257 0 is_stmt 1
+ 597 00a2 3A82     		strh	r2, [r7, #16]	@ movhi
+ 598              	.LBE6:
+ 259:Src/communication/wakaama_client/objects/test_object.c ****         default:
+ 599              		.loc 1 259 0
+ 600 00a4 D6E7     		b	.L53
+ 601              	.L54:
+ 602              	.LBB7:
+ 255:Src/communication/wakaama_client/objects/test_object.c ****             }
+ 603              		.loc 1 255 0
+ 604 00a6 8020     		movs	r0, #128
+ 605 00a8 B8E7     		b	.L44
+ 606              	.L62:
+ 607              	.LBE7:
+ 265:Src/communication/wakaama_client/objects/test_object.c **** }
+ 608              		.loc 1 265 0
+ 609 00aa 4420     		movs	r0, #68
+ 610 00ac B6E7     		b	.L44
+ 611              	.LVL54:
+ 612              	.L57:
+ 224:Src/communication/wakaama_client/objects/test_object.c **** 
+ 613              		.loc 1 224 0
+ 614 00ae 8420     		movs	r0, #132
+ 615              	.LVL55:
+ 616 00b0 B4E7     		b	.L44
+ 617              	.LVL56:
+ 618              	.L58:
+ 261:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 619              		.loc 1 261 0
+ 620 00b2 8420     		movs	r0, #132
+ 621 00b4 B2E7     		b	.L44
+ 622              	.L61:
+ 246:Src/communication/wakaama_client/objects/test_object.c ****             }
+ 623              		.loc 1 246 0
+ 624 00b6 8020     		movs	r0, #128
+ 625 00b8 B0E7     		b	.L44
+ 626              	.L64:
+ 627 00ba 00BF     		.align	2
+ 628              	.L63:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 19
+
+
+ 629 00bc 0080FFFF 		.word	-32768
+ 630              		.cfi_endproc
+ 631              	.LFE6:
+ 633              		.section	.text.prv_create,"ax",%progbits
+ 634              		.align	1
+ 635              		.syntax unified
+ 636              		.thumb
+ 637              		.thumb_func
+ 638              		.fpu fpv4-sp-d16
+ 640              	prv_create:
+ 641              	.LFB8:
+ 285:Src/communication/wakaama_client/objects/test_object.c ****     prv_instance_t * targetP;
+ 642              		.loc 1 285 0
+ 643              		.cfi_startproc
+ 644              		@ args = 0, pretend = 0, frame = 0
+ 645              		@ frame_needed = 0, uses_anonymous_args = 0
+ 646              	.LVL57:
+ 647 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 648              	.LCFI15:
+ 649              		.cfi_def_cfa_offset 24
+ 650              		.cfi_offset 3, -24
+ 651              		.cfi_offset 4, -20
+ 652              		.cfi_offset 5, -16
+ 653              		.cfi_offset 6, -12
+ 654              		.cfi_offset 7, -8
+ 655              		.cfi_offset 14, -4
+ 656 0002 0646     		mov	r6, r0
+ 657 0004 0D46     		mov	r5, r1
+ 658 0006 1746     		mov	r7, r2
+ 659 0008 1C46     		mov	r4, r3
+ 290:Src/communication/wakaama_client/objects/test_object.c ****     if (NULL == targetP) return COAP_500_INTERNAL_SERVER_ERROR;
+ 660              		.loc 1 290 0
+ 661 000a 1820     		movs	r0, #24
+ 662              	.LVL58:
+ 663 000c FFF7FEFF 		bl	lwm2m_malloc
+ 664              	.LVL59:
+ 291:Src/communication/wakaama_client/objects/test_object.c ****     memset(targetP, 0, sizeof(prv_instance_t));
+ 665              		.loc 1 291 0
+ 666 0010 D8B1     		cbz	r0, .L67
+ 667 0012 0146     		mov	r1, r0
+ 292:Src/communication/wakaama_client/objects/test_object.c **** 
+ 668              		.loc 1 292 0
+ 669 0014 0023     		movs	r3, #0
+ 670 0016 0360     		str	r3, [r0]	@ unaligned
+ 671 0018 4360     		str	r3, [r0, #4]	@ unaligned
+ 672 001a 8360     		str	r3, [r0, #8]	@ unaligned
+ 673 001c C360     		str	r3, [r0, #12]	@ unaligned
+ 674 001e 0361     		str	r3, [r0, #16]	@ unaligned
+ 675 0020 4361     		str	r3, [r0, #20]	@ unaligned
+ 294:Src/communication/wakaama_client/objects/test_object.c ****     objectP->instanceList = LWM2M_LIST_ADD(objectP->instanceList, targetP);
+ 676              		.loc 1 294 0
+ 677 0022 8680     		strh	r6, [r0, #4]	@ movhi
+ 295:Src/communication/wakaama_client/objects/test_object.c **** 
+ 678              		.loc 1 295 0
+ 679 0024 A068     		ldr	r0, [r4, #8]
+ 680              	.LVL60:
+ 681 0026 FFF7FEFF 		bl	lwm2m_list_add
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 20
+
+
+ 682              	.LVL61:
+ 683 002a A060     		str	r0, [r4, #8]
+ 297:Src/communication/wakaama_client/objects/test_object.c **** 
+ 684              		.loc 1 297 0
+ 685 002c 2346     		mov	r3, r4
+ 686 002e 3A46     		mov	r2, r7
+ 687 0030 2946     		mov	r1, r5
+ 688 0032 3046     		mov	r0, r6
+ 689 0034 FFF7FEFF 		bl	prv_write
+ 690              	.LVL62:
+ 691 0038 0546     		mov	r5, r0
+ 692              	.LVL63:
+ 299:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 693              		.loc 1 299 0
+ 694 003a 4428     		cmp	r0, #68
+ 695 003c 07D0     		beq	.L68
+ 301:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 696              		.loc 1 301 0
+ 697 003e 2146     		mov	r1, r4
+ 698 0040 3046     		mov	r0, r6
+ 699              	.LVL64:
+ 700 0042 FFF7FEFF 		bl	prv_delete
+ 701              	.LVL65:
+ 702              	.L66:
+ 309:Src/communication/wakaama_client/objects/test_object.c **** 
+ 703              		.loc 1 309 0
+ 704 0046 2846     		mov	r0, r5
+ 705 0048 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 706              	.LVL66:
+ 707              	.L67:
+ 291:Src/communication/wakaama_client/objects/test_object.c ****     memset(targetP, 0, sizeof(prv_instance_t));
+ 708              		.loc 1 291 0
+ 709 004a A025     		movs	r5, #160
+ 710              	.LVL67:
+ 711 004c FBE7     		b	.L66
+ 712              	.LVL68:
+ 713              	.L68:
+ 305:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 714              		.loc 1 305 0
+ 715 004e 4125     		movs	r5, #65
+ 716 0050 F9E7     		b	.L66
+ 717              		.cfi_endproc
+ 718              	.LFE8:
+ 720              		.section	.text.prv_read,"ax",%progbits
+ 721              		.align	1
+ 722              		.syntax unified
+ 723              		.thumb
+ 724              		.thumb_func
+ 725              		.fpu fpv4-sp-d16
+ 727              	prv_read:
+ 728              	.LFB4:
+ 138:Src/communication/wakaama_client/objects/test_object.c ****     prv_instance_t * targetP;
+ 729              		.loc 1 138 0
+ 730              		.cfi_startproc
+ 731              		@ args = 0, pretend = 0, frame = 0
+ 732              		@ frame_needed = 0, uses_anonymous_args = 0
+ 733              	.LVL69:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 21
+
+
+ 734 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 735              	.LCFI16:
+ 736              		.cfi_def_cfa_offset 24
+ 737              		.cfi_offset 3, -24
+ 738              		.cfi_offset 4, -20
+ 739              		.cfi_offset 5, -16
+ 740              		.cfi_offset 6, -12
+ 741              		.cfi_offset 7, -8
+ 742              		.cfi_offset 14, -4
+ 743 0002 0D46     		mov	r5, r1
+ 744 0004 1646     		mov	r6, r2
+ 142:Src/communication/wakaama_client/objects/test_object.c ****     if (NULL == targetP) return COAP_404_NOT_FOUND;
+ 745              		.loc 1 142 0
+ 746 0006 0146     		mov	r1, r0
+ 747              	.LVL70:
+ 748 0008 9868     		ldr	r0, [r3, #8]
+ 749              	.LVL71:
+ 750 000a FFF7FEFF 		bl	lwm2m_list_find
+ 751              	.LVL72:
+ 143:Src/communication/wakaama_client/objects/test_object.c **** 
+ 752              		.loc 1 143 0
+ 753 000e 0028     		cmp	r0, #0
+ 754 0010 40D0     		beq	.L81
+ 755 0012 0746     		mov	r7, r0
+ 145:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 756              		.loc 1 145 0
+ 757 0014 2B68     		ldr	r3, [r5]
+ 758 0016 0BB1     		cbz	r3, .L85
+ 759              	.LVL73:
+ 760              	.L72:
+ 138:Src/communication/wakaama_client/objects/test_object.c ****     prv_instance_t * targetP;
+ 761              		.loc 1 138 0 discriminator 1
+ 762 0018 0024     		movs	r4, #0
+ 763 001a 17E0     		b	.L79
+ 764              	.LVL74:
+ 765              	.L85:
+ 147:Src/communication/wakaama_client/objects/test_object.c ****         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 766              		.loc 1 147 0
+ 767 001c 0320     		movs	r0, #3
+ 768              	.LVL75:
+ 769 001e FFF7FEFF 		bl	lwm2m_data_new
+ 770              	.LVL76:
+ 771 0022 3060     		str	r0, [r6]
+ 148:Src/communication/wakaama_client/objects/test_object.c ****         *numDataP = 3;
+ 772              		.loc 1 148 0
+ 773 0024 0028     		cmp	r0, #0
+ 774 0026 37D0     		beq	.L82
+ 149:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[0].id = 1;
+ 775              		.loc 1 149 0
+ 776 0028 0323     		movs	r3, #3
+ 777 002a 2B60     		str	r3, [r5]
+ 150:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[1].id = 3;
+ 778              		.loc 1 150 0
+ 779 002c 3268     		ldr	r2, [r6]
+ 780 002e 0121     		movs	r1, #1
+ 781 0030 5180     		strh	r1, [r2, #2]	@ movhi
+ 151:Src/communication/wakaama_client/objects/test_object.c ****         (*dataArrayP)[2].id = 4;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 22
+
+
+ 782              		.loc 1 151 0
+ 783 0032 3268     		ldr	r2, [r6]
+ 784 0034 5382     		strh	r3, [r2, #18]	@ movhi
+ 152:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 785              		.loc 1 152 0
+ 786 0036 3368     		ldr	r3, [r6]
+ 787 0038 0422     		movs	r2, #4
+ 788 003a 5A84     		strh	r2, [r3, #34]	@ movhi
+ 789 003c ECE7     		b	.L72
+ 790              	.LVL77:
+ 791              	.L75:
+ 163:Src/communication/wakaama_client/objects/test_object.c ****         case 3:
+ 792              		.loc 1 163 0
+ 793 003e 8520     		movs	r0, #133
+ 794              	.LVL78:
+ 795              	.L71:
+ 176:Src/communication/wakaama_client/objects/test_object.c **** 
+ 796              		.loc 1 176 0
+ 797 0040 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 798              	.LVL79:
+ 799              	.L73:
+ 160:Src/communication/wakaama_client/objects/test_object.c ****             break;
+ 800              		.loc 1 160 0
+ 801 0042 B879     		ldrb	r0, [r7, #6]	@ zero_extendqisi2
+ 802 0044 0021     		movs	r1, #0
+ 803 0046 FFF7FEFF 		bl	lwm2m_data_encode_int
+ 804              	.LVL80:
+ 805              	.L78:
+ 155:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 806              		.loc 1 155 0 discriminator 2
+ 807 004a 0134     		adds	r4, r4, #1
+ 808              	.LVL81:
+ 809              	.L79:
+ 155:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 810              		.loc 1 155 0 is_stmt 0 discriminator 1
+ 811 004c 2B68     		ldr	r3, [r5]
+ 812 004e A342     		cmp	r3, r4
+ 813 0050 1EDD     		ble	.L86
+ 157:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 814              		.loc 1 157 0 is_stmt 1
+ 815 0052 3268     		ldr	r2, [r6]
+ 816 0054 02EB0412 		add	r2, r2, r4, lsl #4
+ 817 0058 5388     		ldrh	r3, [r2, #2]
+ 818 005a 013B     		subs	r3, r3, #1
+ 819 005c 032B     		cmp	r3, #3
+ 820 005e 1DD8     		bhi	.L83
+ 821 0060 01A1     		adr	r1, .L74
+ 822 0062 51F823F0 		ldr	pc, [r1, r3, lsl #2]
+ 823 0066 00BF     		.p2align 2
+ 824              	.L74:
+ 825 0068 43000000 		.word	.L73+1
+ 826 006c 3F000000 		.word	.L75+1
+ 827 0070 79000000 		.word	.L76+1
+ 828 0074 85000000 		.word	.L77+1
+ 829              		.p2align 1
+ 830              	.L76:
+ 165:Src/communication/wakaama_client/objects/test_object.c ****             break;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 23
+
+
+ 831              		.loc 1 165 0
+ 832 0078 1046     		mov	r0, r2
+ 833 007a 97ED020B 		vldr.64	d0, [r7, #8]
+ 834 007e FFF7FEFF 		bl	lwm2m_data_encode_float
+ 835              	.LVL82:
+ 166:Src/communication/wakaama_client/objects/test_object.c ****         case 4:
+ 836              		.loc 1 166 0
+ 837 0082 E2E7     		b	.L78
+ 838              	.L77:
+ 168:Src/communication/wakaama_client/objects/test_object.c ****             break;
+ 839              		.loc 1 168 0
+ 840 0084 B7F91000 		ldrsh	r0, [r7, #16]
+ 841 0088 C117     		asrs	r1, r0, #31
+ 842 008a FFF7FEFF 		bl	lwm2m_data_encode_int
+ 843              	.LVL83:
+ 169:Src/communication/wakaama_client/objects/test_object.c ****         default:
+ 844              		.loc 1 169 0
+ 845 008e DCE7     		b	.L78
+ 846              	.L86:
+ 175:Src/communication/wakaama_client/objects/test_object.c **** }
+ 847              		.loc 1 175 0
+ 848 0090 4520     		movs	r0, #69
+ 849 0092 D5E7     		b	.L71
+ 850              	.LVL84:
+ 851              	.L81:
+ 143:Src/communication/wakaama_client/objects/test_object.c **** 
+ 852              		.loc 1 143 0
+ 853 0094 8420     		movs	r0, #132
+ 854              	.LVL85:
+ 855 0096 D3E7     		b	.L71
+ 856              	.LVL86:
+ 857              	.L82:
+ 148:Src/communication/wakaama_client/objects/test_object.c ****         *numDataP = 3;
+ 858              		.loc 1 148 0
+ 859 0098 A020     		movs	r0, #160
+ 860 009a D1E7     		b	.L71
+ 861              	.LVL87:
+ 862              	.L83:
+ 171:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 863              		.loc 1 171 0
+ 864 009c 8420     		movs	r0, #132
+ 865 009e CFE7     		b	.L71
+ 866              		.cfi_endproc
+ 867              	.LFE4:
+ 869              		.global	__aeabi_i2d
+ 870              		.global	__aeabi_ddiv
+ 871              		.global	__aeabi_dadd
+ 872              		.section	.text.get_test_object,"ax",%progbits
+ 873              		.align	1
+ 874              		.global	get_test_object
+ 875              		.syntax unified
+ 876              		.thumb
+ 877              		.thumb_func
+ 878              		.fpu fpv4-sp-d16
+ 880              	get_test_object:
+ 881              	.LFB10:
+ 338:Src/communication/wakaama_client/objects/test_object.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 24
+
+
+ 339:Src/communication/wakaama_client/objects/test_object.c **** lwm2m_object_t * get_test_object(void)
+ 340:Src/communication/wakaama_client/objects/test_object.c **** {
+ 882              		.loc 1 340 0
+ 883              		.cfi_startproc
+ 884              		@ args = 0, pretend = 0, frame = 0
+ 885              		@ frame_needed = 0, uses_anonymous_args = 0
+ 886 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 887              	.LCFI17:
+ 888              		.cfi_def_cfa_offset 32
+ 889              		.cfi_offset 4, -32
+ 890              		.cfi_offset 5, -28
+ 891              		.cfi_offset 6, -24
+ 892              		.cfi_offset 7, -20
+ 893              		.cfi_offset 8, -16
+ 894              		.cfi_offset 9, -12
+ 895              		.cfi_offset 10, -8
+ 896              		.cfi_offset 14, -4
+ 341:Src/communication/wakaama_client/objects/test_object.c ****     lwm2m_object_t * testObj;
+ 342:Src/communication/wakaama_client/objects/test_object.c **** 
+ 343:Src/communication/wakaama_client/objects/test_object.c ****     testObj = (lwm2m_object_t *)lwm2m_malloc(sizeof(lwm2m_object_t));
+ 897              		.loc 1 343 0
+ 898 0004 2820     		movs	r0, #40
+ 899 0006 FFF7FEFF 		bl	lwm2m_malloc
+ 900              	.LVL88:
+ 344:Src/communication/wakaama_client/objects/test_object.c **** 
+ 345:Src/communication/wakaama_client/objects/test_object.c ****     if (NULL != testObj)
+ 901              		.loc 1 345 0
+ 902 000a 0646     		mov	r6, r0
+ 903 000c 0028     		cmp	r0, #0
+ 904 000e 46D0     		beq	.L87
+ 905              	.LBB8:
+ 346:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 347:Src/communication/wakaama_client/objects/test_object.c ****         int i;
+ 348:Src/communication/wakaama_client/objects/test_object.c ****         prv_instance_t * targetP;
+ 349:Src/communication/wakaama_client/objects/test_object.c **** 
+ 350:Src/communication/wakaama_client/objects/test_object.c ****         memset(testObj, 0, sizeof(lwm2m_object_t));
+ 906              		.loc 1 350 0
+ 907 0010 2822     		movs	r2, #40
+ 908 0012 0021     		movs	r1, #0
+ 909 0014 FFF7FEFF 		bl	memset
+ 910              	.LVL89:
+ 351:Src/communication/wakaama_client/objects/test_object.c **** 
+ 352:Src/communication/wakaama_client/objects/test_object.c ****         testObj->objID = 31024;
+ 911              		.loc 1 352 0
+ 912 0018 47F63013 		movw	r3, #31024
+ 913 001c B380     		strh	r3, [r6, #4]	@ movhi
+ 914              	.LVL90:
+ 353:Src/communication/wakaama_client/objects/test_object.c ****         for (i=0 ; i < 3 ; i++)
+ 915              		.loc 1 353 0
+ 916 001e 0025     		movs	r5, #0
+ 917              	.LVL91:
+ 918              	.L89:
+ 919              		.loc 1 353 0 is_stmt 0 discriminator 1
+ 920 0020 022D     		cmp	r5, #2
+ 921 0022 30DC     		bgt	.L93
+ 354:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 355:Src/communication/wakaama_client/objects/test_object.c ****             targetP = (prv_instance_t *)lwm2m_malloc(sizeof(prv_instance_t));
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 25
+
+
+ 922              		.loc 1 355 0 is_stmt 1
+ 923 0024 1820     		movs	r0, #24
+ 924 0026 FFF7FEFF 		bl	lwm2m_malloc
+ 925              	.LVL92:
+ 356:Src/communication/wakaama_client/objects/test_object.c ****             if (NULL == targetP) return NULL;
+ 926              		.loc 1 356 0
+ 927 002a 0446     		mov	r4, r0
+ 928 002c 0028     		cmp	r0, #0
+ 929 002e 39D0     		beq	.L91
+ 357:Src/communication/wakaama_client/objects/test_object.c ****             memset(targetP, 0, sizeof(prv_instance_t));
+ 930              		.loc 1 357 0 discriminator 2
+ 931 0030 0023     		movs	r3, #0
+ 932 0032 0360     		str	r3, [r0]	@ unaligned
+ 933 0034 4360     		str	r3, [r0, #4]	@ unaligned
+ 934 0036 8360     		str	r3, [r0, #8]	@ unaligned
+ 935 0038 C360     		str	r3, [r0, #12]	@ unaligned
+ 936 003a 0361     		str	r3, [r0, #16]	@ unaligned
+ 937 003c 4361     		str	r3, [r0, #20]	@ unaligned
+ 358:Src/communication/wakaama_client/objects/test_object.c ****             targetP->shortID = 10 + i;
+ 938              		.loc 1 358 0 discriminator 2
+ 939 003e AFB2     		uxth	r7, r5
+ 940 0040 07F10A03 		add	r3, r7, #10
+ 941 0044 8380     		strh	r3, [r0, #4]	@ movhi
+ 359:Src/communication/wakaama_client/objects/test_object.c ****             targetP->test    = 20 + i;
+ 942              		.loc 1 359 0 discriminator 2
+ 943 0046 05F11403 		add	r3, r5, #20
+ 944 004a 8371     		strb	r3, [r0, #6]
+ 360:Src/communication/wakaama_client/objects/test_object.c ****             targetP->dec     = -30 + i + (double)i/100.0;
+ 945              		.loc 1 360 0 discriminator 2
+ 946 004c A5F11E0A 		sub	r10, r5, #30
+ 947 0050 2846     		mov	r0, r5
+ 948              	.LVL93:
+ 949 0052 FFF7FEFF 		bl	__aeabi_i2d
+ 950              	.LVL94:
+ 951 0056 0022     		movs	r2, #0
+ 952 0058 134B     		ldr	r3, .L94
+ 953 005a FFF7FEFF 		bl	__aeabi_ddiv
+ 954              	.LVL95:
+ 955 005e 8046     		mov	r8, r0
+ 956 0060 8946     		mov	r9, r1
+ 957 0062 5046     		mov	r0, r10
+ 958 0064 FFF7FEFF 		bl	__aeabi_i2d
+ 959              	.LVL96:
+ 960 0068 4246     		mov	r2, r8
+ 961 006a 4B46     		mov	r3, r9
+ 962 006c FFF7FEFF 		bl	__aeabi_dadd
+ 963              	.LVL97:
+ 964 0070 C4E90201 		strd	r0, [r4, #8]
+ 361:Src/communication/wakaama_client/objects/test_object.c ****             targetP->sig     = 0 - i;
+ 965              		.loc 1 361 0 discriminator 2
+ 966 0074 7F42     		negs	r7, r7
+ 967 0076 2782     		strh	r7, [r4, #16]	@ movhi
+ 362:Src/communication/wakaama_client/objects/test_object.c ****             testObj->instanceList = LWM2M_LIST_ADD(testObj->instanceList, targetP);
+ 968              		.loc 1 362 0 discriminator 2
+ 969 0078 2146     		mov	r1, r4
+ 970 007a B068     		ldr	r0, [r6, #8]
+ 971 007c FFF7FEFF 		bl	lwm2m_list_add
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 26
+
+
+ 972              	.LVL98:
+ 973 0080 B060     		str	r0, [r6, #8]
+ 353:Src/communication/wakaama_client/objects/test_object.c ****         {
+ 974              		.loc 1 353 0 discriminator 2
+ 975 0082 0135     		adds	r5, r5, #1
+ 976              	.LVL99:
+ 977 0084 CCE7     		b	.L89
+ 978              	.LVL100:
+ 979              	.L93:
+ 363:Src/communication/wakaama_client/objects/test_object.c ****         }
+ 364:Src/communication/wakaama_client/objects/test_object.c ****         /*
+ 365:Src/communication/wakaama_client/objects/test_object.c ****          * From a single instance object, two more functions are available.
+ 366:Src/communication/wakaama_client/objects/test_object.c ****          * - The first one (createFunc) create a new instance and filled it with the provided infor
+ 367:Src/communication/wakaama_client/objects/test_object.c ****          *   provided a check is done for verifying his disponibility, or a new one is generated.
+ 368:Src/communication/wakaama_client/objects/test_object.c ****          * - The other one (deleteFunc) delete an instance by removing it from the instance list (a
+ 369:Src/communication/wakaama_client/objects/test_object.c ****          *   allocated to it)
+ 370:Src/communication/wakaama_client/objects/test_object.c ****          */
+ 371:Src/communication/wakaama_client/objects/test_object.c ****         testObj->readFunc = prv_read;
+ 980              		.loc 1 371 0
+ 981 0086 094B     		ldr	r3, .L94+4
+ 982 0088 F360     		str	r3, [r6, #12]
+ 372:Src/communication/wakaama_client/objects/test_object.c ****         testObj->writeFunc = prv_write;
+ 983              		.loc 1 372 0
+ 984 008a 094B     		ldr	r3, .L94+8
+ 985 008c 3361     		str	r3, [r6, #16]
+ 373:Src/communication/wakaama_client/objects/test_object.c ****         testObj->executeFunc = prv_exec;
+ 986              		.loc 1 373 0
+ 987 008e 094B     		ldr	r3, .L94+12
+ 988 0090 7361     		str	r3, [r6, #20]
+ 374:Src/communication/wakaama_client/objects/test_object.c ****         testObj->createFunc = prv_create;
+ 989              		.loc 1 374 0
+ 990 0092 094B     		ldr	r3, .L94+16
+ 991 0094 B361     		str	r3, [r6, #24]
+ 375:Src/communication/wakaama_client/objects/test_object.c ****         testObj->deleteFunc = prv_delete;
+ 992              		.loc 1 375 0
+ 993 0096 094B     		ldr	r3, .L94+20
+ 994 0098 F361     		str	r3, [r6, #28]
+ 376:Src/communication/wakaama_client/objects/test_object.c ****         testObj->discoverFunc = prv_discover;
+ 995              		.loc 1 376 0
+ 996 009a 094B     		ldr	r3, .L94+24
+ 997 009c 3362     		str	r3, [r6, #32]
+ 998              	.LVL101:
+ 999              	.L87:
+ 1000              	.LBE8:
+ 377:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 378:Src/communication/wakaama_client/objects/test_object.c **** 
+ 379:Src/communication/wakaama_client/objects/test_object.c ****     return testObj;
+ 380:Src/communication/wakaama_client/objects/test_object.c **** }
+ 1001              		.loc 1 380 0
+ 1002 009e 3046     		mov	r0, r6
+ 1003 00a0 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1004              	.LVL102:
+ 1005              	.L91:
+ 1006              	.LBB9:
+ 356:Src/communication/wakaama_client/objects/test_object.c ****             memset(targetP, 0, sizeof(prv_instance_t));
+ 1007              		.loc 1 356 0
+ 1008 00a4 0026     		movs	r6, #0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 27
+
+
+ 1009              	.LVL103:
+ 1010 00a6 FAE7     		b	.L87
+ 1011              	.L95:
+ 1012              		.align	2
+ 1013              	.L94:
+ 1014 00a8 00005940 		.word	1079574528
+ 1015 00ac 00000000 		.word	prv_read
+ 1016 00b0 00000000 		.word	prv_write
+ 1017 00b4 00000000 		.word	prv_exec
+ 1018 00b8 00000000 		.word	prv_create
+ 1019 00bc 00000000 		.word	prv_delete
+ 1020 00c0 00000000 		.word	prv_discover
+ 1021              	.LBE9:
+ 1022              		.cfi_endproc
+ 1023              	.LFE10:
+ 1025              		.section	.text.free_test_object,"ax",%progbits
+ 1026              		.align	1
+ 1027              		.global	free_test_object
+ 1028              		.syntax unified
+ 1029              		.thumb
+ 1030              		.thumb_func
+ 1031              		.fpu fpv4-sp-d16
+ 1033              	free_test_object:
+ 1034              	.LFB11:
+ 381:Src/communication/wakaama_client/objects/test_object.c **** 
+ 382:Src/communication/wakaama_client/objects/test_object.c **** void free_test_object(lwm2m_object_t * object)
+ 383:Src/communication/wakaama_client/objects/test_object.c **** {
+ 1035              		.loc 1 383 0
+ 1036              		.cfi_startproc
+ 1037              		@ args = 0, pretend = 0, frame = 0
+ 1038              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1039              	.LVL104:
+ 1040 0000 10B5     		push	{r4, lr}
+ 1041              	.LCFI18:
+ 1042              		.cfi_def_cfa_offset 8
+ 1043              		.cfi_offset 4, -8
+ 1044              		.cfi_offset 14, -4
+ 1045 0002 0446     		mov	r4, r0
+ 384:Src/communication/wakaama_client/objects/test_object.c ****     LWM2M_LIST_FREE(object->instanceList);
+ 1046              		.loc 1 384 0
+ 1047 0004 8068     		ldr	r0, [r0, #8]
+ 1048              	.LVL105:
+ 1049 0006 FFF7FEFF 		bl	lwm2m_list_free
+ 1050              	.LVL106:
+ 385:Src/communication/wakaama_client/objects/test_object.c ****     if (object->userData != NULL)
+ 1051              		.loc 1 385 0
+ 1052 000a 606A     		ldr	r0, [r4, #36]
+ 1053 000c 18B1     		cbz	r0, .L97
+ 386:Src/communication/wakaama_client/objects/test_object.c ****     {
+ 387:Src/communication/wakaama_client/objects/test_object.c ****         lwm2m_free(object->userData);
+ 1054              		.loc 1 387 0
+ 1055 000e FFF7FEFF 		bl	lwm2m_free
+ 1056              	.LVL107:
+ 388:Src/communication/wakaama_client/objects/test_object.c ****         object->userData = NULL;
+ 1057              		.loc 1 388 0
+ 1058 0012 0023     		movs	r3, #0
+ 1059 0014 6362     		str	r3, [r4, #36]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 28
+
+
+ 1060              	.L97:
+ 389:Src/communication/wakaama_client/objects/test_object.c ****     }
+ 390:Src/communication/wakaama_client/objects/test_object.c ****     lwm2m_free(object);
+ 1061              		.loc 1 390 0
+ 1062 0016 2046     		mov	r0, r4
+ 1063 0018 FFF7FEFF 		bl	lwm2m_free
+ 1064              	.LVL108:
+ 391:Src/communication/wakaama_client/objects/test_object.c **** }
+ 1065              		.loc 1 391 0
+ 1066 001c 10BD     		pop	{r4, pc}
+ 1067              		.cfi_endproc
+ 1068              	.LFE11:
+ 1070              		.section	.rodata.prv_exec.str1.4,"aMS",%progbits,1
+ 1071              		.align	2
+ 1072              	.LC5:
+ 1073 0000 0D0A2D2D 		.ascii	"\015\012-----------------\015\012Execute on %hu/%d/"
+ 1073      2D2D2D2D 
+ 1073      2D2D2D2D 
+ 1073      2D2D2D2D 
+ 1073      2D2D2D0D 
+ 1074 0027 25640D0A 		.ascii	"%d\015\012 Parameter (%d bytes):\015\012\000"
+ 1074      20506172 
+ 1074      616D6574 
+ 1074      65722028 
+ 1074      25642062 
+ 1075              	.LC6:
+ 1076 0044 2D2D2D2D 		.ascii	"-----------------\015\012\015\012\000"
+ 1076      2D2D2D2D 
+ 1076      2D2D2D2D 
+ 1076      2D2D2D2D 
+ 1076      2D0D0A0D 
+ 1077              		.section	.rodata.prv_output_buffer.str1.4,"aMS",%progbits,1
+ 1078              		.align	2
+ 1079              	.LC0:
+ 1080 0000 202000   		.ascii	"  \000"
+ 1081 0003 00       		.space	1
+ 1082              	.LC1:
+ 1083 0004 25303258 		.ascii	"%02X \000"
+ 1083      2000
+ 1084 000a 0000     		.space	2
+ 1085              	.LC2:
+ 1086 000c 20202000 		.ascii	"   \000"
+ 1087              	.LC3:
+ 1088 0010 25632000 		.ascii	"%c \000"
+ 1089              	.LC4:
+ 1090 0014 2E2000   		.ascii	". \000"
+ 1091              		.text
+ 1092              	.Letext0:
+ 1093              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 1094              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1095              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 1096              		.file 5 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1097              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1098              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1099              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 1100              		.file 9 "Middlewares/Third_Party/wakaama/liblwm2m.h"
+ 1101              		.file 10 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 29
+
+
+ 1102              		.file 11 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/ctype.h"
+ 1103              		.file 12 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 1104              		.file 13 "<built-in>"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s 			page 30
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 test_object.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:18     .text.prv_discover:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:24     .text.prv_discover:0000000000000000 prv_discover
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:114    .text.prv_delete:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:120    .text.prv_delete:0000000000000000 prv_delete
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:172    .text.prv_output_buffer:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:178    .text.prv_output_buffer:0000000000000000 prv_output_buffer
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:349    .text.prv_output_buffer:00000000000000d0 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:359    .text.prv_exec:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:365    .text.prv_exec:0000000000000000 prv_exec
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:456    .text.prv_exec:000000000000006c $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:463    .text.prv_write:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:469    .text.prv_write:0000000000000000 prv_write
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:572    .text.prv_write:000000000000006c $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:576    .text.prv_write:000000000000007c $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:629    .text.prv_write:00000000000000bc $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:634    .text.prv_create:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:640    .text.prv_create:0000000000000000 prv_create
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:721    .text.prv_read:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:727    .text.prv_read:0000000000000000 prv_read
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:825    .text.prv_read:0000000000000068 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:829    .text.prv_read:0000000000000078 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:873    .text.get_test_object:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:880    .text.get_test_object:0000000000000000 get_test_object
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:1014   .text.get_test_object:00000000000000a8 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:1026   .text.free_test_object:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:1033   .text.free_test_object:0000000000000000 free_test_object
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:1071   .rodata.prv_exec.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccmFRyFk.s:1078   .rodata.prv_output_buffer.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+lwm2m_data_new
+lwm2m_list_remove
+lwm2m_free
+fprintf
+fwrite
+__locale_ctype_ptr
+fputc
+_impure_ptr
+lwm2m_list_find
+lwm2m_data_decode_int
+lwm2m_data_decode_float
+lwm2m_malloc
+lwm2m_list_add
+lwm2m_data_encode_int
+lwm2m_data_encode_float
+__aeabi_i2d
+__aeabi_ddiv
+__aeabi_dadd
+memset
+lwm2m_list_free

@@ -1,0 +1,995 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"cortexm.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.cortexm_read_word,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	cortexm_read_word:
+  25              	.LFB131:
+  26              		.file 1 "Src/cortexm/cortexm.c"
+   1:Src/cortexm/cortexm.c **** /*
+   2:Src/cortexm/cortexm.c ****  * This file is part of the Black Magic Debug project.
+   3:Src/cortexm/cortexm.c ****  *
+   4:Src/cortexm/cortexm.c ****  * Copyright (C) 2011  Black Sphere Technologies Ltd.
+   5:Src/cortexm/cortexm.c ****  * Written by Gareth McMullin <gareth@blacksphere.co.nz>
+   6:Src/cortexm/cortexm.c ****  *
+   7:Src/cortexm/cortexm.c ****  * Copyright (C) 2018  Tomasz Michalec <tomasz.michalec1996@gmail.com>
+   8:Src/cortexm/cortexm.c ****  *
+   9:Src/cortexm/cortexm.c ****  * This program is free software: you can redistribute it and/or modify
+  10:Src/cortexm/cortexm.c ****  * it under the terms of the GNU General Public License as published by
+  11:Src/cortexm/cortexm.c ****  * the Free Software Foundation, either version 3 of the License, or
+  12:Src/cortexm/cortexm.c ****  * (at your option) any later version.
+  13:Src/cortexm/cortexm.c ****  *
+  14:Src/cortexm/cortexm.c ****  * This program is distributed in the hope that it will be useful,
+  15:Src/cortexm/cortexm.c ****  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  16:Src/cortexm/cortexm.c ****  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  17:Src/cortexm/cortexm.c ****  * GNU General Public License for more details.
+  18:Src/cortexm/cortexm.c ****  *
+  19:Src/cortexm/cortexm.c ****  * You should have received a copy of the GNU General Public License
+  20:Src/cortexm/cortexm.c ****  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  21:Src/cortexm/cortexm.c ****  */
+  22:Src/cortexm/cortexm.c **** 
+  23:Src/cortexm/cortexm.c **** /*
+  24:Src/cortexm/cortexm.c ****  * What has been modified by Tomasz Michalec:
+  25:Src/cortexm/cortexm.c ****  *   -- Fucntions use new API defined in this project
+  26:Src/cortexm/cortexm.c ****  *   -- Use FreeRTOS memory management
+  27:Src/cortexm/cortexm.c ****  *   -- Leave only necessery minimum of functionality needed by RemoteProgrammer
+  28:Src/cortexm/cortexm.c ****  */
+  29:Src/cortexm/cortexm.c **** 
+  30:Src/cortexm/cortexm.c **** #include "stm32f4xx_it.h"
+  31:Src/cortexm/cortexm.c **** #include "cmsis_os.h"
+  32:Src/cortexm/cortexm.c **** #include "adiv5/adiv5.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 2
+
+
+  33:Src/cortexm/cortexm.c **** #include "cortexm/cortexm.h"
+  34:Src/cortexm/cortexm.c **** #include "cortexm/stm32/stm32f4.h"
+  35:Src/cortexm/cortexm.c **** #include "cortexm/stm32/stm32l4.h"
+  36:Src/cortexm/cortexm.c **** 
+  37:Src/cortexm/cortexm.c **** inline static uint32_t cortexm_read_word(CORTEXM_PRIV_t *priv, uint32_t addr)
+  38:Src/cortexm/cortexm.c **** {
+  27              		.loc 1 38 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  39:Src/cortexm/cortexm.c ****   return priv->ap->ops->mem_read_word(priv->ap->priv, addr);
+  37              		.loc 1 39 0
+  38 0002 0368     		ldr	r3, [r0]
+  39 0004 1A68     		ldr	r2, [r3]
+  40 0006 1268     		ldr	r2, [r2]
+  41 0008 5868     		ldr	r0, [r3, #4]
+  42              	.LVL1:
+  43 000a 9047     		blx	r2
+  44              	.LVL2:
+  40:Src/cortexm/cortexm.c **** }
+  45              		.loc 1 40 0
+  46 000c 08BD     		pop	{r3, pc}
+  47              		.cfi_endproc
+  48              	.LFE131:
+  50              		.section	.text.cortexm_write_word,"ax",%progbits
+  51              		.align	1
+  52              		.syntax unified
+  53              		.thumb
+  54              		.thumb_func
+  55              		.fpu fpv4-sp-d16
+  57              	cortexm_write_word:
+  58              	.LFB132:
+  41:Src/cortexm/cortexm.c **** 
+  42:Src/cortexm/cortexm.c **** inline static void cortexm_write_word(CORTEXM_PRIV_t *priv, uint32_t addr, uint32_t value)
+  43:Src/cortexm/cortexm.c **** {
+  59              		.loc 1 43 0
+  60              		.cfi_startproc
+  61              		@ args = 0, pretend = 0, frame = 0
+  62              		@ frame_needed = 0, uses_anonymous_args = 0
+  63              	.LVL3:
+  64 0000 10B5     		push	{r4, lr}
+  65              	.LCFI1:
+  66              		.cfi_def_cfa_offset 8
+  67              		.cfi_offset 4, -8
+  68              		.cfi_offset 14, -4
+  44:Src/cortexm/cortexm.c ****   priv->ap->ops->mem_write_word(priv->ap->priv, addr, value);
+  69              		.loc 1 44 0
+  70 0002 0368     		ldr	r3, [r0]
+  71 0004 1868     		ldr	r0, [r3]
+  72              	.LVL4:
+  73 0006 4468     		ldr	r4, [r0, #4]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 3
+
+
+  74 0008 5868     		ldr	r0, [r3, #4]
+  75 000a A047     		blx	r4
+  76              	.LVL5:
+  45:Src/cortexm/cortexm.c **** }
+  77              		.loc 1 45 0
+  78 000c 10BD     		pop	{r4, pc}
+  79              		.cfi_endproc
+  80              	.LFE132:
+  82              		.section	.text.cortexm_read_words,"ax",%progbits
+  83              		.align	1
+  84              		.syntax unified
+  85              		.thumb
+  86              		.thumb_func
+  87              		.fpu fpv4-sp-d16
+  89              	cortexm_read_words:
+  90              	.LFB133:
+  46:Src/cortexm/cortexm.c **** 
+  47:Src/cortexm/cortexm.c **** static uint32_t cortexm_read_words(CORTEXM_PRIV_t *priv, uint32_t *dest, uint32_t src, uint32_t len
+  91              		.loc 1 47 0
+  92              		.cfi_startproc
+  93              		@ args = 0, pretend = 0, frame = 0
+  94              		@ frame_needed = 0, uses_anonymous_args = 0
+  95              	.LVL6:
+  96 0000 10B5     		push	{r4, lr}
+  97              	.LCFI2:
+  98              		.cfi_def_cfa_offset 8
+  99              		.cfi_offset 4, -8
+ 100              		.cfi_offset 14, -4
+  48:Src/cortexm/cortexm.c ****   return priv->ap->ops->mem_read_words(priv->ap->priv, dest, src, len);
+ 101              		.loc 1 48 0
+ 102 0002 0068     		ldr	r0, [r0]
+ 103              	.LVL7:
+ 104 0004 0468     		ldr	r4, [r0]
+ 105 0006 A468     		ldr	r4, [r4, #8]
+ 106 0008 4068     		ldr	r0, [r0, #4]
+ 107 000a A047     		blx	r4
+ 108              	.LVL8:
+  49:Src/cortexm/cortexm.c **** }
+ 109              		.loc 1 49 0
+ 110 000c 10BD     		pop	{r4, pc}
+ 111              		.cfi_endproc
+ 112              	.LFE133:
+ 114              		.section	.text.cortexm_write_words,"ax",%progbits
+ 115              		.align	1
+ 116              		.syntax unified
+ 117              		.thumb
+ 118              		.thumb_func
+ 119              		.fpu fpv4-sp-d16
+ 121              	cortexm_write_words:
+ 122              	.LFB134:
+  50:Src/cortexm/cortexm.c **** 
+  51:Src/cortexm/cortexm.c **** static uint32_t cortexm_write_words(CORTEXM_PRIV_t *priv, uint32_t dest, const uint32_t *src, uint3
+ 123              		.loc 1 51 0
+ 124              		.cfi_startproc
+ 125              		@ args = 0, pretend = 0, frame = 0
+ 126              		@ frame_needed = 0, uses_anonymous_args = 0
+ 127              	.LVL9:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 4
+
+
+ 128 0000 10B5     		push	{r4, lr}
+ 129              	.LCFI3:
+ 130              		.cfi_def_cfa_offset 8
+ 131              		.cfi_offset 4, -8
+ 132              		.cfi_offset 14, -4
+  52:Src/cortexm/cortexm.c ****   return priv->ap->ops->mem_write_words(priv->ap->priv, dest, src, len);
+ 133              		.loc 1 52 0
+ 134 0002 0068     		ldr	r0, [r0]
+ 135              	.LVL10:
+ 136 0004 0468     		ldr	r4, [r0]
+ 137 0006 E468     		ldr	r4, [r4, #12]
+ 138 0008 4068     		ldr	r0, [r0, #4]
+ 139 000a A047     		blx	r4
+ 140              	.LVL11:
+  53:Src/cortexm/cortexm.c **** }
+ 141              		.loc 1 53 0
+ 142 000c 10BD     		pop	{r4, pc}
+ 143              		.cfi_endproc
+ 144              	.LFE134:
+ 146              		.section	.text.cortexm_pc_read,"ax",%progbits
+ 147              		.align	1
+ 148              		.syntax unified
+ 149              		.thumb
+ 150              		.thumb_func
+ 151              		.fpu fpv4-sp-d16
+ 153              	cortexm_pc_read:
+ 154              	.LFB135:
+  54:Src/cortexm/cortexm.c **** 
+  55:Src/cortexm/cortexm.c **** static uint32_t cortexm_pc_read(CORTEXM_PRIV_t *priv)
+  56:Src/cortexm/cortexm.c **** {
+ 155              		.loc 1 56 0
+ 156              		.cfi_startproc
+ 157              		@ args = 0, pretend = 0, frame = 0
+ 158              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159              	.LVL12:
+ 160 0000 38B5     		push	{r3, r4, r5, lr}
+ 161              	.LCFI4:
+ 162              		.cfi_def_cfa_offset 16
+ 163              		.cfi_offset 3, -16
+ 164              		.cfi_offset 4, -12
+ 165              		.cfi_offset 5, -8
+ 166              		.cfi_offset 14, -4
+ 167 0002 0446     		mov	r4, r0
+ 168              	.LVL13:
+ 169              	.LBB28:
+ 170              	.LBB29:
+  44:Src/cortexm/cortexm.c **** }
+ 171              		.loc 1 44 0
+ 172 0004 0368     		ldr	r3, [r0]
+ 173 0006 1A68     		ldr	r2, [r3]
+ 174 0008 5568     		ldr	r5, [r2, #4]
+ 175 000a 0F22     		movs	r2, #15
+ 176 000c 0449     		ldr	r1, .L11
+ 177 000e 5868     		ldr	r0, [r3, #4]
+ 178              	.LVL14:
+ 179 0010 A847     		blx	r5
+ 180              	.LVL15:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 5
+
+
+ 181              	.LBE29:
+ 182              	.LBE28:
+ 183              	.LBB30:
+ 184              	.LBB31:
+  39:Src/cortexm/cortexm.c **** }
+ 185              		.loc 1 39 0
+ 186 0012 2368     		ldr	r3, [r4]
+ 187 0014 1A68     		ldr	r2, [r3]
+ 188 0016 1268     		ldr	r2, [r2]
+ 189 0018 0249     		ldr	r1, .L11+4
+ 190 001a 5868     		ldr	r0, [r3, #4]
+ 191 001c 9047     		blx	r2
+ 192              	.LVL16:
+ 193              	.LBE31:
+ 194              	.LBE30:
+  57:Src/cortexm/cortexm.c ****   cortexm_write_word(priv, CORTEXM_DCRSR, 0x0F);
+  58:Src/cortexm/cortexm.c ****   return cortexm_read_word(priv, CORTEXM_DCRDR);
+  59:Src/cortexm/cortexm.c **** }
+ 195              		.loc 1 59 0
+ 196 001e 38BD     		pop	{r3, r4, r5, pc}
+ 197              	.LVL17:
+ 198              	.L12:
+ 199              		.align	2
+ 200              	.L11:
+ 201 0020 F4ED00E0 		.word	-536809996
+ 202 0024 F8ED00E0 		.word	-536809992
+ 203              		.cfi_endproc
+ 204              	.LFE135:
+ 206              		.section	.text.cortexm_pc_write,"ax",%progbits
+ 207              		.align	1
+ 208              		.syntax unified
+ 209              		.thumb
+ 210              		.thumb_func
+ 211              		.fpu fpv4-sp-d16
+ 213              	cortexm_pc_write:
+ 214              	.LFB136:
+  60:Src/cortexm/cortexm.c **** 
+  61:Src/cortexm/cortexm.c **** static void cortexm_pc_write(CORTEXM_PRIV_t *priv, uint32_t val)
+  62:Src/cortexm/cortexm.c **** {
+ 215              		.loc 1 62 0
+ 216              		.cfi_startproc
+ 217              		@ args = 0, pretend = 0, frame = 0
+ 218              		@ frame_needed = 0, uses_anonymous_args = 0
+ 219              	.LVL18:
+ 220 0000 38B5     		push	{r3, r4, r5, lr}
+ 221              	.LCFI5:
+ 222              		.cfi_def_cfa_offset 16
+ 223              		.cfi_offset 3, -16
+ 224              		.cfi_offset 4, -12
+ 225              		.cfi_offset 5, -8
+ 226              		.cfi_offset 14, -4
+ 227 0002 0446     		mov	r4, r0
+ 228              	.LVL19:
+ 229              	.LBB32:
+ 230              	.LBB33:
+  44:Src/cortexm/cortexm.c **** }
+ 231              		.loc 1 44 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 6
+
+
+ 232 0004 0368     		ldr	r3, [r0]
+ 233 0006 1A68     		ldr	r2, [r3]
+ 234 0008 5568     		ldr	r5, [r2, #4]
+ 235 000a 0A46     		mov	r2, r1
+ 236 000c 0549     		ldr	r1, .L15
+ 237              	.LVL20:
+ 238 000e 5868     		ldr	r0, [r3, #4]
+ 239              	.LVL21:
+ 240 0010 A847     		blx	r5
+ 241              	.LVL22:
+ 242              	.LBE33:
+ 243              	.LBE32:
+ 244              	.LBB34:
+ 245              	.LBB35:
+ 246 0012 2368     		ldr	r3, [r4]
+ 247 0014 1A68     		ldr	r2, [r3]
+ 248 0016 5468     		ldr	r4, [r2, #4]
+ 249              	.LVL23:
+ 250 0018 034A     		ldr	r2, .L15+4
+ 251 001a 0449     		ldr	r1, .L15+8
+ 252 001c 5868     		ldr	r0, [r3, #4]
+ 253 001e A047     		blx	r4
+ 254              	.LVL24:
+ 255              	.LBE35:
+ 256              	.LBE34:
+  63:Src/cortexm/cortexm.c ****   cortexm_write_word(priv, CORTEXM_DCRDR, val);
+  64:Src/cortexm/cortexm.c ****   cortexm_write_word(priv, CORTEXM_DCRSR, CORTEXM_DCRSR_REGWnR | 0x0F);
+  65:Src/cortexm/cortexm.c **** }
+ 257              		.loc 1 65 0
+ 258 0020 38BD     		pop	{r3, r4, r5, pc}
+ 259              	.L16:
+ 260 0022 00BF     		.align	2
+ 261              	.L15:
+ 262 0024 F8ED00E0 		.word	-536809992
+ 263 0028 0F000100 		.word	65551
+ 264 002c F4ED00E0 		.word	-536809996
+ 265              		.cfi_endproc
+ 266              	.LFE136:
+ 268              		.section	.text.cortexm_halt_request,"ax",%progbits
+ 269              		.align	1
+ 270              		.syntax unified
+ 271              		.thumb
+ 272              		.thumb_func
+ 273              		.fpu fpv4-sp-d16
+ 275              	cortexm_halt_request:
+ 276              	.LFB137:
+  66:Src/cortexm/cortexm.c **** 
+  67:Src/cortexm/cortexm.c **** static void cortexm_halt_request(CORTEXM_PRIV_t *priv)
+  68:Src/cortexm/cortexm.c **** {
+ 277              		.loc 1 68 0
+ 278              		.cfi_startproc
+ 279              		@ args = 0, pretend = 0, frame = 0
+ 280              		@ frame_needed = 0, uses_anonymous_args = 0
+ 281              	.LVL25:
+ 282 0000 10B5     		push	{r4, lr}
+ 283              	.LCFI6:
+ 284              		.cfi_def_cfa_offset 8
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 7
+
+
+ 285              		.cfi_offset 4, -8
+ 286              		.cfi_offset 14, -4
+ 287              	.LVL26:
+ 288              	.LBB36:
+ 289              	.LBB37:
+  44:Src/cortexm/cortexm.c **** }
+ 290              		.loc 1 44 0
+ 291 0002 0368     		ldr	r3, [r0]
+ 292 0004 1A68     		ldr	r2, [r3]
+ 293 0006 5468     		ldr	r4, [r2, #4]
+ 294 0008 024A     		ldr	r2, .L19
+ 295 000a 0349     		ldr	r1, .L19+4
+ 296 000c 5868     		ldr	r0, [r3, #4]
+ 297              	.LVL27:
+ 298 000e A047     		blx	r4
+ 299              	.LVL28:
+ 300              	.LBE37:
+ 301              	.LBE36:
+  69:Src/cortexm/cortexm.c ****   //allow_timeout == false
+  70:Src/cortexm/cortexm.c ****   cortexm_write_word(priv, CORTEXM_DHCSR, CORTEXM_DHCSR_DBGKEY | CORTEXM_DHCSR_C_HALT | CORTEXM_DHC
+  71:Src/cortexm/cortexm.c **** }
+ 302              		.loc 1 71 0
+ 303 0010 10BD     		pop	{r4, pc}
+ 304              	.L20:
+ 305 0012 00BF     		.align	2
+ 306              	.L19:
+ 307 0014 03005FA0 		.word	-1604386813
+ 308 0018 F0ED00E0 		.word	-536810000
+ 309              		.cfi_endproc
+ 310              	.LFE137:
+ 312              		.section	.text.cortexm_halt_wait,"ax",%progbits
+ 313              		.align	1
+ 314              		.syntax unified
+ 315              		.thumb
+ 316              		.thumb_func
+ 317              		.fpu fpv4-sp-d16
+ 319              	cortexm_halt_wait:
+ 320              	.LFB138:
+  72:Src/cortexm/cortexm.c **** 
+  73:Src/cortexm/cortexm.c **** static uint32_t cortexm_halt_wait(CORTEXM_PRIV_t *priv)
+  74:Src/cortexm/cortexm.c **** {
+ 321              		.loc 1 74 0
+ 322              		.cfi_startproc
+ 323              		@ args = 0, pretend = 0, frame = 0
+ 324              		@ frame_needed = 0, uses_anonymous_args = 0
+ 325              	.LVL29:
+ 326 0000 70B5     		push	{r4, r5, r6, lr}
+ 327              	.LCFI7:
+ 328              		.cfi_def_cfa_offset 16
+ 329              		.cfi_offset 4, -16
+ 330              		.cfi_offset 5, -12
+ 331              		.cfi_offset 6, -8
+ 332              		.cfi_offset 14, -4
+ 333 0002 0446     		mov	r4, r0
+ 334              	.LVL30:
+ 335              	.LBB38:
+ 336              	.LBB39:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 8
+
+
+  39:Src/cortexm/cortexm.c **** }
+ 337              		.loc 1 39 0
+ 338 0004 0368     		ldr	r3, [r0]
+ 339 0006 1A68     		ldr	r2, [r3]
+ 340 0008 1268     		ldr	r2, [r2]
+ 341 000a 0F49     		ldr	r1, .L26
+ 342 000c 5868     		ldr	r0, [r3, #4]
+ 343              	.LVL31:
+ 344 000e 9047     		blx	r2
+ 345              	.LVL32:
+ 346              	.LBE39:
+ 347              	.LBE38:
+  75:Src/cortexm/cortexm.c ****   uint32_t dfsr;
+  76:Src/cortexm/cortexm.c **** 
+  77:Src/cortexm/cortexm.c ****   if(!(cortexm_read_word(priv, CORTEXM_DHCSR) & CORTEXM_DHCSR_S_HALT)) {
+ 348              		.loc 1 77 0
+ 349 0010 10F4003F 		tst	r0, #131072
+ 350 0014 13D0     		beq	.L23
+ 351              	.LVL33:
+ 352              	.LBB40:
+ 353              	.LBB41:
+  39:Src/cortexm/cortexm.c **** }
+ 354              		.loc 1 39 0
+ 355 0016 2368     		ldr	r3, [r4]
+ 356 0018 1A68     		ldr	r2, [r3]
+ 357 001a 1268     		ldr	r2, [r2]
+ 358 001c 0B4E     		ldr	r6, .L26+4
+ 359 001e 3146     		mov	r1, r6
+ 360 0020 5868     		ldr	r0, [r3, #4]
+ 361 0022 9047     		blx	r2
+ 362              	.LVL34:
+ 363 0024 0546     		mov	r5, r0
+ 364              	.LVL35:
+ 365              	.LBE41:
+ 366              	.LBE40:
+ 367              	.LBB42:
+ 368              	.LBB43:
+  44:Src/cortexm/cortexm.c **** }
+ 369              		.loc 1 44 0
+ 370 0026 2368     		ldr	r3, [r4]
+ 371 0028 1A68     		ldr	r2, [r3]
+ 372 002a 5468     		ldr	r4, [r2, #4]
+ 373              	.LVL36:
+ 374 002c 0246     		mov	r2, r0
+ 375 002e 3146     		mov	r1, r6
+ 376 0030 5868     		ldr	r0, [r3, #4]
+ 377 0032 A047     		blx	r4
+ 378              	.LVL37:
+ 379              	.LBE43:
+ 380              	.LBE42:
+  78:Src/cortexm/cortexm.c ****     return 0;
+  79:Src/cortexm/cortexm.c ****   }
+  80:Src/cortexm/cortexm.c **** 
+  81:Src/cortexm/cortexm.c ****   //allow_timeout == false
+  82:Src/cortexm/cortexm.c **** 
+  83:Src/cortexm/cortexm.c ****   // TODO: We need that???
+  84:Src/cortexm/cortexm.c ****   /* We've halted.  Let's find out why. */
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 9
+
+
+  85:Src/cortexm/cortexm.c ****   dfsr = cortexm_read_word(priv, CORTEXM_DFSR);
+  86:Src/cortexm/cortexm.c ****   /* write back to reset */
+  87:Src/cortexm/cortexm.c ****   cortexm_write_word(priv, CORTEXM_DFSR, dfsr);
+  88:Src/cortexm/cortexm.c **** 
+  89:Src/cortexm/cortexm.c ****   if ((dfsr & CORTEXM_DFSR_VCATCH) ) {//&& cortexm_fault_unwind(target)) {
+ 381              		.loc 1 89 0
+ 382 0034 15F0080F 		tst	r5, #8
+ 383 0038 03D0     		beq	.L24
+  90:Src/cortexm/cortexm.c ****     return SIGSEGV;
+ 384              		.loc 1 90 0
+ 385 003a 0B20     		movs	r0, #11
+ 386              	.L21:
+  91:Src/cortexm/cortexm.c ****   }
+  92:Src/cortexm/cortexm.c **** 
+  93:Src/cortexm/cortexm.c ****   return SIGTRAP;
+  94:Src/cortexm/cortexm.c **** }
+ 387              		.loc 1 94 0
+ 388 003c 70BD     		pop	{r4, r5, r6, pc}
+ 389              	.LVL38:
+ 390              	.L23:
+  78:Src/cortexm/cortexm.c ****   }
+ 391              		.loc 1 78 0
+ 392 003e 0020     		movs	r0, #0
+ 393 0040 FCE7     		b	.L21
+ 394              	.LVL39:
+ 395              	.L24:
+  93:Src/cortexm/cortexm.c **** }
+ 396              		.loc 1 93 0
+ 397 0042 0520     		movs	r0, #5
+ 398 0044 FAE7     		b	.L21
+ 399              	.L27:
+ 400 0046 00BF     		.align	2
+ 401              	.L26:
+ 402 0048 F0ED00E0 		.word	-536810000
+ 403 004c 30ED00E0 		.word	-536810192
+ 404              		.cfi_endproc
+ 405              	.LFE138:
+ 407              		.section	.text.cortexm_halt_resume,"ax",%progbits
+ 408              		.align	1
+ 409              		.syntax unified
+ 410              		.thumb
+ 411              		.thumb_func
+ 412              		.fpu fpv4-sp-d16
+ 414              	cortexm_halt_resume:
+ 415              	.LFB139:
+  95:Src/cortexm/cortexm.c **** 
+  96:Src/cortexm/cortexm.c **** static void cortexm_halt_resume(CORTEXM_PRIV_t *priv)
+  97:Src/cortexm/cortexm.c **** {
+ 416              		.loc 1 97 0
+ 417              		.cfi_startproc
+ 418              		@ args = 0, pretend = 0, frame = 0
+ 419              		@ frame_needed = 0, uses_anonymous_args = 0
+ 420              	.LVL40:
+ 421 0000 10B5     		push	{r4, lr}
+ 422              	.LCFI8:
+ 423              		.cfi_def_cfa_offset 8
+ 424              		.cfi_offset 4, -8
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 10
+
+
+ 425              		.cfi_offset 14, -4
+ 426              	.LVL41:
+ 427              	.LBB44:
+ 428              	.LBB45:
+  44:Src/cortexm/cortexm.c **** }
+ 429              		.loc 1 44 0
+ 430 0002 0368     		ldr	r3, [r0]
+ 431 0004 1A68     		ldr	r2, [r3]
+ 432 0006 5468     		ldr	r4, [r2, #4]
+ 433 0008 024A     		ldr	r2, .L30
+ 434 000a 0349     		ldr	r1, .L30+4
+ 435 000c 5868     		ldr	r0, [r3, #4]
+ 436              	.LVL42:
+ 437 000e A047     		blx	r4
+ 438              	.LVL43:
+ 439              	.LBE45:
+ 440              	.LBE44:
+  98:Src/cortexm/cortexm.c ****   uint32_t dhcsr;
+  99:Src/cortexm/cortexm.c **** 
+ 100:Src/cortexm/cortexm.c ****   dhcsr = CORTEXM_DHCSR_DBGKEY | CORTEXM_DHCSR_C_DEBUGEN;
+ 101:Src/cortexm/cortexm.c ****   cortexm_write_word(priv, CORTEXM_DHCSR, dhcsr);
+ 102:Src/cortexm/cortexm.c ****   //allow_timeout == true
+ 103:Src/cortexm/cortexm.c **** }
+ 441              		.loc 1 103 0
+ 442 0010 10BD     		pop	{r4, pc}
+ 443              	.L31:
+ 444 0012 00BF     		.align	2
+ 445              	.L30:
+ 446 0014 01005FA0 		.word	-1604386815
+ 447 0018 F0ED00E0 		.word	-536810000
+ 448              		.cfi_endproc
+ 449              	.LFE139:
+ 451              		.section	.text.cortexm_reset,"ax",%progbits
+ 452              		.align	1
+ 453              		.syntax unified
+ 454              		.thumb
+ 455              		.thumb_func
+ 456              		.fpu fpv4-sp-d16
+ 458              	cortexm_reset:
+ 459              	.LFB140:
+ 104:Src/cortexm/cortexm.c **** 
+ 105:Src/cortexm/cortexm.c **** static void cortexm_reset(CORTEXM_PRIV_t *priv)
+ 106:Src/cortexm/cortexm.c **** {
+ 460              		.loc 1 106 0
+ 461              		.cfi_startproc
+ 462              		@ args = 0, pretend = 0, frame = 0
+ 463              		@ frame_needed = 0, uses_anonymous_args = 0
+ 464              	.LVL44:
+ 465 0000 38B5     		push	{r3, r4, r5, lr}
+ 466              	.LCFI9:
+ 467              		.cfi_def_cfa_offset 16
+ 468              		.cfi_offset 3, -16
+ 469              		.cfi_offset 4, -12
+ 470              		.cfi_offset 5, -8
+ 471              		.cfi_offset 14, -4
+ 472 0002 0446     		mov	r4, r0
+ 473              	.LVL45:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 11
+
+
+ 474              	.LBB46:
+ 475              	.LBB47:
+  39:Src/cortexm/cortexm.c **** }
+ 476              		.loc 1 39 0
+ 477 0004 0368     		ldr	r3, [r0]
+ 478 0006 1A68     		ldr	r2, [r3]
+ 479 0008 1268     		ldr	r2, [r2]
+ 480 000a 0D49     		ldr	r1, .L35
+ 481 000c 5868     		ldr	r0, [r3, #4]
+ 482              	.LVL46:
+ 483 000e 9047     		blx	r2
+ 484              	.LVL47:
+ 485              	.LBE47:
+ 486              	.LBE46:
+ 487              	.LBB48:
+ 488              	.LBB49:
+  44:Src/cortexm/cortexm.c **** }
+ 489              		.loc 1 44 0
+ 490 0010 2368     		ldr	r3, [r4]
+ 491 0012 1A68     		ldr	r2, [r3]
+ 492 0014 5568     		ldr	r5, [r2, #4]
+ 493 0016 0B4A     		ldr	r2, .L35+4
+ 494 0018 0B49     		ldr	r1, .L35+8
+ 495 001a 5868     		ldr	r0, [r3, #4]
+ 496 001c A847     		blx	r5
+ 497              	.LVL48:
+ 498              	.L33:
+ 499              	.LBE49:
+ 500              	.LBE48:
+ 501              	.LBB50:
+ 502              	.LBB51:
+  39:Src/cortexm/cortexm.c **** }
+ 503              		.loc 1 39 0 discriminator 1
+ 504 001e 2368     		ldr	r3, [r4]
+ 505 0020 1A68     		ldr	r2, [r3]
+ 506 0022 1268     		ldr	r2, [r2]
+ 507 0024 0649     		ldr	r1, .L35
+ 508 0026 5868     		ldr	r0, [r3, #4]
+ 509 0028 9047     		blx	r2
+ 510              	.LVL49:
+ 511              	.LBE51:
+ 512              	.LBE50:
+ 107:Src/cortexm/cortexm.c ****   /* Read DHCSR here to clear S_RESET_ST bit before reset */
+ 108:Src/cortexm/cortexm.c ****   cortexm_read_word(priv, CORTEXM_DHCSR);
+ 109:Src/cortexm/cortexm.c **** 
+ 110:Src/cortexm/cortexm.c ****   /* Request system reset from NVIC: SRST doesn't work correctly */
+ 111:Src/cortexm/cortexm.c ****   /* This could be VECTRESET: 0x05FA0001 (reset only core)
+ 112:Src/cortexm/cortexm.c ****    *          or SYSRESETREQ: 0x05FA0004 (system reset)
+ 113:Src/cortexm/cortexm.c ****    */
+ 114:Src/cortexm/cortexm.c ****   cortexm_write_word(priv, CORTEXM_AIRCR, CORTEXM_AIRCR_VECTKEY | CORTEXM_AIRCR_SYSRESETREQ);
+ 115:Src/cortexm/cortexm.c **** 
+ 116:Src/cortexm/cortexm.c ****   /* Poll for release from reset */
+ 117:Src/cortexm/cortexm.c ****   while(cortexm_read_word(priv, CORTEXM_DHCSR) & CORTEXM_DHCSR_S_RESET_ST);
+ 513              		.loc 1 117 0 discriminator 1
+ 514 002a 10F0007F 		tst	r0, #33554432
+ 515 002e F6D1     		bne	.L33
+ 516              	.LVL50:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 12
+
+
+ 517              	.LBB52:
+ 518              	.LBB53:
+  44:Src/cortexm/cortexm.c **** }
+ 519              		.loc 1 44 0
+ 520 0030 2368     		ldr	r3, [r4]
+ 521 0032 1A68     		ldr	r2, [r3]
+ 522 0034 5468     		ldr	r4, [r2, #4]
+ 523              	.LVL51:
+ 524 0036 1F22     		movs	r2, #31
+ 525 0038 0449     		ldr	r1, .L35+12
+ 526 003a 5868     		ldr	r0, [r3, #4]
+ 527 003c A047     		blx	r4
+ 528              	.LVL52:
+ 529              	.LBE53:
+ 530              	.LBE52:
+ 118:Src/cortexm/cortexm.c **** 
+ 119:Src/cortexm/cortexm.c ****   /* Reset DFSR flags */
+ 120:Src/cortexm/cortexm.c ****   cortexm_write_word(priv, CORTEXM_DFSR, CORTEXM_DFSR_RESETALL);
+ 121:Src/cortexm/cortexm.c **** }
+ 531              		.loc 1 121 0
+ 532 003e 38BD     		pop	{r3, r4, r5, pc}
+ 533              	.L36:
+ 534              		.align	2
+ 535              	.L35:
+ 536 0040 F0ED00E0 		.word	-536810000
+ 537 0044 0400FA05 		.word	100270084
+ 538 0048 0CED00E0 		.word	-536810228
+ 539 004c 30ED00E0 		.word	-536810192
+ 540              		.cfi_endproc
+ 541              	.LFE140:
+ 543              		.section	.text.cortexm_check_error,"ax",%progbits
+ 544              		.align	1
+ 545              		.syntax unified
+ 546              		.thumb
+ 547              		.thumb_func
+ 548              		.fpu fpv4-sp-d16
+ 550              	cortexm_check_error:
+ 551              	.LFB141:
+ 122:Src/cortexm/cortexm.c **** 
+ 123:Src/cortexm/cortexm.c **** static uint32_t cortexm_check_error(CORTEXM_PRIV_t *priv)
+ 124:Src/cortexm/cortexm.c **** {
+ 552              		.loc 1 124 0
+ 553              		.cfi_startproc
+ 554              		@ args = 0, pretend = 0, frame = 0
+ 555              		@ frame_needed = 0, uses_anonymous_args = 0
+ 556              	.LVL53:
+ 557 0000 08B5     		push	{r3, lr}
+ 558              	.LCFI10:
+ 559              		.cfi_def_cfa_offset 8
+ 560              		.cfi_offset 3, -8
+ 561              		.cfi_offset 14, -4
+ 125:Src/cortexm/cortexm.c ****   return priv->ap->ops->error_check(priv->ap->priv);
+ 562              		.loc 1 125 0
+ 563 0002 0368     		ldr	r3, [r0]
+ 564 0004 1A68     		ldr	r2, [r3]
+ 565 0006 1269     		ldr	r2, [r2, #16]
+ 566 0008 5868     		ldr	r0, [r3, #4]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 13
+
+
+ 567              	.LVL54:
+ 568 000a 9047     		blx	r2
+ 569              	.LVL55:
+ 126:Src/cortexm/cortexm.c **** }
+ 570              		.loc 1 126 0
+ 571 000c 08BD     		pop	{r3, pc}
+ 572              		.cfi_endproc
+ 573              	.LFE141:
+ 575              		.section	.text.free_cortexm,"ax",%progbits
+ 576              		.align	1
+ 577              		.syntax unified
+ 578              		.thumb
+ 579              		.thumb_func
+ 580              		.fpu fpv4-sp-d16
+ 582              	free_cortexm:
+ 583              	.LFB142:
+ 127:Src/cortexm/cortexm.c **** 
+ 128:Src/cortexm/cortexm.c **** static void free_cortexm(CORTEXM_t *cortexm)
+ 129:Src/cortexm/cortexm.c **** {
+ 584              		.loc 1 129 0
+ 585              		.cfi_startproc
+ 586              		@ args = 0, pretend = 0, frame = 0
+ 587              		@ frame_needed = 0, uses_anonymous_args = 0
+ 588              	.LVL56:
+ 589 0000 10B5     		push	{r4, lr}
+ 590              	.LCFI11:
+ 591              		.cfi_def_cfa_offset 8
+ 592              		.cfi_offset 4, -8
+ 593              		.cfi_offset 14, -4
+ 594 0002 0446     		mov	r4, r0
+ 130:Src/cortexm/cortexm.c ****   cortexm->priv->ap->ops->priv_free(cortexm->priv->ap);
+ 595              		.loc 1 130 0
+ 596 0004 4368     		ldr	r3, [r0, #4]
+ 597 0006 1868     		ldr	r0, [r3]
+ 598              	.LVL57:
+ 599 0008 0368     		ldr	r3, [r0]
+ 600 000a 5B69     		ldr	r3, [r3, #20]
+ 601 000c 9847     		blx	r3
+ 602              	.LVL58:
+ 131:Src/cortexm/cortexm.c ****   vPortFree(cortexm->priv);
+ 603              		.loc 1 131 0
+ 604 000e 6068     		ldr	r0, [r4, #4]
+ 605 0010 FFF7FEFF 		bl	vPortFree
+ 606              	.LVL59:
+ 132:Src/cortexm/cortexm.c ****   vPortFree(cortexm);
+ 607              		.loc 1 132 0
+ 608 0014 2046     		mov	r0, r4
+ 609 0016 FFF7FEFF 		bl	vPortFree
+ 610              	.LVL60:
+ 133:Src/cortexm/cortexm.c **** }
+ 611              		.loc 1 133 0
+ 612 001a 10BD     		pop	{r4, pc}
+ 613              		.cfi_endproc
+ 614              	.LFE142:
+ 616              		.section	.text.probe_cortexm,"ax",%progbits
+ 617              		.align	1
+ 618              		.global	probe_cortexm
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 14
+
+
+ 619              		.syntax unified
+ 620              		.thumb
+ 621              		.thumb_func
+ 622              		.fpu fpv4-sp-d16
+ 624              	probe_cortexm:
+ 625              	.LFB143:
+ 134:Src/cortexm/cortexm.c **** 
+ 135:Src/cortexm/cortexm.c **** static CORTEXM_OPS_t cortexm_ops = {
+ 136:Src/cortexm/cortexm.c ****   .read_word = cortexm_read_word,
+ 137:Src/cortexm/cortexm.c ****   .write_word = cortexm_write_word,
+ 138:Src/cortexm/cortexm.c ****   .read_words = cortexm_read_words,
+ 139:Src/cortexm/cortexm.c ****   .write_words = cortexm_write_words,
+ 140:Src/cortexm/cortexm.c ****   .pc_read = cortexm_pc_read,
+ 141:Src/cortexm/cortexm.c ****   .pc_write = cortexm_pc_write,
+ 142:Src/cortexm/cortexm.c ****   .halt_request = cortexm_halt_request,
+ 143:Src/cortexm/cortexm.c ****   .halt_wait = cortexm_halt_wait,
+ 144:Src/cortexm/cortexm.c ****   .halt_resume = cortexm_halt_resume,
+ 145:Src/cortexm/cortexm.c ****   .check_error = cortexm_check_error,
+ 146:Src/cortexm/cortexm.c ****   .restart = cortexm_reset,
+ 147:Src/cortexm/cortexm.c **** 
+ 148:Src/cortexm/cortexm.c ****   .free = free_cortexm
+ 149:Src/cortexm/cortexm.c **** };
+ 150:Src/cortexm/cortexm.c **** 
+ 151:Src/cortexm/cortexm.c **** int probe_cortexm(ADIv5_AP_t *ap)
+ 152:Src/cortexm/cortexm.c **** {
+ 626              		.loc 1 152 0
+ 627              		.cfi_startproc
+ 628              		@ args = 0, pretend = 0, frame = 0
+ 629              		@ frame_needed = 0, uses_anonymous_args = 0
+ 630              	.LVL61:
+ 631 0000 38B5     		push	{r3, r4, r5, lr}
+ 632              	.LCFI12:
+ 633              		.cfi_def_cfa_offset 16
+ 634              		.cfi_offset 3, -16
+ 635              		.cfi_offset 4, -12
+ 636              		.cfi_offset 5, -8
+ 637              		.cfi_offset 14, -4
+ 638 0002 0546     		mov	r5, r0
+ 153:Src/cortexm/cortexm.c ****   /* Should probe here to make sure it's Cortex-M3 */
+ 154:Src/cortexm/cortexm.c **** 
+ 155:Src/cortexm/cortexm.c ****   CORTEXM_t *cortexm = pvPortMalloc(sizeof(CORTEXM_t));
+ 639              		.loc 1 155 0
+ 640 0004 0820     		movs	r0, #8
+ 641              	.LVL62:
+ 642 0006 FFF7FEFF 		bl	pvPortMalloc
+ 643              	.LVL63:
+ 644 000a 0446     		mov	r4, r0
+ 645              	.LVL64:
+ 156:Src/cortexm/cortexm.c ****   CORTEXM_PRIV_t *priv = pvPortMalloc(sizeof(CORTEXM_PRIV_t));
+ 646              		.loc 1 156 0
+ 647 000c 0420     		movs	r0, #4
+ 648              	.LVL65:
+ 649 000e FFF7FEFF 		bl	pvPortMalloc
+ 650              	.LVL66:
+ 157:Src/cortexm/cortexm.c **** 
+ 158:Src/cortexm/cortexm.c ****   cortexm->ops = &cortexm_ops;
+ 651              		.loc 1 158 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 15
+
+
+ 652 0012 0C4B     		ldr	r3, .L48
+ 653 0014 2360     		str	r3, [r4]
+ 159:Src/cortexm/cortexm.c ****   cortexm->priv = priv;
+ 654              		.loc 1 159 0
+ 655 0016 6060     		str	r0, [r4, #4]
+ 160:Src/cortexm/cortexm.c **** 
+ 161:Src/cortexm/cortexm.c ****   priv->ap = ap;
+ 656              		.loc 1 161 0
+ 657 0018 0560     		str	r5, [r0]
+ 162:Src/cortexm/cortexm.c ****   // probe stm32
+ 163:Src/cortexm/cortexm.c **** 
+ 164:Src/cortexm/cortexm.c ****   if(stm32f4_probe(cortexm)){
+ 658              		.loc 1 164 0
+ 659 001a 2046     		mov	r0, r4
+ 660              	.LVL67:
+ 661 001c FFF7FEFF 		bl	stm32f4_probe
+ 662              	.LVL68:
+ 663 0020 10B1     		cbz	r0, .L46
+ 165:Src/cortexm/cortexm.c ****     return 1;
+ 664              		.loc 1 165 0
+ 665 0022 0125     		movs	r5, #1
+ 666              	.LVL69:
+ 667              	.L41:
+ 166:Src/cortexm/cortexm.c ****   }
+ 167:Src/cortexm/cortexm.c **** 
+ 168:Src/cortexm/cortexm.c ****   if(stm32l4_probe(cortexm)){
+ 169:Src/cortexm/cortexm.c ****     return 1;
+ 170:Src/cortexm/cortexm.c ****   }
+ 171:Src/cortexm/cortexm.c **** 
+ 172:Src/cortexm/cortexm.c ****   // Non of the targets successful probed. Cleanup
+ 173:Src/cortexm/cortexm.c ****   vPortFree(cortexm->priv);
+ 174:Src/cortexm/cortexm.c ****   vPortFree(cortexm);
+ 175:Src/cortexm/cortexm.c **** 
+ 176:Src/cortexm/cortexm.c ****   return 0;
+ 177:Src/cortexm/cortexm.c **** }
+ 668              		.loc 1 177 0
+ 669 0024 2846     		mov	r0, r5
+ 670 0026 38BD     		pop	{r3, r4, r5, pc}
+ 671              	.LVL70:
+ 672              	.L46:
+ 168:Src/cortexm/cortexm.c ****     return 1;
+ 673              		.loc 1 168 0
+ 674 0028 2046     		mov	r0, r4
+ 675 002a FFF7FEFF 		bl	stm32l4_probe
+ 676              	.LVL71:
+ 677 002e 0546     		mov	r5, r0
+ 678              	.LVL72:
+ 679 0030 08B1     		cbz	r0, .L47
+ 169:Src/cortexm/cortexm.c ****   }
+ 680              		.loc 1 169 0
+ 681 0032 0125     		movs	r5, #1
+ 682 0034 F6E7     		b	.L41
+ 683              	.L47:
+ 173:Src/cortexm/cortexm.c ****   vPortFree(cortexm);
+ 684              		.loc 1 173 0
+ 685 0036 6068     		ldr	r0, [r4, #4]
+ 686 0038 FFF7FEFF 		bl	vPortFree
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 16
+
+
+ 687              	.LVL73:
+ 174:Src/cortexm/cortexm.c **** 
+ 688              		.loc 1 174 0
+ 689 003c 2046     		mov	r0, r4
+ 690 003e FFF7FEFF 		bl	vPortFree
+ 691              	.LVL74:
+ 176:Src/cortexm/cortexm.c **** }
+ 692              		.loc 1 176 0
+ 693 0042 EFE7     		b	.L41
+ 694              	.L49:
+ 695              		.align	2
+ 696              	.L48:
+ 697 0044 00000000 		.word	.LANCHOR0
+ 698              		.cfi_endproc
+ 699              	.LFE143:
+ 701              		.section	.data.cortexm_ops,"aw",%progbits
+ 702              		.align	2
+ 703              		.set	.LANCHOR0,. + 0
+ 706              	cortexm_ops:
+ 707 0000 00000000 		.word	cortexm_read_word
+ 708 0004 00000000 		.word	cortexm_write_word
+ 709 0008 00000000 		.word	cortexm_read_words
+ 710 000c 00000000 		.word	cortexm_write_words
+ 711 0010 00000000 		.word	cortexm_pc_read
+ 712 0014 00000000 		.word	cortexm_pc_write
+ 713 0018 00000000 		.word	cortexm_halt_request
+ 714 001c 00000000 		.word	cortexm_halt_wait
+ 715 0020 00000000 		.word	cortexm_halt_resume
+ 716 0024 00000000 		.word	cortexm_check_error
+ 717 0028 00000000 		.word	cortexm_reset
+ 718 002c 00000000 		.word	free_cortexm
+ 719              		.text
+ 720              	.Letext0:
+ 721              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 722              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 723              		.file 4 "Drivers/CMSIS/Include/core_cm4.h"
+ 724              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 725              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 726              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 727              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 728              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 729              		.file 10 "Inc/adiv5/adiv5.h"
+ 730              		.file 11 "Inc/cortexm/cortexm.h"
+ 731              		.file 12 "Middlewares/Third_Party/FreeRTOS/Source/include/portable.h"
+ 732              		.file 13 "Inc/cortexm/stm32/stm32f4.h"
+ 733              		.file 14 "Inc/cortexm/stm32/stm32l4.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s 			page 17
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 cortexm.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:18     .text.cortexm_read_word:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:24     .text.cortexm_read_word:0000000000000000 cortexm_read_word
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:51     .text.cortexm_write_word:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:57     .text.cortexm_write_word:0000000000000000 cortexm_write_word
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:83     .text.cortexm_read_words:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:89     .text.cortexm_read_words:0000000000000000 cortexm_read_words
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:115    .text.cortexm_write_words:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:121    .text.cortexm_write_words:0000000000000000 cortexm_write_words
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:147    .text.cortexm_pc_read:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:153    .text.cortexm_pc_read:0000000000000000 cortexm_pc_read
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:201    .text.cortexm_pc_read:0000000000000020 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:207    .text.cortexm_pc_write:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:213    .text.cortexm_pc_write:0000000000000000 cortexm_pc_write
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:262    .text.cortexm_pc_write:0000000000000024 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:269    .text.cortexm_halt_request:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:275    .text.cortexm_halt_request:0000000000000000 cortexm_halt_request
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:307    .text.cortexm_halt_request:0000000000000014 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:313    .text.cortexm_halt_wait:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:319    .text.cortexm_halt_wait:0000000000000000 cortexm_halt_wait
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:402    .text.cortexm_halt_wait:0000000000000048 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:408    .text.cortexm_halt_resume:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:414    .text.cortexm_halt_resume:0000000000000000 cortexm_halt_resume
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:446    .text.cortexm_halt_resume:0000000000000014 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:452    .text.cortexm_reset:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:458    .text.cortexm_reset:0000000000000000 cortexm_reset
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:536    .text.cortexm_reset:0000000000000040 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:544    .text.cortexm_check_error:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:550    .text.cortexm_check_error:0000000000000000 cortexm_check_error
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:576    .text.free_cortexm:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:582    .text.free_cortexm:0000000000000000 free_cortexm
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:617    .text.probe_cortexm:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:624    .text.probe_cortexm:0000000000000000 probe_cortexm
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:697    .text.probe_cortexm:0000000000000044 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:702    .data.cortexm_ops:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccMx7THe.s:706    .data.cortexm_ops:0000000000000000 cortexm_ops
+
+UNDEFINED SYMBOLS
+vPortFree
+pvPortMalloc
+stm32f4_probe
+stm32l4_probe

@@ -1,0 +1,483 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"target.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.register_target,"ax",%progbits
+  18              		.align	1
+  19              		.global	register_target
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	register_target:
+  26              	.LFB131:
+  27              		.file 1 "Src/target.c"
+   1:Src/target.c  **** /* Copyright 2018 Maksymilian Wojczuk and Tomasz Michalec
+   2:Src/target.c  ****  *
+   3:Src/target.c  ****  * Permission is hereby granted, free of charge, to any person obtaining a copy
+   4:Src/target.c  ****  * of this software and associated documentation files (the "Software"), to deal
+   5:Src/target.c  ****  * in the Software without restriction, including without limitation the rights
+   6:Src/target.c  ****  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   7:Src/target.c  ****  * copies of the Software, and to permit persons to whom the Software is
+   8:Src/target.c  ****  * furnished to do so, subject to the following conditions:
+   9:Src/target.c  ****  *
+  10:Src/target.c  ****  * The above copyright notice and this permission notice shall be included in
+  11:Src/target.c  ****  * all copies or substantial portions of the Software.
+  12:Src/target.c  ****  *
+  13:Src/target.c  ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  14:Src/target.c  ****  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  15:Src/target.c  ****  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  16:Src/target.c  ****  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  17:Src/target.c  ****  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  18:Src/target.c  ****  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  19:Src/target.c  ****  * SOFTWARE.
+  20:Src/target.c  ****  */
+  21:Src/target.c  **** 
+  22:Src/target.c  **** #include "stm32f4xx_it.h"
+  23:Src/target.c  **** #include "cmsis_os.h"
+  24:Src/target.c  **** #include "target.h"
+  25:Src/target.c  **** #include "fatfs.h"
+  26:Src/target.c  **** #include "object_target.h"
+  27:Src/target.c  **** 
+  28:Src/target.c  **** TARGET_t target_list = {0, 0, 0};
+  29:Src/target.c  **** 
+  30:Src/target.c  **** // TODO: Add wakaama registration here or wakaama will travel target_list leater
+  31:Src/target.c  **** void register_target(void *priv, TARGET_OPS_t *ops, char *name){
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s 			page 2
+
+
+  28              		.loc 1 31 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 70B5     		push	{r4, r5, r6, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 4, -16
+  37              		.cfi_offset 5, -12
+  38              		.cfi_offset 6, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0646     		mov	r6, r0
+  41 0004 0D46     		mov	r5, r1
+  42 0006 1446     		mov	r4, r2
+  32:Src/target.c  ****   TARGET_t *new_target = pvPortMalloc(sizeof(TARGET_t));
+  43              		.loc 1 32 0
+  44 0008 1020     		movs	r0, #16
+  45              	.LVL1:
+  46 000a FFF7FEFF 		bl	pvPortMalloc
+  47              	.LVL2:
+  33:Src/target.c  ****   new_target->priv = priv;
+  48              		.loc 1 33 0
+  49 000e 4660     		str	r6, [r0, #4]
+  34:Src/target.c  ****   new_target->ops = ops;
+  50              		.loc 1 34 0
+  51 0010 0560     		str	r5, [r0]
+  35:Src/target.c  ****   new_target->name = name;
+  52              		.loc 1 35 0
+  53 0012 8460     		str	r4, [r0, #8]
+  36:Src/target.c  ****   new_target->next = target_list.next;
+  54              		.loc 1 36 0
+  55 0014 044B     		ldr	r3, .L3
+  56 0016 DA68     		ldr	r2, [r3, #12]
+  57 0018 C260     		str	r2, [r0, #12]
+  37:Src/target.c  ****   target_list.next = new_target;
+  58              		.loc 1 37 0
+  59 001a D860     		str	r0, [r3, #12]
+  38:Src/target.c  ****   printf("Registered target \"%s\"\n", name);
+  60              		.loc 1 38 0
+  61 001c 2146     		mov	r1, r4
+  62 001e 0348     		ldr	r0, .L3+4
+  63              	.LVL3:
+  64 0020 FFF7FEFF 		bl	printf
+  65              	.LVL4:
+  39:Src/target.c  **** }
+  66              		.loc 1 39 0
+  67 0024 70BD     		pop	{r4, r5, r6, pc}
+  68              	.LVL5:
+  69              	.L4:
+  70 0026 00BF     		.align	2
+  71              	.L3:
+  72 0028 00000000 		.word	.LANCHOR0
+  73 002c 00000000 		.word	.LC0
+  74              		.cfi_endproc
+  75              	.LFE131:
+  77              		.section	.text.flash_target_task,"ax",%progbits
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s 			page 3
+
+
+  78              		.align	1
+  79              		.global	flash_target_task
+  80              		.syntax unified
+  81              		.thumb
+  82              		.thumb_func
+  83              		.fpu fpv4-sp-d16
+  85              	flash_target_task:
+  86              	.LFB132:
+  40:Src/target.c  **** 
+  41:Src/target.c  **** void flash_target_task(void *object) {
+  87              		.loc 1 41 0
+  88              		.cfi_startproc
+  89              		@ args = 0, pretend = 0, frame = 560
+  90              		@ frame_needed = 0, uses_anonymous_args = 0
+  91              	.LVL6:
+  92 0000 70B5     		push	{r4, r5, r6, lr}
+  93              	.LCFI1:
+  94              		.cfi_def_cfa_offset 16
+  95              		.cfi_offset 4, -16
+  96              		.cfi_offset 5, -12
+  97              		.cfi_offset 6, -8
+  98              		.cfi_offset 14, -4
+  99 0002 ADF50C7D 		sub	sp, sp, #560
+ 100              	.LCFI2:
+ 101              		.cfi_def_cfa_offset 576
+ 102 0006 0446     		mov	r4, r0
+ 103              	.LVL7:
+  42:Src/target.c  **** 	target_instance_t * target_object = (target_instance_t *) object;
+  43:Src/target.c  **** 
+  44:Src/target.c  **** 	FIL file;
+  45:Src/target.c  **** 	int result;
+  46:Src/target.c  **** 
+  47:Src/target.c  ****   int start_time = xTaskGetTickCount();
+ 104              		.loc 1 47 0
+ 105 0008 FFF7FEFF 		bl	xTaskGetTickCount
+ 106              	.LVL8:
+ 107 000c 0546     		mov	r5, r0
+ 108              	.LVL9:
+  48:Src/target.c  **** 
+  49:Src/target.c  **** 	result = usb_open_file(target_object->binary_filename, &file, FA_READ);
+ 109              		.loc 1 49 0
+ 110 000e 0122     		movs	r2, #1
+ 111 0010 6946     		mov	r1, sp
+ 112 0012 6069     		ldr	r0, [r4, #20]
+ 113              	.LVL10:
+ 114 0014 FFF7FEFF 		bl	usb_open_file
+ 115              	.LVL11:
+  50:Src/target.c  **** 	if (result != 0) {
+ 116              		.loc 1 50 0
+ 117 0018 00BB     		cbnz	r0, .L11
+ 118              	.LVL12:
+ 119              	.L6:
+  51:Src/target.c  **** 		target_object->flash_error = USB_FS_ERROR;
+  52:Src/target.c  **** 		target_object->flash_state = FLASH_ERROR;
+  53:Src/target.c  **** 		JTAG_BUSY = 0;
+  54:Src/target.c  **** 		USB_BUSY = 0;
+  55:Src/target.c  **** 		vTaskDelete(NULL);
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s 			page 4
+
+
+  56:Src/target.c  **** 	}
+  57:Src/target.c  **** 
+  58:Src/target.c  **** 	result = target_object->target->ops->flash_target(target_object->target->priv, &file, &target_obje
+ 120              		.loc 1 58 0
+ 121 001a E36A     		ldr	r3, [r4, #44]
+ 122 001c 1A68     		ldr	r2, [r3]
+ 123 001e 1668     		ldr	r6, [r2]
+ 124 0020 04F12802 		add	r2, r4, #40
+ 125 0024 6946     		mov	r1, sp
+ 126 0026 5868     		ldr	r0, [r3, #4]
+ 127 0028 B047     		blx	r6
+ 128              	.LVL13:
+  59:Src/target.c  **** 	if (result != 0) {
+ 129              		.loc 1 59 0
+ 130 002a 20B3     		cbz	r0, .L7
+  60:Src/target.c  **** 		target_object->flash_error = result;
+ 131              		.loc 1 60 0
+ 132 002c A084     		strh	r0, [r4, #36]	@ movhi
+  61:Src/target.c  **** 		target_object->flash_state = FLASH_ERROR;
+ 133              		.loc 1 61 0
+ 134 002e 0223     		movs	r3, #2
+ 135 0030 2362     		str	r3, [r4, #32]
+ 136              	.L8:
+  62:Src/target.c  **** 	} else {
+  63:Src/target.c  **** 		target_object->flash_progress = 100;
+  64:Src/target.c  **** 		target_object->flash_state = FLASH_COMPLETED;
+  65:Src/target.c  **** 	}
+  66:Src/target.c  **** 	
+  67:Src/target.c  ****   printf("Flash request ended in %d ms\n", xTaskGetTickCount() - start_time);
+ 137              		.loc 1 67 0
+ 138 0032 FFF7FEFF 		bl	xTaskGetTickCount
+ 139              	.LVL14:
+ 140 0036 411B     		subs	r1, r0, r5
+ 141 0038 1548     		ldr	r0, .L13
+ 142 003a FFF7FEFF 		bl	printf
+ 143              	.LVL15:
+  68:Src/target.c  **** 
+  69:Src/target.c  **** 	result = usb_close_file(&file);
+ 144              		.loc 1 69 0
+ 145 003e 6846     		mov	r0, sp
+ 146 0040 FFF7FEFF 		bl	usb_close_file
+ 147              	.LVL16:
+  70:Src/target.c  **** 	JTAG_BUSY = 0;
+ 148              		.loc 1 70 0
+ 149 0044 0023     		movs	r3, #0
+ 150 0046 134A     		ldr	r2, .L13+4
+ 151 0048 1360     		str	r3, [r2]
+  71:Src/target.c  **** 	USB_BUSY = 0;
+ 152              		.loc 1 71 0
+ 153 004a 134A     		ldr	r2, .L13+8
+ 154 004c 1360     		str	r3, [r2]
+  72:Src/target.c  **** 	if (result != 0) {
+ 155              		.loc 1 72 0
+ 156 004e B8B9     		cbnz	r0, .L12
+ 157              	.LVL17:
+ 158              	.L9:
+  73:Src/target.c  **** 		target_object->flash_error = USB_FS_ERROR;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s 			page 5
+
+
+  74:Src/target.c  **** 		vTaskDelete(NULL);
+  75:Src/target.c  **** 	}
+  76:Src/target.c  **** 	vTaskDelete(NULL);
+ 159              		.loc 1 76 0
+ 160 0050 0020     		movs	r0, #0
+ 161 0052 FFF7FEFF 		bl	vTaskDelete
+ 162              	.LVL18:
+  77:Src/target.c  **** }
+ 163              		.loc 1 77 0
+ 164 0056 0DF50C7D 		add	sp, sp, #560
+ 165              	.LCFI3:
+ 166              		.cfi_remember_state
+ 167              		.cfi_def_cfa_offset 16
+ 168              		@ sp needed
+ 169 005a 70BD     		pop	{r4, r5, r6, pc}
+ 170              	.LVL19:
+ 171              	.L11:
+ 172              	.LCFI4:
+ 173              		.cfi_restore_state
+  51:Src/target.c  **** 		target_object->flash_state = FLASH_ERROR;
+ 174              		.loc 1 51 0
+ 175 005c 41F20103 		movw	r3, #4097
+ 176 0060 A384     		strh	r3, [r4, #36]	@ movhi
+  52:Src/target.c  **** 		JTAG_BUSY = 0;
+ 177              		.loc 1 52 0
+ 178 0062 0223     		movs	r3, #2
+ 179 0064 2362     		str	r3, [r4, #32]
+  53:Src/target.c  **** 		USB_BUSY = 0;
+ 180              		.loc 1 53 0
+ 181 0066 0020     		movs	r0, #0
+ 182              	.LVL20:
+ 183 0068 0A4B     		ldr	r3, .L13+4
+ 184 006a 1860     		str	r0, [r3]
+  54:Src/target.c  **** 		vTaskDelete(NULL);
+ 185              		.loc 1 54 0
+ 186 006c 0A4B     		ldr	r3, .L13+8
+ 187 006e 1860     		str	r0, [r3]
+  55:Src/target.c  **** 	}
+ 188              		.loc 1 55 0
+ 189 0070 FFF7FEFF 		bl	vTaskDelete
+ 190              	.LVL21:
+ 191 0074 D1E7     		b	.L6
+ 192              	.LVL22:
+ 193              	.L7:
+  63:Src/target.c  **** 		target_object->flash_state = FLASH_COMPLETED;
+ 194              		.loc 1 63 0
+ 195 0076 6423     		movs	r3, #100
+ 196 0078 A362     		str	r3, [r4, #40]
+  64:Src/target.c  **** 	}
+ 197              		.loc 1 64 0
+ 198 007a 0323     		movs	r3, #3
+ 199 007c 2362     		str	r3, [r4, #32]
+ 200 007e D8E7     		b	.L8
+ 201              	.L12:
+  73:Src/target.c  **** 		vTaskDelete(NULL);
+ 202              		.loc 1 73 0
+ 203 0080 41F20103 		movw	r3, #4097
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s 			page 6
+
+
+ 204 0084 A384     		strh	r3, [r4, #36]	@ movhi
+  74:Src/target.c  **** 	}
+ 205              		.loc 1 74 0
+ 206 0086 0020     		movs	r0, #0
+ 207              	.LVL23:
+ 208 0088 FFF7FEFF 		bl	vTaskDelete
+ 209              	.LVL24:
+ 210 008c E0E7     		b	.L9
+ 211              	.L14:
+ 212 008e 00BF     		.align	2
+ 213              	.L13:
+ 214 0090 00000000 		.word	.LC1
+ 215 0094 00000000 		.word	JTAG_BUSY
+ 216 0098 00000000 		.word	USB_BUSY
+ 217              		.cfi_endproc
+ 218              	.LFE132:
+ 220              		.section	.text.reset_target_task,"ax",%progbits
+ 221              		.align	1
+ 222              		.global	reset_target_task
+ 223              		.syntax unified
+ 224              		.thumb
+ 225              		.thumb_func
+ 226              		.fpu fpv4-sp-d16
+ 228              	reset_target_task:
+ 229              	.LFB133:
+  78:Src/target.c  **** 
+  79:Src/target.c  **** void reset_target_task(void *object) {
+ 230              		.loc 1 79 0
+ 231              		.cfi_startproc
+ 232              		@ args = 0, pretend = 0, frame = 0
+ 233              		@ frame_needed = 0, uses_anonymous_args = 0
+ 234              	.LVL25:
+ 235 0000 38B5     		push	{r3, r4, r5, lr}
+ 236              	.LCFI5:
+ 237              		.cfi_def_cfa_offset 16
+ 238              		.cfi_offset 3, -16
+ 239              		.cfi_offset 4, -12
+ 240              		.cfi_offset 5, -8
+ 241              		.cfi_offset 14, -4
+ 242 0002 0546     		mov	r5, r0
+  80:Src/target.c  ****   int start_time = xTaskGetTickCount();
+ 243              		.loc 1 80 0
+ 244 0004 FFF7FEFF 		bl	xTaskGetTickCount
+ 245              	.LVL26:
+ 246 0008 0446     		mov	r4, r0
+ 247              	.LVL27:
+  81:Src/target.c  **** 	target_instance_t * target_object = (target_instance_t *) object;
+  82:Src/target.c  **** 	target_object->target->ops->reset_target(target_object->target->priv);
+ 248              		.loc 1 82 0
+ 249 000a EB6A     		ldr	r3, [r5, #44]
+ 250 000c 1A68     		ldr	r2, [r3]
+ 251 000e 5268     		ldr	r2, [r2, #4]
+ 252 0010 5868     		ldr	r0, [r3, #4]
+ 253              	.LVL28:
+ 254 0012 9047     		blx	r2
+ 255              	.LVL29:
+  83:Src/target.c  ****   printf("Reset request ended in %d ms\n", xTaskGetTickCount() - start_time);
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s 			page 7
+
+
+ 256              		.loc 1 83 0
+ 257 0014 FFF7FEFF 		bl	xTaskGetTickCount
+ 258              	.LVL30:
+ 259 0018 011B     		subs	r1, r0, r4
+ 260 001a 0448     		ldr	r0, .L17
+ 261 001c FFF7FEFF 		bl	printf
+ 262              	.LVL31:
+  84:Src/target.c  **** 	JTAG_BUSY = 0;
+ 263              		.loc 1 84 0
+ 264 0020 0020     		movs	r0, #0
+ 265 0022 034B     		ldr	r3, .L17+4
+ 266 0024 1860     		str	r0, [r3]
+  85:Src/target.c  **** 	vTaskDelete(NULL);	
+ 267              		.loc 1 85 0
+ 268 0026 FFF7FEFF 		bl	vTaskDelete
+ 269              	.LVL32:
+  86:Src/target.c  **** }...
+ 270              		.loc 1 86 0
+ 271 002a 38BD     		pop	{r3, r4, r5, pc}
+ 272              	.LVL33:
+ 273              	.L18:
+ 274              		.align	2
+ 275              	.L17:
+ 276 002c 00000000 		.word	.LC2
+ 277 0030 00000000 		.word	JTAG_BUSY
+ 278              		.cfi_endproc
+ 279              	.LFE133:
+ 281              		.global	target_list
+ 282              		.section	.bss.target_list,"aw",%nobits
+ 283              		.align	2
+ 284              		.set	.LANCHOR0,. + 0
+ 287              	target_list:
+ 288 0000 00000000 		.space	16
+ 288      00000000 
+ 288      00000000 
+ 288      00000000 
+ 289              		.section	.rodata.flash_target_task.str1.4,"aMS",%progbits,1
+ 290              		.align	2
+ 291              	.LC1:
+ 292 0000 466C6173 		.ascii	"Flash request ended in %d ms\012\000"
+ 292      68207265 
+ 292      71756573 
+ 292      7420656E 
+ 292      64656420 
+ 293              		.section	.rodata.register_target.str1.4,"aMS",%progbits,1
+ 294              		.align	2
+ 295              	.LC0:
+ 296 0000 52656769 		.ascii	"Registered target \"%s\"\012\000"
+ 296      73746572 
+ 296      65642074 
+ 296      61726765 
+ 296      74202225 
+ 297              		.section	.rodata.reset_target_task.str1.4,"aMS",%progbits,1
+ 298              		.align	2
+ 299              	.LC2:
+ 300 0000 52657365 		.ascii	"Reset request ended in %d ms\012\000"
+ 300      74207265 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s 			page 8
+
+
+ 300      71756573 
+ 300      7420656E 
+ 300      64656420 
+ 301              		.text
+ 302              	.Letext0:
+ 303              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 304              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 305              		.file 4 "Drivers/CMSIS/Include/core_cm4.h"
+ 306              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 307              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 308              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 309              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 310              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 311              		.file 10 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 312              		.file 11 "Middlewares/Third_Party/FreeRTOS/Source/include/queue.h"
+ 313              		.file 12 "Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h"
+ 314              		.file 13 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 315              		.file 14 "Middlewares/Third_Party/FatFs/src/integer.h"
+ 316              		.file 15 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 317              		.file 16 "Middlewares/ST/STM32_USB_Host_Library/Core/Inc/usbh_def.h"
+ 318              		.file 17 "Middlewares/ST/STM32_USB_Host_Library/Core/Inc/usbh_ctlreq.h"
+ 319              		.file 18 "Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Inc/usbh_msc.h"
+ 320              		.file 19 "Middlewares/Third_Party/FatFs/src/ff.h"
+ 321              		.file 20 "Middlewares/Third_Party/FatFs/src/diskio.h"
+ 322              		.file 21 "Middlewares/Third_Party/FatFs/src/ff_gen_drv.h"
+ 323              		.file 22 "Inc/usbh_diskio.h"
+ 324              		.file 23 "Inc/fatfs.h"
+ 325              		.file 24 "Inc/target.h"
+ 326              		.file 25 "Inc/communication/wakaama_client/objects/object_target.h"
+ 327              		.file 26 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 328              		.file 27 "Middlewares/Third_Party/FreeRTOS/Source/include/portable.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 target.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:18     .text.register_target:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:25     .text.register_target:0000000000000000 register_target
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:72     .text.register_target:0000000000000028 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:78     .text.flash_target_task:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:85     .text.flash_target_task:0000000000000000 flash_target_task
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:214    .text.flash_target_task:0000000000000090 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:221    .text.reset_target_task:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:228    .text.reset_target_task:0000000000000000 reset_target_task
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:276    .text.reset_target_task:000000000000002c $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:287    .bss.target_list:0000000000000000 target_list
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:283    .bss.target_list:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:290    .rodata.flash_target_task.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:294    .rodata.register_target.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccT2Ryn4.s:298    .rodata.reset_target_task.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+pvPortMalloc
+printf
+xTaskGetTickCount
+usb_open_file
+usb_close_file
+vTaskDelete
+JTAG_BUSY
+USB_BUSY

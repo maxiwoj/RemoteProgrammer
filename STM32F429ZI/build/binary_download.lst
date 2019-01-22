@@ -1,0 +1,1816 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"binary_download.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.download_error,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	download_error:
+  25              	.LFB147:
+  26              		.file 1 "Src/communication/binary_download.c"
+   1:Src/communication/binary_download.c **** /* Copyright 2018 Maksymilian Wojczuk and Tomasz Michalec
+   2:Src/communication/binary_download.c ****  *
+   3:Src/communication/binary_download.c ****  * Permission is hereby granted, free of charge, to any person obtaining a copy
+   4:Src/communication/binary_download.c ****  * of this software and associated documentation files (the "Software"), to deal
+   5:Src/communication/binary_download.c ****  * in the Software without restriction, including without limitation the rights
+   6:Src/communication/binary_download.c ****  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   7:Src/communication/binary_download.c ****  * copies of the Software, and to permit persons to whom the Software is
+   8:Src/communication/binary_download.c ****  * furnished to do so, subject to the following conditions:
+   9:Src/communication/binary_download.c ****  *
+  10:Src/communication/binary_download.c ****  * The above copyright notice and this permission notice shall be included in
+  11:Src/communication/binary_download.c ****  * all copies or substantial portions of the Software.
+  12:Src/communication/binary_download.c ****  *
+  13:Src/communication/binary_download.c ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  14:Src/communication/binary_download.c ****  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  15:Src/communication/binary_download.c ****  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  16:Src/communication/binary_download.c ****  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  17:Src/communication/binary_download.c ****  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  18:Src/communication/binary_download.c ****  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  19:Src/communication/binary_download.c ****  * SOFTWARE.
+  20:Src/communication/binary_download.c ****  */
+  21:Src/communication/binary_download.c **** 
+  22:Src/communication/binary_download.c **** #include "FreeRTOS.h"
+  23:Src/communication/binary_download.c **** #include "task.h"
+  24:Src/communication/binary_download.c **** #include <sys/errno.h>
+  25:Src/communication/binary_download.c **** #include "lwip/inet.h"
+  26:Src/communication/binary_download.c **** #include "lwip/sockets.h"
+  27:Src/communication/binary_download.c **** #include "lwip/api.h"
+  28:Src/communication/binary_download.c **** #include "liblwm2m.h"
+  29:Src/communication/binary_download.c **** #include "default_config.h"
+  30:Src/communication/binary_download.c **** #include "binary_download.h"
+  31:Src/communication/binary_download.c **** #include "errno.h"
+  32:Src/communication/binary_download.c **** #include "usb_host.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 2
+
+
+  33:Src/communication/binary_download.c **** #include "yuarel.h"
+  34:Src/communication/binary_download.c **** #include "term_io.h"
+  35:Src/communication/binary_download.c **** 
+  36:Src/communication/binary_download.c **** static void resolveAddress(target_instance_t *targetP, char *url_str, struct yuarel *url, int *sock
+  37:Src/communication/binary_download.c ****                            struct sockaddr_in *clientAddressv4);
+  38:Src/communication/binary_download.c **** static void connectToServer(target_instance_t *targetP, char *url_str, int socket, struct sockaddr_
+  39:Src/communication/binary_download.c **** static void makeRequest(target_instance_t *targetP, struct yuarel *url, char *url_str, int socket);
+  40:Src/communication/binary_download.c **** static int receive(target_instance_t *targetP, char *url_str, int socket, char *server_reply, int m
+  41:Src/communication/binary_download.c **** static void checkResponseCode(target_instance_t *targetP, char *url_str, int socket, char *server_r
+  42:Src/communication/binary_download.c **** static uint8_t createFile(target_instance_t *targetP, char *url_str, int socket, FIL *file);
+  43:Src/communication/binary_download.c **** 
+  44:Src/communication/binary_download.c **** 
+  45:Src/communication/binary_download.c **** 
+  46:Src/communication/binary_download.c **** 
+  47:Src/communication/binary_download.c **** static void download_error(target_instance_t *targetP, int err, int socket, char *url_str) {
+  27              		.loc 1 47 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 10B5     		push	{r4, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 4, -8
+  36              		.cfi_offset 14, -4
+  37 0002 1C46     		mov	r4, r3
+  48:Src/communication/binary_download.c ****     targetP->download_state = DOWNLOAD_ERROR;
+  38              		.loc 1 48 0
+  39 0004 0223     		movs	r3, #2
+  40              	.LVL1:
+  41 0006 0376     		strb	r3, [r0, #24]
+  49:Src/communication/binary_download.c ****     targetP->download_error = (int16_t) err;
+  42              		.loc 1 49 0
+  43 0008 4183     		strh	r1, [r0, #26]	@ movhi
+  50:Src/communication/binary_download.c ****     if (err != SOCKET_ERROR && err != ERROR_PARSING_URL) {
+  44              		.loc 1 50 0
+  45 000a 9942     		cmp	r1, r3
+  46 000c 04D0     		beq	.L2
+  47              		.loc 1 50 0 is_stmt 0 discriminator 1
+  48 000e 0729     		cmp	r1, #7
+  49 0010 02D0     		beq	.L2
+  51:Src/communication/binary_download.c ****         lwip_close(socket);
+  50              		.loc 1 51 0 is_stmt 1
+  51 0012 1046     		mov	r0, r2
+  52              	.LVL2:
+  53 0014 FFF7FEFF 		bl	lwip_close
+  54              	.LVL3:
+  55              	.L2:
+  52:Src/communication/binary_download.c ****     }
+  53:Src/communication/binary_download.c ****     lwm2m_free(url_str);
+  56              		.loc 1 53 0
+  57 0018 2046     		mov	r0, r4
+  58 001a FFF7FEFF 		bl	lwm2m_free
+  59              	.LVL4:
+  54:Src/communication/binary_download.c ****     USB_BUSY = 0;
+  60              		.loc 1 54 0
+  61 001e 0020     		movs	r0, #0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 3
+
+
+  62 0020 024B     		ldr	r3, .L4
+  63 0022 1860     		str	r0, [r3]
+  55:Src/communication/binary_download.c ****     vTaskDelete(NULL);
+  64              		.loc 1 55 0
+  65 0024 FFF7FEFF 		bl	vTaskDelete
+  66              	.LVL5:
+  56:Src/communication/binary_download.c **** }
+  67              		.loc 1 56 0
+  68 0028 10BD     		pop	{r4, pc}
+  69              	.LVL6:
+  70              	.L5:
+  71 002a 00BF     		.align	2
+  72              	.L4:
+  73 002c 00000000 		.word	USB_BUSY
+  74              		.cfi_endproc
+  75              	.LFE147:
+  77              		.section	.text.receive,"ax",%progbits
+  78              		.align	1
+  79              		.syntax unified
+  80              		.thumb
+  81              		.thumb_func
+  82              		.fpu fpv4-sp-d16
+  84              	receive:
+  85              	.LFB151:
+  57:Src/communication/binary_download.c **** 
+  58:Src/communication/binary_download.c **** void startDownload(void *object_target) {
+  59:Src/communication/binary_download.c ****     target_instance_t *targetP = (target_instance_t *) object_target;
+  60:Src/communication/binary_download.c ****     struct yuarel url;
+  61:Src/communication/binary_download.c ****     char *url_str = lwm2m_strdup(targetP->firmware_url);
+  62:Src/communication/binary_download.c ****     FIL file;
+  63:Src/communication/binary_download.c ****     uint8_t file_initialised = 0;
+  64:Src/communication/binary_download.c **** 
+  65:Src/communication/binary_download.c ****     int start_time = xTaskGetTickCount();
+  66:Src/communication/binary_download.c **** 
+  67:Src/communication/binary_download.c ****     int socket;
+  68:Src/communication/binary_download.c ****     struct sockaddr_in clientAddressv4;
+  69:Src/communication/binary_download.c ****     resolveAddress(targetP, url_str, &url, &socket, &clientAddressv4);
+  70:Src/communication/binary_download.c ****     connectToServer(targetP, url_str, socket, &clientAddressv4);
+  71:Src/communication/binary_download.c **** 
+  72:Src/communication/binary_download.c ****     makeRequest(targetP, &url, url_str, socket);
+  73:Src/communication/binary_download.c **** 
+  74:Src/communication/binary_download.c ****     int server_response_length = 300;
+  75:Src/communication/binary_download.c ****     char server_reply[server_response_length + 1];
+  76:Src/communication/binary_download.c ****     server_reply[server_response_length] = '\0';
+  77:Src/communication/binary_download.c ****     long payload_len = 0;
+  78:Src/communication/binary_download.c ****     long total_received_len = 0;
+  79:Src/communication/binary_download.c **** 
+  80:Src/communication/binary_download.c **** 
+  81:Src/communication/binary_download.c ****     int received_len = receive(targetP, url_str, socket, server_reply, server_response_length);
+  82:Src/communication/binary_download.c ****     checkResponseCode(targetP, url_str, socket, server_reply);
+  83:Src/communication/binary_download.c **** 
+  84:Src/communication/binary_download.c ****     while (1) {
+  85:Src/communication/binary_download.c ****         if (payload_len == 0) {
+  86:Src/communication/binary_download.c ****             char *content_length_str = strstr(server_reply, "Content-Length: ");
+  87:Src/communication/binary_download.c ****             if (content_length_str != NULL) {
+  88:Src/communication/binary_download.c ****                 if (strstr(content_length_str, "\r\n")) {
+  89:Src/communication/binary_download.c ****                     char *asd = content_length_str + 16;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 4
+
+
+  90:Src/communication/binary_download.c ****                     if (xatoi(&asd, &payload_len) != 1) {
+  91:Src/communication/binary_download.c ****                         printf("Error reading Content-Length\r\n");
+  92:Src/communication/binary_download.c ****                         download_error(targetP, UNKNOWN_ERROR, socket, url_str);
+  93:Src/communication/binary_download.c ****                     }
+  94:Src/communication/binary_download.c ****                 } else {
+  95:Src/communication/binary_download.c ****                     // Copy the bytes from Content-Length to the beginning and read more, because i
+  96:Src/communication/binary_download.c ****                     // that not all the value of the content length had been received
+  97:Src/communication/binary_download.c ****                     int i;
+  98:Src/communication/binary_download.c ****                     for (i = 0; content_length_str - server_reply + i < received_len; i++) {
+  99:Src/communication/binary_download.c ****                         server_reply[i] = content_length_str[i];
+ 100:Src/communication/binary_download.c ****                     }
+ 101:Src/communication/binary_download.c ****                     received_len = receive(targetP, url_str, socket, server_reply + i, server_respo
+ 102:Src/communication/binary_download.c ****                     continue;
+ 103:Src/communication/binary_download.c ****                 }
+ 104:Src/communication/binary_download.c ****             } else {
+ 105:Src/communication/binary_download.c ****                 if (strstr(server_reply, "\r\n\r\n")) {
+ 106:Src/communication/binary_download.c ****                     download_error(targetP, CONTENT_LENGTH_NOT_SPECIFIED_ERROR, socket, url_str);
+ 107:Src/communication/binary_download.c ****                 }
+ 108:Src/communication/binary_download.c **** 
+ 109:Src/communication/binary_download.c ****                 int i;
+ 110:Src/communication/binary_download.c ****                 for (i = 0; i < 20; i++) {
+ 111:Src/communication/binary_download.c ****                     server_reply[i] = server_reply[received_len - 20 + i];
+ 112:Src/communication/binary_download.c ****                 }
+ 113:Src/communication/binary_download.c ****                 received_len = receive(targetP, url_str, socket, server_reply + i, server_response_
+ 114:Src/communication/binary_download.c ****                 continue;
+ 115:Src/communication/binary_download.c ****             }
+ 116:Src/communication/binary_download.c ****         }
+ 117:Src/communication/binary_download.c **** 
+ 118:Src/communication/binary_download.c ****         if (payload_len > 0) {
+ 119:Src/communication/binary_download.c ****             char *payload = strstr(server_reply, "\r\n\r\n");
+ 120:Src/communication/binary_download.c ****             if (payload != NULL) {
+ 121:Src/communication/binary_download.c ****                 unsigned long read_length = payload - server_reply + 4; //+ 4 because of \r\n\r\n s
+ 122:Src/communication/binary_download.c ****                 if (read_length < received_len) {
+ 123:Src/communication/binary_download.c ****                     file_initialised = createFile(targetP, url_str, socket, &file);
+ 124:Src/communication/binary_download.c ****                     int result = usb_write(&file, payload + 4, received_len - read_length);
+ 125:Src/communication/binary_download.c ****                     if (result != 0) {
+ 126:Src/communication/binary_download.c ****                         usb_close_file(&file);
+ 127:Src/communication/binary_download.c ****                         download_error(targetP, USB_ERROR, socket, url_str);
+ 128:Src/communication/binary_download.c ****                     }
+ 129:Src/communication/binary_download.c ****                     total_received_len += received_len - read_length;
+ 130:Src/communication/binary_download.c ****                     targetP->download_progress = (uint8_t) (100 * total_received_len / payload_len)
+ 131:Src/communication/binary_download.c ****                 }
+ 132:Src/communication/binary_download.c ****                 break;
+ 133:Src/communication/binary_download.c ****             } else {
+ 134:Src/communication/binary_download.c ****                 int i;
+ 135:Src/communication/binary_download.c ****                 for (i = 0; i < 5; i++) {
+ 136:Src/communication/binary_download.c ****                     server_reply[i] = server_reply[received_len - 5 + i];
+ 137:Src/communication/binary_download.c ****                 }
+ 138:Src/communication/binary_download.c ****                 received_len = receive(targetP, url_str, socket, server_reply + i, server_response_
+ 139:Src/communication/binary_download.c ****             }
+ 140:Src/communication/binary_download.c ****         }
+ 141:Src/communication/binary_download.c ****     }
+ 142:Src/communication/binary_download.c **** 
+ 143:Src/communication/binary_download.c ****     if (!file_initialised) {
+ 144:Src/communication/binary_download.c ****         file_initialised = createFile(targetP, url_str, socket, &file);
+ 145:Src/communication/binary_download.c ****     }
+ 146:Src/communication/binary_download.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 5
+
+
+ 147:Src/communication/binary_download.c ****     while (1) {
+ 148:Src/communication/binary_download.c ****         received_len = lwip_recv(socket, server_reply, (size_t) server_response_length, 0);
+ 149:Src/communication/binary_download.c **** 
+ 150:Src/communication/binary_download.c ****         if (received_len < 0) {
+ 151:Src/communication/binary_download.c ****             printf("recv failed\r\n");
+ 152:Src/communication/binary_download.c ****             usb_close_file(&file);
+ 153:Src/communication/binary_download.c ****             download_error(targetP, RECEIVE_ERROR, socket, url_str);
+ 154:Src/communication/binary_download.c ****         }
+ 155:Src/communication/binary_download.c ****         total_received_len += received_len;
+ 156:Src/communication/binary_download.c ****         targetP->download_progress = (uint8_t) (100 * total_received_len / payload_len);
+ 157:Src/communication/binary_download.c ****         server_reply[received_len] = '\0';
+ 158:Src/communication/binary_download.c **** 
+ 159:Src/communication/binary_download.c ****         long bytes_to_write;
+ 160:Src/communication/binary_download.c ****         if (total_received_len > payload_len) {
+ 161:Src/communication/binary_download.c ****             bytes_to_write = received_len - (total_received_len - payload_len);
+ 162:Src/communication/binary_download.c ****         } else {
+ 163:Src/communication/binary_download.c ****             bytes_to_write = received_len;
+ 164:Src/communication/binary_download.c ****         }
+ 165:Src/communication/binary_download.c ****         int result = usb_write(&file, server_reply, (size_t) bytes_to_write);
+ 166:Src/communication/binary_download.c ****         if (result != 0) {
+ 167:Src/communication/binary_download.c ****             usb_close_file(&file);
+ 168:Src/communication/binary_download.c ****             download_error(targetP, USB_ERROR, socket, url_str);
+ 169:Src/communication/binary_download.c ****         }
+ 170:Src/communication/binary_download.c **** 
+ 171:Src/communication/binary_download.c ****         if (total_received_len >= payload_len) {
+ 172:Src/communication/binary_download.c ****             break;
+ 173:Src/communication/binary_download.c ****         }
+ 174:Src/communication/binary_download.c ****     }
+ 175:Src/communication/binary_download.c **** 
+ 176:Src/communication/binary_download.c ****     printf("Download ended in %d ms\n", xTaskGetTickCount() - start_time);
+ 177:Src/communication/binary_download.c **** 
+ 178:Src/communication/binary_download.c ****     usb_close_file(&file);
+ 179:Src/communication/binary_download.c ****     targetP->download_state = DOWNLOAD_COMPLETED;
+ 180:Src/communication/binary_download.c ****     targetP->download_progress = 100;
+ 181:Src/communication/binary_download.c ****     targetP->download_error = NO_ERROR;
+ 182:Src/communication/binary_download.c ****     lwip_close(socket);
+ 183:Src/communication/binary_download.c ****     lwm2m_free(url_str);
+ 184:Src/communication/binary_download.c ****     USB_BUSY = 0;
+ 185:Src/communication/binary_download.c ****     vTaskDelete(NULL);
+ 186:Src/communication/binary_download.c **** }
+ 187:Src/communication/binary_download.c **** 
+ 188:Src/communication/binary_download.c **** static uint8_t createFile(target_instance_t *targetP, char *url_str, int socket, FIL *file) {
+ 189:Src/communication/binary_download.c ****     if (get_usb_ready()) {
+ 190:Src/communication/binary_download.c ****         int result = usb_open_file(targetP->binary_filename, file, FA_WRITE | FA_CREATE_ALWAYS);
+ 191:Src/communication/binary_download.c ****         if (result != 0) {
+ 192:Src/communication/binary_download.c ****             download_error(targetP, USB_ERROR, socket, url_str);
+ 193:Src/communication/binary_download.c ****         }
+ 194:Src/communication/binary_download.c ****     }
+ 195:Src/communication/binary_download.c ****     return 1;
+ 196:Src/communication/binary_download.c **** }
+ 197:Src/communication/binary_download.c **** 
+ 198:Src/communication/binary_download.c **** static void checkResponseCode(target_instance_t *targetP, char *url_str, int socket, char *server_r
+ 199:Src/communication/binary_download.c ****     if (!lwm2m_strncmp(server_reply, "HTTP/1.1 200 OK", 15) == 0 &&
+ 200:Src/communication/binary_download.c ****         !lwm2m_strncmp(server_reply, "HTTP/1.0 200 OK", 15) == 0) {
+ 201:Src/communication/binary_download.c ****         long response_code;
+ 202:Src/communication/binary_download.c ****         char *asd;
+ 203:Src/communication/binary_download.c ****         asd = server_reply + 9;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 6
+
+
+ 204:Src/communication/binary_download.c ****         if (xatoi(&asd, &response_code) != 1) {
+ 205:Src/communication/binary_download.c ****             printf("Error reading Server response code\r\n");
+ 206:Src/communication/binary_download.c ****             download_error(targetP, UNKNOWN_ERROR, socket, url_str);
+ 207:Src/communication/binary_download.c ****         }
+ 208:Src/communication/binary_download.c ****         printf("Server Response status:%ld\r\n", response_code);
+ 209:Src/communication/binary_download.c ****         download_error(targetP, (int) response_code, socket, url_str);
+ 210:Src/communication/binary_download.c ****     }
+ 211:Src/communication/binary_download.c ****     printf("Server responded with 200!\r\n");
+ 212:Src/communication/binary_download.c **** }
+ 213:Src/communication/binary_download.c **** 
+ 214:Src/communication/binary_download.c **** static int receive(target_instance_t *targetP, char *url_str, int socket, char *server_reply, int m
+  86              		.loc 1 214 0
+  87              		.cfi_startproc
+  88              		@ args = 4, pretend = 0, frame = 0
+  89              		@ frame_needed = 0, uses_anonymous_args = 0
+  90              	.LVL7:
+  91 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  92              	.LCFI1:
+  93              		.cfi_def_cfa_offset 24
+  94              		.cfi_offset 4, -24
+  95              		.cfi_offset 5, -20
+  96              		.cfi_offset 6, -16
+  97              		.cfi_offset 7, -12
+  98              		.cfi_offset 8, -8
+  99              		.cfi_offset 14, -4
+ 100 0004 0746     		mov	r7, r0
+ 101 0006 8846     		mov	r8, r1
+ 102 0008 1646     		mov	r6, r2
+ 103 000a 1D46     		mov	r5, r3
+ 215:Src/communication/binary_download.c ****     int received_len = lwip_recv(socket, server_reply, (size_t) max_received_len, 0);
+ 104              		.loc 1 215 0
+ 105 000c 0023     		movs	r3, #0
+ 106              	.LVL8:
+ 107 000e 069A     		ldr	r2, [sp, #24]
+ 108              	.LVL9:
+ 109 0010 2946     		mov	r1, r5
+ 110              	.LVL10:
+ 111 0012 3046     		mov	r0, r6
+ 112              	.LVL11:
+ 113 0014 FFF7FEFF 		bl	lwip_recv
+ 114              	.LVL12:
+ 216:Src/communication/binary_download.c ****     if (received_len < 0) {
+ 115              		.loc 1 216 0
+ 116 0018 041E     		subs	r4, r0, #0
+ 117 001a 04DB     		blt	.L9
+ 118              	.LVL13:
+ 119              	.L7:
+ 217:Src/communication/binary_download.c ****         printf("recv failed\r\n");
+ 218:Src/communication/binary_download.c ****         download_error(targetP, RECEIVE_ERROR, socket, url_str);
+ 219:Src/communication/binary_download.c ****     }
+ 220:Src/communication/binary_download.c ****     server_reply[received_len] = '\0';
+ 120              		.loc 1 220 0
+ 121 001c 0023     		movs	r3, #0
+ 122 001e 2B55     		strb	r3, [r5, r4]
+ 221:Src/communication/binary_download.c ****     return received_len;
+ 222:Src/communication/binary_download.c **** }
+ 123              		.loc 1 222 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 7
+
+
+ 124 0020 2046     		mov	r0, r4
+ 125 0022 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 126              	.LVL14:
+ 127              	.L9:
+ 217:Src/communication/binary_download.c ****         printf("recv failed\r\n");
+ 128              		.loc 1 217 0
+ 129 0026 0548     		ldr	r0, .L10
+ 130              	.LVL15:
+ 131 0028 FFF7FEFF 		bl	puts
+ 132              	.LVL16:
+ 218:Src/communication/binary_download.c ****     }
+ 133              		.loc 1 218 0
+ 134 002c 4346     		mov	r3, r8
+ 135 002e 3246     		mov	r2, r6
+ 136 0030 0521     		movs	r1, #5
+ 137 0032 3846     		mov	r0, r7
+ 138 0034 FFF7FEFF 		bl	download_error
+ 139              	.LVL17:
+ 140 0038 F0E7     		b	.L7
+ 141              	.L11:
+ 142 003a 00BF     		.align	2
+ 143              	.L10:
+ 144 003c 00000000 		.word	.LC0
+ 145              		.cfi_endproc
+ 146              	.LFE151:
+ 148              		.section	.text.resolveAddress,"ax",%progbits
+ 149              		.align	1
+ 150              		.syntax unified
+ 151              		.thumb
+ 152              		.thumb_func
+ 153              		.fpu fpv4-sp-d16
+ 155              	resolveAddress:
+ 156              	.LFB154:
+ 223:Src/communication/binary_download.c **** 
+ 224:Src/communication/binary_download.c **** static void makeRequest(target_instance_t *targetP, struct yuarel *url, char *url_str, int socket) 
+ 225:Src/communication/binary_download.c ****     char message[200];
+ 226:Src/communication/binary_download.c ****     sprintf(message, "GET /%s HTTP/1.1\r\nHost: %s\r\n\r\n",
+ 227:Src/communication/binary_download.c ****             (*url).path, (*url).host);
+ 228:Src/communication/binary_download.c **** 
+ 229:Src/communication/binary_download.c ****     if (lwip_send(socket, message, strlen(message), 0) < 0) {
+ 230:Src/communication/binary_download.c ****         printf("Send failed\r\n");
+ 231:Src/communication/binary_download.c ****         download_error(targetP, REQUEST_ERROR, socket, url_str);
+ 232:Src/communication/binary_download.c ****     }
+ 233:Src/communication/binary_download.c **** }
+ 234:Src/communication/binary_download.c **** 
+ 235:Src/communication/binary_download.c **** static void connectToServer(target_instance_t *targetP, char *url_str, int socket, struct sockaddr_
+ 236:Src/communication/binary_download.c ****     int result = lwip_connect(socket, (struct sockaddr *) clientAddressv4, sizeof(struct sockaddr_i
+ 237:Src/communication/binary_download.c ****     if (result < 0) {
+ 238:Src/communication/binary_download.c ****         printf("cannot connect to server, err: %d\r\n", result);
+ 239:Src/communication/binary_download.c ****         lwip_close(socket);
+ 240:Src/communication/binary_download.c ****         download_error(targetP, CONNECTION_ERROR, socket, url_str);
+ 241:Src/communication/binary_download.c ****     }
+ 242:Src/communication/binary_download.c **** }
+ 243:Src/communication/binary_download.c **** 
+ 244:Src/communication/binary_download.c **** static void resolveAddress(target_instance_t *targetP, char *url_str, struct yuarel *url, int *sock
+ 245:Src/communication/binary_download.c ****                            struct sockaddr_in *clientAddressv4) {
+ 157              		.loc 1 245 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 8
+
+
+ 158              		.cfi_startproc
+ 159              		@ args = 4, pretend = 0, frame = 8
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 161              	.LVL18:
+ 162 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 163              	.LCFI2:
+ 164              		.cfi_def_cfa_offset 24
+ 165              		.cfi_offset 4, -24
+ 166              		.cfi_offset 5, -20
+ 167              		.cfi_offset 6, -16
+ 168              		.cfi_offset 7, -12
+ 169              		.cfi_offset 8, -8
+ 170              		.cfi_offset 14, -4
+ 171 0004 82B0     		sub	sp, sp, #8
+ 172              	.LCFI3:
+ 173              		.cfi_def_cfa_offset 32
+ 174 0006 0746     		mov	r7, r0
+ 175 0008 8846     		mov	r8, r1
+ 176 000a 1546     		mov	r5, r2
+ 177 000c 1E46     		mov	r6, r3
+ 178 000e 089C     		ldr	r4, [sp, #32]
+ 246:Src/communication/binary_download.c ****     if (yuarel_parse(url, url_str) != 0) {
+ 179              		.loc 1 246 0
+ 180 0010 1046     		mov	r0, r2
+ 181              	.LVL19:
+ 182 0012 FFF7FEFF 		bl	yuarel_parse
+ 183              	.LVL20:
+ 184 0016 C8B9     		cbnz	r0, .L19
+ 185              	.L13:
+ 247:Src/communication/binary_download.c ****         printf("Error parsing URL\r\n");
+ 248:Src/communication/binary_download.c ****         download_error(targetP, ERROR_PARSING_URL, 0, url_str);
+ 249:Src/communication/binary_download.c ****     }
+ 250:Src/communication/binary_download.c ****     (*socket) = lwip_socket(AF_INET, SOCK_STREAM, 0);
+ 186              		.loc 1 250 0
+ 187 0018 0022     		movs	r2, #0
+ 188 001a 0121     		movs	r1, #1
+ 189 001c 0220     		movs	r0, #2
+ 190 001e FFF7FEFF 		bl	lwip_socket
+ 191              	.LVL21:
+ 192 0022 3060     		str	r0, [r6]
+ 251:Src/communication/binary_download.c ****     if ((*socket) < 0) {
+ 193              		.loc 1 251 0
+ 194 0024 0028     		cmp	r0, #0
+ 195 0026 1BDB     		blt	.L20
+ 196              	.L14:
+ 252:Src/communication/binary_download.c ****         printf("cannot create socket: %d\r\n", errno);
+ 253:Src/communication/binary_download.c ****         download_error(targetP, SOCKET_ERROR, (*socket), url_str);
+ 254:Src/communication/binary_download.c ****     }
+ 255:Src/communication/binary_download.c **** 
+ 256:Src/communication/binary_download.c ****     u32_t addr;
+ 257:Src/communication/binary_download.c ****     if (netconn_gethostbyname((*url).host, (ip_addr_t *) &addr) != ERR_OK) {
+ 197              		.loc 1 257 0
+ 198 0028 01A9     		add	r1, sp, #4
+ 199 002a E868     		ldr	r0, [r5, #12]
+ 200 002c FFF7FEFF 		bl	netconn_gethostbyname
+ 201              	.LVL22:
+ 202 0030 18BB     		cbnz	r0, .L21
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 9
+
+
+ 203              	.L15:
+ 258:Src/communication/binary_download.c ****         printf("cannot resolve hostname\r\n");
+ 259:Src/communication/binary_download.c ****         download_error(targetP, HOST_UNKNOWN_ERROR, (*socket), url_str);
+ 260:Src/communication/binary_download.c ****     }
+ 261:Src/communication/binary_download.c ****     (*clientAddressv4).sin_family = AF_INET;
+ 204              		.loc 1 261 0
+ 205 0032 0223     		movs	r3, #2
+ 206 0034 6370     		strb	r3, [r4, #1]
+ 262:Src/communication/binary_download.c ****     (*clientAddressv4).sin_port = htons(url->port ? url->port : 80);
+ 207              		.loc 1 262 0
+ 208 0036 2869     		ldr	r0, [r5, #16]
+ 209 0038 48B3     		cbz	r0, .L17
+ 210              		.loc 1 262 0 is_stmt 0 discriminator 1
+ 211 003a 80B2     		uxth	r0, r0
+ 212              	.L16:
+ 213              		.loc 1 262 0 discriminator 4
+ 214 003c FFF7FEFF 		bl	lwip_htons
+ 215              	.LVL23:
+ 216 0040 6080     		strh	r0, [r4, #2]	@ movhi
+ 263:Src/communication/binary_download.c ****     (*clientAddressv4).sin_addr.s_addr = addr;
+ 217              		.loc 1 263 0 is_stmt 1 discriminator 4
+ 218 0042 019B     		ldr	r3, [sp, #4]
+ 219 0044 6360     		str	r3, [r4, #4]
+ 264:Src/communication/binary_download.c **** }...
+ 220              		.loc 1 264 0 discriminator 4
+ 221 0046 02B0     		add	sp, sp, #8
+ 222              	.LCFI4:
+ 223              		.cfi_remember_state
+ 224              		.cfi_def_cfa_offset 24
+ 225              		@ sp needed
+ 226 0048 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 227              	.LVL24:
+ 228              	.L19:
+ 229              	.LCFI5:
+ 230              		.cfi_restore_state
+ 247:Src/communication/binary_download.c ****         printf("Error parsing URL\r\n");
+ 231              		.loc 1 247 0
+ 232 004c 1148     		ldr	r0, .L22
+ 233 004e FFF7FEFF 		bl	puts
+ 234              	.LVL25:
+ 248:Src/communication/binary_download.c ****         download_error(targetP, ERROR_PARSING_URL, 0, url_str);
+ 235              		.loc 1 248 0
+ 236 0052 4346     		mov	r3, r8
+ 237 0054 0022     		movs	r2, #0
+ 238 0056 0721     		movs	r1, #7
+ 239 0058 3846     		mov	r0, r7
+ 240 005a FFF7FEFF 		bl	download_error
+ 241              	.LVL26:
+ 242 005e DBE7     		b	.L13
+ 243              	.L20:
+ 252:Src/communication/binary_download.c ****         printf("cannot create socket: %d\r\n", errno);
+ 244              		.loc 1 252 0
+ 245 0060 FFF7FEFF 		bl	__errno
+ 246              	.LVL27:
+ 247 0064 0168     		ldr	r1, [r0]
+ 248 0066 0C48     		ldr	r0, .L22+4
+ 249 0068 FFF7FEFF 		bl	printf
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 10
+
+
+ 250              	.LVL28:
+ 253:Src/communication/binary_download.c ****         download_error(targetP, SOCKET_ERROR, (*socket), url_str);
+ 251              		.loc 1 253 0
+ 252 006c 4346     		mov	r3, r8
+ 253 006e 3268     		ldr	r2, [r6]
+ 254 0070 0221     		movs	r1, #2
+ 255 0072 3846     		mov	r0, r7
+ 256 0074 FFF7FEFF 		bl	download_error
+ 257              	.LVL29:
+ 258 0078 D6E7     		b	.L14
+ 259              	.L21:
+ 258:Src/communication/binary_download.c ****         printf("cannot resolve hostname\r\n");
+ 260              		.loc 1 258 0
+ 261 007a 0848     		ldr	r0, .L22+8
+ 262 007c FFF7FEFF 		bl	puts
+ 263              	.LVL30:
+ 259:Src/communication/binary_download.c ****         download_error(targetP, HOST_UNKNOWN_ERROR, (*socket), url_str);
+ 264              		.loc 1 259 0
+ 265 0080 4346     		mov	r3, r8
+ 266 0082 3268     		ldr	r2, [r6]
+ 267 0084 0821     		movs	r1, #8
+ 268 0086 3846     		mov	r0, r7
+ 269 0088 FFF7FEFF 		bl	download_error
+ 270              	.LVL31:
+ 271 008c D1E7     		b	.L15
+ 272              	.L17:
+ 262:Src/communication/binary_download.c ****     (*clientAddressv4).sin_port = htons(url->port ? url->port : 80);
+ 273              		.loc 1 262 0
+ 274 008e 5020     		movs	r0, #80
+ 275 0090 D4E7     		b	.L16
+ 276              	.L23:
+ 277 0092 00BF     		.align	2
+ 278              	.L22:
+ 279 0094 00000000 		.word	.LC1
+ 280 0098 14000000 		.word	.LC2
+ 281 009c 30000000 		.word	.LC3
+ 282              		.cfi_endproc
+ 283              	.LFE154:
+ 285              		.section	.text.connectToServer,"ax",%progbits
+ 286              		.align	1
+ 287              		.syntax unified
+ 288              		.thumb
+ 289              		.thumb_func
+ 290              		.fpu fpv4-sp-d16
+ 292              	connectToServer:
+ 293              	.LFB153:
+ 235:Src/communication/binary_download.c **** static void connectToServer(target_instance_t *targetP, char *url_str, int socket, struct sockaddr_
+ 294              		.loc 1 235 0
+ 295              		.cfi_startproc
+ 296              		@ args = 0, pretend = 0, frame = 0
+ 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298              	.LVL32:
+ 299 0000 70B5     		push	{r4, r5, r6, lr}
+ 300              	.LCFI6:
+ 301              		.cfi_def_cfa_offset 16
+ 302              		.cfi_offset 4, -16
+ 303              		.cfi_offset 5, -12
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 11
+
+
+ 304              		.cfi_offset 6, -8
+ 305              		.cfi_offset 14, -4
+ 306 0002 0546     		mov	r5, r0
+ 307 0004 0E46     		mov	r6, r1
+ 308 0006 1446     		mov	r4, r2
+ 236:Src/communication/binary_download.c ****     int result = lwip_connect(socket, (struct sockaddr *) clientAddressv4, sizeof(struct sockaddr_i
+ 309              		.loc 1 236 0
+ 310 0008 1022     		movs	r2, #16
+ 311              	.LVL33:
+ 312 000a 1946     		mov	r1, r3
+ 313              	.LVL34:
+ 314 000c 2046     		mov	r0, r4
+ 315              	.LVL35:
+ 316 000e FFF7FEFF 		bl	lwip_connect
+ 317              	.LVL36:
+ 237:Src/communication/binary_download.c ****     if (result < 0) {
+ 318              		.loc 1 237 0
+ 319 0012 011E     		subs	r1, r0, #0
+ 320 0014 00DB     		blt	.L27
+ 321              	.LVL37:
+ 322              	.L24:
+ 242:Src/communication/binary_download.c **** }
+ 323              		.loc 1 242 0
+ 324 0016 70BD     		pop	{r4, r5, r6, pc}
+ 325              	.LVL38:
+ 326              	.L27:
+ 238:Src/communication/binary_download.c ****         printf("cannot connect to server, err: %d\r\n", result);
+ 327              		.loc 1 238 0
+ 328 0018 0648     		ldr	r0, .L28
+ 329              	.LVL39:
+ 330 001a FFF7FEFF 		bl	printf
+ 331              	.LVL40:
+ 239:Src/communication/binary_download.c ****         lwip_close(socket);
+ 332              		.loc 1 239 0
+ 333 001e 2046     		mov	r0, r4
+ 334 0020 FFF7FEFF 		bl	lwip_close
+ 335              	.LVL41:
+ 240:Src/communication/binary_download.c ****         download_error(targetP, CONNECTION_ERROR, socket, url_str);
+ 336              		.loc 1 240 0
+ 337 0024 3346     		mov	r3, r6
+ 338 0026 2246     		mov	r2, r4
+ 339 0028 0321     		movs	r1, #3
+ 340 002a 2846     		mov	r0, r5
+ 341 002c FFF7FEFF 		bl	download_error
+ 342              	.LVL42:
+ 242:Src/communication/binary_download.c **** }
+ 343              		.loc 1 242 0
+ 344 0030 F1E7     		b	.L24
+ 345              	.L29:
+ 346 0032 00BF     		.align	2
+ 347              	.L28:
+ 348 0034 00000000 		.word	.LC4
+ 349              		.cfi_endproc
+ 350              	.LFE153:
+ 352              		.section	.text.makeRequest,"ax",%progbits
+ 353              		.align	1
+ 354              		.syntax unified
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 12
+
+
+ 355              		.thumb
+ 356              		.thumb_func
+ 357              		.fpu fpv4-sp-d16
+ 359              	makeRequest:
+ 360              	.LFB152:
+ 224:Src/communication/binary_download.c **** static void makeRequest(target_instance_t *targetP, struct yuarel *url, char *url_str, int socket) 
+ 361              		.loc 1 224 0
+ 362              		.cfi_startproc
+ 363              		@ args = 0, pretend = 0, frame = 200
+ 364              		@ frame_needed = 0, uses_anonymous_args = 0
+ 365              	.LVL43:
+ 366 0000 70B5     		push	{r4, r5, r6, lr}
+ 367              	.LCFI7:
+ 368              		.cfi_def_cfa_offset 16
+ 369              		.cfi_offset 4, -16
+ 370              		.cfi_offset 5, -12
+ 371              		.cfi_offset 6, -8
+ 372              		.cfi_offset 14, -4
+ 373 0002 B2B0     		sub	sp, sp, #200
+ 374              	.LCFI8:
+ 375              		.cfi_def_cfa_offset 216
+ 376 0004 0546     		mov	r5, r0
+ 377 0006 1646     		mov	r6, r2
+ 378 0008 1C46     		mov	r4, r3
+ 226:Src/communication/binary_download.c ****     sprintf(message, "GET /%s HTTP/1.1\r\nHost: %s\r\n\r\n",
+ 379              		.loc 1 226 0
+ 380 000a CB68     		ldr	r3, [r1, #12]
+ 381              	.LVL44:
+ 382 000c 4A69     		ldr	r2, [r1, #20]
+ 383              	.LVL45:
+ 384 000e 0D49     		ldr	r1, .L34
+ 385              	.LVL46:
+ 386 0010 6846     		mov	r0, sp
+ 387              	.LVL47:
+ 388 0012 FFF7FEFF 		bl	sprintf
+ 389              	.LVL48:
+ 229:Src/communication/binary_download.c ****     if (lwip_send(socket, message, strlen(message), 0) < 0) {
+ 390              		.loc 1 229 0
+ 391 0016 6846     		mov	r0, sp
+ 392 0018 FFF7FEFF 		bl	strlen
+ 393              	.LVL49:
+ 394 001c 0023     		movs	r3, #0
+ 395 001e 0246     		mov	r2, r0
+ 396 0020 6946     		mov	r1, sp
+ 397 0022 2046     		mov	r0, r4
+ 398 0024 FFF7FEFF 		bl	lwip_send
+ 399              	.LVL50:
+ 400 0028 0028     		cmp	r0, #0
+ 401 002a 01DB     		blt	.L33
+ 402              	.L30:
+ 233:Src/communication/binary_download.c **** }
+ 403              		.loc 1 233 0
+ 404 002c 32B0     		add	sp, sp, #200
+ 405              	.LCFI9:
+ 406              		.cfi_remember_state
+ 407              		.cfi_def_cfa_offset 16
+ 408              		@ sp needed
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 13
+
+
+ 409 002e 70BD     		pop	{r4, r5, r6, pc}
+ 410              	.LVL51:
+ 411              	.L33:
+ 412              	.LCFI10:
+ 413              		.cfi_restore_state
+ 230:Src/communication/binary_download.c ****         printf("Send failed\r\n");
+ 414              		.loc 1 230 0
+ 415 0030 0548     		ldr	r0, .L34+4
+ 416 0032 FFF7FEFF 		bl	puts
+ 417              	.LVL52:
+ 231:Src/communication/binary_download.c ****         download_error(targetP, REQUEST_ERROR, socket, url_str);
+ 418              		.loc 1 231 0
+ 419 0036 3346     		mov	r3, r6
+ 420 0038 2246     		mov	r2, r4
+ 421 003a 0421     		movs	r1, #4
+ 422 003c 2846     		mov	r0, r5
+ 423 003e FFF7FEFF 		bl	download_error
+ 424              	.LVL53:
+ 233:Src/communication/binary_download.c **** }
+ 425              		.loc 1 233 0
+ 426 0042 F3E7     		b	.L30
+ 427              	.L35:
+ 428              		.align	2
+ 429              	.L34:
+ 430 0044 00000000 		.word	.LC5
+ 431 0048 20000000 		.word	.LC6
+ 432              		.cfi_endproc
+ 433              	.LFE152:
+ 435              		.section	.text.checkResponseCode,"ax",%progbits
+ 436              		.align	1
+ 437              		.syntax unified
+ 438              		.thumb
+ 439              		.thumb_func
+ 440              		.fpu fpv4-sp-d16
+ 442              	checkResponseCode:
+ 443              	.LFB150:
+ 198:Src/communication/binary_download.c **** static void checkResponseCode(target_instance_t *targetP, char *url_str, int socket, char *server_r
+ 444              		.loc 1 198 0
+ 445              		.cfi_startproc
+ 446              		@ args = 0, pretend = 0, frame = 8
+ 447              		@ frame_needed = 0, uses_anonymous_args = 0
+ 448              	.LVL54:
+ 449 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 450              	.LCFI11:
+ 451              		.cfi_def_cfa_offset 20
+ 452              		.cfi_offset 4, -20
+ 453              		.cfi_offset 5, -16
+ 454              		.cfi_offset 6, -12
+ 455              		.cfi_offset 7, -8
+ 456              		.cfi_offset 14, -4
+ 457 0002 83B0     		sub	sp, sp, #12
+ 458              	.LCFI12:
+ 459              		.cfi_def_cfa_offset 32
+ 460 0004 0546     		mov	r5, r0
+ 461 0006 0F46     		mov	r7, r1
+ 462 0008 1646     		mov	r6, r2
+ 463 000a 1C46     		mov	r4, r3
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 14
+
+
+ 199:Src/communication/binary_download.c ****     if (!lwm2m_strncmp(server_reply, "HTTP/1.1 200 OK", 15) == 0 &&
+ 464              		.loc 1 199 0
+ 465 000c 0F22     		movs	r2, #15
+ 466              	.LVL55:
+ 467 000e 1749     		ldr	r1, .L42
+ 468              	.LVL56:
+ 469 0010 1846     		mov	r0, r3
+ 470              	.LVL57:
+ 471 0012 FFF7FEFF 		bl	lwm2m_strncmp
+ 472              	.LVL58:
+ 473 0016 20B9     		cbnz	r0, .L40
+ 474              	.LVL59:
+ 475              	.L37:
+ 211:Src/communication/binary_download.c ****     printf("Server responded with 200!\r\n");
+ 476              		.loc 1 211 0
+ 477 0018 1548     		ldr	r0, .L42+4
+ 478 001a FFF7FEFF 		bl	puts
+ 479              	.LVL60:
+ 212:Src/communication/binary_download.c **** }
+ 480              		.loc 1 212 0
+ 481 001e 03B0     		add	sp, sp, #12
+ 482              	.LCFI13:
+ 483              		.cfi_remember_state
+ 484              		.cfi_def_cfa_offset 20
+ 485              		@ sp needed
+ 486 0020 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 487              	.LVL61:
+ 488              	.L40:
+ 489              	.LCFI14:
+ 490              		.cfi_restore_state
+ 200:Src/communication/binary_download.c ****         !lwm2m_strncmp(server_reply, "HTTP/1.0 200 OK", 15) == 0) {
+ 491              		.loc 1 200 0 discriminator 1
+ 492 0022 0F22     		movs	r2, #15
+ 493 0024 1349     		ldr	r1, .L42+8
+ 494 0026 2046     		mov	r0, r4
+ 495 0028 FFF7FEFF 		bl	lwm2m_strncmp
+ 496              	.LVL62:
+ 199:Src/communication/binary_download.c ****     if (!lwm2m_strncmp(server_reply, "HTTP/1.1 200 OK", 15) == 0 &&
+ 497              		.loc 1 199 0 discriminator 1
+ 498 002c 0028     		cmp	r0, #0
+ 499 002e F3D0     		beq	.L37
+ 500              	.LBB2:
+ 203:Src/communication/binary_download.c ****         asd = server_reply + 9;
+ 501              		.loc 1 203 0
+ 502 0030 0934     		adds	r4, r4, #9
+ 503              	.LVL63:
+ 504 0032 0194     		str	r4, [sp, #4]
+ 204:Src/communication/binary_download.c ****         if (xatoi(&asd, &response_code) != 1) {
+ 505              		.loc 1 204 0
+ 506 0034 6946     		mov	r1, sp
+ 507 0036 01A8     		add	r0, sp, #4
+ 508 0038 FFF7FEFF 		bl	xatoi
+ 509              	.LVL64:
+ 510 003c 0128     		cmp	r0, #1
+ 511 003e 0AD1     		bne	.L41
+ 512              	.L38:
+ 208:Src/communication/binary_download.c ****         printf("Server Response status:%ld\r\n", response_code);
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 15
+
+
+ 513              		.loc 1 208 0
+ 514 0040 0099     		ldr	r1, [sp]
+ 515 0042 0D48     		ldr	r0, .L42+12
+ 516 0044 FFF7FEFF 		bl	printf
+ 517              	.LVL65:
+ 209:Src/communication/binary_download.c ****         download_error(targetP, (int) response_code, socket, url_str);
+ 518              		.loc 1 209 0
+ 519 0048 3B46     		mov	r3, r7
+ 520 004a 3246     		mov	r2, r6
+ 521 004c 0099     		ldr	r1, [sp]
+ 522 004e 2846     		mov	r0, r5
+ 523 0050 FFF7FEFF 		bl	download_error
+ 524              	.LVL66:
+ 525 0054 E0E7     		b	.L37
+ 526              	.L41:
+ 205:Src/communication/binary_download.c ****             printf("Error reading Server response code\r\n");
+ 527              		.loc 1 205 0
+ 528 0056 0948     		ldr	r0, .L42+16
+ 529 0058 FFF7FEFF 		bl	puts
+ 530              	.LVL67:
+ 206:Src/communication/binary_download.c ****             download_error(targetP, UNKNOWN_ERROR, socket, url_str);
+ 531              		.loc 1 206 0
+ 532 005c 3B46     		mov	r3, r7
+ 533 005e 3246     		mov	r2, r6
+ 534 0060 0121     		movs	r1, #1
+ 535 0062 2846     		mov	r0, r5
+ 536 0064 FFF7FEFF 		bl	download_error
+ 537              	.LVL68:
+ 538 0068 EAE7     		b	.L38
+ 539              	.L43:
+ 540 006a 00BF     		.align	2
+ 541              	.L42:
+ 542 006c 00000000 		.word	.LC7
+ 543 0070 64000000 		.word	.LC11
+ 544 0074 10000000 		.word	.LC8
+ 545 0078 44000000 		.word	.LC10
+ 546 007c 20000000 		.word	.LC9
+ 547              	.LBE2:
+ 548              		.cfi_endproc
+ 549              	.LFE150:
+ 551              		.section	.text.createFile,"ax",%progbits
+ 552              		.align	1
+ 553              		.syntax unified
+ 554              		.thumb
+ 555              		.thumb_func
+ 556              		.fpu fpv4-sp-d16
+ 558              	createFile:
+ 559              	.LFB149:
+ 188:Src/communication/binary_download.c **** static uint8_t createFile(target_instance_t *targetP, char *url_str, int socket, FIL *file) {
+ 560              		.loc 1 188 0
+ 561              		.cfi_startproc
+ 562              		@ args = 0, pretend = 0, frame = 0
+ 563              		@ frame_needed = 0, uses_anonymous_args = 0
+ 564              	.LVL69:
+ 565 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 566              	.LCFI15:
+ 567              		.cfi_def_cfa_offset 24
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 16
+
+
+ 568              		.cfi_offset 3, -24
+ 569              		.cfi_offset 4, -20
+ 570              		.cfi_offset 5, -16
+ 571              		.cfi_offset 6, -12
+ 572              		.cfi_offset 7, -8
+ 573              		.cfi_offset 14, -4
+ 574 0002 0446     		mov	r4, r0
+ 575 0004 0F46     		mov	r7, r1
+ 576 0006 1646     		mov	r6, r2
+ 577 0008 1D46     		mov	r5, r3
+ 189:Src/communication/binary_download.c ****     if (get_usb_ready()) {
+ 578              		.loc 1 189 0
+ 579 000a FFF7FEFF 		bl	get_usb_ready
+ 580              	.LVL70:
+ 581 000e 08B9     		cbnz	r0, .L47
+ 582              	.L45:
+ 196:Src/communication/binary_download.c **** }
+ 583              		.loc 1 196 0
+ 584 0010 0120     		movs	r0, #1
+ 585 0012 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 586              	.LVL71:
+ 587              	.L47:
+ 588              	.LBB3:
+ 190:Src/communication/binary_download.c ****         int result = usb_open_file(targetP->binary_filename, file, FA_WRITE | FA_CREATE_ALWAYS);
+ 589              		.loc 1 190 0
+ 590 0014 0A22     		movs	r2, #10
+ 591 0016 2946     		mov	r1, r5
+ 592 0018 6069     		ldr	r0, [r4, #20]
+ 593 001a FFF7FEFF 		bl	usb_open_file
+ 594              	.LVL72:
+ 191:Src/communication/binary_download.c ****         if (result != 0) {
+ 595              		.loc 1 191 0
+ 596 001e 0028     		cmp	r0, #0
+ 597 0020 F6D0     		beq	.L45
+ 192:Src/communication/binary_download.c ****             download_error(targetP, USB_ERROR, socket, url_str);
+ 598              		.loc 1 192 0
+ 599 0022 3B46     		mov	r3, r7
+ 600 0024 3246     		mov	r2, r6
+ 601 0026 0621     		movs	r1, #6
+ 602 0028 2046     		mov	r0, r4
+ 603              	.LVL73:
+ 604 002a FFF7FEFF 		bl	download_error
+ 605              	.LVL74:
+ 606 002e EFE7     		b	.L45
+ 607              	.LBE3:
+ 608              		.cfi_endproc
+ 609              	.LFE149:
+ 611              		.section	.text.startDownload,"ax",%progbits
+ 612              		.align	1
+ 613              		.global	startDownload
+ 614              		.syntax unified
+ 615              		.thumb
+ 616              		.thumb_func
+ 617              		.fpu fpv4-sp-d16
+ 619              	startDownload:
+ 620              	.LFB148:
+  58:Src/communication/binary_download.c **** void startDownload(void *object_target) {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 17
+
+
+ 621              		.loc 1 58 0
+ 622              		.cfi_startproc
+ 623              		@ args = 0, pretend = 0, frame = 632
+ 624              		@ frame_needed = 1, uses_anonymous_args = 0
+ 625              	.LVL75:
+ 626 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 627              	.LCFI16:
+ 628              		.cfi_def_cfa_offset 36
+ 629              		.cfi_offset 4, -36
+ 630              		.cfi_offset 5, -32
+ 631              		.cfi_offset 6, -28
+ 632              		.cfi_offset 7, -24
+ 633              		.cfi_offset 8, -20
+ 634              		.cfi_offset 9, -16
+ 635              		.cfi_offset 10, -12
+ 636              		.cfi_offset 11, -8
+ 637              		.cfi_offset 14, -4
+ 638 0004 ADF5217D 		sub	sp, sp, #644
+ 639              	.LCFI17:
+ 640              		.cfi_def_cfa_offset 680
+ 641 0008 02AF     		add	r7, sp, #8
+ 642              	.LCFI18:
+ 643              		.cfi_def_cfa 7, 672
+ 644 000a 8146     		mov	r9, r0
+ 645              	.LVL76:
+  61:Src/communication/binary_download.c ****     char *url_str = lwm2m_strdup(targetP->firmware_url);
+ 646              		.loc 1 61 0
+ 647 000c C068     		ldr	r0, [r0, #12]
+ 648              	.LVL77:
+ 649 000e FFF7FEFF 		bl	lwm2m_strdup
+ 650              	.LVL78:
+ 651 0012 8246     		mov	r10, r0
+ 652              	.LVL79:
+  65:Src/communication/binary_download.c ****     int start_time = xTaskGetTickCount();
+ 653              		.loc 1 65 0
+ 654 0014 FFF7FEFF 		bl	xTaskGetTickCount
+ 655              	.LVL80:
+ 656 0018 7860     		str	r0, [r7, #4]
+ 657              	.LVL81:
+  69:Src/communication/binary_download.c ****     resolveAddress(targetP, url_str, &url, &socket, &clientAddressv4);
+ 658              		.loc 1 69 0
+ 659 001a 07F11404 		add	r4, r7, #20
+ 660 001e 0094     		str	r4, [sp]
+ 661 0020 07F12403 		add	r3, r7, #36
+ 662 0024 07F51672 		add	r2, r7, #600
+ 663 0028 5146     		mov	r1, r10
+ 664 002a 4846     		mov	r0, r9
+ 665              	.LVL82:
+ 666 002c FFF7FEFF 		bl	resolveAddress
+ 667              	.LVL83:
+  70:Src/communication/binary_download.c ****     connectToServer(targetP, url_str, socket, &clientAddressv4);
+ 668              		.loc 1 70 0
+ 669 0030 2346     		mov	r3, r4
+ 670 0032 7A6A     		ldr	r2, [r7, #36]
+ 671 0034 5146     		mov	r1, r10
+ 672 0036 4846     		mov	r0, r9
+ 673 0038 FFF7FEFF 		bl	connectToServer
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 18
+
+
+ 674              	.LVL84:
+  72:Src/communication/binary_download.c ****     makeRequest(targetP, &url, url_str, socket);
+ 675              		.loc 1 72 0
+ 676 003c 7B6A     		ldr	r3, [r7, #36]
+ 677 003e 5246     		mov	r2, r10
+ 678 0040 07F51671 		add	r1, r7, #600
+ 679 0044 4846     		mov	r0, r9
+ 680 0046 FFF7FEFF 		bl	makeRequest
+ 681              	.LVL85:
+  75:Src/communication/binary_download.c ****     char server_reply[server_response_length + 1];
+ 682              		.loc 1 75 0
+ 683 004a CCB0     		sub	sp, sp, #304
+ 684              	.LVL86:
+ 685 004c 0DF1080B 		add	fp, sp, #8
+ 686 0050 5C46     		mov	r4, fp
+ 687              	.LVL87:
+  76:Src/communication/binary_download.c ****     server_reply[server_response_length] = '\0';
+ 688              		.loc 1 76 0
+ 689 0052 0023     		movs	r3, #0
+ 690 0054 8BF82C31 		strb	r3, [fp, #300]
+  77:Src/communication/binary_download.c ****     long payload_len = 0;
+ 691              		.loc 1 77 0
+ 692 0058 3B61     		str	r3, [r7, #16]
+ 693              	.LVL88:
+  81:Src/communication/binary_download.c ****     int received_len = receive(targetP, url_str, socket, server_reply, server_response_length);
+ 694              		.loc 1 81 0
+ 695 005a 7B6A     		ldr	r3, [r7, #36]
+ 696 005c 3B60     		str	r3, [r7]
+ 697 005e 4FF49673 		mov	r3, #300
+ 698 0062 0093     		str	r3, [sp]
+ 699 0064 5B46     		mov	r3, fp
+ 700 0066 3A68     		ldr	r2, [r7]
+ 701 0068 5146     		mov	r1, r10
+ 702 006a 4846     		mov	r0, r9
+ 703 006c FFF7FEFF 		bl	receive
+ 704              	.LVL89:
+ 705 0070 0546     		mov	r5, r0
+ 706              	.LVL90:
+  82:Src/communication/binary_download.c ****     checkResponseCode(targetP, url_str, socket, server_reply);
+ 707              		.loc 1 82 0
+ 708 0072 5B46     		mov	r3, fp
+ 709 0074 7A6A     		ldr	r2, [r7, #36]
+ 710 0076 5146     		mov	r1, r10
+ 711 0078 4846     		mov	r0, r9
+ 712              	.LVL91:
+ 713 007a FFF7FEFF 		bl	checkResponseCode
+ 714              	.LVL92:
+ 715 007e 83E0     		b	.L49
+ 716              	.LVL93:
+ 717              	.L74:
+ 718              	.LBB4:
+ 719              	.LBB5:
+  91:Src/communication/binary_download.c ****                         printf("Error reading Content-Length\r\n");
+ 720              		.loc 1 91 0
+ 721 0080 8948     		ldr	r0, .L79
+ 722 0082 FFF7FEFF 		bl	puts
+ 723              	.LVL94:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 19
+
+
+  92:Src/communication/binary_download.c ****                         download_error(targetP, UNKNOWN_ERROR, socket, url_str);
+ 724              		.loc 1 92 0
+ 725 0086 5346     		mov	r3, r10
+ 726 0088 7A6A     		ldr	r2, [r7, #36]
+ 727 008a 0121     		movs	r1, #1
+ 728 008c 4846     		mov	r0, r9
+ 729 008e FFF7FEFF 		bl	download_error
+ 730              	.LVL95:
+ 731 0092 93E0     		b	.L50
+ 732              	.LVL96:
+ 733              	.L68:
+ 734              	.LBE5:
+ 735              	.LBB6:
+  98:Src/communication/binary_download.c ****                     for (i = 0; content_length_str - server_reply + i < received_len; i++) {
+ 736              		.loc 1 98 0
+ 737 0094 4FF00008 		mov	r8, #0
+ 738              	.L52:
+ 739              	.LVL97:
+  98:Src/communication/binary_download.c ****                     for (i = 0; content_length_str - server_reply + i < received_len; i++) {
+ 740              		.loc 1 98 0 is_stmt 0 discriminator 1
+ 741 0098 331B     		subs	r3, r6, r4
+ 742 009a 4344     		add	r3, r3, r8
+ 743 009c 9D42     		cmp	r5, r3
+ 744 009e 06DD     		ble	.L72
+  99:Src/communication/binary_download.c ****                         server_reply[i] = content_length_str[i];
+ 745              		.loc 1 99 0 is_stmt 1 discriminator 3
+ 746 00a0 16F80830 		ldrb	r3, [r6, r8]	@ zero_extendqisi2
+ 747 00a4 04F80830 		strb	r3, [r4, r8]
+  98:Src/communication/binary_download.c ****                     for (i = 0; content_length_str - server_reply + i < received_len; i++) {
+ 748              		.loc 1 98 0 discriminator 3
+ 749 00a8 08F10108 		add	r8, r8, #1
+ 750              	.LVL98:
+ 751 00ac F4E7     		b	.L52
+ 752              	.L72:
+ 101:Src/communication/binary_download.c ****                     received_len = receive(targetP, url_str, socket, server_reply + i, server_respo
+ 753              		.loc 1 101 0
+ 754 00ae 7A6A     		ldr	r2, [r7, #36]
+ 755 00b0 C8F59673 		rsb	r3, r8, #300
+ 756 00b4 0093     		str	r3, [sp]
+ 757 00b6 04EB0803 		add	r3, r4, r8
+ 758 00ba 5146     		mov	r1, r10
+ 759 00bc 4846     		mov	r0, r9
+ 760 00be FFF7FEFF 		bl	receive
+ 761              	.LVL99:
+ 762 00c2 08EB0005 		add	r5, r8, r0
+ 763              	.LVL100:
+ 102:Src/communication/binary_download.c ****                     continue;
+ 764              		.loc 1 102 0
+ 765 00c6 5FE0     		b	.L49
+ 766              	.LVL101:
+ 767              	.L51:
+ 768              	.LBE6:
+ 769              	.LBB7:
+ 105:Src/communication/binary_download.c ****                 if (strstr(server_reply, "\r\n\r\n")) {
+ 770              		.loc 1 105 0
+ 771 00c8 7849     		ldr	r1, .L79+4
+ 772 00ca 2046     		mov	r0, r4
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 20
+
+
+ 773              	.LVL102:
+ 774 00cc FFF7FEFF 		bl	strstr
+ 775              	.LVL103:
+ 776 00d0 28B1     		cbz	r0, .L56
+ 106:Src/communication/binary_download.c ****                     download_error(targetP, CONTENT_LENGTH_NOT_SPECIFIED_ERROR, socket, url_str);
+ 777              		.loc 1 106 0
+ 778 00d2 5346     		mov	r3, r10
+ 779 00d4 7A6A     		ldr	r2, [r7, #36]
+ 780 00d6 0921     		movs	r1, #9
+ 781 00d8 4846     		mov	r0, r9
+ 782 00da FFF7FEFF 		bl	download_error
+ 783              	.LVL104:
+ 784              	.L56:
+ 785              	.LBE7:
+ 786              	.LBB8:
+  98:Src/communication/binary_download.c ****                     for (i = 0; content_length_str - server_reply + i < received_len; i++) {
+ 787              		.loc 1 98 0 discriminator 1
+ 788 00de 0026     		movs	r6, #0
+ 789              	.LVL105:
+ 790 00e0 05E0     		b	.L57
+ 791              	.LVL106:
+ 792              	.L58:
+ 793              	.LBE8:
+ 794              	.LBB9:
+ 111:Src/communication/binary_download.c ****                     server_reply[i] = server_reply[received_len - 20 + i];
+ 795              		.loc 1 111 0 discriminator 3
+ 796 00e2 A5F11403 		sub	r3, r5, #20
+ 797 00e6 3344     		add	r3, r3, r6
+ 798 00e8 E35C     		ldrb	r3, [r4, r3]	@ zero_extendqisi2
+ 799 00ea A355     		strb	r3, [r4, r6]
+ 110:Src/communication/binary_download.c ****                 for (i = 0; i < 20; i++) {
+ 800              		.loc 1 110 0 discriminator 3
+ 801 00ec 0136     		adds	r6, r6, #1
+ 802              	.LVL107:
+ 803              	.L57:
+ 110:Src/communication/binary_download.c ****                 for (i = 0; i < 20; i++) {
+ 804              		.loc 1 110 0 is_stmt 0 discriminator 1
+ 805 00ee 132E     		cmp	r6, #19
+ 806 00f0 F7DD     		ble	.L58
+ 113:Src/communication/binary_download.c ****                 received_len = receive(targetP, url_str, socket, server_reply + i, server_response_
+ 807              		.loc 1 113 0 is_stmt 1
+ 808 00f2 7A6A     		ldr	r2, [r7, #36]
+ 809 00f4 C6F59673 		rsb	r3, r6, #300
+ 810 00f8 0093     		str	r3, [sp]
+ 811 00fa A319     		adds	r3, r4, r6
+ 812 00fc 5146     		mov	r1, r10
+ 813 00fe 4846     		mov	r0, r9
+ 814 0100 FFF7FEFF 		bl	receive
+ 815              	.LVL108:
+ 816 0104 8519     		adds	r5, r0, r6
+ 817              	.LVL109:
+ 114:Src/communication/binary_download.c ****                 continue;
+ 818              		.loc 1 114 0
+ 819 0106 3FE0     		b	.L49
+ 820              	.LVL110:
+ 821              	.L75:
+ 822              	.LBE9:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 21
+
+
+ 823              	.LBE4:
+ 824              	.LBB11:
+ 825              	.LBB12:
+ 121:Src/communication/binary_download.c ****                 unsigned long read_length = payload - server_reply + 4; //+ 4 because of \r\n\r\n s
+ 826              		.loc 1 121 0
+ 827 0108 A0EB0B0B 		sub	fp, r0, fp
+ 828 010c 0BF1040B 		add	fp, fp, #4
+ 829              	.LVL111:
+ 122:Src/communication/binary_download.c ****                 if (read_length < received_len) {
+ 830              		.loc 1 122 0
+ 831 0110 5D45     		cmp	r5, fp
+ 832 0112 5FD9     		bls	.L70
+ 833              	.LBB13:
+ 123:Src/communication/binary_download.c ****                     file_initialised = createFile(targetP, url_str, socket, &file);
+ 834              		.loc 1 123 0
+ 835 0114 07F12803 		add	r3, r7, #40
+ 836 0118 7A6A     		ldr	r2, [r7, #36]
+ 837 011a 5146     		mov	r1, r10
+ 838 011c 4846     		mov	r0, r9
+ 839              	.LVL112:
+ 840 011e FFF7FEFF 		bl	createFile
+ 841              	.LVL113:
+ 842 0122 8046     		mov	r8, r0
+ 843              	.LVL114:
+ 124:Src/communication/binary_download.c ****                     int result = usb_write(&file, payload + 4, received_len - read_length);
+ 844              		.loc 1 124 0
+ 845 0124 A5EB0B05 		sub	r5, r5, fp
+ 846              	.LVL115:
+ 847 0128 2A46     		mov	r2, r5
+ 848 012a 311D     		adds	r1, r6, #4
+ 849 012c 07F12800 		add	r0, r7, #40
+ 850 0130 FFF7FEFF 		bl	usb_write
+ 851              	.LVL116:
+ 125:Src/communication/binary_download.c ****                     if (result != 0) {
+ 852              		.loc 1 125 0
+ 853 0134 60B9     		cbnz	r0, .L73
+ 854              	.LVL117:
+ 855              	.L61:
+ 129:Src/communication/binary_download.c ****                     total_received_len += received_len - read_length;
+ 856              		.loc 1 129 0
+ 857 0136 2E46     		mov	r6, r5
+ 858              	.LVL118:
+ 130:Src/communication/binary_download.c ****                     targetP->download_progress = (uint8_t) (100 * total_received_len / payload_len)
+ 859              		.loc 1 130 0
+ 860 0138 6423     		movs	r3, #100
+ 861 013a 03FB05F5 		mul	r5, r3, r5
+ 862 013e 3B69     		ldr	r3, [r7, #16]
+ 863 0140 95FBF3F3 		sdiv	r3, r5, r3
+ 864 0144 89F81C30 		strb	r3, [r9, #28]
+ 865              	.LBE13:
+ 866              	.LBE12:
+ 867              	.LBE11:
+ 143:Src/communication/binary_download.c ****     if (!file_initialised) {
+ 868              		.loc 1 143 0
+ 869 0148 B8F1000F 		cmp	r8, #0
+ 870 014c 43D0     		beq	.L60
+ 871 014e 62E0     		b	.L67
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 22
+
+
+ 872              	.LVL119:
+ 873              	.L73:
+ 874              	.LBB18:
+ 875              	.LBB15:
+ 876              	.LBB14:
+ 126:Src/communication/binary_download.c ****                         usb_close_file(&file);
+ 877              		.loc 1 126 0
+ 878 0150 07F12800 		add	r0, r7, #40
+ 879              	.LVL120:
+ 880 0154 FFF7FEFF 		bl	usb_close_file
+ 881              	.LVL121:
+ 127:Src/communication/binary_download.c ****                         download_error(targetP, USB_ERROR, socket, url_str);
+ 882              		.loc 1 127 0
+ 883 0158 5346     		mov	r3, r10
+ 884 015a 7A6A     		ldr	r2, [r7, #36]
+ 885 015c 0621     		movs	r1, #6
+ 886 015e 4846     		mov	r0, r9
+ 887 0160 FFF7FEFF 		bl	download_error
+ 888              	.LVL122:
+ 889 0164 E7E7     		b	.L61
+ 890              	.LVL123:
+ 891              	.L63:
+ 892              	.LBE14:
+ 893              	.LBE15:
+ 894              	.LBB16:
+ 136:Src/communication/binary_download.c ****                     server_reply[i] = server_reply[received_len - 5 + i];
+ 895              		.loc 1 136 0 discriminator 3
+ 896 0166 6B1F     		subs	r3, r5, #5
+ 897 0168 3344     		add	r3, r3, r6
+ 898 016a E35C     		ldrb	r3, [r4, r3]	@ zero_extendqisi2
+ 899 016c A355     		strb	r3, [r4, r6]
+ 135:Src/communication/binary_download.c ****                 for (i = 0; i < 5; i++) {
+ 900              		.loc 1 135 0 discriminator 3
+ 901 016e 0136     		adds	r6, r6, #1
+ 902              	.LVL124:
+ 903              	.L59:
+ 135:Src/communication/binary_download.c ****                 for (i = 0; i < 5; i++) {
+ 904              		.loc 1 135 0 is_stmt 0 discriminator 1
+ 905 0170 042E     		cmp	r6, #4
+ 906 0172 F8DD     		ble	.L63
+ 138:Src/communication/binary_download.c ****                 received_len = receive(targetP, url_str, socket, server_reply + i, server_response_
+ 907              		.loc 1 138 0 is_stmt 1
+ 908 0174 7A6A     		ldr	r2, [r7, #36]
+ 909 0176 C6F59673 		rsb	r3, r6, #300
+ 910 017a 0093     		str	r3, [sp]
+ 911 017c A319     		adds	r3, r4, r6
+ 912 017e 5146     		mov	r1, r10
+ 913 0180 4846     		mov	r0, r9
+ 914              	.LVL125:
+ 915 0182 FFF7FEFF 		bl	receive
+ 916              	.LVL126:
+ 917 0186 8519     		adds	r5, r0, r6
+ 918              	.LVL127:
+ 919              	.L49:
+ 920              	.LBE16:
+ 921              	.LBE18:
+  85:Src/communication/binary_download.c ****         if (payload_len == 0) {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 23
+
+
+ 922              		.loc 1 85 0
+ 923 0188 3B69     		ldr	r3, [r7, #16]
+ 924 018a BBB9     		cbnz	r3, .L50
+ 925              	.LBB19:
+  86:Src/communication/binary_download.c ****             char *content_length_str = strstr(server_reply, "Content-Length: ");
+ 926              		.loc 1 86 0
+ 927 018c 4849     		ldr	r1, .L79+8
+ 928 018e 2046     		mov	r0, r4
+ 929 0190 FFF7FEFF 		bl	strstr
+ 930              	.LVL128:
+  87:Src/communication/binary_download.c ****             if (content_length_str != NULL) {
+ 931              		.loc 1 87 0
+ 932 0194 0646     		mov	r6, r0
+ 933 0196 0028     		cmp	r0, #0
+ 934 0198 96D0     		beq	.L51
+  88:Src/communication/binary_download.c ****                 if (strstr(content_length_str, "\r\n")) {
+ 935              		.loc 1 88 0
+ 936 019a 4649     		ldr	r1, .L79+12
+ 937 019c FFF7FEFF 		bl	strstr
+ 938              	.LVL129:
+ 939 01a0 0028     		cmp	r0, #0
+ 940 01a2 3FF477AF 		beq	.L68
+ 941              	.LBB10:
+  89:Src/communication/binary_download.c ****                     char *asd = content_length_str + 16;
+ 942              		.loc 1 89 0
+ 943 01a6 1036     		adds	r6, r6, #16
+ 944              	.LVL130:
+ 945 01a8 FE60     		str	r6, [r7, #12]
+  90:Src/communication/binary_download.c ****                     if (xatoi(&asd, &payload_len) != 1) {
+ 946              		.loc 1 90 0
+ 947 01aa 07F11001 		add	r1, r7, #16
+ 948 01ae 07F10C00 		add	r0, r7, #12
+ 949 01b2 FFF7FEFF 		bl	xatoi
+ 950              	.LVL131:
+ 951 01b6 0128     		cmp	r0, #1
+ 952 01b8 7FF462AF 		bne	.L74
+ 953              	.LVL132:
+ 954              	.L50:
+ 955              	.LBE10:
+ 956              	.LBE19:
+ 118:Src/communication/binary_download.c ****         if (payload_len > 0) {
+ 957              		.loc 1 118 0
+ 958 01bc 3B69     		ldr	r3, [r7, #16]
+ 959 01be 002B     		cmp	r3, #0
+ 960 01c0 E2DD     		ble	.L49
+ 961              	.LBB20:
+ 119:Src/communication/binary_download.c ****             char *payload = strstr(server_reply, "\r\n\r\n");
+ 962              		.loc 1 119 0
+ 963 01c2 3A49     		ldr	r1, .L79+4
+ 964 01c4 2046     		mov	r0, r4
+ 965 01c6 FFF7FEFF 		bl	strstr
+ 966              	.LVL133:
+ 120:Src/communication/binary_download.c ****             if (payload != NULL) {
+ 967              		.loc 1 120 0
+ 968 01ca 0646     		mov	r6, r0
+ 969 01cc 0028     		cmp	r0, #0
+ 970 01ce 9BD1     		bne	.L75
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 24
+
+
+ 971              	.LBB17:
+ 135:Src/communication/binary_download.c ****                 for (i = 0; i < 5; i++) {
+ 972              		.loc 1 135 0
+ 973 01d0 0026     		movs	r6, #0
+ 974 01d2 CDE7     		b	.L59
+ 975              	.LVL134:
+ 976              	.L70:
+ 977              	.LBE17:
+ 978              	.LBE20:
+  78:Src/communication/binary_download.c ****     long total_received_len = 0;
+ 979              		.loc 1 78 0
+ 980 01d4 0026     		movs	r6, #0
+ 981              	.LVL135:
+ 982              	.L60:
+ 144:Src/communication/binary_download.c ****         file_initialised = createFile(targetP, url_str, socket, &file);
+ 983              		.loc 1 144 0
+ 984 01d6 07F12803 		add	r3, r7, #40
+ 985 01da 7A6A     		ldr	r2, [r7, #36]
+ 986 01dc 5146     		mov	r1, r10
+ 987 01de 4846     		mov	r0, r9
+ 988 01e0 FFF7FEFF 		bl	createFile
+ 989              	.LVL136:
+ 990 01e4 17E0     		b	.L67
+ 991              	.LVL137:
+ 992              	.L78:
+ 993              	.LBB21:
+ 151:Src/communication/binary_download.c ****             printf("recv failed\r\n");
+ 994              		.loc 1 151 0
+ 995 01e6 3448     		ldr	r0, .L79+16
+ 996              	.LVL138:
+ 997 01e8 FFF7FEFF 		bl	puts
+ 998              	.LVL139:
+ 152:Src/communication/binary_download.c ****             usb_close_file(&file);
+ 999              		.loc 1 152 0
+ 1000 01ec 07F12800 		add	r0, r7, #40
+ 1001 01f0 FFF7FEFF 		bl	usb_close_file
+ 1002              	.LVL140:
+ 153:Src/communication/binary_download.c ****             download_error(targetP, RECEIVE_ERROR, socket, url_str);
+ 1003              		.loc 1 153 0
+ 1004 01f4 5346     		mov	r3, r10
+ 1005 01f6 7A6A     		ldr	r2, [r7, #36]
+ 1006 01f8 0521     		movs	r1, #5
+ 1007 01fa 4846     		mov	r0, r9
+ 1008 01fc FFF7FEFF 		bl	download_error
+ 1009              	.LVL141:
+ 1010 0200 12E0     		b	.L64
+ 1011              	.LVL142:
+ 1012              	.L65:
+ 165:Src/communication/binary_download.c ****         int result = usb_write(&file, server_reply, (size_t) bytes_to_write);
+ 1013              		.loc 1 165 0
+ 1014 0202 2A46     		mov	r2, r5
+ 1015 0204 2146     		mov	r1, r4
+ 1016 0206 07F12800 		add	r0, r7, #40
+ 1017 020a FFF7FEFF 		bl	usb_write
+ 1018              	.LVL143:
+ 166:Src/communication/binary_download.c ****         if (result != 0) {
+ 1019              		.loc 1 166 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 25
+
+
+ 1020 020e D8B9     		cbnz	r0, .L76
+ 1021              	.LVL144:
+ 1022              	.L66:
+ 171:Src/communication/binary_download.c ****         if (total_received_len >= payload_len) {
+ 1023              		.loc 1 171 0
+ 1024 0210 3B69     		ldr	r3, [r7, #16]
+ 1025 0212 B342     		cmp	r3, r6
+ 1026 0214 23DD     		ble	.L77
+ 1027              	.LVL145:
+ 1028              	.L67:
+ 148:Src/communication/binary_download.c ****         received_len = lwip_recv(socket, server_reply, (size_t) server_response_length, 0);
+ 1029              		.loc 1 148 0
+ 1030 0216 0023     		movs	r3, #0
+ 1031 0218 4FF49672 		mov	r2, #300
+ 1032 021c 2146     		mov	r1, r4
+ 1033 021e 786A     		ldr	r0, [r7, #36]
+ 1034 0220 FFF7FEFF 		bl	lwip_recv
+ 1035              	.LVL146:
+ 150:Src/communication/binary_download.c ****         if (received_len < 0) {
+ 1036              		.loc 1 150 0
+ 1037 0224 051E     		subs	r5, r0, #0
+ 1038 0226 DEDB     		blt	.L78
+ 1039              	.LVL147:
+ 1040              	.L64:
+ 155:Src/communication/binary_download.c ****         total_received_len += received_len;
+ 1041              		.loc 1 155 0
+ 1042 0228 2E44     		add	r6, r6, r5
+ 1043              	.LVL148:
+ 156:Src/communication/binary_download.c ****         targetP->download_progress = (uint8_t) (100 * total_received_len / payload_len);
+ 1044              		.loc 1 156 0
+ 1045 022a 6423     		movs	r3, #100
+ 1046 022c 03FB06F3 		mul	r3, r3, r6
+ 1047 0230 3A69     		ldr	r2, [r7, #16]
+ 1048 0232 93FBF2F3 		sdiv	r3, r3, r2
+ 1049 0236 89F81C30 		strb	r3, [r9, #28]
+ 157:Src/communication/binary_download.c ****         server_reply[received_len] = '\0';
+ 1050              		.loc 1 157 0
+ 1051 023a 0023     		movs	r3, #0
+ 1052 023c 6355     		strb	r3, [r4, r5]
+ 160:Src/communication/binary_download.c ****         if (total_received_len > payload_len) {
+ 1053              		.loc 1 160 0
+ 1054 023e B242     		cmp	r2, r6
+ 1055 0240 DFDA     		bge	.L65
+ 161:Src/communication/binary_download.c ****             bytes_to_write = received_len - (total_received_len - payload_len);
+ 1056              		.loc 1 161 0
+ 1057 0242 B21A     		subs	r2, r6, r2
+ 1058 0244 AD1A     		subs	r5, r5, r2
+ 1059              	.LVL149:
+ 1060 0246 DCE7     		b	.L65
+ 1061              	.LVL150:
+ 1062              	.L76:
+ 167:Src/communication/binary_download.c ****             usb_close_file(&file);
+ 1063              		.loc 1 167 0
+ 1064 0248 07F12800 		add	r0, r7, #40
+ 1065              	.LVL151:
+ 1066 024c FFF7FEFF 		bl	usb_close_file
+ 1067              	.LVL152:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 26
+
+
+ 168:Src/communication/binary_download.c ****             download_error(targetP, USB_ERROR, socket, url_str);
+ 1068              		.loc 1 168 0
+ 1069 0250 5346     		mov	r3, r10
+ 1070 0252 7A6A     		ldr	r2, [r7, #36]
+ 1071 0254 0621     		movs	r1, #6
+ 1072 0256 4846     		mov	r0, r9
+ 1073 0258 FFF7FEFF 		bl	download_error
+ 1074              	.LVL153:
+ 1075 025c D8E7     		b	.L66
+ 1076              	.L77:
+ 1077              	.LBE21:
+ 176:Src/communication/binary_download.c ****     printf("Download ended in %d ms\n", xTaskGetTickCount() - start_time);
+ 1078              		.loc 1 176 0
+ 1079 025e FFF7FEFF 		bl	xTaskGetTickCount
+ 1080              	.LVL154:
+ 1081 0262 7B68     		ldr	r3, [r7, #4]
+ 1082 0264 C11A     		subs	r1, r0, r3
+ 1083 0266 1548     		ldr	r0, .L79+20
+ 1084 0268 FFF7FEFF 		bl	printf
+ 1085              	.LVL155:
+ 178:Src/communication/binary_download.c ****     usb_close_file(&file);
+ 1086              		.loc 1 178 0
+ 1087 026c 07F12800 		add	r0, r7, #40
+ 1088 0270 FFF7FEFF 		bl	usb_close_file
+ 1089              	.LVL156:
+ 179:Src/communication/binary_download.c ****     targetP->download_state = DOWNLOAD_COMPLETED;
+ 1090              		.loc 1 179 0
+ 1091 0274 0323     		movs	r3, #3
+ 1092 0276 89F81830 		strb	r3, [r9, #24]
+ 180:Src/communication/binary_download.c ****     targetP->download_progress = 100;
+ 1093              		.loc 1 180 0
+ 1094 027a 6423     		movs	r3, #100
+ 1095 027c 89F81C30 		strb	r3, [r9, #28]
+ 181:Src/communication/binary_download.c ****     targetP->download_error = NO_ERROR;
+ 1096              		.loc 1 181 0
+ 1097 0280 0024     		movs	r4, #0
+ 1098              	.LVL157:
+ 1099 0282 A9F81A40 		strh	r4, [r9, #26]	@ movhi
+ 182:Src/communication/binary_download.c ****     lwip_close(socket);
+ 1100              		.loc 1 182 0
+ 1101 0286 786A     		ldr	r0, [r7, #36]
+ 1102 0288 FFF7FEFF 		bl	lwip_close
+ 1103              	.LVL158:
+ 183:Src/communication/binary_download.c ****     lwm2m_free(url_str);
+ 1104              		.loc 1 183 0
+ 1105 028c 5046     		mov	r0, r10
+ 1106 028e FFF7FEFF 		bl	lwm2m_free
+ 1107              	.LVL159:
+ 184:Src/communication/binary_download.c ****     USB_BUSY = 0;
+ 1108              		.loc 1 184 0
+ 1109 0292 0B4B     		ldr	r3, .L79+24
+ 1110 0294 1C60     		str	r4, [r3]
+ 185:Src/communication/binary_download.c ****     vTaskDelete(NULL);
+ 1111              		.loc 1 185 0
+ 1112 0296 2046     		mov	r0, r4
+ 1113 0298 FFF7FEFF 		bl	vTaskDelete
+ 1114              	.LVL160:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 27
+
+
+ 186:Src/communication/binary_download.c **** }
+ 1115              		.loc 1 186 0
+ 1116 029c 07F51F77 		add	r7, r7, #636
+ 1117              	.LCFI19:
+ 1118              		.cfi_def_cfa_offset 36
+ 1119 02a0 BD46     		mov	sp, r7
+ 1120              	.LCFI20:
+ 1121              		.cfi_def_cfa_register 13
+ 1122              	.LVL161:
+ 1123              		@ sp needed
+ 1124 02a2 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1125              	.LVL162:
+ 1126              	.L80:
+ 1127 02a6 00BF     		.align	2
+ 1128              	.L79:
+ 1129 02a8 18000000 		.word	.LC14
+ 1130 02ac 38000000 		.word	.LC15
+ 1131 02b0 00000000 		.word	.LC12
+ 1132 02b4 14000000 		.word	.LC13
+ 1133 02b8 00000000 		.word	.LC0
+ 1134 02bc 40000000 		.word	.LC16
+ 1135 02c0 00000000 		.word	USB_BUSY
+ 1136              		.cfi_endproc
+ 1137              	.LFE148:
+ 1139              		.section	.rodata.checkResponseCode.str1.4,"aMS",%progbits,1
+ 1140              		.align	2
+ 1141              	.LC7:
+ 1142 0000 48545450 		.ascii	"HTTP/1.1 200 OK\000"
+ 1142      2F312E31 
+ 1142      20323030 
+ 1142      204F4B00 
+ 1143              	.LC8:
+ 1144 0010 48545450 		.ascii	"HTTP/1.0 200 OK\000"
+ 1144      2F312E30 
+ 1144      20323030 
+ 1144      204F4B00 
+ 1145              	.LC9:
+ 1146 0020 4572726F 		.ascii	"Error reading Server response code\015\000"
+ 1146      72207265 
+ 1146      6164696E 
+ 1146      67205365 
+ 1146      72766572 
+ 1147              	.LC10:
+ 1148 0044 53657276 		.ascii	"Server Response status:%ld\015\012\000"
+ 1148      65722052 
+ 1148      6573706F 
+ 1148      6E736520 
+ 1148      73746174 
+ 1149 0061 000000   		.space	3
+ 1150              	.LC11:
+ 1151 0064 53657276 		.ascii	"Server responded with 200!\015\000"
+ 1151      65722072 
+ 1151      6573706F 
+ 1151      6E646564 
+ 1151      20776974 
+ 1152              		.section	.rodata.connectToServer.str1.4,"aMS",%progbits,1
+ 1153              		.align	2
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 28
+
+
+ 1154              	.LC4:
+ 1155 0000 63616E6E 		.ascii	"cannot connect to server, err: %d\015\012\000"
+ 1155      6F742063 
+ 1155      6F6E6E65 
+ 1155      63742074 
+ 1155      6F207365 
+ 1156              		.section	.rodata.makeRequest.str1.4,"aMS",%progbits,1
+ 1157              		.align	2
+ 1158              	.LC5:
+ 1159 0000 47455420 		.ascii	"GET /%s HTTP/1.1\015\012Host: %s\015\012\015\012\000"
+ 1159      2F257320 
+ 1159      48545450 
+ 1159      2F312E31 
+ 1159      0D0A486F 
+ 1160 001f 00       		.space	1
+ 1161              	.LC6:
+ 1162 0020 53656E64 		.ascii	"Send failed\015\000"
+ 1162      20666169 
+ 1162      6C65640D 
+ 1162      00
+ 1163              		.section	.rodata.receive.str1.4,"aMS",%progbits,1
+ 1164              		.align	2
+ 1165              	.LC0:
+ 1166 0000 72656376 		.ascii	"recv failed\015\000"
+ 1166      20666169 
+ 1166      6C65640D 
+ 1166      00
+ 1167              		.section	.rodata.resolveAddress.str1.4,"aMS",%progbits,1
+ 1168              		.align	2
+ 1169              	.LC1:
+ 1170 0000 4572726F 		.ascii	"Error parsing URL\015\000"
+ 1170      72207061 
+ 1170      7273696E 
+ 1170      67205552 
+ 1170      4C0D00
+ 1171 0013 00       		.space	1
+ 1172              	.LC2:
+ 1173 0014 63616E6E 		.ascii	"cannot create socket: %d\015\012\000"
+ 1173      6F742063 
+ 1173      72656174 
+ 1173      6520736F 
+ 1173      636B6574 
+ 1174 002f 00       		.space	1
+ 1175              	.LC3:
+ 1176 0030 63616E6E 		.ascii	"cannot resolve hostname\015\000"
+ 1176      6F742072 
+ 1176      65736F6C 
+ 1176      76652068 
+ 1176      6F73746E 
+ 1177              		.section	.rodata.startDownload.str1.4,"aMS",%progbits,1
+ 1178              		.align	2
+ 1179              	.LC12:
+ 1180 0000 436F6E74 		.ascii	"Content-Length: \000"
+ 1180      656E742D 
+ 1180      4C656E67 
+ 1180      74683A20 
+ 1180      00
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 29
+
+
+ 1181 0011 000000   		.space	3
+ 1182              	.LC13:
+ 1183 0014 0D0A00   		.ascii	"\015\012\000"
+ 1184 0017 00       		.space	1
+ 1185              	.LC14:
+ 1186 0018 4572726F 		.ascii	"Error reading Content-Length\015\000"
+ 1186      72207265 
+ 1186      6164696E 
+ 1186      6720436F 
+ 1186      6E74656E 
+ 1187 0036 0000     		.space	2
+ 1188              	.LC15:
+ 1189 0038 0D0A0D0A 		.ascii	"\015\012\015\012\000"
+ 1189      00
+ 1190 003d 000000   		.space	3
+ 1191              	.LC16:
+ 1192 0040 446F776E 		.ascii	"Download ended in %d ms\012\000"
+ 1192      6C6F6164 
+ 1192      20656E64 
+ 1192      65642069 
+ 1192      6E202564 
+ 1193              		.text
+ 1194              	.Letext0:
+ 1195              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 1196              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 1197              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1198              		.file 5 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 1199              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1200              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1201              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1202              		.file 9 "Inc/FreeRTOSConfig.h"
+ 1203              		.file 10 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/errno.h"
+ 1204              		.file 11 "Drivers/CMSIS/Include/core_cm4.h"
+ 1205              		.file 12 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 1206              		.file 13 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/types.h"
+ 1207              		.file 14 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 1208              		.file 15 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 1209              		.file 16 "Middlewares/Third_Party/LwIP/src/include/lwip/arch.h"
+ 1210              		.file 17 "Middlewares/Third_Party/LwIP/src/include/lwip/ip4_addr.h"
+ 1211              		.file 18 "Middlewares/Third_Party/LwIP/src/include/lwip/ip_addr.h"
+ 1212              		.file 19 "Middlewares/Third_Party/LwIP/src/include/lwip/inet.h"
+ 1213              		.file 20 "Middlewares/Third_Party/LwIP/src/include/lwip/sockets.h"
+ 1214              		.file 21 "Middlewares/Third_Party/FreeRTOS/Source/include/queue.h"
+ 1215              		.file 22 "Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h"
+ 1216              		.file 23 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 1217              		.file 24 "Middlewares/Third_Party/FatFs/src/integer.h"
+ 1218              		.file 25 "Middlewares/ST/STM32_USB_Host_Library/Core/Inc/usbh_def.h"
+ 1219              		.file 26 "Middlewares/Third_Party/LwIP/src/include/lwip/err.h"
+ 1220              		.file 27 "Middlewares/ST/STM32_USB_Host_Library/Core/Inc/usbh_ctlreq.h"
+ 1221              		.file 28 "Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Inc/usbh_msc.h"
+ 1222              		.file 29 "Middlewares/Third_Party/FatFs/src/ff.h"
+ 1223              		.file 30 "Middlewares/Third_Party/FatFs/src/diskio.h"
+ 1224              		.file 31 "Middlewares/Third_Party/FatFs/src/ff_gen_drv.h"
+ 1225              		.file 32 "Inc/usbh_diskio.h"
+ 1226              		.file 33 "Inc/fatfs.h"
+ 1227              		.file 34 "Inc/target.h"
+ 1228              		.file 35 "Inc/communication/wakaama_client/objects/object_target.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 30
+
+
+ 1229              		.file 36 "Inc/communication/yuarel.h"
+ 1230              		.file 37 "Middlewares/Third_Party/LwIP/src/include/lwip/api.h"
+ 1231              		.file 38 "Middlewares/Third_Party/LwIP/src/include/lwip/def.h"
+ 1232              		.file 39 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 1233              		.file 40 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 1234              		.file 41 "Inc/communication/term_io.h"
+ 1235              		.file 42 "Middlewares/Third_Party/wakaama/liblwm2m.h"
+ 1236              		.file 43 "Inc/usb_host.h"
+ 1237              		.file 44 "<built-in>"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 31
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 binary_download.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:18     .text.download_error:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:24     .text.download_error:0000000000000000 download_error
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:73     .text.download_error:000000000000002c $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:78     .text.receive:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:84     .text.receive:0000000000000000 receive
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:144    .text.receive:000000000000003c $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:149    .text.resolveAddress:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:155    .text.resolveAddress:0000000000000000 resolveAddress
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:279    .text.resolveAddress:0000000000000094 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:286    .text.connectToServer:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:292    .text.connectToServer:0000000000000000 connectToServer
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:348    .text.connectToServer:0000000000000034 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:353    .text.makeRequest:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:359    .text.makeRequest:0000000000000000 makeRequest
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:430    .text.makeRequest:0000000000000044 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:436    .text.checkResponseCode:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:442    .text.checkResponseCode:0000000000000000 checkResponseCode
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:542    .text.checkResponseCode:000000000000006c $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:552    .text.createFile:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:558    .text.createFile:0000000000000000 createFile
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:612    .text.startDownload:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:619    .text.startDownload:0000000000000000 startDownload
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:1129   .text.startDownload:00000000000002a8 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:1140   .rodata.checkResponseCode.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:1153   .rodata.connectToServer.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:1157   .rodata.makeRequest.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:1164   .rodata.receive.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:1168   .rodata.resolveAddress.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s:1178   .rodata.startDownload.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+lwip_close
+lwm2m_free
+vTaskDelete
+USB_BUSY
+lwip_recv
+puts
+yuarel_parse
+lwip_socket
+netconn_gethostbyname
+lwip_htons
+__errno
+printf
+lwip_connect
+sprintf
+strlen
+lwip_send
+lwm2m_strncmp
+xatoi
+get_usb_ready
+usb_open_file
+lwm2m_strdup
+xTaskGetTickCount
+strstr
+usb_write
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccVlACwA.s 			page 32
+
+
+usb_close_file

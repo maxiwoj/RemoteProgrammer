@@ -1,0 +1,1032 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"fatfs.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.MX_FATFS_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	MX_FATFS_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	MX_FATFS_Init:
+  26              	.LFB131:
+  27              		.file 1 "Src/fatfs.c"
+   1:Src/fatfs.c   **** /**
+   2:Src/fatfs.c   ****   ******************************************************************************
+   3:Src/fatfs.c   ****   * @file   fatfs.c
+   4:Src/fatfs.c   ****   * @brief  Code for fatfs applications
+   5:Src/fatfs.c   ****   ******************************************************************************
+   6:Src/fatfs.c   ****   * This notice applies to any and all portions of this file
+   7:Src/fatfs.c   ****   * that are not between comment pairs USER CODE BEGIN and
+   8:Src/fatfs.c   ****   * USER CODE END. Other portions of this file, whether 
+   9:Src/fatfs.c   ****   * inserted by the user or by software development tools
+  10:Src/fatfs.c   ****   * are owned by their respective copyright owners.
+  11:Src/fatfs.c   ****   *
+  12:Src/fatfs.c   ****   * Copyright (c) 2018 STMicroelectronics International N.V. 
+  13:Src/fatfs.c   ****   * All rights reserved.
+  14:Src/fatfs.c   ****   *
+  15:Src/fatfs.c   ****   * Redistribution and use in source and binary forms, with or without 
+  16:Src/fatfs.c   ****   * modification, are permitted, provided that the following conditions are met:
+  17:Src/fatfs.c   ****   *
+  18:Src/fatfs.c   ****   * 1. Redistribution of source code must retain the above copyright notice, 
+  19:Src/fatfs.c   ****   *    this list of conditions and the following disclaimer.
+  20:Src/fatfs.c   ****   * 2. Redistributions in binary form must reproduce the above copyright notice,
+  21:Src/fatfs.c   ****   *    this list of conditions and the following disclaimer in the documentation
+  22:Src/fatfs.c   ****   *    and/or other materials provided with the distribution.
+  23:Src/fatfs.c   ****   * 3. Neither the name of STMicroelectronics nor the names of other 
+  24:Src/fatfs.c   ****   *    contributors to this software may be used to endorse or promote products 
+  25:Src/fatfs.c   ****   *    derived from this software without specific written permission.
+  26:Src/fatfs.c   ****   * 4. This software, including modifications and/or derivative works of this 
+  27:Src/fatfs.c   ****   *    software, must execute solely and exclusively on microcontroller or
+  28:Src/fatfs.c   ****   *    microprocessor devices manufactured by or for STMicroelectronics.
+  29:Src/fatfs.c   ****   * 5. Redistribution and use of this software other than as permitted under 
+  30:Src/fatfs.c   ****   *    this license is void and will automatically terminate your rights under 
+  31:Src/fatfs.c   ****   *    this license. 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 2
+
+
+  32:Src/fatfs.c   ****   *
+  33:Src/fatfs.c   ****   * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
+  34:Src/fatfs.c   ****   * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
+  35:Src/fatfs.c   ****   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+  36:Src/fatfs.c   ****   * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+  37:Src/fatfs.c   ****   * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
+  38:Src/fatfs.c   ****   * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  39:Src/fatfs.c   ****   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  40:Src/fatfs.c   ****   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+  41:Src/fatfs.c   ****   * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+  42:Src/fatfs.c   ****   * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+  43:Src/fatfs.c   ****   * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  44:Src/fatfs.c   ****   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  45:Src/fatfs.c   ****   *
+  46:Src/fatfs.c   ****   ******************************************************************************
+  47:Src/fatfs.c   ****   */
+  48:Src/fatfs.c   **** 
+  49:Src/fatfs.c   **** #include "fatfs.h"
+  50:Src/fatfs.c   **** 
+  51:Src/fatfs.c   **** uint8_t retUSBH;    /* Return value for USBH */
+  52:Src/fatfs.c   **** char USBHPath[4];   /* USBH logical drive path */
+  53:Src/fatfs.c   **** FATFS USBHFatFS;    /* File system object for USBH logical drive */
+  54:Src/fatfs.c   **** FIL USBHFile;       /* File object for USBH */
+  55:Src/fatfs.c   **** 
+  56:Src/fatfs.c   **** /* USER CODE BEGIN Variables */
+  57:Src/fatfs.c   **** 
+  58:Src/fatfs.c   **** /* USER CODE END Variables */    
+  59:Src/fatfs.c   **** 
+  60:Src/fatfs.c   **** void MX_FATFS_Init(void) 
+  61:Src/fatfs.c   **** {
+  28              		.loc 1 61 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  62:Src/fatfs.c   ****   /*## FatFS: Link the USBH driver ###########################*/
+  63:Src/fatfs.c   ****   retUSBH = FATFS_LinkDriver(&USBH_Driver, USBHPath);
+  37              		.loc 1 63 0
+  38 0002 0349     		ldr	r1, .L3
+  39 0004 0348     		ldr	r0, .L3+4
+  40 0006 FFF7FEFF 		bl	FATFS_LinkDriver
+  41              	.LVL0:
+  42 000a 034B     		ldr	r3, .L3+8
+  43 000c 1870     		strb	r0, [r3]
+  64:Src/fatfs.c   **** 
+  65:Src/fatfs.c   ****   /* USER CODE BEGIN Init */
+  66:Src/fatfs.c   ****   /* additional user code for init */
+  67:Src/fatfs.c   ****   /* USER CODE END Init */
+  68:Src/fatfs.c   **** }
+  44              		.loc 1 68 0
+  45 000e 08BD     		pop	{r3, pc}
+  46              	.L4:
+  47              		.align	2
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 3
+
+
+  48              	.L3:
+  49 0010 00000000 		.word	USBHPath
+  50 0014 00000000 		.word	USBH_Driver
+  51 0018 00000000 		.word	retUSBH
+  52              		.cfi_endproc
+  53              	.LFE131:
+  55              		.section	.text.get_fattime,"ax",%progbits
+  56              		.align	1
+  57              		.global	get_fattime
+  58              		.syntax unified
+  59              		.thumb
+  60              		.thumb_func
+  61              		.fpu fpv4-sp-d16
+  63              	get_fattime:
+  64              	.LFB132:
+  69:Src/fatfs.c   **** 
+  70:Src/fatfs.c   **** /**
+  71:Src/fatfs.c   ****   * @brief  Gets Time from RTC 
+  72:Src/fatfs.c   ****   * @param  None
+  73:Src/fatfs.c   ****   * @retval Time in DWORD
+  74:Src/fatfs.c   ****   */
+  75:Src/fatfs.c   **** DWORD get_fattime(void)
+  76:Src/fatfs.c   **** {
+  65              		.loc 1 76 0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+  77:Src/fatfs.c   ****   /* USER CODE BEGIN get_fattime */
+  78:Src/fatfs.c   ****   return 0;
+  79:Src/fatfs.c   ****   /* USER CODE END get_fattime */  
+  80:Src/fatfs.c   **** }
+  70              		.loc 1 80 0
+  71 0000 0020     		movs	r0, #0
+  72 0002 7047     		bx	lr
+  73              		.cfi_endproc
+  74              	.LFE132:
+  76              		.section	.text.scan_files,"ax",%progbits
+  77              		.align	1
+  78              		.global	scan_files
+  79              		.syntax unified
+  80              		.thumb
+  81              		.thumb_func
+  82              		.fpu fpv4-sp-d16
+  84              	scan_files:
+  85              	.LFB133:
+  81:Src/fatfs.c   **** 
+  82:Src/fatfs.c   **** /* USER CODE BEGIN Application */
+  83:Src/fatfs.c   **** FRESULT scan_files (
+  84:Src/fatfs.c   ****     char* path        /* Start node to be scanned (***also used as work area***) */
+  85:Src/fatfs.c   **** )
+  86:Src/fatfs.c   **** {
+  86              		.loc 1 86 0
+  87              		.cfi_startproc
+  88              		@ args = 0, pretend = 0, frame = 48
+  89              		@ frame_needed = 0, uses_anonymous_args = 0
+  90              	.LVL1:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 4
+
+
+  91 0000 30B5     		push	{r4, r5, lr}
+  92              	.LCFI1:
+  93              		.cfi_def_cfa_offset 12
+  94              		.cfi_offset 4, -12
+  95              		.cfi_offset 5, -8
+  96              		.cfi_offset 14, -4
+  97 0002 8DB0     		sub	sp, sp, #52
+  98              	.LCFI2:
+  99              		.cfi_def_cfa_offset 64
+ 100 0004 0546     		mov	r5, r0
+  87:Src/fatfs.c   ****   printf("Scan path \"%s\"\n", path);
+ 101              		.loc 1 87 0
+ 102 0006 0146     		mov	r1, r0
+ 103 0008 1148     		ldr	r0, .L12
+ 104              	.LVL2:
+ 105 000a FFF7FEFF 		bl	printf
+ 106              	.LVL3:
+  88:Src/fatfs.c   ****   FRESULT res;
+  89:Src/fatfs.c   ****   DIR dir;
+  90:Src/fatfs.c   ****   //int i;
+  91:Src/fatfs.c   ****   static FILINFO fno;
+  92:Src/fatfs.c   **** 
+  93:Src/fatfs.c   ****   res = f_opendir(&dir, path);                       /* Open the directory */
+ 107              		.loc 1 93 0
+ 108 000e 2946     		mov	r1, r5
+ 109 0010 6846     		mov	r0, sp
+ 110 0012 FFF7FEFF 		bl	f_opendir
+ 111              	.LVL4:
+  94:Src/fatfs.c   ****   if (res == FR_OK) {
+ 112              		.loc 1 94 0
+ 113 0016 0446     		mov	r4, r0
+ 114 0018 B0B9     		cbnz	r0, .L7
+ 115              	.LVL5:
+ 116              	.L9:
+  95:Src/fatfs.c   ****     for (;;) {
+  96:Src/fatfs.c   ****       res = f_readdir(&dir, &fno);                   /* Read a directory item */
+ 117              		.loc 1 96 0
+ 118 001a 0E49     		ldr	r1, .L12+4
+ 119 001c 6846     		mov	r0, sp
+ 120 001e FFF7FEFF 		bl	f_readdir
+ 121              	.LVL6:
+  97:Src/fatfs.c   ****       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+ 122              		.loc 1 97 0
+ 123 0022 0446     		mov	r4, r0
+ 124 0024 68B9     		cbnz	r0, .L8
+ 125              		.loc 1 97 0 is_stmt 0 discriminator 1
+ 126 0026 0B4B     		ldr	r3, .L12+4
+ 127 0028 5B7A     		ldrb	r3, [r3, #9]	@ zero_extendqisi2
+ 128 002a 53B1     		cbz	r3, .L8
+  98:Src/fatfs.c   ****       if (fno.fattrib & AM_DIR) {                    /* It is a directory */
+ 129              		.loc 1 98 0 is_stmt 1
+ 130 002c 094B     		ldr	r3, .L12+4
+ 131 002e 1B7A     		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 132 0030 13F0100F 		tst	r3, #16
+ 133 0034 F1D1     		bne	.L9
+  99:Src/fatfs.c   ****         /*i = strlen(path);
+ 100:Src/fatfs.c   ****         sprintf(&path[i], "/%s", fno.fname);
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 5
+
+
+ 101:Src/fatfs.c   ****         res = scan_files(path);                    // Enter the directory
+ 102:Src/fatfs.c   ****         if (res != FR_OK) break;
+ 103:Src/fatfs.c   ****         path[i] = 0;*/
+ 104:Src/fatfs.c   ****       } else {                                       /* It is a file. */
+ 105:Src/fatfs.c   ****         printf("%s%s\n\r", path, fno.fname);
+ 134              		.loc 1 105 0
+ 135 0036 084A     		ldr	r2, .L12+8
+ 136 0038 2946     		mov	r1, r5
+ 137 003a 0848     		ldr	r0, .L12+12
+ 138              	.LVL7:
+ 139 003c FFF7FEFF 		bl	printf
+ 140              	.LVL8:
+ 141 0040 EBE7     		b	.L9
+ 142              	.LVL9:
+ 143              	.L8:
+ 106:Src/fatfs.c   ****       }
+ 107:Src/fatfs.c   ****     }
+ 108:Src/fatfs.c   ****     f_closedir(&dir);
+ 144              		.loc 1 108 0
+ 145 0042 6846     		mov	r0, sp
+ 146              	.LVL10:
+ 147 0044 FFF7FEFF 		bl	f_closedir
+ 148              	.LVL11:
+ 149              	.L7:
+ 109:Src/fatfs.c   ****   }
+ 110:Src/fatfs.c   ****   return res;
+ 111:Src/fatfs.c   **** }
+ 150              		.loc 1 111 0
+ 151 0048 2046     		mov	r0, r4
+ 152 004a 0DB0     		add	sp, sp, #52
+ 153              	.LCFI3:
+ 154              		.cfi_def_cfa_offset 12
+ 155              		@ sp needed
+ 156 004c 30BD     		pop	{r4, r5, pc}
+ 157              	.LVL12:
+ 158              	.L13:
+ 159 004e 00BF     		.align	2
+ 160              	.L12:
+ 161 0050 00000000 		.word	.LC0
+ 162 0054 00000000 		.word	.LANCHOR0
+ 163 0058 09000000 		.word	.LANCHOR0+9
+ 164 005c 10000000 		.word	.LC1
+ 165              		.cfi_endproc
+ 166              	.LFE133:
+ 168              		.section	.text.usb_ls,"ax",%progbits
+ 169              		.align	1
+ 170              		.global	usb_ls
+ 171              		.syntax unified
+ 172              		.thumb
+ 173              		.thumb_func
+ 174              		.fpu fpv4-sp-d16
+ 176              	usb_ls:
+ 177              	.LFB134:
+ 112:Src/fatfs.c   **** 
+ 113:Src/fatfs.c   **** void usb_ls() {
+ 178              		.loc 1 113 0
+ 179              		.cfi_startproc
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 6
+
+
+ 180              		@ args = 0, pretend = 0, frame = 0
+ 181              		@ frame_needed = 0, uses_anonymous_args = 0
+ 182 0000 08B5     		push	{r3, lr}
+ 183              	.LCFI4:
+ 184              		.cfi_def_cfa_offset 8
+ 185              		.cfi_offset 3, -8
+ 186              		.cfi_offset 14, -4
+ 114:Src/fatfs.c   ****   printf("Start ls\n");
+ 187              		.loc 1 114 0
+ 188 0002 0D48     		ldr	r0, .L19
+ 189 0004 FFF7FEFF 		bl	puts
+ 190              	.LVL13:
+ 115:Src/fatfs.c   ****   if (f_mount(&USBHFatFS, "", 1) == FR_OK) {
+ 191              		.loc 1 115 0
+ 192 0008 0122     		movs	r2, #1
+ 193 000a 0C49     		ldr	r1, .L19+4
+ 194 000c 0C48     		ldr	r0, .L19+8
+ 195 000e FFF7FEFF 		bl	f_mount
+ 196              	.LVL14:
+ 197 0012 40B1     		cbz	r0, .L18
+ 116:Src/fatfs.c   ****     scan_files(USBHPath);
+ 117:Src/fatfs.c   ****     f_mount(NULL, "", 0);
+ 118:Src/fatfs.c   ****   } else {
+ 119:Src/fatfs.c   ****     f_mount(NULL, "", 0);
+ 198              		.loc 1 119 0
+ 199 0014 0022     		movs	r2, #0
+ 200 0016 0949     		ldr	r1, .L19+4
+ 201 0018 1046     		mov	r0, r2
+ 202 001a FFF7FEFF 		bl	f_mount
+ 203              	.LVL15:
+ 120:Src/fatfs.c   ****     printf("Error mounting USB\n");
+ 204              		.loc 1 120 0
+ 205 001e 0948     		ldr	r0, .L19+12
+ 206 0020 FFF7FEFF 		bl	puts
+ 207              	.LVL16:
+ 208              	.L14:
+ 121:Src/fatfs.c   ****   }
+ 122:Src/fatfs.c   **** }
+ 209              		.loc 1 122 0
+ 210 0024 08BD     		pop	{r3, pc}
+ 211              	.L18:
+ 116:Src/fatfs.c   ****     f_mount(NULL, "", 0);
+ 212              		.loc 1 116 0
+ 213 0026 0848     		ldr	r0, .L19+16
+ 214 0028 FFF7FEFF 		bl	scan_files
+ 215              	.LVL17:
+ 117:Src/fatfs.c   ****   } else {
+ 216              		.loc 1 117 0
+ 217 002c 0022     		movs	r2, #0
+ 218 002e 0349     		ldr	r1, .L19+4
+ 219 0030 1046     		mov	r0, r2
+ 220 0032 FFF7FEFF 		bl	f_mount
+ 221              	.LVL18:
+ 222 0036 F5E7     		b	.L14
+ 223              	.L20:
+ 224              		.align	2
+ 225              	.L19:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 7
+
+
+ 226 0038 00000000 		.word	.LC2
+ 227 003c 0C000000 		.word	.LC3
+ 228 0040 00000000 		.word	USBHFatFS
+ 229 0044 10000000 		.word	.LC4
+ 230 0048 00000000 		.word	USBHPath
+ 231              		.cfi_endproc
+ 232              	.LFE134:
+ 234              		.section	.text.usb_open_file,"ax",%progbits
+ 235              		.align	1
+ 236              		.global	usb_open_file
+ 237              		.syntax unified
+ 238              		.thumb
+ 239              		.thumb_func
+ 240              		.fpu fpv4-sp-d16
+ 242              	usb_open_file:
+ 243              	.LFB135:
+ 123:Src/fatfs.c   **** 
+ 124:Src/fatfs.c   **** #define CHECK_FRESULT(result, msg, er) \
+ 125:Src/fatfs.c   ****   if ((result) != FR_OK) { \
+ 126:Src/fatfs.c   ****     printf("%s, error code 0x%x\n", (msg), (result)); \
+ 127:Src/fatfs.c   ****     return (er); \
+ 128:Src/fatfs.c   ****   }
+ 129:Src/fatfs.c   **** 
+ 130:Src/fatfs.c   **** 
+ 131:Src/fatfs.c   **** int usb_open_file(const char *filename, FIL *fp, BYTE mode) {
+ 244              		.loc 1 131 0
+ 245              		.cfi_startproc
+ 246              		@ args = 0, pretend = 0, frame = 0
+ 247              		@ frame_needed = 0, uses_anonymous_args = 0
+ 248              	.LVL19:
+ 249 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 250              	.LCFI5:
+ 251              		.cfi_def_cfa_offset 24
+ 252              		.cfi_offset 3, -24
+ 253              		.cfi_offset 4, -20
+ 254              		.cfi_offset 5, -16
+ 255              		.cfi_offset 6, -12
+ 256              		.cfi_offset 7, -8
+ 257              		.cfi_offset 14, -4
+ 258 0002 0446     		mov	r4, r0
+ 259 0004 0E46     		mov	r6, r1
+ 260 0006 1746     		mov	r7, r2
+ 132:Src/fatfs.c   ****   FRESULT result = f_mount(&USBHFatFS, "", 1);
+ 261              		.loc 1 132 0
+ 262 0008 0122     		movs	r2, #1
+ 263              	.LVL20:
+ 264 000a 1949     		ldr	r1, .L29
+ 265              	.LVL21:
+ 266 000c 1948     		ldr	r0, .L29+4
+ 267              	.LVL22:
+ 268 000e FFF7FEFF 		bl	f_mount
+ 269              	.LVL23:
+ 133:Src/fatfs.c   ****   if (result == FR_OK) {
+ 270              		.loc 1 133 0
+ 271 0012 28BB     		cbnz	r0, .L22
+ 272              	.LBB2:
+ 134:Src/fatfs.c   ****     char *path = pvPortMalloc(strlen(filename) + 4);
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 8
+
+
+ 273              		.loc 1 134 0
+ 274 0014 2046     		mov	r0, r4
+ 275              	.LVL24:
+ 276 0016 FFF7FEFF 		bl	strlen
+ 277              	.LVL25:
+ 278 001a 0430     		adds	r0, r0, #4
+ 279 001c FFF7FEFF 		bl	pvPortMalloc
+ 280              	.LVL26:
+ 281 0020 0546     		mov	r5, r0
+ 282              	.LVL27:
+ 135:Src/fatfs.c   ****     sprintf(path, "0:/%s", filename);
+ 283              		.loc 1 135 0
+ 284 0022 2246     		mov	r2, r4
+ 285 0024 1449     		ldr	r1, .L29+8
+ 286 0026 FFF7FEFF 		bl	sprintf
+ 287              	.LVL28:
+ 136:Src/fatfs.c   ****     result = f_open(fp, path, mode);
+ 288              		.loc 1 136 0
+ 289 002a 3A46     		mov	r2, r7
+ 290 002c 2946     		mov	r1, r5
+ 291 002e 3046     		mov	r0, r6
+ 292 0030 FFF7FEFF 		bl	f_open
+ 293              	.LVL29:
+ 294 0034 0446     		mov	r4, r0
+ 295              	.LVL30:
+ 137:Src/fatfs.c   ****     vPortFree(path);
+ 296              		.loc 1 137 0
+ 297 0036 2846     		mov	r0, r5
+ 298 0038 FFF7FEFF 		bl	vPortFree
+ 299              	.LVL31:
+ 138:Src/fatfs.c   ****     if(result != FR_OK) {
+ 300              		.loc 1 138 0
+ 301 003c 14B9     		cbnz	r4, .L27
+ 302              	.L23:
+ 139:Src/fatfs.c   ****       f_mount(NULL, "", 0);
+ 140:Src/fatfs.c   ****     }
+ 141:Src/fatfs.c   ****     CHECK_FRESULT(result, "open failed", -1);
+ 303              		.loc 1 141 0
+ 304 003e 3CB9     		cbnz	r4, .L28
+ 305              	.LBE2:
+ 142:Src/fatfs.c   ****   } else {
+ 143:Src/fatfs.c   ****     CHECK_FRESULT(result, "mount failed", -1);
+ 144:Src/fatfs.c   ****   }
+ 145:Src/fatfs.c   ****   return 0;
+ 306              		.loc 1 145 0
+ 307 0040 0020     		movs	r0, #0
+ 308              	.LVL32:
+ 309              	.L21:
+ 146:Src/fatfs.c   **** }
+ 310              		.loc 1 146 0
+ 311 0042 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 312              	.LVL33:
+ 313              	.L27:
+ 314              	.LBB3:
+ 139:Src/fatfs.c   ****       f_mount(NULL, "", 0);
+ 315              		.loc 1 139 0
+ 316 0044 0022     		movs	r2, #0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 9
+
+
+ 317 0046 0A49     		ldr	r1, .L29
+ 318 0048 1046     		mov	r0, r2
+ 319 004a FFF7FEFF 		bl	f_mount
+ 320              	.LVL34:
+ 321 004e F6E7     		b	.L23
+ 322              	.L28:
+ 141:Src/fatfs.c   ****   } else {
+ 323              		.loc 1 141 0 discriminator 1
+ 324 0050 2246     		mov	r2, r4
+ 325 0052 0A49     		ldr	r1, .L29+12
+ 326 0054 0A48     		ldr	r0, .L29+16
+ 327 0056 FFF7FEFF 		bl	printf
+ 328              	.LVL35:
+ 329 005a 4FF0FF30 		mov	r0, #-1
+ 330 005e F0E7     		b	.L21
+ 331              	.LVL36:
+ 332              	.L22:
+ 333 0060 0246     		mov	r2, r0
+ 334              	.LBE3:
+ 143:Src/fatfs.c   ****   }
+ 335              		.loc 1 143 0 discriminator 1
+ 336 0062 0849     		ldr	r1, .L29+20
+ 337 0064 0648     		ldr	r0, .L29+16
+ 338              	.LVL37:
+ 339 0066 FFF7FEFF 		bl	printf
+ 340              	.LVL38:
+ 341 006a 4FF0FF30 		mov	r0, #-1
+ 342 006e E8E7     		b	.L21
+ 343              	.L30:
+ 344              		.align	2
+ 345              	.L29:
+ 346 0070 0C000000 		.word	.LC3
+ 347 0074 00000000 		.word	USBHFatFS
+ 348 0078 00000000 		.word	.LC5
+ 349 007c 08000000 		.word	.LC6
+ 350 0080 14000000 		.word	.LC7
+ 351 0084 2C000000 		.word	.LC8
+ 352              		.cfi_endproc
+ 353              	.LFE135:
+ 355              		.section	.text.usb_close_file,"ax",%progbits
+ 356              		.align	1
+ 357              		.global	usb_close_file
+ 358              		.syntax unified
+ 359              		.thumb
+ 360              		.thumb_func
+ 361              		.fpu fpv4-sp-d16
+ 363              	usb_close_file:
+ 364              	.LFB136:
+ 147:Src/fatfs.c   **** 
+ 148:Src/fatfs.c   **** int usb_close_file(FIL *fp) {
+ 365              		.loc 1 148 0
+ 366              		.cfi_startproc
+ 367              		@ args = 0, pretend = 0, frame = 0
+ 368              		@ frame_needed = 0, uses_anonymous_args = 0
+ 369              	.LVL39:
+ 370 0000 10B5     		push	{r4, lr}
+ 371              	.LCFI6:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 10
+
+
+ 372              		.cfi_def_cfa_offset 8
+ 373              		.cfi_offset 4, -8
+ 374              		.cfi_offset 14, -4
+ 149:Src/fatfs.c   ****   FRESULT result = f_close(fp);
+ 375              		.loc 1 149 0
+ 376 0002 FFF7FEFF 		bl	f_close
+ 377              	.LVL40:
+ 378 0006 0446     		mov	r4, r0
+ 379              	.LVL41:
+ 150:Src/fatfs.c   ****   f_mount(NULL, "", 0);
+ 380              		.loc 1 150 0
+ 381 0008 0022     		movs	r2, #0
+ 382 000a 0749     		ldr	r1, .L36
+ 383 000c 1046     		mov	r0, r2
+ 384 000e FFF7FEFF 		bl	f_mount
+ 385              	.LVL42:
+ 151:Src/fatfs.c   ****   CHECK_FRESULT(result, "close failed", -1);
+ 386              		.loc 1 151 0
+ 387 0012 0CB9     		cbnz	r4, .L35
+ 152:Src/fatfs.c   ****   return 0;
+ 388              		.loc 1 152 0
+ 389 0014 0020     		movs	r0, #0
+ 390              	.L31:
+ 153:Src/fatfs.c   **** }
+ 391              		.loc 1 153 0
+ 392 0016 10BD     		pop	{r4, pc}
+ 393              	.LVL43:
+ 394              	.L35:
+ 151:Src/fatfs.c   ****   CHECK_FRESULT(result, "close failed", -1);
+ 395              		.loc 1 151 0 discriminator 1
+ 396 0018 2246     		mov	r2, r4
+ 397 001a 0449     		ldr	r1, .L36+4
+ 398 001c 0448     		ldr	r0, .L36+8
+ 399 001e FFF7FEFF 		bl	printf
+ 400              	.LVL44:
+ 401 0022 4FF0FF30 		mov	r0, #-1
+ 402 0026 F6E7     		b	.L31
+ 403              	.L37:
+ 404              		.align	2
+ 405              	.L36:
+ 406 0028 0C000000 		.word	.LC3
+ 407 002c 00000000 		.word	.LC9
+ 408 0030 14000000 		.word	.LC7
+ 409              		.cfi_endproc
+ 410              	.LFE136:
+ 412              		.section	.text.usb_write,"ax",%progbits
+ 413              		.align	1
+ 414              		.global	usb_write
+ 415              		.syntax unified
+ 416              		.thumb
+ 417              		.thumb_func
+ 418              		.fpu fpv4-sp-d16
+ 420              	usb_write:
+ 421              	.LFB137:
+ 154:Src/fatfs.c   **** 
+ 155:Src/fatfs.c   **** int usb_write(FIL *fp, const void *bytes, size_t size) {
+ 422              		.loc 1 155 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 11
+
+
+ 423              		.cfi_startproc
+ 424              		@ args = 0, pretend = 0, frame = 8
+ 425              		@ frame_needed = 0, uses_anonymous_args = 0
+ 426              	.LVL45:
+ 427 0000 00B5     		push	{lr}
+ 428              	.LCFI7:
+ 429              		.cfi_def_cfa_offset 4
+ 430              		.cfi_offset 14, -4
+ 431 0002 83B0     		sub	sp, sp, #12
+ 432              	.LCFI8:
+ 433              		.cfi_def_cfa_offset 16
+ 156:Src/fatfs.c   ****   uint written_bytes;
+ 157:Src/fatfs.c   ****   FRESULT result = f_write(fp, bytes, size, &written_bytes);
+ 434              		.loc 1 157 0
+ 435 0004 01AB     		add	r3, sp, #4
+ 436 0006 FFF7FEFF 		bl	f_write
+ 437              	.LVL46:
+ 158:Src/fatfs.c   ****   CHECK_FRESULT(result, "write failed", -1);
+ 438              		.loc 1 158 0
+ 439 000a 18B9     		cbnz	r0, .L42
+ 159:Src/fatfs.c   ****   return 0;
+ 440              		.loc 1 159 0
+ 441 000c 0020     		movs	r0, #0
+ 442              	.LVL47:
+ 443              	.L38:
+ 160:Src/fatfs.c   **** }
+ 444              		.loc 1 160 0
+ 445 000e 03B0     		add	sp, sp, #12
+ 446              	.LCFI9:
+ 447              		.cfi_remember_state
+ 448              		.cfi_def_cfa_offset 4
+ 449              		@ sp needed
+ 450 0010 5DF804FB 		ldr	pc, [sp], #4
+ 451              	.LVL48:
+ 452              	.L42:
+ 453              	.LCFI10:
+ 454              		.cfi_restore_state
+ 455 0014 0246     		mov	r2, r0
+ 158:Src/fatfs.c   ****   CHECK_FRESULT(result, "write failed", -1);
+ 456              		.loc 1 158 0 discriminator 1
+ 457 0016 0349     		ldr	r1, .L43
+ 458 0018 0348     		ldr	r0, .L43+4
+ 459              	.LVL49:
+ 460 001a FFF7FEFF 		bl	printf
+ 461              	.LVL50:
+ 462 001e 4FF0FF30 		mov	r0, #-1
+ 463 0022 F4E7     		b	.L38
+ 464              	.L44:
+ 465              		.align	2
+ 466              	.L43:
+ 467 0024 00000000 		.word	.LC10
+ 468 0028 14000000 		.word	.LC7
+ 469              		.cfi_endproc
+ 470              	.LFE137:
+ 472              		.section	.text.usb_open_and_write,"ax",%progbits
+ 473              		.align	1
+ 474              		.global	usb_open_and_write
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 12
+
+
+ 475              		.syntax unified
+ 476              		.thumb
+ 477              		.thumb_func
+ 478              		.fpu fpv4-sp-d16
+ 480              	usb_open_and_write:
+ 481              	.LFB138:
+ 161:Src/fatfs.c   **** 
+ 162:Src/fatfs.c   **** int usb_open_and_write(const void *bytes, const char *filename, size_t size) {
+ 482              		.loc 1 162 0
+ 483              		.cfi_startproc
+ 484              		@ args = 0, pretend = 0, frame = 568
+ 485              		@ frame_needed = 0, uses_anonymous_args = 0
+ 486              	.LVL51:
+ 487 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 488              	.LCFI11:
+ 489              		.cfi_def_cfa_offset 20
+ 490              		.cfi_offset 4, -20
+ 491              		.cfi_offset 5, -16
+ 492              		.cfi_offset 6, -12
+ 493              		.cfi_offset 7, -8
+ 494              		.cfi_offset 14, -4
+ 495 0002 ADF50F7D 		sub	sp, sp, #572
+ 496              	.LCFI12:
+ 497              		.cfi_def_cfa_offset 592
+ 498 0006 0646     		mov	r6, r0
+ 499 0008 0C46     		mov	r4, r1
+ 500 000a 1746     		mov	r7, r2
+ 163:Src/fatfs.c   ****   FRESULT result;
+ 164:Src/fatfs.c   **** 
+ 165:Src/fatfs.c   ****   result = f_mount(&USBHFatFS, "", 1);
+ 501              		.loc 1 165 0
+ 502 000c 0122     		movs	r2, #1
+ 503              	.LVL52:
+ 504 000e 2549     		ldr	r1, .L56
+ 505              	.LVL53:
+ 506 0010 2548     		ldr	r0, .L56+4
+ 507              	.LVL54:
+ 508 0012 FFF7FEFF 		bl	f_mount
+ 509              	.LVL55:
+ 166:Src/fatfs.c   ****   if (result == FR_OK) {
+ 510              		.loc 1 166 0
+ 511 0016 0028     		cmp	r0, #0
+ 512 0018 3CD1     		bne	.L46
+ 513              	.LBB4:
+ 167:Src/fatfs.c   ****     FIL fp;
+ 168:Src/fatfs.c   ****     char *path = pvPortMalloc(strlen(filename) + 4);
+ 514              		.loc 1 168 0
+ 515 001a 2046     		mov	r0, r4
+ 516              	.LVL56:
+ 517 001c FFF7FEFF 		bl	strlen
+ 518              	.LVL57:
+ 519 0020 0430     		adds	r0, r0, #4
+ 520 0022 FFF7FEFF 		bl	pvPortMalloc
+ 521              	.LVL58:
+ 522 0026 0546     		mov	r5, r0
+ 523              	.LVL59:
+ 169:Src/fatfs.c   ****     sprintf(path, "0:/%s", filename);
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 13
+
+
+ 524              		.loc 1 169 0
+ 525 0028 2246     		mov	r2, r4
+ 526 002a 2049     		ldr	r1, .L56+8
+ 527 002c FFF7FEFF 		bl	sprintf
+ 528              	.LVL60:
+ 170:Src/fatfs.c   ****     result = f_open(&fp, path, FA_WRITE | FA_OPEN_APPEND);
+ 529              		.loc 1 170 0
+ 530 0030 3222     		movs	r2, #50
+ 531 0032 2946     		mov	r1, r5
+ 532 0034 02A8     		add	r0, sp, #8
+ 533 0036 FFF7FEFF 		bl	f_open
+ 534              	.LVL61:
+ 535 003a 0446     		mov	r4, r0
+ 536              	.LVL62:
+ 171:Src/fatfs.c   ****     vPortFree(path);
+ 537              		.loc 1 171 0
+ 538 003c 2846     		mov	r0, r5
+ 539 003e FFF7FEFF 		bl	vPortFree
+ 540              	.LVL63:
+ 172:Src/fatfs.c   ****     CHECK_FRESULT(result, "open failed", -1);
+ 541              		.loc 1 172 0
+ 542 0042 ACB9     		cbnz	r4, .L53
+ 173:Src/fatfs.c   **** 
+ 174:Src/fatfs.c   ****     uint written_bytes;
+ 175:Src/fatfs.c   ****     result = f_write(&fp, bytes, size, &written_bytes);
+ 543              		.loc 1 175 0
+ 544 0044 01AB     		add	r3, sp, #4
+ 545 0046 3A46     		mov	r2, r7
+ 546 0048 3146     		mov	r1, r6
+ 547 004a 02A8     		add	r0, sp, #8
+ 548 004c FFF7FEFF 		bl	f_write
+ 549              	.LVL64:
+ 176:Src/fatfs.c   ****     CHECK_FRESULT(result, "write failed", -1);
+ 550              		.loc 1 176 0
+ 551 0050 0246     		mov	r2, r0
+ 552 0052 A8B9     		cbnz	r0, .L54
+ 177:Src/fatfs.c   ****     
+ 178:Src/fatfs.c   ****     result = f_close(&fp);
+ 553              		.loc 1 178 0
+ 554 0054 02A8     		add	r0, sp, #8
+ 555              	.LVL65:
+ 556 0056 FFF7FEFF 		bl	f_close
+ 557              	.LVL66:
+ 179:Src/fatfs.c   ****     CHECK_FRESULT(result, "close failed", -1);
+ 558              		.loc 1 179 0
+ 559 005a 0246     		mov	r2, r0
+ 560 005c A8B9     		cbnz	r0, .L55
+ 180:Src/fatfs.c   **** 
+ 181:Src/fatfs.c   ****     f_mount(NULL, "", 0);
+ 561              		.loc 1 181 0
+ 562 005e 0022     		movs	r2, #0
+ 563 0060 1049     		ldr	r1, .L56
+ 564 0062 1046     		mov	r0, r2
+ 565              	.LVL67:
+ 566 0064 FFF7FEFF 		bl	f_mount
+ 567              	.LVL68:
+ 568              	.LBE4:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 14
+
+
+ 182:Src/fatfs.c   ****   } else {
+ 183:Src/fatfs.c   ****     CHECK_FRESULT(result, "mount failed", -1);
+ 184:Src/fatfs.c   ****   }
+ 185:Src/fatfs.c   **** 
+ 186:Src/fatfs.c   ****   return 0;
+ 569              		.loc 1 186 0
+ 570 0068 0020     		movs	r0, #0
+ 571              	.LVL69:
+ 572              	.L45:
+ 187:Src/fatfs.c   **** }
+ 573              		.loc 1 187 0
+ 574 006a 0DF50F7D 		add	sp, sp, #572
+ 575              	.LCFI13:
+ 576              		.cfi_remember_state
+ 577              		.cfi_def_cfa_offset 20
+ 578              		@ sp needed
+ 579 006e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 580              	.LVL70:
+ 581              	.L53:
+ 582              	.LCFI14:
+ 583              		.cfi_restore_state
+ 584              	.LBB5:
+ 172:Src/fatfs.c   **** 
+ 585              		.loc 1 172 0 discriminator 1
+ 586 0070 2246     		mov	r2, r4
+ 587 0072 0F49     		ldr	r1, .L56+12
+ 588 0074 0F48     		ldr	r0, .L56+16
+ 589 0076 FFF7FEFF 		bl	printf
+ 590              	.LVL71:
+ 591              	.L48:
+ 172:Src/fatfs.c   **** 
+ 592              		.loc 1 172 0 is_stmt 0 discriminator 2
+ 593 007a 4FF0FF30 		mov	r0, #-1
+ 594 007e F4E7     		b	.L45
+ 595              	.LVL72:
+ 596              	.L54:
+ 176:Src/fatfs.c   ****     
+ 597              		.loc 1 176 0 is_stmt 1 discriminator 1
+ 598 0080 0D49     		ldr	r1, .L56+20
+ 599 0082 0C48     		ldr	r0, .L56+16
+ 600              	.LVL73:
+ 601 0084 FFF7FEFF 		bl	printf
+ 602              	.LVL74:
+ 603 0088 F7E7     		b	.L48
+ 604              	.LVL75:
+ 605              	.L55:
+ 179:Src/fatfs.c   **** 
+ 606              		.loc 1 179 0 discriminator 1
+ 607 008a 0C49     		ldr	r1, .L56+24
+ 608 008c 0948     		ldr	r0, .L56+16
+ 609              	.LVL76:
+ 610 008e FFF7FEFF 		bl	printf
+ 611              	.LVL77:
+ 612 0092 F2E7     		b	.L48
+ 613              	.LVL78:
+ 614              	.L46:
+ 615 0094 0246     		mov	r2, r0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 15
+
+
+ 616              	.LBE5:
+ 183:Src/fatfs.c   ****   }
+ 617              		.loc 1 183 0 discriminator 1
+ 618 0096 0A49     		ldr	r1, .L56+28
+ 619 0098 0648     		ldr	r0, .L56+16
+ 620              	.LVL79:
+ 621 009a FFF7FEFF 		bl	printf
+ 622              	.LVL80:
+ 623 009e 4FF0FF30 		mov	r0, #-1
+ 624 00a2 E2E7     		b	.L45
+ 625              	.L57:
+ 626              		.align	2
+ 627              	.L56:
+ 628 00a4 0C000000 		.word	.LC3
+ 629 00a8 00000000 		.word	USBHFatFS
+ 630 00ac 00000000 		.word	.LC5
+ 631 00b0 08000000 		.word	.LC6
+ 632 00b4 14000000 		.word	.LC7
+ 633 00b8 00000000 		.word	.LC10
+ 634 00bc 00000000 		.word	.LC9
+ 635 00c0 2C000000 		.word	.LC8
+ 636              		.cfi_endproc
+ 637              	.LFE138:
+ 639              		.comm	USBHFile,560,4
+ 640              		.comm	USBHFatFS,564,4
+ 641              		.comm	USBHPath,4,4
+ 642              		.comm	retUSBH,1,1
+ 643              		.section	.bss.fno.11721,"aw",%nobits
+ 644              		.align	2
+ 645              		.set	.LANCHOR0,. + 0
+ 648              	fno.11721:
+ 649 0000 00000000 		.space	24
+ 649      00000000 
+ 649      00000000 
+ 649      00000000 
+ 649      00000000 
+ 650              		.section	.rodata.scan_files.str1.4,"aMS",%progbits,1
+ 651              		.align	2
+ 652              	.LC0:
+ 653 0000 5363616E 		.ascii	"Scan path \"%s\"\012\000"
+ 653      20706174 
+ 653      68202225 
+ 653      73220A00 
+ 654              	.LC1:
+ 655 0010 25732573 		.ascii	"%s%s\012\015\000"
+ 655      0A0D00
+ 656              		.section	.rodata.usb_close_file.str1.4,"aMS",%progbits,1
+ 657              		.align	2
+ 658              	.LC9:
+ 659 0000 636C6F73 		.ascii	"close failed\000"
+ 659      65206661 
+ 659      696C6564 
+ 659      00
+ 660              		.section	.rodata.usb_ls.str1.4,"aMS",%progbits,1
+ 661              		.align	2
+ 662              	.LC2:
+ 663 0000 53746172 		.ascii	"Start ls\000"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 16
+
+
+ 663      74206C73 
+ 663      00
+ 664 0009 000000   		.space	3
+ 665              	.LC3:
+ 666 000c 00       		.ascii	"\000"
+ 667 000d 000000   		.space	3
+ 668              	.LC4:
+ 669 0010 4572726F 		.ascii	"Error mounting USB\000"
+ 669      72206D6F 
+ 669      756E7469 
+ 669      6E672055 
+ 669      534200
+ 670              		.section	.rodata.usb_open_file.str1.4,"aMS",%progbits,1
+ 671              		.align	2
+ 672              	.LC5:
+ 673 0000 303A2F25 		.ascii	"0:/%s\000"
+ 673      7300
+ 674 0006 0000     		.space	2
+ 675              	.LC6:
+ 676 0008 6F70656E 		.ascii	"open failed\000"
+ 676      20666169 
+ 676      6C656400 
+ 677              	.LC7:
+ 678 0014 25732C20 		.ascii	"%s, error code 0x%x\012\000"
+ 678      6572726F 
+ 678      7220636F 
+ 678      64652030 
+ 678      7825780A 
+ 679 0029 000000   		.space	3
+ 680              	.LC8:
+ 681 002c 6D6F756E 		.ascii	"mount failed\000"
+ 681      74206661 
+ 681      696C6564 
+ 681      00
+ 682              		.section	.rodata.usb_write.str1.4,"aMS",%progbits,1
+ 683              		.align	2
+ 684              	.LC10:
+ 685 0000 77726974 		.ascii	"write failed\000"
+ 685      65206661 
+ 685      696C6564 
+ 685      00
+ 686              		.text
+ 687              	.Letext0:
+ 688              		.file 2 "Middlewares/Third_Party/FatFs/src/integer.h"
+ 689              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 690              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 691              		.file 5 "Drivers/CMSIS/Include/core_cm4.h"
+ 692              		.file 6 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 693              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 694              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 695              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 696              		.file 10 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 697              		.file 11 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/types.h"
+ 698              		.file 12 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 699              		.file 13 "Middlewares/Third_Party/FreeRTOS/Source/include/queue.h"
+ 700              		.file 14 "Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h"
+ 701              		.file 15 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 17
+
+
+ 702              		.file 16 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 703              		.file 17 "Middlewares/ST/STM32_USB_Host_Library/Core/Inc/usbh_def.h"
+ 704              		.file 18 "Middlewares/ST/STM32_USB_Host_Library/Core/Inc/usbh_ctlreq.h"
+ 705              		.file 19 "Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Inc/usbh_msc.h"
+ 706              		.file 20 "Middlewares/Third_Party/FatFs/src/ff.h"
+ 707              		.file 21 "Middlewares/Third_Party/FatFs/src/diskio.h"
+ 708              		.file 22 "Middlewares/Third_Party/FatFs/src/ff_gen_drv.h"
+ 709              		.file 23 "Inc/usbh_diskio.h"
+ 710              		.file 24 "Inc/fatfs.h"
+ 711              		.file 25 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ 712              		.file 26 "Middlewares/Third_Party/FreeRTOS/Source/include/portable.h"
+ 713              		.file 27 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 714              		.file 28 "<built-in>"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 fatfs.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:18     .text.MX_FATFS_Init:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:25     .text.MX_FATFS_Init:0000000000000000 MX_FATFS_Init
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:49     .text.MX_FATFS_Init:0000000000000010 $d
+                            *COM*:0000000000000004 USBHPath
+                            *COM*:0000000000000001 retUSBH
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:56     .text.get_fattime:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:63     .text.get_fattime:0000000000000000 get_fattime
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:77     .text.scan_files:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:84     .text.scan_files:0000000000000000 scan_files
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:161    .text.scan_files:0000000000000050 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:169    .text.usb_ls:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:176    .text.usb_ls:0000000000000000 usb_ls
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:226    .text.usb_ls:0000000000000038 $d
+                            *COM*:0000000000000234 USBHFatFS
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:235    .text.usb_open_file:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:242    .text.usb_open_file:0000000000000000 usb_open_file
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:346    .text.usb_open_file:0000000000000070 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:356    .text.usb_close_file:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:363    .text.usb_close_file:0000000000000000 usb_close_file
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:406    .text.usb_close_file:0000000000000028 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:413    .text.usb_write:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:420    .text.usb_write:0000000000000000 usb_write
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:467    .text.usb_write:0000000000000024 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:473    .text.usb_open_and_write:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:480    .text.usb_open_and_write:0000000000000000 usb_open_and_write
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:628    .text.usb_open_and_write:00000000000000a4 $d
+                            *COM*:0000000000000230 USBHFile
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:644    .bss.fno.11721:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:648    .bss.fno.11721:0000000000000000 fno.11721
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:651    .rodata.scan_files.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:657    .rodata.usb_close_file.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:661    .rodata.usb_ls.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:671    .rodata.usb_open_file.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cciR0dKb.s:683    .rodata.usb_write.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+FATFS_LinkDriver
+USBH_Driver
+printf
+f_opendir
+f_readdir
+f_closedir
+puts
+f_mount
+strlen
+pvPortMalloc
+sprintf
+f_open
+vPortFree
+f_close
+f_write

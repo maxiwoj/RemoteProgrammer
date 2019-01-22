@@ -1,0 +1,1484 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"packet.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.handle_request,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	handle_request:
+  25              	.LFB4:
+  26              		.file 1 "Middlewares/Third_Party/wakaama/packet.c"
+   1:Middlewares/Third_Party/wakaama/packet.c **** /*******************************************************************************
+   2:Middlewares/Third_Party/wakaama/packet.c ****  *
+   3:Middlewares/Third_Party/wakaama/packet.c ****  * Copyright (c) 2013, 2014 Intel Corporation and others.
+   4:Middlewares/Third_Party/wakaama/packet.c ****  * All rights reserved. This program and the accompanying materials
+   5:Middlewares/Third_Party/wakaama/packet.c ****  * are made available under the terms of the Eclipse Public License v1.0
+   6:Middlewares/Third_Party/wakaama/packet.c ****  * and Eclipse Distribution License v1.0 which accompany this distribution.
+   7:Middlewares/Third_Party/wakaama/packet.c ****  *
+   8:Middlewares/Third_Party/wakaama/packet.c ****  * The Eclipse Public License is available at
+   9:Middlewares/Third_Party/wakaama/packet.c ****  *    http://www.eclipse.org/legal/epl-v10.html
+  10:Middlewares/Third_Party/wakaama/packet.c ****  * The Eclipse Distribution License is available at
+  11:Middlewares/Third_Party/wakaama/packet.c ****  *    http://www.eclipse.org/org/documents/edl-v10.php.
+  12:Middlewares/Third_Party/wakaama/packet.c ****  *
+  13:Middlewares/Third_Party/wakaama/packet.c ****  * Contributors:
+  14:Middlewares/Third_Party/wakaama/packet.c ****  *    David Navarro, Intel Corporation - initial API and implementation
+  15:Middlewares/Third_Party/wakaama/packet.c ****  *    domedambrosio - Please refer to git log
+  16:Middlewares/Third_Party/wakaama/packet.c ****  *    Fabien Fleutot - Please refer to git log
+  17:Middlewares/Third_Party/wakaama/packet.c ****  *    Fabien Fleutot - Please refer to git log
+  18:Middlewares/Third_Party/wakaama/packet.c ****  *    Simon Bernard - Please refer to git log
+  19:Middlewares/Third_Party/wakaama/packet.c ****  *    Toby Jaffey - Please refer to git log
+  20:Middlewares/Third_Party/wakaama/packet.c ****  *    Pascal Rieux - Please refer to git log
+  21:Middlewares/Third_Party/wakaama/packet.c ****  *    Bosch Software Innovations GmbH - Please refer to git log
+  22:Middlewares/Third_Party/wakaama/packet.c ****  *
+  23:Middlewares/Third_Party/wakaama/packet.c ****  *******************************************************************************/
+  24:Middlewares/Third_Party/wakaama/packet.c **** 
+  25:Middlewares/Third_Party/wakaama/packet.c **** /*
+  26:Middlewares/Third_Party/wakaama/packet.c ****  Copyright (c) 2013, 2014 Intel Corporation
+  27:Middlewares/Third_Party/wakaama/packet.c **** 
+  28:Middlewares/Third_Party/wakaama/packet.c ****  Redistribution and use in source and binary forms, with or without modification,
+  29:Middlewares/Third_Party/wakaama/packet.c ****  are permitted provided that the following conditions are met:
+  30:Middlewares/Third_Party/wakaama/packet.c **** 
+  31:Middlewares/Third_Party/wakaama/packet.c ****      * Redistributions of source code must retain the above copyright notice,
+  32:Middlewares/Third_Party/wakaama/packet.c ****        this list of conditions and the following disclaimer.
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 2
+
+
+  33:Middlewares/Third_Party/wakaama/packet.c ****      * Redistributions in binary form must reproduce the above copyright notice,
+  34:Middlewares/Third_Party/wakaama/packet.c ****        this list of conditions and the following disclaimer in the documentation
+  35:Middlewares/Third_Party/wakaama/packet.c ****        and/or other materials provided with the distribution.
+  36:Middlewares/Third_Party/wakaama/packet.c ****      * Neither the name of Intel Corporation nor the names of its contributors
+  37:Middlewares/Third_Party/wakaama/packet.c ****        may be used to endorse or promote products derived from this software
+  38:Middlewares/Third_Party/wakaama/packet.c ****        without specific prior written permission.
+  39:Middlewares/Third_Party/wakaama/packet.c **** 
+  40:Middlewares/Third_Party/wakaama/packet.c ****  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  41:Middlewares/Third_Party/wakaama/packet.c ****  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  42:Middlewares/Third_Party/wakaama/packet.c ****  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  43:Middlewares/Third_Party/wakaama/packet.c ****  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  44:Middlewares/Third_Party/wakaama/packet.c ****  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  45:Middlewares/Third_Party/wakaama/packet.c ****  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  46:Middlewares/Third_Party/wakaama/packet.c ****  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  47:Middlewares/Third_Party/wakaama/packet.c ****  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  48:Middlewares/Third_Party/wakaama/packet.c ****  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+  49:Middlewares/Third_Party/wakaama/packet.c ****  THE POSSIBILITY OF SUCH DAMAGE.
+  50:Middlewares/Third_Party/wakaama/packet.c **** 
+  51:Middlewares/Third_Party/wakaama/packet.c ****  David Navarro <david.navarro@intel.com>
+  52:Middlewares/Third_Party/wakaama/packet.c **** 
+  53:Middlewares/Third_Party/wakaama/packet.c **** */
+  54:Middlewares/Third_Party/wakaama/packet.c **** 
+  55:Middlewares/Third_Party/wakaama/packet.c **** /*
+  56:Middlewares/Third_Party/wakaama/packet.c **** Contains code snippets which are:
+  57:Middlewares/Third_Party/wakaama/packet.c **** 
+  58:Middlewares/Third_Party/wakaama/packet.c ****  * Copyright (c) 2013, Institute for Pervasive Computing, ETH Zurich
+  59:Middlewares/Third_Party/wakaama/packet.c ****  * All rights reserved.
+  60:Middlewares/Third_Party/wakaama/packet.c ****  *
+  61:Middlewares/Third_Party/wakaama/packet.c ****  * Redistribution and use in source and binary forms, with or without
+  62:Middlewares/Third_Party/wakaama/packet.c ****  * modification, are permitted provided that the following conditions
+  63:Middlewares/Third_Party/wakaama/packet.c ****  * are met:
+  64:Middlewares/Third_Party/wakaama/packet.c ****  * 1. Redistributions of source code must retain the above copyright
+  65:Middlewares/Third_Party/wakaama/packet.c ****  *    notice, this list of conditions and the following disclaimer.
+  66:Middlewares/Third_Party/wakaama/packet.c ****  * 2. Redistributions in binary form must reproduce the above copyright
+  67:Middlewares/Third_Party/wakaama/packet.c ****  *    notice, this list of conditions and the following disclaimer in the
+  68:Middlewares/Third_Party/wakaama/packet.c ****  *    documentation and/or other materials provided with the distribution.
+  69:Middlewares/Third_Party/wakaama/packet.c ****  * 3. Neither the name of the Institute nor the names of its contributors
+  70:Middlewares/Third_Party/wakaama/packet.c ****  *    may be used to endorse or promote products derived from this software
+  71:Middlewares/Third_Party/wakaama/packet.c ****  *    without specific prior written permission.
+  72:Middlewares/Third_Party/wakaama/packet.c ****  *
+  73:Middlewares/Third_Party/wakaama/packet.c ****  * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
+  74:Middlewares/Third_Party/wakaama/packet.c ****  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  75:Middlewares/Third_Party/wakaama/packet.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  76:Middlewares/Third_Party/wakaama/packet.c ****  * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
+  77:Middlewares/Third_Party/wakaama/packet.c ****  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  78:Middlewares/Third_Party/wakaama/packet.c ****  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+  79:Middlewares/Third_Party/wakaama/packet.c ****  * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  80:Middlewares/Third_Party/wakaama/packet.c ****  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  81:Middlewares/Third_Party/wakaama/packet.c ****  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  82:Middlewares/Third_Party/wakaama/packet.c ****  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  83:Middlewares/Third_Party/wakaama/packet.c ****  * SUCH DAMAGE.
+  84:Middlewares/Third_Party/wakaama/packet.c **** 
+  85:Middlewares/Third_Party/wakaama/packet.c **** */
+  86:Middlewares/Third_Party/wakaama/packet.c **** 
+  87:Middlewares/Third_Party/wakaama/packet.c **** 
+  88:Middlewares/Third_Party/wakaama/packet.c **** #include "internals.h"
+  89:Middlewares/Third_Party/wakaama/packet.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 3
+
+
+  90:Middlewares/Third_Party/wakaama/packet.c **** #include <stdlib.h>
+  91:Middlewares/Third_Party/wakaama/packet.c **** #include <string.h>
+  92:Middlewares/Third_Party/wakaama/packet.c **** 
+  93:Middlewares/Third_Party/wakaama/packet.c **** #include <stdio.h>
+  94:Middlewares/Third_Party/wakaama/packet.c **** 
+  95:Middlewares/Third_Party/wakaama/packet.c **** 
+  96:Middlewares/Third_Party/wakaama/packet.c **** static void handle_reset(lwm2m_context_t * contextP,
+  97:Middlewares/Third_Party/wakaama/packet.c ****                          void * fromSessionH,
+  98:Middlewares/Third_Party/wakaama/packet.c ****                          coap_packet_t * message)
+  99:Middlewares/Third_Party/wakaama/packet.c **** {
+ 100:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_CLIENT_MODE
+ 101:Middlewares/Third_Party/wakaama/packet.c ****     LOG("Entering");
+ 102:Middlewares/Third_Party/wakaama/packet.c ****     observe_cancel(contextP, message->mid, fromSessionH);
+ 103:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 104:Middlewares/Third_Party/wakaama/packet.c **** }
+ 105:Middlewares/Third_Party/wakaama/packet.c **** 
+ 106:Middlewares/Third_Party/wakaama/packet.c **** static uint8_t handle_request(lwm2m_context_t * contextP,
+ 107:Middlewares/Third_Party/wakaama/packet.c ****                               void * fromSessionH,
+ 108:Middlewares/Third_Party/wakaama/packet.c ****                               coap_packet_t * message,
+ 109:Middlewares/Third_Party/wakaama/packet.c ****                               coap_packet_t * response)
+ 110:Middlewares/Third_Party/wakaama/packet.c **** {
+  27              		.loc 1 110 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 24
+  35              		.cfi_offset 4, -24
+  36              		.cfi_offset 5, -20
+  37              		.cfi_offset 6, -16
+  38              		.cfi_offset 7, -12
+  39              		.cfi_offset 8, -8
+  40              		.cfi_offset 14, -4
+  41 0004 82B0     		sub	sp, sp, #8
+  42              	.LCFI1:
+  43              		.cfi_def_cfa_offset 32
+  44 0006 0446     		mov	r4, r0
+  45 0008 8846     		mov	r8, r1
+  46 000a 1646     		mov	r6, r2
+  47 000c 1F46     		mov	r7, r3
+  48              	.LVL1:
+ 111:Middlewares/Third_Party/wakaama/packet.c ****     lwm2m_uri_t * uriP;
+ 112:Middlewares/Third_Party/wakaama/packet.c ****     uint8_t result = COAP_IGNORE;
+ 113:Middlewares/Third_Party/wakaama/packet.c **** 
+ 114:Middlewares/Third_Party/wakaama/packet.c ****     LOG("Entering");
+ 115:Middlewares/Third_Party/wakaama/packet.c **** 	
+ 116:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_CLIENT_MODE
+ 117:Middlewares/Third_Party/wakaama/packet.c ****     uriP = uri_decode(contextP->altPath, message->uri_path);
+  49              		.loc 1 117 0
+  50 000e 516C     		ldr	r1, [r2, #68]
+  51              	.LVL2:
+  52 0010 C068     		ldr	r0, [r0, #12]
+  53              	.LVL3:
+  54 0012 FFF7FEFF 		bl	uri_decode
+  55              	.LVL4:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 4
+
+
+ 118:Middlewares/Third_Party/wakaama/packet.c **** #else
+ 119:Middlewares/Third_Party/wakaama/packet.c ****     uriP = uri_decode(NULL, message->uri_path);
+ 120:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 121:Middlewares/Third_Party/wakaama/packet.c **** 
+ 122:Middlewares/Third_Party/wakaama/packet.c ****     if (uriP == NULL) return COAP_400_BAD_REQUEST;
+  56              		.loc 1 122 0
+  57 0016 28B3     		cbz	r0, .L6
+  58 0018 0546     		mov	r5, r0
+ 123:Middlewares/Third_Party/wakaama/packet.c **** 
+ 124:Middlewares/Third_Party/wakaama/packet.c ****     switch(uriP->flag & LWM2M_URI_MASK_TYPE)
+  59              		.loc 1 124 0
+  60 001a 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+  61 001c 13F0700F 		tst	r3, #112
+  62 0020 10D0     		beq	.L12
+ 125:Middlewares/Third_Party/wakaama/packet.c ****     {
+ 126:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_CLIENT_MODE
+ 127:Middlewares/Third_Party/wakaama/packet.c ****     case LWM2M_URI_FLAG_DM:
+ 128:Middlewares/Third_Party/wakaama/packet.c ****     {
+ 129:Middlewares/Third_Party/wakaama/packet.c ****         lwm2m_server_t * serverP;
+ 130:Middlewares/Third_Party/wakaama/packet.c **** 
+ 131:Middlewares/Third_Party/wakaama/packet.c ****         serverP = utils_findServer(contextP, fromSessionH);
+ 132:Middlewares/Third_Party/wakaama/packet.c ****         if (serverP != NULL)
+ 133:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 134:Middlewares/Third_Party/wakaama/packet.c ****             result = dm_handleRequest(contextP, uriP, serverP, message, response);
+ 135:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 136:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_BOOTSTRAP
+ 137:Middlewares/Third_Party/wakaama/packet.c ****         else
+ 138:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 139:Middlewares/Third_Party/wakaama/packet.c ****             serverP = utils_findBootstrapServer(contextP, fromSessionH);
+ 140:Middlewares/Third_Party/wakaama/packet.c ****             if (serverP != NULL)
+ 141:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 142:Middlewares/Third_Party/wakaama/packet.c ****                 result = bootstrap_handleCommand(contextP, uriP, serverP, message, response);
+ 143:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 144:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 145:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 146:Middlewares/Third_Party/wakaama/packet.c ****     }
+ 147:Middlewares/Third_Party/wakaama/packet.c ****     break;
+ 148:Middlewares/Third_Party/wakaama/packet.c **** 
+ 149:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_BOOTSTRAP
+ 150:Middlewares/Third_Party/wakaama/packet.c ****     case LWM2M_URI_FLAG_DELETE_ALL:
+ 151:Middlewares/Third_Party/wakaama/packet.c ****         if (COAP_DELETE != message->code)
+ 152:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 153:Middlewares/Third_Party/wakaama/packet.c ****             result = COAP_400_BAD_REQUEST;
+ 154:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 155:Middlewares/Third_Party/wakaama/packet.c ****         else
+ 156:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 157:Middlewares/Third_Party/wakaama/packet.c ****             result = bootstrap_handleDeleteAll(contextP, fromSessionH);
+ 158:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 159:Middlewares/Third_Party/wakaama/packet.c ****         break;
+ 160:Middlewares/Third_Party/wakaama/packet.c **** 
+ 161:Middlewares/Third_Party/wakaama/packet.c ****     case LWM2M_URI_FLAG_BOOTSTRAP:
+ 162:Middlewares/Third_Party/wakaama/packet.c ****         if (message->code == COAP_POST)
+ 163:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 164:Middlewares/Third_Party/wakaama/packet.c ****             result = bootstrap_handleFinish(contextP, fromSessionH);
+ 165:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 166:Middlewares/Third_Party/wakaama/packet.c ****         break;
+ 167:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 5
+
+
+ 168:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 169:Middlewares/Third_Party/wakaama/packet.c **** 
+ 170:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_SERVER_MODE
+ 171:Middlewares/Third_Party/wakaama/packet.c ****     case LWM2M_URI_FLAG_REGISTRATION:
+ 172:Middlewares/Third_Party/wakaama/packet.c ****         result = registration_handleRequest(contextP, uriP, fromSessionH, message, response);
+ 173:Middlewares/Third_Party/wakaama/packet.c ****         break;
+ 174:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 175:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_BOOTSTRAP_SERVER_MODE
+ 176:Middlewares/Third_Party/wakaama/packet.c ****     case LWM2M_URI_FLAG_BOOTSTRAP:
+ 177:Middlewares/Third_Party/wakaama/packet.c ****         result = bootstrap_handleRequest(contextP, uriP, fromSessionH, message, response);
+ 178:Middlewares/Third_Party/wakaama/packet.c ****         break;
+ 179:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 180:Middlewares/Third_Party/wakaama/packet.c ****     default:
+ 181:Middlewares/Third_Party/wakaama/packet.c ****         result = COAP_IGNORE;
+  63              		.loc 1 181 0
+  64 0022 0124     		movs	r4, #1
+  65              	.LVL5:
+  66              	.L3:
+ 182:Middlewares/Third_Party/wakaama/packet.c ****         break;
+ 183:Middlewares/Third_Party/wakaama/packet.c ****     }
+ 184:Middlewares/Third_Party/wakaama/packet.c **** 
+ 185:Middlewares/Third_Party/wakaama/packet.c ****     coap_set_status_code(response, result);
+  67              		.loc 1 185 0
+  68 0024 2146     		mov	r1, r4
+  69 0026 3846     		mov	r0, r7
+  70 0028 FFF7FEFF 		bl	coap_set_status_code
+  71              	.LVL6:
+ 186:Middlewares/Third_Party/wakaama/packet.c **** 
+ 187:Middlewares/Third_Party/wakaama/packet.c ****     if (COAP_IGNORE < result && result < COAP_400_BAD_REQUEST)
+  72              		.loc 1 187 0
+  73 002c A31E     		subs	r3, r4, #2
+  74 002e DBB2     		uxtb	r3, r3
+  75 0030 7D2B     		cmp	r3, #125
+  76 0032 00D8     		bhi	.L5
+ 188:Middlewares/Third_Party/wakaama/packet.c ****     {
+ 189:Middlewares/Third_Party/wakaama/packet.c ****         result = NO_ERROR;
+  77              		.loc 1 189 0
+  78 0034 0024     		movs	r4, #0
+  79              	.LVL7:
+  80              	.L5:
+ 190:Middlewares/Third_Party/wakaama/packet.c ****     }
+ 191:Middlewares/Third_Party/wakaama/packet.c **** 
+ 192:Middlewares/Third_Party/wakaama/packet.c ****     lwm2m_free(uriP);
+  81              		.loc 1 192 0
+  82 0036 2846     		mov	r0, r5
+  83 0038 FFF7FEFF 		bl	lwm2m_free
+  84              	.LVL8:
+  85              	.L2:
+ 193:Middlewares/Third_Party/wakaama/packet.c ****     return result;
+ 194:Middlewares/Third_Party/wakaama/packet.c **** }
+  86              		.loc 1 194 0
+  87 003c 2046     		mov	r0, r4
+  88 003e 02B0     		add	sp, sp, #8
+  89              	.LCFI2:
+  90              		.cfi_remember_state
+  91              		.cfi_def_cfa_offset 24
+  92              		@ sp needed
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 6
+
+
+  93 0040 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+  94              	.LVL9:
+  95              	.L12:
+  96              	.LCFI3:
+  97              		.cfi_restore_state
+  98              	.LBB2:
+ 131:Middlewares/Third_Party/wakaama/packet.c ****         if (serverP != NULL)
+  99              		.loc 1 131 0
+ 100 0044 4146     		mov	r1, r8
+ 101 0046 2046     		mov	r0, r4
+ 102              	.LVL10:
+ 103 0048 FFF7FEFF 		bl	utils_findServer
+ 104              	.LVL11:
+ 132:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 105              		.loc 1 132 0
+ 106 004c 0246     		mov	r2, r0
+ 107 004e 38B1     		cbz	r0, .L8
+ 134:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 108              		.loc 1 134 0
+ 109 0050 0097     		str	r7, [sp]
+ 110 0052 3346     		mov	r3, r6
+ 111 0054 2946     		mov	r1, r5
+ 112 0056 2046     		mov	r0, r4
+ 113              	.LVL12:
+ 114 0058 FFF7FEFF 		bl	dm_handleRequest
+ 115              	.LVL13:
+ 116 005c 0446     		mov	r4, r0
+ 117              	.LVL14:
+ 118 005e E1E7     		b	.L3
+ 119              	.LVL15:
+ 120              	.L8:
+ 121              	.LBE2:
+ 112:Middlewares/Third_Party/wakaama/packet.c **** 
+ 122              		.loc 1 112 0
+ 123 0060 0124     		movs	r4, #1
+ 124              	.LVL16:
+ 125 0062 DFE7     		b	.L3
+ 126              	.LVL17:
+ 127              	.L6:
+ 122:Middlewares/Third_Party/wakaama/packet.c **** 
+ 128              		.loc 1 122 0
+ 129 0064 8024     		movs	r4, #128
+ 130              	.LVL18:
+ 131 0066 E9E7     		b	.L2
+ 132              		.cfi_endproc
+ 133              	.LFE4:
+ 135              		.section	.text.handle_reset,"ax",%progbits
+ 136              		.align	1
+ 137              		.syntax unified
+ 138              		.thumb
+ 139              		.thumb_func
+ 140              		.fpu fpv4-sp-d16
+ 142              	handle_reset:
+ 143              	.LFB3:
+  99:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_CLIENT_MODE
+ 144              		.loc 1 99 0
+ 145              		.cfi_startproc
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 7
+
+
+ 146              		@ args = 0, pretend = 0, frame = 0
+ 147              		@ frame_needed = 0, uses_anonymous_args = 0
+ 148              	.LVL19:
+ 149 0000 08B5     		push	{r3, lr}
+ 150              	.LCFI4:
+ 151              		.cfi_def_cfa_offset 8
+ 152              		.cfi_offset 3, -8
+ 153              		.cfi_offset 14, -4
+ 102:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 154              		.loc 1 102 0
+ 155 0002 1389     		ldrh	r3, [r2, #8]
+ 156 0004 0A46     		mov	r2, r1
+ 157              	.LVL20:
+ 158 0006 1946     		mov	r1, r3
+ 159              	.LVL21:
+ 160 0008 FFF7FEFF 		bl	observe_cancel
+ 161              	.LVL22:
+ 104:Middlewares/Third_Party/wakaama/packet.c **** 
+ 162              		.loc 1 104 0
+ 163 000c 08BD     		pop	{r3, pc}
+ 164              		.cfi_endproc
+ 165              	.LFE3:
+ 167              		.section	.text.message_send,"ax",%progbits
+ 168              		.align	1
+ 169              		.global	message_send
+ 170              		.syntax unified
+ 171              		.thumb
+ 172              		.thumb_func
+ 173              		.fpu fpv4-sp-d16
+ 175              	message_send:
+ 176              	.LFB6:
+ 195:Middlewares/Third_Party/wakaama/packet.c **** 
+ 196:Middlewares/Third_Party/wakaama/packet.c **** /* This function is an adaptation of function coap_receive() from Erbium's er-coap-13-engine.c.
+ 197:Middlewares/Third_Party/wakaama/packet.c ****  * Erbium is Copyright (c) 2013, Institute for Pervasive Computing, ETH Zurich
+ 198:Middlewares/Third_Party/wakaama/packet.c ****  * All rights reserved.
+ 199:Middlewares/Third_Party/wakaama/packet.c ****  */
+ 200:Middlewares/Third_Party/wakaama/packet.c **** void lwm2m_handle_packet(lwm2m_context_t * contextP,
+ 201:Middlewares/Third_Party/wakaama/packet.c ****                          uint8_t * buffer,
+ 202:Middlewares/Third_Party/wakaama/packet.c ****                          int length,
+ 203:Middlewares/Third_Party/wakaama/packet.c ****                          void * fromSessionH)
+ 204:Middlewares/Third_Party/wakaama/packet.c **** {
+ 205:Middlewares/Third_Party/wakaama/packet.c ****     uint8_t coap_error_code = NO_ERROR;
+ 206:Middlewares/Third_Party/wakaama/packet.c ****     static coap_packet_t message[1];
+ 207:Middlewares/Third_Party/wakaama/packet.c ****     static coap_packet_t response[1];
+ 208:Middlewares/Third_Party/wakaama/packet.c **** 
+ 209:Middlewares/Third_Party/wakaama/packet.c ****     LOG("Entering");
+ 210:Middlewares/Third_Party/wakaama/packet.c ****     coap_error_code = coap_parse_message(message, buffer, (uint16_t)length);
+ 211:Middlewares/Third_Party/wakaama/packet.c ****     if (coap_error_code == NO_ERROR)
+ 212:Middlewares/Third_Party/wakaama/packet.c ****     {
+ 213:Middlewares/Third_Party/wakaama/packet.c ****         LOG_ARG("Parsed: ver %u, type %u, tkl %u, code %u.%.2u, mid %u, Content type: %d",
+ 214:Middlewares/Third_Party/wakaama/packet.c ****                 message->version, message->type, message->token_len, message->code >> 5, message->c
+ 215:Middlewares/Third_Party/wakaama/packet.c ****         LOG_ARG("Payload: %.*s", message->payload_len, message->payload);
+ 216:Middlewares/Third_Party/wakaama/packet.c ****         if (message->code >= COAP_GET && message->code <= COAP_DELETE)
+ 217:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 218:Middlewares/Third_Party/wakaama/packet.c ****             uint32_t block_num = 0;
+ 219:Middlewares/Third_Party/wakaama/packet.c ****             uint16_t block_size = REST_MAX_CHUNK_SIZE;
+ 220:Middlewares/Third_Party/wakaama/packet.c ****             uint32_t block_offset = 0;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 8
+
+
+ 221:Middlewares/Third_Party/wakaama/packet.c ****             int64_t new_offset = 0;
+ 222:Middlewares/Third_Party/wakaama/packet.c **** 
+ 223:Middlewares/Third_Party/wakaama/packet.c ****             /* prepare response */
+ 224:Middlewares/Third_Party/wakaama/packet.c ****             if (message->type == COAP_TYPE_CON)
+ 225:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 226:Middlewares/Third_Party/wakaama/packet.c ****                 /* Reliable CON requests are answered with an ACK. */
+ 227:Middlewares/Third_Party/wakaama/packet.c ****                 coap_init_message(response, COAP_TYPE_ACK, COAP_205_CONTENT, message->mid);
+ 228:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 229:Middlewares/Third_Party/wakaama/packet.c ****             else
+ 230:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 231:Middlewares/Third_Party/wakaama/packet.c ****                 /* Unreliable NON requests are answered with a NON as well. */
+ 232:Middlewares/Third_Party/wakaama/packet.c ****                 coap_init_message(response, COAP_TYPE_NON, COAP_205_CONTENT, contextP->nextMID++);
+ 233:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 234:Middlewares/Third_Party/wakaama/packet.c **** 
+ 235:Middlewares/Third_Party/wakaama/packet.c ****             /* mirror token */
+ 236:Middlewares/Third_Party/wakaama/packet.c ****             if (message->token_len)
+ 237:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 238:Middlewares/Third_Party/wakaama/packet.c ****                 coap_set_header_token(response, message->token, message->token_len);
+ 239:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 240:Middlewares/Third_Party/wakaama/packet.c **** 
+ 241:Middlewares/Third_Party/wakaama/packet.c ****             /* get offset for blockwise transfers */
+ 242:Middlewares/Third_Party/wakaama/packet.c ****             if (coap_get_header_block2(message, &block_num, NULL, &block_size, &block_offset))
+ 243:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 244:Middlewares/Third_Party/wakaama/packet.c ****                 LOG_ARG("Blockwise: block request %u (%u/%u) @ %u bytes", block_num, block_size, RE
+ 245:Middlewares/Third_Party/wakaama/packet.c ****                 block_size = MIN(block_size, REST_MAX_CHUNK_SIZE);
+ 246:Middlewares/Third_Party/wakaama/packet.c ****                 new_offset = block_offset;
+ 247:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 248:Middlewares/Third_Party/wakaama/packet.c **** 
+ 249:Middlewares/Third_Party/wakaama/packet.c ****             /* handle block1 option */
+ 250:Middlewares/Third_Party/wakaama/packet.c ****             if (IS_OPTION(message, COAP_OPTION_BLOCK1))
+ 251:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 252:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_CLIENT_MODE
+ 253:Middlewares/Third_Party/wakaama/packet.c ****                 // get server
+ 254:Middlewares/Third_Party/wakaama/packet.c ****                 lwm2m_server_t * serverP;
+ 255:Middlewares/Third_Party/wakaama/packet.c ****                 serverP = utils_findServer(contextP, fromSessionH);
+ 256:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_BOOTSTRAP
+ 257:Middlewares/Third_Party/wakaama/packet.c ****                 if (serverP == NULL)
+ 258:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 259:Middlewares/Third_Party/wakaama/packet.c ****                     serverP = utils_findBootstrapServer(contextP, fromSessionH);
+ 260:Middlewares/Third_Party/wakaama/packet.c ****                 }
+ 261:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 262:Middlewares/Third_Party/wakaama/packet.c ****                 if (serverP == NULL)
+ 263:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 264:Middlewares/Third_Party/wakaama/packet.c ****                     coap_error_code = COAP_500_INTERNAL_SERVER_ERROR;
+ 265:Middlewares/Third_Party/wakaama/packet.c ****                 }
+ 266:Middlewares/Third_Party/wakaama/packet.c ****                 else
+ 267:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 268:Middlewares/Third_Party/wakaama/packet.c ****                     uint32_t block1_num;
+ 269:Middlewares/Third_Party/wakaama/packet.c ****                     uint8_t  block1_more;
+ 270:Middlewares/Third_Party/wakaama/packet.c ****                     uint16_t block1_size;
+ 271:Middlewares/Third_Party/wakaama/packet.c ****                     uint8_t * complete_buffer = NULL;
+ 272:Middlewares/Third_Party/wakaama/packet.c ****                     size_t complete_buffer_size;
+ 273:Middlewares/Third_Party/wakaama/packet.c **** 
+ 274:Middlewares/Third_Party/wakaama/packet.c ****                     // parse block1 header
+ 275:Middlewares/Third_Party/wakaama/packet.c ****                     coap_get_header_block1(message, &block1_num, &block1_more, &block1_size, NULL);
+ 276:Middlewares/Third_Party/wakaama/packet.c ****                     LOG_ARG("Blockwise: block1 request NUM %u (SZX %u/ SZX Max%u) MORE %u", block1_
+ 277:Middlewares/Third_Party/wakaama/packet.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 9
+
+
+ 278:Middlewares/Third_Party/wakaama/packet.c ****                     // handle block 1
+ 279:Middlewares/Third_Party/wakaama/packet.c ****                     coap_error_code = coap_block1_handler(&serverP->block1Data, message->mid, messa
+ 280:Middlewares/Third_Party/wakaama/packet.c **** 
+ 281:Middlewares/Third_Party/wakaama/packet.c ****                     // if payload is complete, replace it in the coap message.
+ 282:Middlewares/Third_Party/wakaama/packet.c ****                     if (coap_error_code == NO_ERROR)
+ 283:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 284:Middlewares/Third_Party/wakaama/packet.c ****                         message->payload = complete_buffer;
+ 285:Middlewares/Third_Party/wakaama/packet.c ****                         message->payload_len = complete_buffer_size;
+ 286:Middlewares/Third_Party/wakaama/packet.c ****                     }
+ 287:Middlewares/Third_Party/wakaama/packet.c ****                     else if (coap_error_code == COAP_231_CONTINUE)
+ 288:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 289:Middlewares/Third_Party/wakaama/packet.c ****                         block1_size = MIN(block1_size, REST_MAX_CHUNK_SIZE);
+ 290:Middlewares/Third_Party/wakaama/packet.c ****                         coap_set_header_block1(response,block1_num, block1_more,block1_size);
+ 291:Middlewares/Third_Party/wakaama/packet.c ****                     }
+ 292:Middlewares/Third_Party/wakaama/packet.c ****                 }
+ 293:Middlewares/Third_Party/wakaama/packet.c **** #else
+ 294:Middlewares/Third_Party/wakaama/packet.c ****                 coap_error_code = COAP_501_NOT_IMPLEMENTED;
+ 295:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 296:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 297:Middlewares/Third_Party/wakaama/packet.c ****             if (coap_error_code == NO_ERROR)
+ 298:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 299:Middlewares/Third_Party/wakaama/packet.c ****                 coap_error_code = handle_request(contextP, fromSessionH, message, response);
+ 300:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 301:Middlewares/Third_Party/wakaama/packet.c ****             if (coap_error_code==NO_ERROR)
+ 302:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 303:Middlewares/Third_Party/wakaama/packet.c ****                 /* Save original payload pointer for later freeing. Payload in response may be upda
+ 304:Middlewares/Third_Party/wakaama/packet.c ****                 uint8_t *payload = response->payload;
+ 305:Middlewares/Third_Party/wakaama/packet.c ****                 if ( IS_OPTION(message, COAP_OPTION_BLOCK2) )
+ 306:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 307:Middlewares/Third_Party/wakaama/packet.c ****                     /* unchanged new_offset indicates that resource is unaware of blockwise transfe
+ 308:Middlewares/Third_Party/wakaama/packet.c ****                     if (new_offset==block_offset)
+ 309:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 310:Middlewares/Third_Party/wakaama/packet.c ****                         LOG_ARG("Blockwise: unaware resource with payload length %u/%u", response->
+ 311:Middlewares/Third_Party/wakaama/packet.c ****                         if (block_offset >= response->payload_len)
+ 312:Middlewares/Third_Party/wakaama/packet.c ****                         {
+ 313:Middlewares/Third_Party/wakaama/packet.c ****                             LOG("handle_incoming_data(): block_offset >= response->payload_len");
+ 314:Middlewares/Third_Party/wakaama/packet.c **** 
+ 315:Middlewares/Third_Party/wakaama/packet.c ****                             response->code = COAP_402_BAD_OPTION;
+ 316:Middlewares/Third_Party/wakaama/packet.c ****                             coap_set_payload(response, "BlockOutOfScope", 15); /* a const char str[
+ 317:Middlewares/Third_Party/wakaama/packet.c ****                         }
+ 318:Middlewares/Third_Party/wakaama/packet.c ****                         else
+ 319:Middlewares/Third_Party/wakaama/packet.c ****                         {
+ 320:Middlewares/Third_Party/wakaama/packet.c ****                             coap_set_header_block2(response, block_num, response->payload_len - blo
+ 321:Middlewares/Third_Party/wakaama/packet.c ****                             coap_set_payload(response, response->payload+block_offset, MIN(response
+ 322:Middlewares/Third_Party/wakaama/packet.c ****                         } /* if (valid offset) */
+ 323:Middlewares/Third_Party/wakaama/packet.c ****                     }
+ 324:Middlewares/Third_Party/wakaama/packet.c ****                     else
+ 325:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 326:Middlewares/Third_Party/wakaama/packet.c ****                         /* resource provides chunk-wise data */
+ 327:Middlewares/Third_Party/wakaama/packet.c ****                         LOG_ARG("Blockwise: blockwise resource, new offset %d", (int) new_offset);
+ 328:Middlewares/Third_Party/wakaama/packet.c ****                         coap_set_header_block2(response, block_num, new_offset!=-1 || response->pay
+ 329:Middlewares/Third_Party/wakaama/packet.c ****                         if (response->payload_len > block_size) coap_set_payload(response, response
+ 330:Middlewares/Third_Party/wakaama/packet.c ****                     } /* if (resource aware of blockwise) */
+ 331:Middlewares/Third_Party/wakaama/packet.c ****                 }
+ 332:Middlewares/Third_Party/wakaama/packet.c ****                 else if (new_offset!=0)
+ 333:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 334:Middlewares/Third_Party/wakaama/packet.c ****                     LOG_ARG("Blockwise: no block option for blockwise resource, using block size %u
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 10
+
+
+ 335:Middlewares/Third_Party/wakaama/packet.c **** 
+ 336:Middlewares/Third_Party/wakaama/packet.c ****                     coap_set_header_block2(response, 0, new_offset!=-1, REST_MAX_CHUNK_SIZE);
+ 337:Middlewares/Third_Party/wakaama/packet.c ****                     coap_set_payload(response, response->payload, MIN(response->payload_len, REST_M
+ 338:Middlewares/Third_Party/wakaama/packet.c ****                 } /* if (blockwise request) */
+ 339:Middlewares/Third_Party/wakaama/packet.c **** 
+ 340:Middlewares/Third_Party/wakaama/packet.c ****                 coap_error_code = message_send(contextP, response, fromSessionH);
+ 341:Middlewares/Third_Party/wakaama/packet.c **** 
+ 342:Middlewares/Third_Party/wakaama/packet.c ****                 lwm2m_free(payload);
+ 343:Middlewares/Third_Party/wakaama/packet.c ****                 response->payload = NULL;
+ 344:Middlewares/Third_Party/wakaama/packet.c ****                 response->payload_len = 0;
+ 345:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 346:Middlewares/Third_Party/wakaama/packet.c ****             else if (coap_error_code != COAP_IGNORE)
+ 347:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 348:Middlewares/Third_Party/wakaama/packet.c ****                 if (1 == coap_set_status_code(response, coap_error_code))
+ 349:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 350:Middlewares/Third_Party/wakaama/packet.c ****                     coap_error_code = message_send(contextP, response, fromSessionH);
+ 351:Middlewares/Third_Party/wakaama/packet.c ****                 }
+ 352:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 353:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 354:Middlewares/Third_Party/wakaama/packet.c ****         else
+ 355:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 356:Middlewares/Third_Party/wakaama/packet.c ****             /* Responses */
+ 357:Middlewares/Third_Party/wakaama/packet.c ****             switch (message->type)
+ 358:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 359:Middlewares/Third_Party/wakaama/packet.c ****             case COAP_TYPE_NON:
+ 360:Middlewares/Third_Party/wakaama/packet.c ****             case COAP_TYPE_CON:
+ 361:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 362:Middlewares/Third_Party/wakaama/packet.c ****                     bool done = transaction_handleResponse(contextP, fromSessionH, message, respons
+ 363:Middlewares/Third_Party/wakaama/packet.c **** 
+ 364:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_SERVER_MODE
+ 365:Middlewares/Third_Party/wakaama/packet.c ****                     if (!done && IS_OPTION(message, COAP_OPTION_OBSERVE) &&
+ 366:Middlewares/Third_Party/wakaama/packet.c ****                         ((message->code == COAP_204_CHANGED) || (message->code == COAP_205_CONTENT)
+ 367:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 368:Middlewares/Third_Party/wakaama/packet.c ****                         done = observe_handleNotify(contextP, fromSessionH, message, response);
+ 369:Middlewares/Third_Party/wakaama/packet.c ****                     }
+ 370:Middlewares/Third_Party/wakaama/packet.c **** #endif
+ 371:Middlewares/Third_Party/wakaama/packet.c ****                     if (!done && message->type == COAP_TYPE_CON )
+ 372:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 373:Middlewares/Third_Party/wakaama/packet.c ****                         coap_init_message(response, COAP_TYPE_ACK, 0, message->mid);
+ 374:Middlewares/Third_Party/wakaama/packet.c ****                         coap_error_code = message_send(contextP, response, fromSessionH);
+ 375:Middlewares/Third_Party/wakaama/packet.c ****                     }
+ 376:Middlewares/Third_Party/wakaama/packet.c ****                 }
+ 377:Middlewares/Third_Party/wakaama/packet.c ****                 break;
+ 378:Middlewares/Third_Party/wakaama/packet.c **** 
+ 379:Middlewares/Third_Party/wakaama/packet.c ****             case COAP_TYPE_RST:
+ 380:Middlewares/Third_Party/wakaama/packet.c ****                 /* Cancel possible subscriptions. */
+ 381:Middlewares/Third_Party/wakaama/packet.c ****                 handle_reset(contextP, fromSessionH, message);
+ 382:Middlewares/Third_Party/wakaama/packet.c ****                 transaction_handleResponse(contextP, fromSessionH, message, NULL);
+ 383:Middlewares/Third_Party/wakaama/packet.c ****                 break;
+ 384:Middlewares/Third_Party/wakaama/packet.c **** 
+ 385:Middlewares/Third_Party/wakaama/packet.c ****             case COAP_TYPE_ACK:
+ 386:Middlewares/Third_Party/wakaama/packet.c ****                 transaction_handleResponse(contextP, fromSessionH, message, NULL);
+ 387:Middlewares/Third_Party/wakaama/packet.c ****                 break;
+ 388:Middlewares/Third_Party/wakaama/packet.c **** 
+ 389:Middlewares/Third_Party/wakaama/packet.c ****             default:
+ 390:Middlewares/Third_Party/wakaama/packet.c ****                 break;
+ 391:Middlewares/Third_Party/wakaama/packet.c ****             }
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 11
+
+
+ 392:Middlewares/Third_Party/wakaama/packet.c ****         } /* Request or Response */
+ 393:Middlewares/Third_Party/wakaama/packet.c ****         coap_free_header(message);
+ 394:Middlewares/Third_Party/wakaama/packet.c ****     } /* if (parsed correctly) */
+ 395:Middlewares/Third_Party/wakaama/packet.c ****     else
+ 396:Middlewares/Third_Party/wakaama/packet.c ****     {
+ 397:Middlewares/Third_Party/wakaama/packet.c ****         LOG_ARG("Message parsing failed %u.%2u", coap_error_code >> 5, coap_error_code & 0x1F);
+ 398:Middlewares/Third_Party/wakaama/packet.c ****     }
+ 399:Middlewares/Third_Party/wakaama/packet.c **** 
+ 400:Middlewares/Third_Party/wakaama/packet.c ****     if (coap_error_code != NO_ERROR && coap_error_code != COAP_IGNORE)
+ 401:Middlewares/Third_Party/wakaama/packet.c ****     {
+ 402:Middlewares/Third_Party/wakaama/packet.c ****         LOG_ARG("ERROR %u: %s", coap_error_code, coap_error_message);
+ 403:Middlewares/Third_Party/wakaama/packet.c **** 
+ 404:Middlewares/Third_Party/wakaama/packet.c ****         /* Set to sendable error code. */
+ 405:Middlewares/Third_Party/wakaama/packet.c ****         if (coap_error_code >= 192)
+ 406:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 407:Middlewares/Third_Party/wakaama/packet.c ****             coap_error_code = COAP_500_INTERNAL_SERVER_ERROR;
+ 408:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 409:Middlewares/Third_Party/wakaama/packet.c ****         /* Reuse input buffer for error message. */
+ 410:Middlewares/Third_Party/wakaama/packet.c ****         coap_init_message(message, COAP_TYPE_ACK, coap_error_code, message->mid);
+ 411:Middlewares/Third_Party/wakaama/packet.c ****         coap_set_payload(message, coap_error_message, strlen(coap_error_message));
+ 412:Middlewares/Third_Party/wakaama/packet.c ****         message_send(contextP, message, fromSessionH);
+ 413:Middlewares/Third_Party/wakaama/packet.c ****     }
+ 414:Middlewares/Third_Party/wakaama/packet.c **** }
+ 415:Middlewares/Third_Party/wakaama/packet.c **** 
+ 416:Middlewares/Third_Party/wakaama/packet.c **** 
+ 417:Middlewares/Third_Party/wakaama/packet.c **** uint8_t message_send(lwm2m_context_t * contextP,
+ 418:Middlewares/Third_Party/wakaama/packet.c ****                      coap_packet_t * message,
+ 419:Middlewares/Third_Party/wakaama/packet.c ****                      void * sessionH)
+ 420:Middlewares/Third_Party/wakaama/packet.c **** {
+ 177              		.loc 1 420 0
+ 178              		.cfi_startproc
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181              	.LVL23:
+ 182 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 183              	.LCFI5:
+ 184              		.cfi_def_cfa_offset 24
+ 185              		.cfi_offset 3, -24
+ 186              		.cfi_offset 4, -20
+ 187              		.cfi_offset 5, -16
+ 188              		.cfi_offset 6, -12
+ 189              		.cfi_offset 7, -8
+ 190              		.cfi_offset 14, -4
+ 191 0002 0746     		mov	r7, r0
+ 192 0004 0C46     		mov	r4, r1
+ 193 0006 1646     		mov	r6, r2
+ 194              	.LVL24:
+ 421:Middlewares/Third_Party/wakaama/packet.c ****     uint8_t result = COAP_500_INTERNAL_SERVER_ERROR;
+ 422:Middlewares/Third_Party/wakaama/packet.c ****     uint8_t * pktBuffer;
+ 423:Middlewares/Third_Party/wakaama/packet.c ****     size_t pktBufferLen = 0;
+ 424:Middlewares/Third_Party/wakaama/packet.c ****     size_t allocLen;
+ 425:Middlewares/Third_Party/wakaama/packet.c **** 
+ 426:Middlewares/Third_Party/wakaama/packet.c ****     LOG("Entering");
+ 427:Middlewares/Third_Party/wakaama/packet.c ****     allocLen = coap_serialize_get_size(message);
+ 195              		.loc 1 427 0
+ 196 0008 0846     		mov	r0, r1
+ 197              	.LVL25:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 12
+
+
+ 198 000a FFF7FEFF 		bl	coap_serialize_get_size
+ 199              	.LVL26:
+ 428:Middlewares/Third_Party/wakaama/packet.c ****     LOG_ARG("Size to allocate: %d", allocLen);
+ 429:Middlewares/Third_Party/wakaama/packet.c ****     if (allocLen == 0) return COAP_500_INTERNAL_SERVER_ERROR;
+ 200              		.loc 1 429 0
+ 201 000e A8B1     		cbz	r0, .L18
+ 430:Middlewares/Third_Party/wakaama/packet.c **** 
+ 431:Middlewares/Third_Party/wakaama/packet.c ****     pktBuffer = (uint8_t *)lwm2m_malloc(allocLen);
+ 202              		.loc 1 431 0
+ 203 0010 FFF7FEFF 		bl	lwm2m_malloc
+ 204              	.LVL27:
+ 432:Middlewares/Third_Party/wakaama/packet.c ****     if (pktBuffer != NULL)
+ 205              		.loc 1 432 0
+ 206 0014 0546     		mov	r5, r0
+ 207 0016 A0B1     		cbz	r0, .L19
+ 433:Middlewares/Third_Party/wakaama/packet.c ****     {
+ 434:Middlewares/Third_Party/wakaama/packet.c ****         pktBufferLen = coap_serialize_message(message, pktBuffer);
+ 208              		.loc 1 434 0
+ 209 0018 0146     		mov	r1, r0
+ 210 001a 2046     		mov	r0, r4
+ 211              	.LVL28:
+ 212 001c FFF7FEFF 		bl	coap_serialize_message
+ 213              	.LVL29:
+ 435:Middlewares/Third_Party/wakaama/packet.c ****         LOG_ARG("coap_serialize_message() returned %d", pktBufferLen);
+ 436:Middlewares/Third_Party/wakaama/packet.c ****         if (0 != pktBufferLen)
+ 214              		.loc 1 436 0
+ 215 0020 0246     		mov	r2, r0
+ 216 0022 20B9     		cbnz	r0, .L22
+ 421:Middlewares/Third_Party/wakaama/packet.c ****     uint8_t * pktBuffer;
+ 217              		.loc 1 421 0
+ 218 0024 A024     		movs	r4, #160
+ 219              	.LVL30:
+ 220              	.L17:
+ 437:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 438:Middlewares/Third_Party/wakaama/packet.c ****             result = lwm2m_buffer_send(sessionH, pktBuffer, pktBufferLen, contextP->userData);
+ 439:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 440:Middlewares/Third_Party/wakaama/packet.c ****         lwm2m_free(pktBuffer);
+ 221              		.loc 1 440 0
+ 222 0026 2846     		mov	r0, r5
+ 223 0028 FFF7FEFF 		bl	lwm2m_free
+ 224              	.LVL31:
+ 225 002c 07E0     		b	.L16
+ 226              	.LVL32:
+ 227              	.L22:
+ 438:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 228              		.loc 1 438 0
+ 229 002e BB6A     		ldr	r3, [r7, #40]
+ 230 0030 2946     		mov	r1, r5
+ 231 0032 3046     		mov	r0, r6
+ 232              	.LVL33:
+ 233 0034 FFF7FEFF 		bl	lwm2m_buffer_send
+ 234              	.LVL34:
+ 235 0038 0446     		mov	r4, r0
+ 236              	.LVL35:
+ 237 003a F4E7     		b	.L17
+ 238              	.LVL36:
+ 239              	.L18:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 13
+
+
+ 429:Middlewares/Third_Party/wakaama/packet.c **** 
+ 240              		.loc 1 429 0
+ 241 003c A024     		movs	r4, #160
+ 242              	.LVL37:
+ 243              	.L16:
+ 441:Middlewares/Third_Party/wakaama/packet.c ****     }
+ 442:Middlewares/Third_Party/wakaama/packet.c **** 
+ 443:Middlewares/Third_Party/wakaama/packet.c ****     return result;
+ 444:Middlewares/Third_Party/wakaama/packet.c **** }
+ 244              		.loc 1 444 0
+ 245 003e 2046     		mov	r0, r4
+ 246 0040 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 247              	.LVL38:
+ 248              	.L19:
+ 421:Middlewares/Third_Party/wakaama/packet.c ****     uint8_t * pktBuffer;
+ 249              		.loc 1 421 0
+ 250 0042 A024     		movs	r4, #160
+ 251              	.LVL39:
+ 252 0044 FBE7     		b	.L16
+ 253              		.cfi_endproc
+ 254              	.LFE6:
+ 256              		.section	.text.lwm2m_handle_packet,"ax",%progbits
+ 257              		.align	1
+ 258              		.global	lwm2m_handle_packet
+ 259              		.syntax unified
+ 260              		.thumb
+ 261              		.thumb_func
+ 262              		.fpu fpv4-sp-d16
+ 264              	lwm2m_handle_packet:
+ 265              	.LFB5:
+ 204:Middlewares/Third_Party/wakaama/packet.c ****     uint8_t coap_error_code = NO_ERROR;
+ 266              		.loc 1 204 0
+ 267              		.cfi_startproc
+ 268              		@ args = 0, pretend = 0, frame = 32
+ 269              		@ frame_needed = 0, uses_anonymous_args = 0
+ 270              	.LVL40:
+ 271 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 272              	.LCFI6:
+ 273              		.cfi_def_cfa_offset 32
+ 274              		.cfi_offset 4, -32
+ 275              		.cfi_offset 5, -28
+ 276              		.cfi_offset 6, -24
+ 277              		.cfi_offset 7, -20
+ 278              		.cfi_offset 8, -16
+ 279              		.cfi_offset 9, -12
+ 280              		.cfi_offset 10, -8
+ 281              		.cfi_offset 14, -4
+ 282 0004 8EB0     		sub	sp, sp, #56
+ 283              	.LCFI7:
+ 284              		.cfi_def_cfa_offset 88
+ 285 0006 0646     		mov	r6, r0
+ 286 0008 1F46     		mov	r7, r3
+ 287              	.LVL41:
+ 210:Middlewares/Third_Party/wakaama/packet.c ****     if (coap_error_code == NO_ERROR)
+ 288              		.loc 1 210 0
+ 289 000a 92B2     		uxth	r2, r2
+ 290              	.LVL42:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 14
+
+
+ 291 000c BC48     		ldr	r0, .L60
+ 292              	.LVL43:
+ 293 000e FFF7FEFF 		bl	coap_parse_message
+ 294              	.LVL44:
+ 211:Middlewares/Third_Party/wakaama/packet.c ****     {
+ 295              		.loc 1 211 0
+ 296 0012 0446     		mov	r4, r0
+ 297 0014 0028     		cmp	r0, #0
+ 298 0016 5BD1     		bne	.L24
+ 216:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 299              		.loc 1 216 0
+ 300 0018 B94B     		ldr	r3, .L60
+ 301 001a 9B79     		ldrb	r3, [r3, #6]	@ zero_extendqisi2
+ 302 001c 013B     		subs	r3, r3, #1
+ 303 001e DBB2     		uxtb	r3, r3
+ 304 0020 032B     		cmp	r3, #3
+ 305 0022 00F24781 		bhi	.L25
+ 306              	.LBB3:
+ 218:Middlewares/Third_Party/wakaama/packet.c ****             uint16_t block_size = REST_MAX_CHUNK_SIZE;
+ 307              		.loc 1 218 0
+ 308 0026 0023     		movs	r3, #0
+ 309 0028 0993     		str	r3, [sp, #36]
+ 219:Middlewares/Third_Party/wakaama/packet.c ****             uint32_t block_offset = 0;
+ 310              		.loc 1 219 0
+ 311 002a 8022     		movs	r2, #128
+ 312 002c ADF82020 		strh	r2, [sp, #32]	@ movhi
+ 220:Middlewares/Third_Party/wakaama/packet.c ****             int64_t new_offset = 0;
+ 313              		.loc 1 220 0
+ 314 0030 0A93     		str	r3, [sp, #40]
+ 315              	.LVL45:
+ 224:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 316              		.loc 1 224 0
+ 317 0032 B34B     		ldr	r3, .L60
+ 318 0034 5B79     		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 319 0036 002B     		cmp	r3, #0
+ 320 0038 68D1     		bne	.L26
+ 227:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 321              		.loc 1 227 0
+ 322 003a B14B     		ldr	r3, .L60
+ 323 003c 1B89     		ldrh	r3, [r3, #8]
+ 324 003e 4522     		movs	r2, #69
+ 325 0040 0221     		movs	r1, #2
+ 326 0042 B048     		ldr	r0, .L60+4
+ 327              	.LVL46:
+ 328 0044 FFF7FEFF 		bl	coap_init_message
+ 329              	.LVL47:
+ 330              	.L27:
+ 236:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 331              		.loc 1 236 0
+ 332 0048 AD4B     		ldr	r3, .L60
+ 333 004a 93F84C20 		ldrb	r2, [r3, #76]	@ zero_extendqisi2
+ 334 004e 002A     		cmp	r2, #0
+ 335 0050 65D1     		bne	.L54
+ 336              	.L28:
+ 242:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 337              		.loc 1 242 0
+ 338 0052 0AAB     		add	r3, sp, #40
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 15
+
+
+ 339 0054 0093     		str	r3, [sp]
+ 340 0056 08AB     		add	r3, sp, #32
+ 341 0058 0022     		movs	r2, #0
+ 342 005a 09A9     		add	r1, sp, #36
+ 343 005c A848     		ldr	r0, .L60
+ 344 005e FFF7FEFF 		bl	coap_get_header_block2
+ 345              	.LVL48:
+ 346 0062 0028     		cmp	r0, #0
+ 347 0064 61D0     		beq	.L48
+ 245:Middlewares/Third_Party/wakaama/packet.c ****                 new_offset = block_offset;
+ 348              		.loc 1 245 0
+ 349 0066 BDF82030 		ldrh	r3, [sp, #32]
+ 350 006a 802B     		cmp	r3, #128
+ 351 006c 28BF     		it	cs
+ 352 006e 8023     		movcs	r3, #128
+ 353 0070 ADF82030 		strh	r3, [sp, #32]	@ movhi
+ 246:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 354              		.loc 1 246 0
+ 355 0074 0A9A     		ldr	r2, [sp, #40]
+ 356 0076 9046     		mov	r8, r2
+ 357 0078 4FF00009 		mov	r9, #0
+ 358              	.LVL49:
+ 359              	.L29:
+ 250:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 360              		.loc 1 250 0
+ 361 007c A04B     		ldr	r3, .L60
+ 362 007e 5B7B     		ldrb	r3, [r3, #13]	@ zero_extendqisi2
+ 363 0080 13F0080F 		tst	r3, #8
+ 364 0084 56D1     		bne	.L55
+ 365              	.L30:
+ 366              	.LVL50:
+ 297:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 367              		.loc 1 297 0
+ 368 0086 002C     		cmp	r4, #0
+ 369 0088 00F09E80 		beq	.L56
+ 370              	.LVL51:
+ 371              	.L31:
+ 301:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 372              		.loc 1 301 0
+ 373 008c 002C     		cmp	r4, #0
+ 374 008e 40F00081 		bne	.L34
+ 375              	.LBB4:
+ 304:Middlewares/Third_Party/wakaama/packet.c ****                 if ( IS_OPTION(message, COAP_OPTION_BLOCK2) )
+ 376              		.loc 1 304 0
+ 377 0092 9C4B     		ldr	r3, .L60+4
+ 378 0094 D3F888A0 		ldr	r10, [r3, #136]
+ 379              	.LVL52:
+ 305:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 380              		.loc 1 305 0
+ 381 0098 994B     		ldr	r3, .L60
+ 382 009a 93F90C30 		ldrsb	r3, [r3, #12]
+ 383 009e 002B     		cmp	r3, #0
+ 384 00a0 C0F29C80 		blt	.L57
+ 332:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 385              		.loc 1 332 0
+ 386 00a4 58EA0903 		orrs	r3, r8, r9
+ 387 00a8 40F0DD80 		bne	.L58
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 16
+
+
+ 388              	.LVL53:
+ 389              	.L38:
+ 340:Middlewares/Third_Party/wakaama/packet.c **** 
+ 390              		.loc 1 340 0
+ 391 00ac 954D     		ldr	r5, .L60+4
+ 392 00ae 3A46     		mov	r2, r7
+ 393 00b0 2946     		mov	r1, r5
+ 394 00b2 3046     		mov	r0, r6
+ 395 00b4 FFF7FEFF 		bl	message_send
+ 396              	.LVL54:
+ 397 00b8 0446     		mov	r4, r0
+ 398              	.LVL55:
+ 342:Middlewares/Third_Party/wakaama/packet.c ****                 response->payload = NULL;
+ 399              		.loc 1 342 0
+ 400 00ba 5046     		mov	r0, r10
+ 401 00bc FFF7FEFF 		bl	lwm2m_free
+ 402              	.LVL56:
+ 343:Middlewares/Third_Party/wakaama/packet.c ****                 response->payload_len = 0;
+ 403              		.loc 1 343 0
+ 404 00c0 0023     		movs	r3, #0
+ 405 00c2 C5F88830 		str	r3, [r5, #136]
+ 344:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 406              		.loc 1 344 0
+ 407 00c6 A5F88630 		strh	r3, [r5, #134]	@ movhi
+ 408              	.LVL57:
+ 409              	.L41:
+ 410              	.LBE4:
+ 411              	.LBE3:
+ 393:Middlewares/Third_Party/wakaama/packet.c ****     } /* if (parsed correctly) */
+ 412              		.loc 1 393 0
+ 413 00ca 8D48     		ldr	r0, .L60
+ 414 00cc FFF7FEFF 		bl	coap_free_header
+ 415              	.LVL58:
+ 416              	.L24:
+ 400:Middlewares/Third_Party/wakaama/packet.c ****     {
+ 417              		.loc 1 400 0
+ 418 00d0 012C     		cmp	r4, #1
+ 419 00d2 18D9     		bls	.L23
+ 405:Middlewares/Third_Party/wakaama/packet.c ****         {
+ 420              		.loc 1 405 0
+ 421 00d4 BF2C     		cmp	r4, #191
+ 422 00d6 00D9     		bls	.L47
+ 407:Middlewares/Third_Party/wakaama/packet.c ****         }
+ 423              		.loc 1 407 0
+ 424 00d8 A024     		movs	r4, #160
+ 425              	.LVL59:
+ 426              	.L47:
+ 410:Middlewares/Third_Party/wakaama/packet.c ****         coap_set_payload(message, coap_error_message, strlen(coap_error_message));
+ 427              		.loc 1 410 0
+ 428 00da 894D     		ldr	r5, .L60
+ 429 00dc 2B89     		ldrh	r3, [r5, #8]
+ 430 00de 2246     		mov	r2, r4
+ 431 00e0 0221     		movs	r1, #2
+ 432 00e2 2846     		mov	r0, r5
+ 433 00e4 FFF7FEFF 		bl	coap_init_message
+ 434              	.LVL60:
+ 411:Middlewares/Third_Party/wakaama/packet.c ****         message_send(contextP, message, fromSessionH);
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 17
+
+
+ 435              		.loc 1 411 0
+ 436 00e8 874B     		ldr	r3, .L60+8
+ 437 00ea 1C68     		ldr	r4, [r3]
+ 438              	.LVL61:
+ 439 00ec 2046     		mov	r0, r4
+ 440 00ee FFF7FEFF 		bl	strlen
+ 441              	.LVL62:
+ 442 00f2 0246     		mov	r2, r0
+ 443 00f4 2146     		mov	r1, r4
+ 444 00f6 2846     		mov	r0, r5
+ 445 00f8 FFF7FEFF 		bl	coap_set_payload
+ 446              	.LVL63:
+ 412:Middlewares/Third_Party/wakaama/packet.c ****     }
+ 447              		.loc 1 412 0
+ 448 00fc 3A46     		mov	r2, r7
+ 449 00fe 2946     		mov	r1, r5
+ 450 0100 3046     		mov	r0, r6
+ 451 0102 FFF7FEFF 		bl	message_send
+ 452              	.LVL64:
+ 453              	.L23:
+ 414:Middlewares/Third_Party/wakaama/packet.c **** 
+ 454              		.loc 1 414 0
+ 455 0106 0EB0     		add	sp, sp, #56
+ 456              	.LCFI8:
+ 457              		.cfi_remember_state
+ 458              		.cfi_def_cfa_offset 32
+ 459              		@ sp needed
+ 460 0108 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 461              	.LVL65:
+ 462              	.L26:
+ 463              	.LCFI9:
+ 464              		.cfi_restore_state
+ 465              	.LBB9:
+ 232:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 466              		.loc 1 232 0
+ 467 010c 338C     		ldrh	r3, [r6, #32]
+ 468 010e 5A1C     		adds	r2, r3, #1
+ 469 0110 3284     		strh	r2, [r6, #32]	@ movhi
+ 470 0112 4522     		movs	r2, #69
+ 471 0114 0121     		movs	r1, #1
+ 472 0116 7B48     		ldr	r0, .L60+4
+ 473              	.LVL66:
+ 474 0118 FFF7FEFF 		bl	coap_init_message
+ 475              	.LVL67:
+ 476 011c 94E7     		b	.L27
+ 477              	.L54:
+ 238:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 478              		.loc 1 238 0
+ 479 011e 03F14D01 		add	r1, r3, #77
+ 480 0122 7848     		ldr	r0, .L60+4
+ 481 0124 FFF7FEFF 		bl	coap_set_header_token
+ 482              	.LVL68:
+ 483 0128 93E7     		b	.L28
+ 484              	.L48:
+ 221:Middlewares/Third_Party/wakaama/packet.c **** 
+ 485              		.loc 1 221 0
+ 486 012a 4FF00008 		mov	r8, #0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 18
+
+
+ 487 012e 4FF00009 		mov	r9, #0
+ 488 0132 A3E7     		b	.L29
+ 489              	.LVL69:
+ 490              	.L55:
+ 491              	.LBB5:
+ 255:Middlewares/Third_Party/wakaama/packet.c **** #ifdef LWM2M_BOOTSTRAP
+ 492              		.loc 1 255 0
+ 493 0134 3946     		mov	r1, r7
+ 494 0136 3046     		mov	r0, r6
+ 495 0138 FFF7FEFF 		bl	utils_findServer
+ 496              	.LVL70:
+ 262:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 497              		.loc 1 262 0
+ 498 013c 0546     		mov	r5, r0
+ 499 013e 0028     		cmp	r0, #0
+ 500 0140 4AD0     		beq	.L49
+ 501              	.LBB6:
+ 271:Middlewares/Third_Party/wakaama/packet.c ****                     size_t complete_buffer_size;
+ 502              		.loc 1 271 0
+ 503 0142 0023     		movs	r3, #0
+ 504 0144 0C93     		str	r3, [sp, #48]
+ 275:Middlewares/Third_Party/wakaama/packet.c ****                     LOG_ARG("Blockwise: block1 request NUM %u (SZX %u/ SZX Max%u) MORE %u", block1_
+ 505              		.loc 1 275 0
+ 506 0146 6E4C     		ldr	r4, .L60
+ 507 0148 0093     		str	r3, [sp]
+ 508 014a 0DF12203 		add	r3, sp, #34
+ 509 014e 0DF11F02 		add	r2, sp, #31
+ 510 0152 0BA9     		add	r1, sp, #44
+ 511 0154 2046     		mov	r0, r4
+ 512              	.LVL71:
+ 513 0156 FFF7FEFF 		bl	coap_get_header_block1
+ 514              	.LVL72:
+ 279:Middlewares/Third_Party/wakaama/packet.c **** 
+ 515              		.loc 1 279 0
+ 516 015a 2189     		ldrh	r1, [r4, #8]
+ 517 015c D4F88820 		ldr	r2, [r4, #136]
+ 518 0160 B4F88630 		ldrh	r3, [r4, #134]
+ 519 0164 BDF82240 		ldrh	r4, [sp, #34]
+ 520 0168 9DF81F00 		ldrb	r0, [sp, #31]	@ zero_extendqisi2
+ 521 016c 0030     		adds	r0, r0, #0
+ 522 016e 18BF     		it	ne
+ 523 0170 0120     		movne	r0, #1
+ 524 0172 0DF1340C 		add	ip, sp, #52
+ 525 0176 CDF810C0 		str	ip, [sp, #16]
+ 526 017a 0DF1300C 		add	ip, sp, #48
+ 527 017e CDF80CC0 		str	ip, [sp, #12]
+ 528 0182 0290     		str	r0, [sp, #8]
+ 529 0184 0B98     		ldr	r0, [sp, #44]
+ 530 0186 0190     		str	r0, [sp, #4]
+ 531 0188 0094     		str	r4, [sp]
+ 532 018a 05F12C00 		add	r0, r5, #44
+ 533 018e FFF7FEFF 		bl	coap_block1_handler
+ 534              	.LVL73:
+ 282:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 535              		.loc 1 282 0
+ 536 0192 0446     		mov	r4, r0
+ 537 0194 38B9     		cbnz	r0, .L32
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 19
+
+
+ 284:Middlewares/Third_Party/wakaama/packet.c ****                         message->payload_len = complete_buffer_size;
+ 538              		.loc 1 284 0
+ 539 0196 5A4B     		ldr	r3, .L60
+ 540 0198 0C9A     		ldr	r2, [sp, #48]
+ 541 019a C3F88820 		str	r2, [r3, #136]
+ 285:Middlewares/Third_Party/wakaama/packet.c ****                     }
+ 542              		.loc 1 285 0
+ 543 019e 0D9A     		ldr	r2, [sp, #52]
+ 544 01a0 A3F88620 		strh	r2, [r3, #134]	@ movhi
+ 545 01a4 6FE7     		b	.L30
+ 546              	.L32:
+ 287:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 547              		.loc 1 287 0
+ 548 01a6 5F28     		cmp	r0, #95
+ 549 01a8 7FF46DAF 		bne	.L30
+ 289:Middlewares/Third_Party/wakaama/packet.c ****                         coap_set_header_block1(response,block1_num, block1_more,block1_size);
+ 550              		.loc 1 289 0
+ 551 01ac BDF82230 		ldrh	r3, [sp, #34]
+ 552 01b0 802B     		cmp	r3, #128
+ 553 01b2 28BF     		it	cs
+ 554 01b4 8023     		movcs	r3, #128
+ 555 01b6 ADF82230 		strh	r3, [sp, #34]	@ movhi
+ 290:Middlewares/Third_Party/wakaama/packet.c ****                     }
+ 556              		.loc 1 290 0
+ 557 01ba 9DF81F20 		ldrb	r2, [sp, #31]	@ zero_extendqisi2
+ 558 01be 0B99     		ldr	r1, [sp, #44]
+ 559 01c0 5048     		ldr	r0, .L60+4
+ 560              	.LVL74:
+ 561 01c2 FFF7FEFF 		bl	coap_set_header_block1
+ 562              	.LVL75:
+ 563 01c6 5EE7     		b	.L30
+ 564              	.LVL76:
+ 565              	.L56:
+ 566              	.LBE6:
+ 567              	.LBE5:
+ 299:Middlewares/Third_Party/wakaama/packet.c ****             }
+ 568              		.loc 1 299 0
+ 569 01c8 4E4B     		ldr	r3, .L60+4
+ 570 01ca 4D4A     		ldr	r2, .L60
+ 571 01cc 3946     		mov	r1, r7
+ 572 01ce 3046     		mov	r0, r6
+ 573 01d0 FFF7FEFF 		bl	handle_request
+ 574              	.LVL77:
+ 575 01d4 0446     		mov	r4, r0
+ 576              	.LVL78:
+ 577 01d6 59E7     		b	.L31
+ 578              	.LVL79:
+ 579              	.L49:
+ 580              	.LBB7:
+ 264:Middlewares/Third_Party/wakaama/packet.c ****                 }
+ 581              		.loc 1 264 0
+ 582 01d8 A024     		movs	r4, #160
+ 583 01da 57E7     		b	.L31
+ 584              	.LVL80:
+ 585              	.L57:
+ 586              	.LBE7:
+ 587              	.LBB8:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 20
+
+
+ 308:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 588              		.loc 1 308 0
+ 589 01dc 0A9B     		ldr	r3, [sp, #40]
+ 590 01de 0021     		movs	r1, #0
+ 591 01e0 4945     		cmp	r1, r9
+ 592 01e2 08BF     		it	eq
+ 593 01e4 4345     		cmpeq	r3, r8
+ 594 01e6 14D0     		beq	.L59
+ 328:Middlewares/Third_Party/wakaama/packet.c ****                         if (response->payload_len > block_size) coap_set_payload(response, response
+ 595              		.loc 1 328 0
+ 596 01e8 464C     		ldr	r4, .L60+4
+ 597              	.LVL81:
+ 598 01ea BDF82030 		ldrh	r3, [sp, #32]
+ 599 01ee 0122     		movs	r2, #1
+ 600 01f0 0999     		ldr	r1, [sp, #36]
+ 601 01f2 2046     		mov	r0, r4
+ 602 01f4 FFF7FEFF 		bl	coap_set_header_block2
+ 603              	.LVL82:
+ 329:Middlewares/Third_Party/wakaama/packet.c ****                     } /* if (resource aware of blockwise) */
+ 604              		.loc 1 329 0
+ 605 01f8 B4F88630 		ldrh	r3, [r4, #134]
+ 606 01fc BDF82020 		ldrh	r2, [sp, #32]
+ 607 0200 9342     		cmp	r3, r2
+ 608 0202 7FF653AF 		bls	.L38
+ 329:Middlewares/Third_Party/wakaama/packet.c ****                     } /* if (resource aware of blockwise) */
+ 609              		.loc 1 329 0 is_stmt 0 discriminator 1
+ 610 0206 2046     		mov	r0, r4
+ 611 0208 D4F88810 		ldr	r1, [r4, #136]
+ 612 020c FFF7FEFF 		bl	coap_set_payload
+ 613              	.LVL83:
+ 614 0210 4CE7     		b	.L38
+ 615              	.LVL84:
+ 616              	.L59:
+ 311:Middlewares/Third_Party/wakaama/packet.c ****                         {
+ 617              		.loc 1 311 0 is_stmt 1
+ 618 0212 3C4A     		ldr	r2, .L60+4
+ 619 0214 B2F88620 		ldrh	r2, [r2, #134]
+ 620 0218 9342     		cmp	r3, r2
+ 621 021a 07D3     		bcc	.L37
+ 315:Middlewares/Third_Party/wakaama/packet.c ****                             coap_set_payload(response, "BlockOutOfScope", 15); /* a const char str[
+ 622              		.loc 1 315 0
+ 623 021c 3948     		ldr	r0, .L60+4
+ 624 021e 8223     		movs	r3, #130
+ 625 0220 8371     		strb	r3, [r0, #6]
+ 316:Middlewares/Third_Party/wakaama/packet.c ****                         }
+ 626              		.loc 1 316 0
+ 627 0222 0F22     		movs	r2, #15
+ 628 0224 3949     		ldr	r1, .L60+12
+ 629 0226 FFF7FEFF 		bl	coap_set_payload
+ 630              	.LVL85:
+ 631 022a 3FE7     		b	.L38
+ 632              	.L37:
+ 320:Middlewares/Third_Party/wakaama/packet.c ****                             coap_set_payload(response, response->payload+block_offset, MIN(response
+ 633              		.loc 1 320 0
+ 634 022c D21A     		subs	r2, r2, r3
+ 635 022e BDF82010 		ldrh	r1, [sp, #32]
+ 636 0232 344C     		ldr	r4, .L60+4
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 21
+
+
+ 637              	.LVL86:
+ 638 0234 0B46     		mov	r3, r1
+ 639 0236 8A42     		cmp	r2, r1
+ 640 0238 94BF     		ite	ls
+ 641 023a 0022     		movls	r2, #0
+ 642 023c 0122     		movhi	r2, #1
+ 643 023e 0999     		ldr	r1, [sp, #36]
+ 644 0240 2046     		mov	r0, r4
+ 645 0242 FFF7FEFF 		bl	coap_set_header_block2
+ 646              	.LVL87:
+ 321:Middlewares/Third_Party/wakaama/packet.c ****                         } /* if (valid offset) */
+ 647              		.loc 1 321 0
+ 648 0246 D4F88810 		ldr	r1, [r4, #136]
+ 649 024a 0A98     		ldr	r0, [sp, #40]
+ 650 024c BDF82020 		ldrh	r2, [sp, #32]
+ 651 0250 B4F88630 		ldrh	r3, [r4, #134]
+ 652 0254 1B1A     		subs	r3, r3, r0
+ 653 0256 9A42     		cmp	r2, r3
+ 654 0258 28BF     		it	cs
+ 655 025a 1A46     		movcs	r2, r3
+ 656 025c 0144     		add	r1, r1, r0
+ 657 025e 2046     		mov	r0, r4
+ 658 0260 FFF7FEFF 		bl	coap_set_payload
+ 659              	.LVL88:
+ 660 0264 22E7     		b	.L38
+ 661              	.LVL89:
+ 662              	.L58:
+ 336:Middlewares/Third_Party/wakaama/packet.c ****                     coap_set_payload(response, response->payload, MIN(response->payload_len, REST_M
+ 663              		.loc 1 336 0
+ 664 0266 08EA0902 		and	r2, r8, r9
+ 665 026a 264C     		ldr	r4, .L60+4
+ 666              	.LVL90:
+ 667 026c 8023     		movs	r3, #128
+ 668 026e 0132     		adds	r2, r2, #1
+ 669 0270 18BF     		it	ne
+ 670 0272 0122     		movne	r2, #1
+ 671 0274 0021     		movs	r1, #0
+ 672 0276 2046     		mov	r0, r4
+ 673 0278 FFF7FEFF 		bl	coap_set_header_block2
+ 674              	.LVL91:
+ 337:Middlewares/Third_Party/wakaama/packet.c ****                 } /* if (blockwise request) */
+ 675              		.loc 1 337 0
+ 676 027c B4F88620 		ldrh	r2, [r4, #134]
+ 677 0280 802A     		cmp	r2, #128
+ 678 0282 28BF     		it	cs
+ 679 0284 8022     		movcs	r2, #128
+ 680 0286 D4F88810 		ldr	r1, [r4, #136]
+ 681 028a 2046     		mov	r0, r4
+ 682 028c FFF7FEFF 		bl	coap_set_payload
+ 683              	.LVL92:
+ 684 0290 0CE7     		b	.L38
+ 685              	.LVL93:
+ 686              	.L34:
+ 687              	.LBE8:
+ 346:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 688              		.loc 1 346 0
+ 689 0292 012C     		cmp	r4, #1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 22
+
+
+ 690 0294 3FF419AF 		beq	.L41
+ 348:Middlewares/Third_Party/wakaama/packet.c ****                 {
+ 691              		.loc 1 348 0
+ 692 0298 2146     		mov	r1, r4
+ 693 029a 1A48     		ldr	r0, .L60+4
+ 694 029c FFF7FEFF 		bl	coap_set_status_code
+ 695              	.LVL94:
+ 696 02a0 0128     		cmp	r0, #1
+ 697 02a2 7FF412AF 		bne	.L41
+ 350:Middlewares/Third_Party/wakaama/packet.c ****                 }
+ 698              		.loc 1 350 0
+ 699 02a6 3A46     		mov	r2, r7
+ 700 02a8 1649     		ldr	r1, .L60+4
+ 701 02aa 3046     		mov	r0, r6
+ 702 02ac FFF7FEFF 		bl	message_send
+ 703              	.LVL95:
+ 704 02b0 0446     		mov	r4, r0
+ 705              	.LVL96:
+ 706 02b2 0AE7     		b	.L41
+ 707              	.LVL97:
+ 708              	.L25:
+ 709              	.LBE9:
+ 357:Middlewares/Third_Party/wakaama/packet.c ****             {
+ 710              		.loc 1 357 0
+ 711 02b4 124B     		ldr	r3, .L60
+ 712 02b6 5B79     		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 713 02b8 032B     		cmp	r3, #3
+ 714 02ba 3FF606AF 		bhi	.L41
+ 715 02be DFE803F0 		tbb	[pc, r3]
+ 716              	.L43:
+ 717 02c2 02       		.byte	(.L42-.L43)/2
+ 718 02c3 02       		.byte	(.L42-.L43)/2
+ 719 02c4 34       		.byte	(.L44-.L43)/2
+ 720 02c5 27       		.byte	(.L45-.L43)/2
+ 721              		.p2align 1
+ 722              	.L42:
+ 723              	.LBB10:
+ 362:Middlewares/Third_Party/wakaama/packet.c **** 
+ 724              		.loc 1 362 0
+ 725 02c6 0F4B     		ldr	r3, .L60+4
+ 726 02c8 0D4A     		ldr	r2, .L60
+ 727 02ca 3946     		mov	r1, r7
+ 728 02cc 3046     		mov	r0, r6
+ 729              	.LVL98:
+ 730 02ce FFF7FEFF 		bl	transaction_handleResponse
+ 731              	.LVL99:
+ 371:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 732              		.loc 1 371 0
+ 733 02d2 0028     		cmp	r0, #0
+ 734 02d4 7FF4F9AE 		bne	.L41
+ 371:Middlewares/Third_Party/wakaama/packet.c ****                     {
+ 735              		.loc 1 371 0 is_stmt 0 discriminator 1
+ 736 02d8 094B     		ldr	r3, .L60
+ 737 02da 5B79     		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 738 02dc 002B     		cmp	r3, #0
+ 739 02de 7FF4F4AE 		bne	.L41
+ 373:Middlewares/Third_Party/wakaama/packet.c ****                         coap_error_code = message_send(contextP, response, fromSessionH);
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 23
+
+
+ 740              		.loc 1 373 0 is_stmt 1
+ 741 02e2 084C     		ldr	r4, .L60+4
+ 742 02e4 064B     		ldr	r3, .L60
+ 743 02e6 1B89     		ldrh	r3, [r3, #8]
+ 744 02e8 0022     		movs	r2, #0
+ 745 02ea 0221     		movs	r1, #2
+ 746 02ec 2046     		mov	r0, r4
+ 747              	.LVL100:
+ 748 02ee FFF7FEFF 		bl	coap_init_message
+ 749              	.LVL101:
+ 374:Middlewares/Third_Party/wakaama/packet.c ****                     }
+ 750              		.loc 1 374 0
+ 751 02f2 3A46     		mov	r2, r7
+ 752 02f4 2146     		mov	r1, r4
+ 753 02f6 3046     		mov	r0, r6
+ 754 02f8 FFF7FEFF 		bl	message_send
+ 755              	.LVL102:
+ 756 02fc 0446     		mov	r4, r0
+ 757              	.LVL103:
+ 758 02fe E4E6     		b	.L41
+ 759              	.L61:
+ 760              		.align	2
+ 761              	.L60:
+ 762 0300 00000000 		.word	.LANCHOR0
+ 763 0304 00000000 		.word	.LANCHOR1
+ 764 0308 00000000 		.word	coap_error_message
+ 765 030c 00000000 		.word	.LC0
+ 766              	.LVL104:
+ 767              	.L45:
+ 768              	.LBE10:
+ 381:Middlewares/Third_Party/wakaama/packet.c ****                 transaction_handleResponse(contextP, fromSessionH, message, NULL);
+ 769              		.loc 1 381 0
+ 770 0310 094D     		ldr	r5, .L62
+ 771 0312 2A46     		mov	r2, r5
+ 772 0314 3946     		mov	r1, r7
+ 773 0316 3046     		mov	r0, r6
+ 774              	.LVL105:
+ 775 0318 FFF7FEFF 		bl	handle_reset
+ 776              	.LVL106:
+ 382:Middlewares/Third_Party/wakaama/packet.c ****                 break;
+ 777              		.loc 1 382 0
+ 778 031c 0023     		movs	r3, #0
+ 779 031e 2A46     		mov	r2, r5
+ 780 0320 3946     		mov	r1, r7
+ 781 0322 3046     		mov	r0, r6
+ 782 0324 FFF7FEFF 		bl	transaction_handleResponse
+ 783              	.LVL107:
+ 383:Middlewares/Third_Party/wakaama/packet.c **** 
+ 784              		.loc 1 383 0
+ 785 0328 CFE6     		b	.L41
+ 786              	.LVL108:
+ 787              	.L44:
+ 386:Middlewares/Third_Party/wakaama/packet.c ****                 break;
+ 788              		.loc 1 386 0
+ 789 032a 0023     		movs	r3, #0
+ 790 032c 024A     		ldr	r2, .L62
+ 791 032e 3946     		mov	r1, r7
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 24
+
+
+ 792 0330 3046     		mov	r0, r6
+ 793              	.LVL109:
+ 794 0332 FFF7FEFF 		bl	transaction_handleResponse
+ 795              	.LVL110:
+ 387:Middlewares/Third_Party/wakaama/packet.c **** 
+ 796              		.loc 1 387 0
+ 797 0336 C8E6     		b	.L41
+ 798              	.L63:
+ 799              		.align	2
+ 800              	.L62:
+ 801 0338 00000000 		.word	.LANCHOR0
+ 802              		.cfi_endproc
+ 803              	.LFE5:
+ 805              		.section	.bss.message.8108,"aw",%nobits
+ 806              		.align	2
+ 807              		.set	.LANCHOR0,. + 0
+ 810              	message.8108:
+ 811 0000 00000000 		.space	140
+ 811      00000000 
+ 811      00000000 
+ 811      00000000 
+ 811      00000000 
+ 812              		.section	.bss.response.8109,"aw",%nobits
+ 813              		.align	2
+ 814              		.set	.LANCHOR1,. + 0
+ 817              	response.8109:
+ 818 0000 00000000 		.space	140
+ 818      00000000 
+ 818      00000000 
+ 818      00000000 
+ 818      00000000 
+ 819              		.section	.rodata.lwm2m_handle_packet.str1.4,"aMS",%progbits,1
+ 820              		.align	2
+ 821              	.LC0:
+ 822 0000 426C6F63 		.ascii	"BlockOutOfScope\000"
+ 822      6B4F7574 
+ 822      4F665363 
+ 822      6F706500 
+ 823              		.text
+ 824              	.Letext0:
+ 825              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 826              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 827              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 828              		.file 5 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 829              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 830              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 831              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_timeval.h
+ 832              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 833              		.file 10 "Middlewares/Third_Party/wakaama/liblwm2m.h"
+ 834              		.file 11 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 835              		.file 12 "Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.h"
+ 836              		.file 13 "Middlewares/Third_Party/wakaama/internals.h"
+ 837              		.file 14 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s 			page 25
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 packet.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:18     .text.handle_request:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:24     .text.handle_request:0000000000000000 handle_request
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:136    .text.handle_reset:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:142    .text.handle_reset:0000000000000000 handle_reset
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:168    .text.message_send:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:175    .text.message_send:0000000000000000 message_send
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:257    .text.lwm2m_handle_packet:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:264    .text.lwm2m_handle_packet:0000000000000000 lwm2m_handle_packet
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:717    .text.lwm2m_handle_packet:00000000000002c2 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:721    .text.lwm2m_handle_packet:00000000000002c6 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:762    .text.lwm2m_handle_packet:0000000000000300 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:770    .text.lwm2m_handle_packet:0000000000000310 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:801    .text.lwm2m_handle_packet:0000000000000338 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:806    .bss.message.8108:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:810    .bss.message.8108:0000000000000000 message.8108
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:813    .bss.response.8109:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:817    .bss.response.8109:0000000000000000 response.8109
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc3GtpST.s:820    .rodata.lwm2m_handle_packet.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+uri_decode
+coap_set_status_code
+lwm2m_free
+utils_findServer
+dm_handleRequest
+observe_cancel
+coap_serialize_get_size
+lwm2m_malloc
+coap_serialize_message
+lwm2m_buffer_send
+coap_parse_message
+coap_init_message
+coap_get_header_block2
+coap_free_header
+strlen
+coap_set_payload
+coap_set_header_token
+coap_get_header_block1
+coap_block1_handler
+coap_set_header_block1
+coap_set_header_block2
+transaction_handleResponse
+coap_error_message

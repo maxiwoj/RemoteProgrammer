@@ -1,0 +1,3377 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"observe.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.prv_findObserved,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	prv_findObserved:
+  25              	.LFB3:
+  26              		.file 1 "Middlewares/Third_Party/wakaama/observe.c"
+   1:Middlewares/Third_Party/wakaama/observe.c **** /*******************************************************************************
+   2:Middlewares/Third_Party/wakaama/observe.c ****  *
+   3:Middlewares/Third_Party/wakaama/observe.c ****  * Copyright (c) 2013, 2014 Intel Corporation and others.
+   4:Middlewares/Third_Party/wakaama/observe.c ****  * All rights reserved. This program and the accompanying materials
+   5:Middlewares/Third_Party/wakaama/observe.c ****  * are made available under the terms of the Eclipse Public License v1.0
+   6:Middlewares/Third_Party/wakaama/observe.c ****  * and Eclipse Distribution License v1.0 which accompany this distribution.
+   7:Middlewares/Third_Party/wakaama/observe.c ****  *
+   8:Middlewares/Third_Party/wakaama/observe.c ****  * The Eclipse Public License is available at
+   9:Middlewares/Third_Party/wakaama/observe.c ****  *    http://www.eclipse.org/legal/epl-v10.html
+  10:Middlewares/Third_Party/wakaama/observe.c ****  * The Eclipse Distribution License is available at
+  11:Middlewares/Third_Party/wakaama/observe.c ****  *    http://www.eclipse.org/org/documents/edl-v10.php.
+  12:Middlewares/Third_Party/wakaama/observe.c ****  *
+  13:Middlewares/Third_Party/wakaama/observe.c ****  * Contributors:
+  14:Middlewares/Third_Party/wakaama/observe.c ****  *    David Navarro, Intel Corporation - initial API and implementation
+  15:Middlewares/Third_Party/wakaama/observe.c ****  *    Toby Jaffey - Please refer to git log
+  16:Middlewares/Third_Party/wakaama/observe.c ****  *    Bosch Software Innovations GmbH - Please refer to git log
+  17:Middlewares/Third_Party/wakaama/observe.c ****  *
+  18:Middlewares/Third_Party/wakaama/observe.c ****  *******************************************************************************/
+  19:Middlewares/Third_Party/wakaama/observe.c **** 
+  20:Middlewares/Third_Party/wakaama/observe.c **** /*
+  21:Middlewares/Third_Party/wakaama/observe.c ****  Copyright (c) 2013, 2014 Intel Corporation
+  22:Middlewares/Third_Party/wakaama/observe.c **** 
+  23:Middlewares/Third_Party/wakaama/observe.c ****  Redistribution and use in source and binary forms, with or without modification,
+  24:Middlewares/Third_Party/wakaama/observe.c ****  are permitted provided that the following conditions are met:
+  25:Middlewares/Third_Party/wakaama/observe.c **** 
+  26:Middlewares/Third_Party/wakaama/observe.c ****      * Redistributions of source code must retain the above copyright notice,
+  27:Middlewares/Third_Party/wakaama/observe.c ****        this list of conditions and the following disclaimer.
+  28:Middlewares/Third_Party/wakaama/observe.c ****      * Redistributions in binary form must reproduce the above copyright notice,
+  29:Middlewares/Third_Party/wakaama/observe.c ****        this list of conditions and the following disclaimer in the documentation
+  30:Middlewares/Third_Party/wakaama/observe.c ****        and/or other materials provided with the distribution.
+  31:Middlewares/Third_Party/wakaama/observe.c ****      * Neither the name of Intel Corporation nor the names of its contributors
+  32:Middlewares/Third_Party/wakaama/observe.c ****        may be used to endorse or promote products derived from this software
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 2
+
+
+  33:Middlewares/Third_Party/wakaama/observe.c ****        without specific prior written permission.
+  34:Middlewares/Third_Party/wakaama/observe.c **** 
+  35:Middlewares/Third_Party/wakaama/observe.c ****  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  36:Middlewares/Third_Party/wakaama/observe.c ****  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  37:Middlewares/Third_Party/wakaama/observe.c ****  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  38:Middlewares/Third_Party/wakaama/observe.c ****  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  39:Middlewares/Third_Party/wakaama/observe.c ****  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  40:Middlewares/Third_Party/wakaama/observe.c ****  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  41:Middlewares/Third_Party/wakaama/observe.c ****  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  42:Middlewares/Third_Party/wakaama/observe.c ****  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  43:Middlewares/Third_Party/wakaama/observe.c ****  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+  44:Middlewares/Third_Party/wakaama/observe.c ****  THE POSSIBILITY OF SUCH DAMAGE.
+  45:Middlewares/Third_Party/wakaama/observe.c **** 
+  46:Middlewares/Third_Party/wakaama/observe.c ****  David Navarro <david.navarro@intel.com>
+  47:Middlewares/Third_Party/wakaama/observe.c **** 
+  48:Middlewares/Third_Party/wakaama/observe.c **** */
+  49:Middlewares/Third_Party/wakaama/observe.c **** 
+  50:Middlewares/Third_Party/wakaama/observe.c **** #include "internals.h"
+  51:Middlewares/Third_Party/wakaama/observe.c **** #include <stdio.h>
+  52:Middlewares/Third_Party/wakaama/observe.c **** 
+  53:Middlewares/Third_Party/wakaama/observe.c **** 
+  54:Middlewares/Third_Party/wakaama/observe.c **** #ifdef LWM2M_CLIENT_MODE
+  55:Middlewares/Third_Party/wakaama/observe.c **** static lwm2m_observed_t * prv_findObserved(lwm2m_context_t * contextP,
+  56:Middlewares/Third_Party/wakaama/observe.c ****                                            lwm2m_uri_t * uriP)
+  57:Middlewares/Third_Party/wakaama/observe.c **** {
+  27              		.loc 1 57 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  32              	.LVL0:
+  58:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * targetP;
+  59:Middlewares/Third_Party/wakaama/observe.c **** 
+  60:Middlewares/Third_Party/wakaama/observe.c ****     targetP = contextP->observedList;
+  33              		.loc 1 60 0
+  34 0000 C069     		ldr	r0, [r0, #28]
+  35              	.LVL1:
+  61:Middlewares/Third_Party/wakaama/observe.c ****     while (targetP != NULL
+  36              		.loc 1 61 0
+  37 0002 07E0     		b	.L7
+  38              	.L18:
+  62:Middlewares/Third_Party/wakaama/observe.c ****         && (targetP->uri.objectId != uriP->objectId
+  63:Middlewares/Third_Party/wakaama/observe.c ****          || targetP->uri.flag != uriP->flag
+  64:Middlewares/Third_Party/wakaama/observe.c ****          || (LWM2M_URI_IS_SET_INSTANCE(uriP) && targetP->uri.instanceId != uriP->instanceId)
+  65:Middlewares/Third_Party/wakaama/observe.c ****          || (LWM2M_URI_IS_SET_RESOURCE(uriP) && targetP->uri.resourceId != uriP->resourceId)))
+  39              		.loc 1 65 0
+  40 0004 13F0010F 		tst	r3, #1
+  41 0008 2DD0     		beq	.L9
+  42 000a 4289     		ldrh	r2, [r0, #10]
+  43 000c CB88     		ldrh	r3, [r1, #6]
+  44 000e 9A42     		cmp	r2, r3
+  45 0010 28D0     		beq	.L17
+  46              	.L10:
+  66:Middlewares/Third_Party/wakaama/observe.c ****     {
+  67:Middlewares/Third_Party/wakaama/observe.c ****         targetP = targetP->next;
+  47              		.loc 1 67 0
+  48 0012 0068     		ldr	r0, [r0]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 3
+
+
+  49              	.LVL2:
+  50              	.L7:
+  61:Middlewares/Third_Party/wakaama/observe.c ****         && (targetP->uri.objectId != uriP->objectId
+  51              		.loc 1 61 0
+  52 0014 38B3     		cbz	r0, .L9
+  62:Middlewares/Third_Party/wakaama/observe.c ****         && (targetP->uri.objectId != uriP->objectId
+  53              		.loc 1 62 0
+  54 0016 C288     		ldrh	r2, [r0, #6]
+  55 0018 4B88     		ldrh	r3, [r1, #2]
+  56 001a 9A42     		cmp	r2, r3
+  57 001c F9D1     		bne	.L10
+  63:Middlewares/Third_Party/wakaama/observe.c ****          || (LWM2M_URI_IS_SET_INSTANCE(uriP) && targetP->uri.instanceId != uriP->instanceId)
+  58              		.loc 1 63 0
+  59 001e 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+  60 0020 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+  61 0022 9A42     		cmp	r2, r3
+  62 0024 F5D1     		bne	.L10
+  64:Middlewares/Third_Party/wakaama/observe.c ****          || (LWM2M_URI_IS_SET_RESOURCE(uriP) && targetP->uri.resourceId != uriP->resourceId)))
+  63              		.loc 1 64 0
+  64 0026 13F0020F 		tst	r3, #2
+  65 002a EBD0     		beq	.L18
+  57:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * targetP;
+  66              		.loc 1 57 0
+  67 002c 10B4     		push	{r4}
+  68              	.LCFI0:
+  69              		.cfi_def_cfa_offset 4
+  70              		.cfi_offset 4, -4
+  71              	.L13:
+  64:Middlewares/Third_Party/wakaama/observe.c ****          || (LWM2M_URI_IS_SET_RESOURCE(uriP) && targetP->uri.resourceId != uriP->resourceId)))
+  72              		.loc 1 64 0 discriminator 1
+  73 002e 0489     		ldrh	r4, [r0, #8]
+  74 0030 8A88     		ldrh	r2, [r1, #4]
+  75 0032 9442     		cmp	r4, r2
+  76 0034 0CD0     		beq	.L5
+  77              	.L4:
+  78              		.loc 1 67 0
+  79 0036 0068     		ldr	r0, [r0]
+  80              	.LVL3:
+  61:Middlewares/Third_Party/wakaama/observe.c ****         && (targetP->uri.objectId != uriP->objectId
+  81              		.loc 1 61 0
+  82 0038 88B1     		cbz	r0, .L1
+  62:Middlewares/Third_Party/wakaama/observe.c ****          || targetP->uri.flag != uriP->flag
+  83              		.loc 1 62 0
+  84 003a C288     		ldrh	r2, [r0, #6]
+  85 003c 4B88     		ldrh	r3, [r1, #2]
+  86 003e 9A42     		cmp	r2, r3
+  87 0040 F9D1     		bne	.L4
+  63:Middlewares/Third_Party/wakaama/observe.c ****          || (LWM2M_URI_IS_SET_INSTANCE(uriP) && targetP->uri.instanceId != uriP->instanceId)
+  88              		.loc 1 63 0
+  89 0042 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+  90 0044 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+  91 0046 9A42     		cmp	r2, r3
+  92 0048 F5D1     		bne	.L4
+  64:Middlewares/Third_Party/wakaama/observe.c ****          || (LWM2M_URI_IS_SET_RESOURCE(uriP) && targetP->uri.resourceId != uriP->resourceId)))
+  93              		.loc 1 64 0
+  94 004a 13F0020F 		tst	r3, #2
+  95 004e EED1     		bne	.L13
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 4
+
+
+  96              	.L5:
+  65:Middlewares/Third_Party/wakaama/observe.c ****     {
+  97              		.loc 1 65 0
+  98 0050 13F0010F 		tst	r3, #1
+  99 0054 03D0     		beq	.L1
+  65:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 100              		.loc 1 65 0 is_stmt 0 discriminator 1
+ 101 0056 4289     		ldrh	r2, [r0, #10]
+ 102 0058 CB88     		ldrh	r3, [r1, #6]
+ 103 005a 9A42     		cmp	r2, r3
+ 104 005c EBD1     		bne	.L4
+ 105              	.L1:
+  68:Middlewares/Third_Party/wakaama/observe.c ****     }
+  69:Middlewares/Third_Party/wakaama/observe.c **** 
+  70:Middlewares/Third_Party/wakaama/observe.c ****     return targetP;
+  71:Middlewares/Third_Party/wakaama/observe.c **** }
+ 106              		.loc 1 71 0 is_stmt 1
+ 107 005e 5DF8044B 		ldr	r4, [sp], #4
+ 108              	.LCFI1:
+ 109              		.cfi_restore 4
+ 110              		.cfi_def_cfa_offset 0
+ 111 0062 7047     		bx	lr
+ 112              	.L17:
+ 113 0064 7047     		bx	lr
+ 114              	.L9:
+ 115 0066 7047     		bx	lr
+ 116              		.cfi_endproc
+ 117              	.LFE3:
+ 119              		.section	.text.prv_unlinkObserved,"ax",%progbits
+ 120              		.align	1
+ 121              		.syntax unified
+ 122              		.thumb
+ 123              		.thumb_func
+ 124              		.fpu fpv4-sp-d16
+ 126              	prv_unlinkObserved:
+ 127              	.LFB4:
+  72:Middlewares/Third_Party/wakaama/observe.c **** 
+  73:Middlewares/Third_Party/wakaama/observe.c **** static void prv_unlinkObserved(lwm2m_context_t * contextP,
+  74:Middlewares/Third_Party/wakaama/observe.c ****                                lwm2m_observed_t * observedP)
+  75:Middlewares/Third_Party/wakaama/observe.c **** {
+ 128              		.loc 1 75 0
+ 129              		.cfi_startproc
+ 130              		@ args = 0, pretend = 0, frame = 0
+ 131              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132              		@ link register save eliminated.
+ 133              	.LVL4:
+  76:Middlewares/Third_Party/wakaama/observe.c ****     if (contextP->observedList == observedP)
+ 134              		.loc 1 76 0
+ 135 0000 C269     		ldr	r2, [r0, #28]
+ 136 0002 8A42     		cmp	r2, r1
+ 137 0004 03D1     		bne	.L20
+  77:Middlewares/Third_Party/wakaama/observe.c ****     {
+  78:Middlewares/Third_Party/wakaama/observe.c ****         contextP->observedList = contextP->observedList->next;
+ 138              		.loc 1 78 0
+ 139 0006 1368     		ldr	r3, [r2]
+ 140 0008 C361     		str	r3, [r0, #28]
+ 141 000a 7047     		bx	lr
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 5
+
+
+ 142              	.LVL5:
+ 143              	.L23:
+ 144              	.LBB2:
+  79:Middlewares/Third_Party/wakaama/observe.c ****     }
+  80:Middlewares/Third_Party/wakaama/observe.c ****     else
+  81:Middlewares/Third_Party/wakaama/observe.c ****     {
+  82:Middlewares/Third_Party/wakaama/observe.c ****         lwm2m_observed_t * parentP;
+  83:Middlewares/Third_Party/wakaama/observe.c **** 
+  84:Middlewares/Third_Party/wakaama/observe.c ****         parentP = contextP->observedList;
+  85:Middlewares/Third_Party/wakaama/observe.c ****         while (parentP->next != NULL
+  86:Middlewares/Third_Party/wakaama/observe.c ****             && parentP->next != observedP)
+  87:Middlewares/Third_Party/wakaama/observe.c ****         {
+  88:Middlewares/Third_Party/wakaama/observe.c ****             parentP = parentP->next;
+ 145              		.loc 1 88 0
+ 146 000c 1A46     		mov	r2, r3
+ 147              	.LVL6:
+ 148              	.L20:
+  85:Middlewares/Third_Party/wakaama/observe.c ****             && parentP->next != observedP)
+ 149              		.loc 1 85 0
+ 150 000e 1368     		ldr	r3, [r2]
+ 151 0010 0BB1     		cbz	r3, .L22
+  86:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 152              		.loc 1 86 0
+ 153 0012 8B42     		cmp	r3, r1
+ 154 0014 FAD1     		bne	.L23
+ 155              	.L22:
+  89:Middlewares/Third_Party/wakaama/observe.c ****         }
+  90:Middlewares/Third_Party/wakaama/observe.c ****         if (parentP->next != NULL)
+ 156              		.loc 1 90 0
+ 157 0016 0BB1     		cbz	r3, .L19
+  91:Middlewares/Third_Party/wakaama/observe.c ****         {
+  92:Middlewares/Third_Party/wakaama/observe.c ****             parentP->next = parentP->next->next;
+ 158              		.loc 1 92 0
+ 159 0018 1B68     		ldr	r3, [r3]
+ 160 001a 1360     		str	r3, [r2]
+ 161              	.L19:
+ 162              	.LBE2:
+  93:Middlewares/Third_Party/wakaama/observe.c ****         }
+  94:Middlewares/Third_Party/wakaama/observe.c ****     }
+  95:Middlewares/Third_Party/wakaama/observe.c **** }
+ 163              		.loc 1 95 0
+ 164 001c 7047     		bx	lr
+ 165              		.cfi_endproc
+ 166              	.LFE4:
+ 168              		.section	.text.prv_findWatcher,"ax",%progbits
+ 169              		.align	1
+ 170              		.syntax unified
+ 171              		.thumb
+ 172              		.thumb_func
+ 173              		.fpu fpv4-sp-d16
+ 175              	prv_findWatcher:
+ 176              	.LFB5:
+  96:Middlewares/Third_Party/wakaama/observe.c **** 
+  97:Middlewares/Third_Party/wakaama/observe.c **** static lwm2m_watcher_t * prv_findWatcher(lwm2m_observed_t * observedP,
+  98:Middlewares/Third_Party/wakaama/observe.c ****                                          lwm2m_server_t * serverP)
+  99:Middlewares/Third_Party/wakaama/observe.c **** {
+ 177              		.loc 1 99 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 6
+
+
+ 178              		.cfi_startproc
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181              		@ link register save eliminated.
+ 182              	.LVL7:
+ 100:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_watcher_t * targetP;
+ 101:Middlewares/Third_Party/wakaama/observe.c **** 
+ 102:Middlewares/Third_Party/wakaama/observe.c ****     targetP = observedP->watcherList;
+ 183              		.loc 1 102 0
+ 184 0000 C068     		ldr	r0, [r0, #12]
+ 185              	.LVL8:
+ 103:Middlewares/Third_Party/wakaama/observe.c ****     while (targetP != NULL
+ 186              		.loc 1 103 0
+ 187 0002 00E0     		b	.L25
+ 188              	.L27:
+ 104:Middlewares/Third_Party/wakaama/observe.c ****         && targetP->server != serverP)
+ 105:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 106:Middlewares/Third_Party/wakaama/observe.c ****         targetP = targetP->next;
+ 189              		.loc 1 106 0
+ 190 0004 0068     		ldr	r0, [r0]
+ 191              	.LVL9:
+ 192              	.L25:
+ 103:Middlewares/Third_Party/wakaama/observe.c ****     while (targetP != NULL
+ 193              		.loc 1 103 0
+ 194 0006 10B1     		cbz	r0, .L24
+ 104:Middlewares/Third_Party/wakaama/observe.c ****         && targetP->server != serverP)
+ 195              		.loc 1 104 0
+ 196 0008 8368     		ldr	r3, [r0, #8]
+ 197 000a 8B42     		cmp	r3, r1
+ 198 000c FAD1     		bne	.L27
+ 199              	.L24:
+ 107:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 108:Middlewares/Third_Party/wakaama/observe.c **** 
+ 109:Middlewares/Third_Party/wakaama/observe.c ****     return targetP;
+ 110:Middlewares/Third_Party/wakaama/observe.c **** }
+ 200              		.loc 1 110 0
+ 201 000e 7047     		bx	lr
+ 202              		.cfi_endproc
+ 203              	.LFE5:
+ 205              		.section	.text.prv_getWatcher,"ax",%progbits
+ 206              		.align	1
+ 207              		.syntax unified
+ 208              		.thumb
+ 209              		.thumb_func
+ 210              		.fpu fpv4-sp-d16
+ 212              	prv_getWatcher:
+ 213              	.LFB6:
+ 111:Middlewares/Third_Party/wakaama/observe.c **** 
+ 112:Middlewares/Third_Party/wakaama/observe.c **** static lwm2m_watcher_t * prv_getWatcher(lwm2m_context_t * contextP,
+ 113:Middlewares/Third_Party/wakaama/observe.c ****                                         lwm2m_uri_t * uriP,
+ 114:Middlewares/Third_Party/wakaama/observe.c ****                                         lwm2m_server_t * serverP)
+ 115:Middlewares/Third_Party/wakaama/observe.c **** {
+ 214              		.loc 1 115 0
+ 215              		.cfi_startproc
+ 216              		@ args = 0, pretend = 0, frame = 0
+ 217              		@ frame_needed = 0, uses_anonymous_args = 0
+ 218              	.LVL10:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 7
+
+
+ 219 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 220              	.LCFI2:
+ 221              		.cfi_def_cfa_offset 24
+ 222              		.cfi_offset 3, -24
+ 223              		.cfi_offset 4, -20
+ 224              		.cfi_offset 5, -16
+ 225              		.cfi_offset 6, -12
+ 226              		.cfi_offset 7, -8
+ 227              		.cfi_offset 14, -4
+ 228 0002 0546     		mov	r5, r0
+ 229 0004 0F46     		mov	r7, r1
+ 230 0006 1646     		mov	r6, r2
+ 231              	.LVL11:
+ 116:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * observedP;
+ 117:Middlewares/Third_Party/wakaama/observe.c ****     bool allocatedObserver;
+ 118:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_watcher_t * watcherP;
+ 119:Middlewares/Third_Party/wakaama/observe.c **** 
+ 120:Middlewares/Third_Party/wakaama/observe.c ****     allocatedObserver = false;
+ 121:Middlewares/Third_Party/wakaama/observe.c **** 
+ 122:Middlewares/Third_Party/wakaama/observe.c ****     observedP = prv_findObserved(contextP, uriP);
+ 232              		.loc 1 122 0
+ 233 0008 FFF7FEFF 		bl	prv_findObserved
+ 234              	.LVL12:
+ 123:Middlewares/Third_Party/wakaama/observe.c ****     if (observedP == NULL)
+ 235              		.loc 1 123 0
+ 236 000c 48B1     		cbz	r0, .L35
+ 237 000e 0446     		mov	r4, r0
+ 120:Middlewares/Third_Party/wakaama/observe.c **** 
+ 238              		.loc 1 120 0
+ 239 0010 0027     		movs	r7, #0
+ 240              	.LVL13:
+ 241              	.L29:
+ 124:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 125:Middlewares/Third_Party/wakaama/observe.c ****         observedP = (lwm2m_observed_t *)lwm2m_malloc(sizeof(lwm2m_observed_t));
+ 126:Middlewares/Third_Party/wakaama/observe.c ****         if (observedP == NULL) return NULL;
+ 127:Middlewares/Third_Party/wakaama/observe.c ****         allocatedObserver = true;
+ 128:Middlewares/Third_Party/wakaama/observe.c ****         memset(observedP, 0, sizeof(lwm2m_observed_t));
+ 129:Middlewares/Third_Party/wakaama/observe.c ****         memcpy(&(observedP->uri), uriP, sizeof(lwm2m_uri_t));
+ 130:Middlewares/Third_Party/wakaama/observe.c ****         observedP->next = contextP->observedList;
+ 131:Middlewares/Third_Party/wakaama/observe.c ****         contextP->observedList = observedP;
+ 132:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 133:Middlewares/Third_Party/wakaama/observe.c **** 
+ 134:Middlewares/Third_Party/wakaama/observe.c ****     watcherP = prv_findWatcher(observedP, serverP);
+ 242              		.loc 1 134 0
+ 243 0012 3146     		mov	r1, r6
+ 244 0014 2046     		mov	r0, r4
+ 245 0016 FFF7FEFF 		bl	prv_findWatcher
+ 246              	.LVL14:
+ 135:Middlewares/Third_Party/wakaama/observe.c ****     if (watcherP == NULL)
+ 247              		.loc 1 135 0
+ 248 001a 0546     		mov	r5, r0
+ 249              	.LVL15:
+ 250 001c A0B1     		cbz	r0, .L36
+ 251              	.LVL16:
+ 252              	.L28:
+ 136:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 137:Middlewares/Third_Party/wakaama/observe.c ****         watcherP = (lwm2m_watcher_t *)lwm2m_malloc(sizeof(lwm2m_watcher_t));
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 8
+
+
+ 138:Middlewares/Third_Party/wakaama/observe.c ****         if (watcherP == NULL)
+ 139:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 140:Middlewares/Third_Party/wakaama/observe.c ****             if (allocatedObserver == true)
+ 141:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 142:Middlewares/Third_Party/wakaama/observe.c ****                 lwm2m_free(observedP);
+ 143:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 144:Middlewares/Third_Party/wakaama/observe.c ****             return NULL;
+ 145:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 146:Middlewares/Third_Party/wakaama/observe.c ****         memset(watcherP, 0, sizeof(lwm2m_watcher_t));
+ 147:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->active = false;
+ 148:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->server = serverP;
+ 149:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->next = observedP->watcherList;
+ 150:Middlewares/Third_Party/wakaama/observe.c ****         observedP->watcherList = watcherP;
+ 151:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 152:Middlewares/Third_Party/wakaama/observe.c **** 
+ 153:Middlewares/Third_Party/wakaama/observe.c ****     return watcherP;
+ 154:Middlewares/Third_Party/wakaama/observe.c **** }
+ 253              		.loc 1 154 0
+ 254 001e 2846     		mov	r0, r5
+ 255 0020 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 256              	.LVL17:
+ 257              	.L35:
+ 125:Middlewares/Third_Party/wakaama/observe.c ****         if (observedP == NULL) return NULL;
+ 258              		.loc 1 125 0
+ 259 0022 1020     		movs	r0, #16
+ 260              	.LVL18:
+ 261 0024 FFF7FEFF 		bl	lwm2m_malloc
+ 262              	.LVL19:
+ 126:Middlewares/Third_Party/wakaama/observe.c ****         allocatedObserver = true;
+ 263              		.loc 1 126 0
+ 264 0028 0446     		mov	r4, r0
+ 265 002a 18B3     		cbz	r0, .L33
+ 266              	.LVL20:
+ 128:Middlewares/Third_Party/wakaama/observe.c ****         memcpy(&(observedP->uri), uriP, sizeof(lwm2m_uri_t));
+ 267              		.loc 1 128 0
+ 268 002c 0023     		movs	r3, #0
+ 269 002e 0360     		str	r3, [r0]	@ unaligned
+ 270 0030 4360     		str	r3, [r0, #4]	@ unaligned
+ 271 0032 8360     		str	r3, [r0, #8]	@ unaligned
+ 272 0034 C360     		str	r3, [r0, #12]	@ unaligned
+ 129:Middlewares/Third_Party/wakaama/observe.c ****         observedP->next = contextP->observedList;
+ 273              		.loc 1 129 0
+ 274 0036 3A68     		ldr	r2, [r7]	@ unaligned
+ 275 0038 7B68     		ldr	r3, [r7, #4]	@ unaligned
+ 276 003a 4260     		str	r2, [r0, #4]	@ unaligned
+ 277 003c 8360     		str	r3, [r0, #8]	@ unaligned
+ 130:Middlewares/Third_Party/wakaama/observe.c ****         contextP->observedList = observedP;
+ 278              		.loc 1 130 0
+ 279 003e EB69     		ldr	r3, [r5, #28]
+ 280 0040 0360     		str	r3, [r0]
+ 131:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 281              		.loc 1 131 0
+ 282 0042 E861     		str	r0, [r5, #28]
+ 127:Middlewares/Third_Party/wakaama/observe.c ****         memset(observedP, 0, sizeof(lwm2m_observed_t));
+ 283              		.loc 1 127 0
+ 284 0044 0127     		movs	r7, #1
+ 285              	.LVL21:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 9
+
+
+ 286 0046 E4E7     		b	.L29
+ 287              	.LVL22:
+ 288              	.L36:
+ 137:Middlewares/Third_Party/wakaama/observe.c ****         if (watcherP == NULL)
+ 289              		.loc 1 137 0
+ 290 0048 3820     		movs	r0, #56
+ 291              	.LVL23:
+ 292 004a FFF7FEFF 		bl	lwm2m_malloc
+ 293              	.LVL24:
+ 138:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 294              		.loc 1 138 0
+ 295 004e 0546     		mov	r5, r0
+ 296 0050 50B1     		cbz	r0, .L37
+ 146:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->active = false;
+ 297              		.loc 1 146 0
+ 298 0052 3822     		movs	r2, #56
+ 299 0054 0021     		movs	r1, #0
+ 300 0056 FFF7FEFF 		bl	memset
+ 301              	.LVL25:
+ 147:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->server = serverP;
+ 302              		.loc 1 147 0
+ 303 005a 0023     		movs	r3, #0
+ 304 005c 2B71     		strb	r3, [r5, #4]
+ 148:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->next = observedP->watcherList;
+ 305              		.loc 1 148 0
+ 306 005e AE60     		str	r6, [r5, #8]
+ 149:Middlewares/Third_Party/wakaama/observe.c ****         observedP->watcherList = watcherP;
+ 307              		.loc 1 149 0
+ 308 0060 E368     		ldr	r3, [r4, #12]
+ 309 0062 2B60     		str	r3, [r5]
+ 150:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 310              		.loc 1 150 0
+ 311 0064 E560     		str	r5, [r4, #12]
+ 312 0066 DAE7     		b	.L28
+ 313              	.LVL26:
+ 314              	.L37:
+ 140:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 315              		.loc 1 140 0
+ 316 0068 002F     		cmp	r7, #0
+ 317 006a D8D0     		beq	.L28
+ 142:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 318              		.loc 1 142 0
+ 319 006c 2046     		mov	r0, r4
+ 320              	.LVL27:
+ 321 006e FFF7FEFF 		bl	lwm2m_free
+ 322              	.LVL28:
+ 323 0072 D4E7     		b	.L28
+ 324              	.LVL29:
+ 325              	.L33:
+ 126:Middlewares/Third_Party/wakaama/observe.c ****         allocatedObserver = true;
+ 326              		.loc 1 126 0
+ 327 0074 0025     		movs	r5, #0
+ 328              	.LVL30:
+ 329 0076 D2E7     		b	.L28
+ 330              		.cfi_endproc
+ 331              	.LFE6:
+ 333              		.section	.text.observe_cancel,"ax",%progbits
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 10
+
+
+ 334              		.align	1
+ 335              		.global	observe_cancel
+ 336              		.syntax unified
+ 337              		.thumb
+ 338              		.thumb_func
+ 339              		.fpu fpv4-sp-d16
+ 341              	observe_cancel:
+ 342              	.LFB8:
+ 155:Middlewares/Third_Party/wakaama/observe.c **** 
+ 156:Middlewares/Third_Party/wakaama/observe.c **** uint8_t observe_handleRequest(lwm2m_context_t * contextP,
+ 157:Middlewares/Third_Party/wakaama/observe.c ****                               lwm2m_uri_t * uriP,
+ 158:Middlewares/Third_Party/wakaama/observe.c ****                               lwm2m_server_t * serverP,
+ 159:Middlewares/Third_Party/wakaama/observe.c ****                               int size,
+ 160:Middlewares/Third_Party/wakaama/observe.c ****                               lwm2m_data_t * dataP,
+ 161:Middlewares/Third_Party/wakaama/observe.c ****                               coap_packet_t * message,
+ 162:Middlewares/Third_Party/wakaama/observe.c ****                               coap_packet_t * response)
+ 163:Middlewares/Third_Party/wakaama/observe.c **** {
+ 164:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * observedP;
+ 165:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_watcher_t * watcherP;
+ 166:Middlewares/Third_Party/wakaama/observe.c ****     uint32_t count;
+ 167:Middlewares/Third_Party/wakaama/observe.c **** 
+ 168:Middlewares/Third_Party/wakaama/observe.c ****     LOG_ARG("Code: %02X, server status: %s", message->code, STR_STATUS(serverP->status));
+ 169:Middlewares/Third_Party/wakaama/observe.c ****     LOG_URI(uriP);
+ 170:Middlewares/Third_Party/wakaama/observe.c **** 
+ 171:Middlewares/Third_Party/wakaama/observe.c ****     coap_get_header_observe(message, &count);
+ 172:Middlewares/Third_Party/wakaama/observe.c **** 
+ 173:Middlewares/Third_Party/wakaama/observe.c ****     switch (count)
+ 174:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 175:Middlewares/Third_Party/wakaama/observe.c ****     case 0:
+ 176:Middlewares/Third_Party/wakaama/observe.c ****         if (!LWM2M_URI_IS_SET_INSTANCE(uriP) && LWM2M_URI_IS_SET_RESOURCE(uriP)) return COAP_400_BA
+ 177:Middlewares/Third_Party/wakaama/observe.c ****         if (message->token_len == 0) return COAP_400_BAD_REQUEST;
+ 178:Middlewares/Third_Party/wakaama/observe.c **** 
+ 179:Middlewares/Third_Party/wakaama/observe.c ****         watcherP = prv_getWatcher(contextP, uriP, serverP);
+ 180:Middlewares/Third_Party/wakaama/observe.c ****         if (watcherP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 181:Middlewares/Third_Party/wakaama/observe.c **** 
+ 182:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->tokenLen = message->token_len;
+ 183:Middlewares/Third_Party/wakaama/observe.c ****         memcpy(watcherP->token, message->token, message->token_len);
+ 184:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->active = true;
+ 185:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->lastTime = lwm2m_gettime();
+ 186:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->lastMid = response->mid;
+ 187:Middlewares/Third_Party/wakaama/observe.c ****         if (IS_OPTION(message, COAP_OPTION_ACCEPT))
+ 188:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 189:Middlewares/Third_Party/wakaama/observe.c ****             watcherP->format = utils_convertMediaType(message->accept[0]);
+ 190:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 191:Middlewares/Third_Party/wakaama/observe.c ****         else
+ 192:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 193:Middlewares/Third_Party/wakaama/observe.c ****             watcherP->format = LWM2M_CONTENT_TLV;
+ 194:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 195:Middlewares/Third_Party/wakaama/observe.c **** 
+ 196:Middlewares/Third_Party/wakaama/observe.c ****         if (LWM2M_URI_IS_SET_RESOURCE(uriP))
+ 197:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 198:Middlewares/Third_Party/wakaama/observe.c ****             switch (dataP->type)
+ 199:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 200:Middlewares/Third_Party/wakaama/observe.c ****             case LWM2M_TYPE_INTEGER:
+ 201:Middlewares/Third_Party/wakaama/observe.c ****                 if (1 != lwm2m_data_decode_int(dataP, &(watcherP->lastValue.asInteger))) return COA
+ 202:Middlewares/Third_Party/wakaama/observe.c ****                 break;
+ 203:Middlewares/Third_Party/wakaama/observe.c ****             case LWM2M_TYPE_FLOAT:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 11
+
+
+ 204:Middlewares/Third_Party/wakaama/observe.c ****                 if (1 != lwm2m_data_decode_float(dataP, &(watcherP->lastValue.asFloat))) return COA
+ 205:Middlewares/Third_Party/wakaama/observe.c ****                 break;
+ 206:Middlewares/Third_Party/wakaama/observe.c ****             default:
+ 207:Middlewares/Third_Party/wakaama/observe.c ****                 break;
+ 208:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 209:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 210:Middlewares/Third_Party/wakaama/observe.c **** 
+ 211:Middlewares/Third_Party/wakaama/observe.c ****         coap_set_header_observe(response, watcherP->counter++);
+ 212:Middlewares/Third_Party/wakaama/observe.c **** 
+ 213:Middlewares/Third_Party/wakaama/observe.c ****         return COAP_205_CONTENT;
+ 214:Middlewares/Third_Party/wakaama/observe.c **** 
+ 215:Middlewares/Third_Party/wakaama/observe.c ****     case 1:
+ 216:Middlewares/Third_Party/wakaama/observe.c ****         // cancellation
+ 217:Middlewares/Third_Party/wakaama/observe.c ****         observedP = prv_findObserved(contextP, uriP);
+ 218:Middlewares/Third_Party/wakaama/observe.c ****         if (observedP)
+ 219:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 220:Middlewares/Third_Party/wakaama/observe.c ****             watcherP = prv_findWatcher(observedP, serverP);
+ 221:Middlewares/Third_Party/wakaama/observe.c ****             if (watcherP)
+ 222:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 223:Middlewares/Third_Party/wakaama/observe.c ****                 observe_cancel(contextP, watcherP->lastMid, serverP->sessionH);
+ 224:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 225:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 226:Middlewares/Third_Party/wakaama/observe.c ****         return COAP_205_CONTENT;
+ 227:Middlewares/Third_Party/wakaama/observe.c **** 
+ 228:Middlewares/Third_Party/wakaama/observe.c ****     default:
+ 229:Middlewares/Third_Party/wakaama/observe.c ****         return COAP_400_BAD_REQUEST;
+ 230:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 231:Middlewares/Third_Party/wakaama/observe.c **** }
+ 232:Middlewares/Third_Party/wakaama/observe.c **** 
+ 233:Middlewares/Third_Party/wakaama/observe.c **** void observe_cancel(lwm2m_context_t * contextP,
+ 234:Middlewares/Third_Party/wakaama/observe.c ****                     uint16_t mid,
+ 235:Middlewares/Third_Party/wakaama/observe.c ****                     void * fromSessionH)
+ 236:Middlewares/Third_Party/wakaama/observe.c **** {
+ 343              		.loc 1 236 0
+ 344              		.cfi_startproc
+ 345              		@ args = 0, pretend = 0, frame = 0
+ 346              		@ frame_needed = 0, uses_anonymous_args = 0
+ 347              	.LVL31:
+ 348 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 349              	.LCFI3:
+ 350              		.cfi_def_cfa_offset 32
+ 351              		.cfi_offset 3, -32
+ 352              		.cfi_offset 4, -28
+ 353              		.cfi_offset 5, -24
+ 354              		.cfi_offset 6, -20
+ 355              		.cfi_offset 7, -16
+ 356              		.cfi_offset 8, -12
+ 357              		.cfi_offset 9, -8
+ 358              		.cfi_offset 14, -4
+ 359 0004 8046     		mov	r8, r0
+ 360 0006 0D46     		mov	r5, r1
+ 361 0008 9146     		mov	r9, r2
+ 237:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * observedP;
+ 238:Middlewares/Third_Party/wakaama/observe.c **** 
+ 239:Middlewares/Third_Party/wakaama/observe.c ****     LOG_ARG("mid: %d", mid);
+ 240:Middlewares/Third_Party/wakaama/observe.c **** 
+ 241:Middlewares/Third_Party/wakaama/observe.c ****     for (observedP = contextP->observedList;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 12
+
+
+ 362              		.loc 1 241 0
+ 363 000a C669     		ldr	r6, [r0, #28]
+ 364              	.LVL32:
+ 365 000c 20E0     		b	.L39
+ 366              	.LVL33:
+ 367              	.L51:
+ 368              	.LBB3:
+ 242:Middlewares/Third_Party/wakaama/observe.c ****          observedP != NULL;
+ 243:Middlewares/Third_Party/wakaama/observe.c ****          observedP = observedP->next)
+ 244:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 245:Middlewares/Third_Party/wakaama/observe.c ****         lwm2m_watcher_t * targetP = NULL;
+ 246:Middlewares/Third_Party/wakaama/observe.c **** 
+ 247:Middlewares/Third_Party/wakaama/observe.c ****         if (observedP->watcherList->lastMid == mid
+ 248:Middlewares/Third_Party/wakaama/observe.c ****          && lwm2m_session_is_equal(observedP->watcherList->server->sessionH, fromSessionH, contextP
+ 369              		.loc 1 248 0
+ 370 000e 9B68     		ldr	r3, [r3, #8]
+ 371 0010 D8F82820 		ldr	r2, [r8, #40]
+ 372 0014 4946     		mov	r1, r9
+ 373 0016 D869     		ldr	r0, [r3, #28]
+ 374 0018 FFF7FEFF 		bl	lwm2m_session_is_equal
+ 375              	.LVL34:
+ 376 001c E8B1     		cbz	r0, .L40
+ 249:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 250:Middlewares/Third_Party/wakaama/observe.c ****             targetP = observedP->watcherList;
+ 377              		.loc 1 250 0
+ 378 001e F768     		ldr	r7, [r6, #12]
+ 379              	.LVL35:
+ 251:Middlewares/Third_Party/wakaama/observe.c ****             observedP->watcherList = observedP->watcherList->next;
+ 380              		.loc 1 251 0
+ 381 0020 3B68     		ldr	r3, [r7]
+ 382 0022 F360     		str	r3, [r6, #12]
+ 383 0024 12E0     		b	.L41
+ 384              	.LVL36:
+ 385              	.L44:
+ 386              	.LBB4:
+ 252:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 253:Middlewares/Third_Party/wakaama/observe.c ****         else
+ 254:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 255:Middlewares/Third_Party/wakaama/observe.c ****             lwm2m_watcher_t * parentP;
+ 256:Middlewares/Third_Party/wakaama/observe.c **** 
+ 257:Middlewares/Third_Party/wakaama/observe.c ****             parentP = observedP->watcherList;
+ 258:Middlewares/Third_Party/wakaama/observe.c ****             while (parentP->next != NULL
+ 259:Middlewares/Third_Party/wakaama/observe.c ****                 && (parentP->next->lastMid != mid
+ 260:Middlewares/Third_Party/wakaama/observe.c ****                  || !lwm2m_session_is_equal(parentP->next->server->sessionH, fromSessionH, contextP
+ 261:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 262:Middlewares/Third_Party/wakaama/observe.c ****                 parentP = parentP->next;
+ 387              		.loc 1 262 0
+ 388 0026 2468     		ldr	r4, [r4]
+ 389              	.LVL37:
+ 390              	.L42:
+ 258:Middlewares/Third_Party/wakaama/observe.c ****                 && (parentP->next->lastMid != mid
+ 391              		.loc 1 258 0
+ 392 0028 2368     		ldr	r3, [r4]
+ 393 002a 5BB1     		cbz	r3, .L43
+ 259:Middlewares/Third_Party/wakaama/observe.c ****                  || !lwm2m_session_is_equal(parentP->next->server->sessionH, fromSessionH, contextP
+ 394              		.loc 1 259 0
+ 395 002c 9A8D     		ldrh	r2, [r3, #44]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 13
+
+
+ 396 002e AA42     		cmp	r2, r5
+ 397 0030 F9D1     		bne	.L44
+ 260:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 398              		.loc 1 260 0
+ 399 0032 9B68     		ldr	r3, [r3, #8]
+ 400 0034 D8F82820 		ldr	r2, [r8, #40]
+ 401 0038 4946     		mov	r1, r9
+ 402 003a D869     		ldr	r0, [r3, #28]
+ 403 003c FFF7FEFF 		bl	lwm2m_session_is_equal
+ 404              	.LVL38:
+ 405 0040 0028     		cmp	r0, #0
+ 406 0042 F0D0     		beq	.L44
+ 407              	.L43:
+ 263:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 264:Middlewares/Third_Party/wakaama/observe.c ****             if (parentP->next != NULL)
+ 408              		.loc 1 264 0
+ 409 0044 2768     		ldr	r7, [r4]
+ 410 0046 17B1     		cbz	r7, .L45
+ 411              	.LVL39:
+ 265:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 266:Middlewares/Third_Party/wakaama/observe.c ****                 targetP = parentP->next;
+ 267:Middlewares/Third_Party/wakaama/observe.c ****                 parentP->next = parentP->next->next;
+ 412              		.loc 1 267 0
+ 413 0048 3B68     		ldr	r3, [r7]
+ 414 004a 2360     		str	r3, [r4]
+ 415              	.LVL40:
+ 416              	.L41:
+ 417              	.LBE4:
+ 268:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 269:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 270:Middlewares/Third_Party/wakaama/observe.c ****         if (targetP != NULL)
+ 418              		.loc 1 270 0
+ 419 004c 3FB9     		cbnz	r7, .L50
+ 420              	.LVL41:
+ 421              	.L45:
+ 422              	.LBE3:
+ 243:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 423              		.loc 1 243 0
+ 424 004e 3668     		ldr	r6, [r6]
+ 425              	.LVL42:
+ 426              	.L39:
+ 241:Middlewares/Third_Party/wakaama/observe.c ****          observedP != NULL;
+ 427              		.loc 1 241 0 discriminator 1
+ 428 0050 76B1     		cbz	r6, .L38
+ 429              	.LVL43:
+ 430              	.LBB6:
+ 247:Middlewares/Third_Party/wakaama/observe.c ****          && lwm2m_session_is_equal(observedP->watcherList->server->sessionH, fromSessionH, contextP
+ 431              		.loc 1 247 0
+ 432 0052 F368     		ldr	r3, [r6, #12]
+ 433 0054 9A8D     		ldrh	r2, [r3, #44]
+ 434 0056 AA42     		cmp	r2, r5
+ 435 0058 D9D0     		beq	.L51
+ 436              	.L40:
+ 437              	.LBB5:
+ 257:Middlewares/Third_Party/wakaama/observe.c ****             while (parentP->next != NULL
+ 438              		.loc 1 257 0
+ 439 005a F468     		ldr	r4, [r6, #12]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 14
+
+
+ 440              	.LVL44:
+ 258:Middlewares/Third_Party/wakaama/observe.c ****                 && (parentP->next->lastMid != mid
+ 441              		.loc 1 258 0
+ 442 005c E4E7     		b	.L42
+ 443              	.LVL45:
+ 444              	.L50:
+ 445              	.LBE5:
+ 271:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 272:Middlewares/Third_Party/wakaama/observe.c ****             if (targetP->parameters != NULL) lwm2m_free(targetP->parameters);
+ 446              		.loc 1 272 0
+ 447 005e F868     		ldr	r0, [r7, #12]
+ 448 0060 08B1     		cbz	r0, .L46
+ 449              		.loc 1 272 0 is_stmt 0 discriminator 1
+ 450 0062 FFF7FEFF 		bl	lwm2m_free
+ 451              	.LVL46:
+ 452              	.L46:
+ 273:Middlewares/Third_Party/wakaama/observe.c ****             lwm2m_free(targetP);
+ 453              		.loc 1 273 0 is_stmt 1
+ 454 0066 3846     		mov	r0, r7
+ 455 0068 FFF7FEFF 		bl	lwm2m_free
+ 456              	.LVL47:
+ 274:Middlewares/Third_Party/wakaama/observe.c ****             if (observedP->watcherList == NULL)
+ 457              		.loc 1 274 0
+ 458 006c F368     		ldr	r3, [r6, #12]
+ 459 006e 0BB1     		cbz	r3, .L52
+ 460              	.LVL48:
+ 461              	.L38:
+ 462              	.LBE6:
+ 275:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 276:Middlewares/Third_Party/wakaama/observe.c ****                 prv_unlinkObserved(contextP, observedP);
+ 277:Middlewares/Third_Party/wakaama/observe.c ****                 lwm2m_free(observedP);
+ 278:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 279:Middlewares/Third_Party/wakaama/observe.c ****             return;
+ 280:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 281:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 282:Middlewares/Third_Party/wakaama/observe.c **** }
+ 463              		.loc 1 282 0
+ 464 0070 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 465              	.LVL49:
+ 466              	.L52:
+ 467              	.LBB7:
+ 276:Middlewares/Third_Party/wakaama/observe.c ****                 lwm2m_free(observedP);
+ 468              		.loc 1 276 0
+ 469 0074 3146     		mov	r1, r6
+ 470 0076 4046     		mov	r0, r8
+ 471 0078 FFF7FEFF 		bl	prv_unlinkObserved
+ 472              	.LVL50:
+ 277:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 473              		.loc 1 277 0
+ 474 007c 3046     		mov	r0, r6
+ 475 007e FFF7FEFF 		bl	lwm2m_free
+ 476              	.LVL51:
+ 477 0082 F5E7     		b	.L38
+ 478              	.LBE7:
+ 479              		.cfi_endproc
+ 480              	.LFE8:
+ 482              		.section	.text.observe_handleRequest,"ax",%progbits
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 15
+
+
+ 483              		.align	1
+ 484              		.global	observe_handleRequest
+ 485              		.syntax unified
+ 486              		.thumb
+ 487              		.thumb_func
+ 488              		.fpu fpv4-sp-d16
+ 490              	observe_handleRequest:
+ 491              	.LFB7:
+ 163:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * observedP;
+ 492              		.loc 1 163 0
+ 493              		.cfi_startproc
+ 494              		@ args = 12, pretend = 0, frame = 8
+ 495              		@ frame_needed = 0, uses_anonymous_args = 0
+ 496              	.LVL52:
+ 497 0000 70B5     		push	{r4, r5, r6, lr}
+ 498              	.LCFI4:
+ 499              		.cfi_def_cfa_offset 16
+ 500              		.cfi_offset 4, -16
+ 501              		.cfi_offset 5, -12
+ 502              		.cfi_offset 6, -8
+ 503              		.cfi_offset 14, -4
+ 504 0002 82B0     		sub	sp, sp, #8
+ 505              	.LCFI5:
+ 506              		.cfi_def_cfa_offset 24
+ 507 0004 0546     		mov	r5, r0
+ 508 0006 0C46     		mov	r4, r1
+ 509 0008 1646     		mov	r6, r2
+ 171:Middlewares/Third_Party/wakaama/observe.c **** 
+ 510              		.loc 1 171 0
+ 511 000a 01A9     		add	r1, sp, #4
+ 512              	.LVL53:
+ 513 000c 0798     		ldr	r0, [sp, #28]
+ 514              	.LVL54:
+ 515 000e FFF7FEFF 		bl	coap_get_header_observe
+ 516              	.LVL55:
+ 173:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 517              		.loc 1 173 0
+ 518 0012 019B     		ldr	r3, [sp, #4]
+ 519 0014 23B1     		cbz	r3, .L55
+ 520 0016 012B     		cmp	r3, #1
+ 521 0018 5DD0     		beq	.L56
+ 229:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 522              		.loc 1 229 0
+ 523 001a 8020     		movs	r0, #128
+ 524              	.LVL56:
+ 525              	.L54:
+ 231:Middlewares/Third_Party/wakaama/observe.c **** 
+ 526              		.loc 1 231 0
+ 527 001c 02B0     		add	sp, sp, #8
+ 528              	.LCFI6:
+ 529              		.cfi_remember_state
+ 530              		.cfi_def_cfa_offset 16
+ 531              		@ sp needed
+ 532 001e 70BD     		pop	{r4, r5, r6, pc}
+ 533              	.LVL57:
+ 534              	.L55:
+ 535              	.LCFI7:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 16
+
+
+ 536              		.cfi_restore_state
+ 176:Middlewares/Third_Party/wakaama/observe.c ****         if (message->token_len == 0) return COAP_400_BAD_REQUEST;
+ 537              		.loc 1 176 0
+ 538 0020 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 539 0022 03F00303 		and	r3, r3, #3
+ 540 0026 012B     		cmp	r3, #1
+ 541 0028 65D0     		beq	.L63
+ 177:Middlewares/Third_Party/wakaama/observe.c **** 
+ 542              		.loc 1 177 0
+ 543 002a 079B     		ldr	r3, [sp, #28]
+ 544 002c 93F84C30 		ldrb	r3, [r3, #76]	@ zero_extendqisi2
+ 545 0030 0BB9     		cbnz	r3, .L72
+ 546 0032 8020     		movs	r0, #128
+ 547 0034 F2E7     		b	.L54
+ 548              	.L72:
+ 179:Middlewares/Third_Party/wakaama/observe.c ****         if (watcherP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 549              		.loc 1 179 0
+ 550 0036 3246     		mov	r2, r6
+ 551 0038 2146     		mov	r1, r4
+ 552 003a 2846     		mov	r0, r5
+ 553 003c FFF7FEFF 		bl	prv_getWatcher
+ 554              	.LVL58:
+ 180:Middlewares/Third_Party/wakaama/observe.c **** 
+ 555              		.loc 1 180 0
+ 556 0040 0546     		mov	r5, r0
+ 557              	.LVL59:
+ 558 0042 0028     		cmp	r0, #0
+ 559 0044 59D0     		beq	.L65
+ 182:Middlewares/Third_Party/wakaama/observe.c ****         memcpy(watcherP->token, message->token, message->token_len);
+ 560              		.loc 1 182 0
+ 561 0046 079B     		ldr	r3, [sp, #28]
+ 562 0048 93F84C30 		ldrb	r3, [r3, #76]	@ zero_extendqisi2
+ 563 004c C361     		str	r3, [r0, #28]
+ 183:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->active = true;
+ 564              		.loc 1 183 0
+ 565 004e 079B     		ldr	r3, [sp, #28]
+ 566 0050 93F84C20 		ldrb	r2, [r3, #76]	@ zero_extendqisi2
+ 567 0054 03F14D01 		add	r1, r3, #77
+ 568 0058 1230     		adds	r0, r0, #18
+ 569              	.LVL60:
+ 570 005a FFF7FEFF 		bl	memcpy
+ 571              	.LVL61:
+ 184:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->lastTime = lwm2m_gettime();
+ 572              		.loc 1 184 0
+ 573 005e 0123     		movs	r3, #1
+ 574 0060 2B71     		strb	r3, [r5, #4]
+ 185:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->lastMid = response->mid;
+ 575              		.loc 1 185 0
+ 576 0062 FFF7FEFF 		bl	lwm2m_gettime
+ 577              	.LVL62:
+ 578 0066 C5E90801 		strd	r0, [r5, #32]
+ 186:Middlewares/Third_Party/wakaama/observe.c ****         if (IS_OPTION(message, COAP_OPTION_ACCEPT))
+ 579              		.loc 1 186 0
+ 580 006a 089B     		ldr	r3, [sp, #32]
+ 581 006c 1B89     		ldrh	r3, [r3, #8]
+ 582 006e AB85     		strh	r3, [r5, #44]	@ movhi
+ 187:Middlewares/Third_Party/wakaama/observe.c ****         {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 17
+
+
+ 583              		.loc 1 187 0
+ 584 0070 079B     		ldr	r3, [sp, #28]
+ 585 0072 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+ 586 0074 13F0020F 		tst	r3, #2
+ 587 0078 14D1     		bne	.L73
+ 193:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 588              		.loc 1 193 0
+ 589 007a 42F61653 		movw	r3, #11542
+ 590 007e 2B82     		strh	r3, [r5, #16]	@ movhi
+ 591              	.L58:
+ 196:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 592              		.loc 1 196 0
+ 593 0080 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 594 0082 13F0010F 		tst	r3, #1
+ 595 0086 05D0     		beq	.L59
+ 198:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 596              		.loc 1 198 0
+ 597 0088 069B     		ldr	r3, [sp, #24]
+ 598 008a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 599 008c 062B     		cmp	r3, #6
+ 600 008e 10D0     		beq	.L60
+ 601 0090 072B     		cmp	r3, #7
+ 602 0092 17D0     		beq	.L61
+ 603              	.L59:
+ 211:Middlewares/Third_Party/wakaama/observe.c **** 
+ 604              		.loc 1 211 0
+ 605 0094 A96A     		ldr	r1, [r5, #40]
+ 606 0096 4B1C     		adds	r3, r1, #1
+ 607 0098 AB62     		str	r3, [r5, #40]
+ 608 009a 0898     		ldr	r0, [sp, #32]
+ 609 009c FFF7FEFF 		bl	coap_set_header_observe
+ 610              	.LVL63:
+ 213:Middlewares/Third_Party/wakaama/observe.c **** 
+ 611              		.loc 1 213 0
+ 612 00a0 4520     		movs	r0, #69
+ 613 00a2 BBE7     		b	.L54
+ 614              	.L73:
+ 189:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 615              		.loc 1 189 0
+ 616 00a4 079B     		ldr	r3, [sp, #28]
+ 617 00a6 B3F85600 		ldrh	r0, [r3, #86]
+ 618 00aa FFF7FEFF 		bl	utils_convertMediaType
+ 619              	.LVL64:
+ 620 00ae 2882     		strh	r0, [r5, #16]	@ movhi
+ 621 00b0 E6E7     		b	.L58
+ 622              	.L60:
+ 201:Middlewares/Third_Party/wakaama/observe.c ****                 break;
+ 623              		.loc 1 201 0
+ 624 00b2 05F13001 		add	r1, r5, #48
+ 625 00b6 0698     		ldr	r0, [sp, #24]
+ 626 00b8 FFF7FEFF 		bl	lwm2m_data_decode_int
+ 627              	.LVL65:
+ 628 00bc 0128     		cmp	r0, #1
+ 629 00be E9D0     		beq	.L59
+ 630 00c0 A020     		movs	r0, #160
+ 631 00c2 ABE7     		b	.L54
+ 632              	.L61:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 18
+
+
+ 204:Middlewares/Third_Party/wakaama/observe.c ****                 break;
+ 633              		.loc 1 204 0
+ 634 00c4 05F13001 		add	r1, r5, #48
+ 635 00c8 0698     		ldr	r0, [sp, #24]
+ 636 00ca FFF7FEFF 		bl	lwm2m_data_decode_float
+ 637              	.LVL66:
+ 638 00ce 0128     		cmp	r0, #1
+ 639 00d0 E0D0     		beq	.L59
+ 640 00d2 A020     		movs	r0, #160
+ 641 00d4 A2E7     		b	.L54
+ 642              	.LVL67:
+ 643              	.L56:
+ 217:Middlewares/Third_Party/wakaama/observe.c ****         if (observedP)
+ 644              		.loc 1 217 0
+ 645 00d6 2146     		mov	r1, r4
+ 646 00d8 2846     		mov	r0, r5
+ 647 00da FFF7FEFF 		bl	prv_findObserved
+ 648              	.LVL68:
+ 218:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 649              		.loc 1 218 0
+ 650 00de 70B1     		cbz	r0, .L68
+ 220:Middlewares/Third_Party/wakaama/observe.c ****             if (watcherP)
+ 651              		.loc 1 220 0
+ 652 00e0 3146     		mov	r1, r6
+ 653 00e2 FFF7FEFF 		bl	prv_findWatcher
+ 654              	.LVL69:
+ 221:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 655              		.loc 1 221 0
+ 656 00e6 60B1     		cbz	r0, .L69
+ 223:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 657              		.loc 1 223 0
+ 658 00e8 F269     		ldr	r2, [r6, #28]
+ 659 00ea 818D     		ldrh	r1, [r0, #44]
+ 660 00ec 2846     		mov	r0, r5
+ 661              	.LVL70:
+ 662 00ee FFF7FEFF 		bl	observe_cancel
+ 663              	.LVL71:
+ 226:Middlewares/Third_Party/wakaama/observe.c **** 
+ 664              		.loc 1 226 0
+ 665 00f2 4520     		movs	r0, #69
+ 666 00f4 92E7     		b	.L54
+ 667              	.L63:
+ 176:Middlewares/Third_Party/wakaama/observe.c ****         if (message->token_len == 0) return COAP_400_BAD_REQUEST;
+ 668              		.loc 1 176 0
+ 669 00f6 8020     		movs	r0, #128
+ 670 00f8 90E7     		b	.L54
+ 671              	.LVL72:
+ 672              	.L65:
+ 180:Middlewares/Third_Party/wakaama/observe.c **** 
+ 673              		.loc 1 180 0
+ 674 00fa A020     		movs	r0, #160
+ 675              	.LVL73:
+ 676 00fc 8EE7     		b	.L54
+ 677              	.LVL74:
+ 678              	.L68:
+ 226:Middlewares/Third_Party/wakaama/observe.c **** 
+ 679              		.loc 1 226 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 19
+
+
+ 680 00fe 4520     		movs	r0, #69
+ 681              	.LVL75:
+ 682 0100 8CE7     		b	.L54
+ 683              	.LVL76:
+ 684              	.L69:
+ 685 0102 4520     		movs	r0, #69
+ 686              	.LVL77:
+ 687 0104 8AE7     		b	.L54
+ 688              		.cfi_endproc
+ 689              	.LFE7:
+ 691              		.section	.text.observe_clear,"ax",%progbits
+ 692              		.align	1
+ 693              		.global	observe_clear
+ 694              		.syntax unified
+ 695              		.thumb
+ 696              		.thumb_func
+ 697              		.fpu fpv4-sp-d16
+ 699              	observe_clear:
+ 700              	.LFB9:
+ 283:Middlewares/Third_Party/wakaama/observe.c **** 
+ 284:Middlewares/Third_Party/wakaama/observe.c **** void observe_clear(lwm2m_context_t * contextP,
+ 285:Middlewares/Third_Party/wakaama/observe.c ****                    lwm2m_uri_t * uriP)
+ 286:Middlewares/Third_Party/wakaama/observe.c **** {
+ 701              		.loc 1 286 0
+ 702              		.cfi_startproc
+ 703              		@ args = 0, pretend = 0, frame = 0
+ 704              		@ frame_needed = 0, uses_anonymous_args = 0
+ 705              	.LVL78:
+ 706 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 707              	.LCFI8:
+ 708              		.cfi_def_cfa_offset 24
+ 709              		.cfi_offset 4, -24
+ 710              		.cfi_offset 5, -20
+ 711              		.cfi_offset 6, -16
+ 712              		.cfi_offset 7, -12
+ 713              		.cfi_offset 8, -8
+ 714              		.cfi_offset 14, -4
+ 715 0004 0746     		mov	r7, r0
+ 716 0006 0E46     		mov	r6, r1
+ 287:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * observedP;
+ 288:Middlewares/Third_Party/wakaama/observe.c **** 
+ 289:Middlewares/Third_Party/wakaama/observe.c ****     LOG_URI(uriP);
+ 290:Middlewares/Third_Party/wakaama/observe.c **** 
+ 291:Middlewares/Third_Party/wakaama/observe.c ****     observedP = contextP->observedList;
+ 717              		.loc 1 291 0
+ 718 0008 C469     		ldr	r4, [r0, #28]
+ 719              	.LVL79:
+ 292:Middlewares/Third_Party/wakaama/observe.c ****     while(observedP != NULL)
+ 720              		.loc 1 292 0
+ 721 000a 14E0     		b	.L75
+ 722              	.LVL80:
+ 723              	.L79:
+ 724              	.LBB8:
+ 293:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 294:Middlewares/Third_Party/wakaama/observe.c ****         if (observedP->uri.objectId == uriP->objectId
+ 295:Middlewares/Third_Party/wakaama/observe.c ****             && (LWM2M_URI_IS_SET_INSTANCE(uriP) == false
+ 296:Middlewares/Third_Party/wakaama/observe.c ****                 || observedP->uri.instanceId == uriP->instanceId))
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 20
+
+
+ 297:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 298:Middlewares/Third_Party/wakaama/observe.c ****             lwm2m_observed_t * nextP;
+ 299:Middlewares/Third_Party/wakaama/observe.c ****             lwm2m_watcher_t * watcherP;
+ 300:Middlewares/Third_Party/wakaama/observe.c **** 
+ 301:Middlewares/Third_Party/wakaama/observe.c ****             nextP = observedP->next;
+ 302:Middlewares/Third_Party/wakaama/observe.c **** 
+ 303:Middlewares/Third_Party/wakaama/observe.c ****             for (watcherP = observedP->watcherList; watcherP != NULL; watcherP = watcherP->next)
+ 725              		.loc 1 303 0 discriminator 2
+ 726 000c 2D68     		ldr	r5, [r5]
+ 727              	.LVL81:
+ 728              	.L78:
+ 729              		.loc 1 303 0 is_stmt 0 discriminator 1
+ 730 000e 2DB1     		cbz	r5, .L84
+ 304:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 305:Middlewares/Third_Party/wakaama/observe.c ****                 if (watcherP->parameters != NULL) lwm2m_free(watcherP->parameters);
+ 731              		.loc 1 305 0 is_stmt 1
+ 732 0010 E868     		ldr	r0, [r5, #12]
+ 733 0012 0028     		cmp	r0, #0
+ 734 0014 FAD0     		beq	.L79
+ 735              		.loc 1 305 0 is_stmt 0 discriminator 1
+ 736 0016 FFF7FEFF 		bl	lwm2m_free
+ 737              	.LVL82:
+ 738 001a F7E7     		b	.L79
+ 739              	.L84:
+ 306:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 307:Middlewares/Third_Party/wakaama/observe.c ****             LWM2M_LIST_FREE(observedP->watcherList);
+ 740              		.loc 1 307 0 is_stmt 1
+ 741 001c E068     		ldr	r0, [r4, #12]
+ 742 001e FFF7FEFF 		bl	lwm2m_list_free
+ 743              	.LVL83:
+ 308:Middlewares/Third_Party/wakaama/observe.c **** 
+ 309:Middlewares/Third_Party/wakaama/observe.c ****             prv_unlinkObserved(contextP, observedP);
+ 744              		.loc 1 309 0
+ 745 0022 2146     		mov	r1, r4
+ 746 0024 3846     		mov	r0, r7
+ 747 0026 FFF7FEFF 		bl	prv_unlinkObserved
+ 748              	.LVL84:
+ 310:Middlewares/Third_Party/wakaama/observe.c ****             lwm2m_free(observedP);
+ 749              		.loc 1 310 0
+ 750 002a 2046     		mov	r0, r4
+ 751 002c FFF7FEFF 		bl	lwm2m_free
+ 752              	.LVL85:
+ 311:Middlewares/Third_Party/wakaama/observe.c **** 
+ 312:Middlewares/Third_Party/wakaama/observe.c ****             observedP = nextP;
+ 753              		.loc 1 312 0
+ 754 0030 4446     		mov	r4, r8
+ 755              	.LBE8:
+ 297:Middlewares/Third_Party/wakaama/observe.c ****             lwm2m_observed_t * nextP;
+ 756              		.loc 1 297 0
+ 757 0032 00E0     		b	.L75
+ 758              	.LVL86:
+ 759              	.L76:
+ 313:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 314:Middlewares/Third_Party/wakaama/observe.c ****         else
+ 315:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 316:Middlewares/Third_Party/wakaama/observe.c ****             observedP = observedP->next;
+ 760              		.loc 1 316 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 21
+
+
+ 761 0034 2468     		ldr	r4, [r4]
+ 762              	.LVL87:
+ 763              	.L75:
+ 292:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 764              		.loc 1 292 0
+ 765 0036 7CB1     		cbz	r4, .L85
+ 294:Middlewares/Third_Party/wakaama/observe.c ****             && (LWM2M_URI_IS_SET_INSTANCE(uriP) == false
+ 766              		.loc 1 294 0
+ 767 0038 E288     		ldrh	r2, [r4, #6]
+ 768 003a 7388     		ldrh	r3, [r6, #2]
+ 769 003c 9A42     		cmp	r2, r3
+ 770 003e F9D1     		bne	.L76
+ 295:Middlewares/Third_Party/wakaama/observe.c ****                 || observedP->uri.instanceId == uriP->instanceId))
+ 771              		.loc 1 295 0
+ 772 0040 3378     		ldrb	r3, [r6]	@ zero_extendqisi2
+ 773 0042 13F0020F 		tst	r3, #2
+ 774 0046 03D0     		beq	.L77
+ 296:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 775              		.loc 1 296 0
+ 776 0048 2289     		ldrh	r2, [r4, #8]
+ 777 004a B388     		ldrh	r3, [r6, #4]
+ 778 004c 9A42     		cmp	r2, r3
+ 779 004e F1D1     		bne	.L76
+ 780              	.L77:
+ 781              	.LBB9:
+ 301:Middlewares/Third_Party/wakaama/observe.c **** 
+ 782              		.loc 1 301 0
+ 783 0050 D4F80080 		ldr	r8, [r4]
+ 784              	.LVL88:
+ 303:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 785              		.loc 1 303 0
+ 786 0054 E568     		ldr	r5, [r4, #12]
+ 787              	.LVL89:
+ 788 0056 DAE7     		b	.L78
+ 789              	.LVL90:
+ 790              	.L85:
+ 791              	.LBE9:
+ 317:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 318:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 319:Middlewares/Third_Party/wakaama/observe.c **** }
+ 792              		.loc 1 319 0
+ 793 0058 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 794              		.cfi_endproc
+ 795              	.LFE9:
+ 797              		.global	__aeabi_d2f
+ 798              		.section	.text.observe_setParameters,"ax",%progbits
+ 799              		.align	1
+ 800              		.global	observe_setParameters
+ 801              		.syntax unified
+ 802              		.thumb
+ 803              		.thumb_func
+ 804              		.fpu fpv4-sp-d16
+ 806              	observe_setParameters:
+ 807              	.LFB10:
+ 320:Middlewares/Third_Party/wakaama/observe.c **** 
+ 321:Middlewares/Third_Party/wakaama/observe.c **** uint8_t observe_setParameters(lwm2m_context_t * contextP,
+ 322:Middlewares/Third_Party/wakaama/observe.c ****                               lwm2m_uri_t * uriP,
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 22
+
+
+ 323:Middlewares/Third_Party/wakaama/observe.c ****                               lwm2m_server_t * serverP,
+ 324:Middlewares/Third_Party/wakaama/observe.c ****                               lwm2m_attributes_t * attrP)
+ 325:Middlewares/Third_Party/wakaama/observe.c **** {
+ 808              		.loc 1 325 0
+ 809              		.cfi_startproc
+ 810              		@ args = 0, pretend = 0, frame = 0
+ 811              		@ frame_needed = 0, uses_anonymous_args = 0
+ 812              	.LVL91:
+ 813 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 814              	.LCFI9:
+ 815              		.cfi_def_cfa_offset 24
+ 816              		.cfi_offset 4, -24
+ 817              		.cfi_offset 5, -20
+ 818              		.cfi_offset 6, -16
+ 819              		.cfi_offset 7, -12
+ 820              		.cfi_offset 8, -8
+ 821              		.cfi_offset 14, -4
+ 822 0004 2DED028B 		vpush.64	{d8}
+ 823              	.LCFI10:
+ 824              		.cfi_def_cfa_offset 32
+ 825              		.cfi_offset 80, -32
+ 826              		.cfi_offset 81, -28
+ 326:Middlewares/Third_Party/wakaama/observe.c ****     uint8_t result;
+ 327:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_watcher_t * watcherP;
+ 328:Middlewares/Third_Party/wakaama/observe.c **** 
+ 329:Middlewares/Third_Party/wakaama/observe.c ****     LOG_URI(uriP);
+ 330:Middlewares/Third_Party/wakaama/observe.c ****     LOG_ARG("toSet: %08X, toClear: %08X, minPeriod: %d, maxPeriod: %d, greaterThan: %f, lessThan: %
+ 331:Middlewares/Third_Party/wakaama/observe.c ****             attrP->toSet, attrP->toClear, attrP->minPeriod, attrP->maxPeriod, attrP->greaterThan, a
+ 332:Middlewares/Third_Party/wakaama/observe.c **** 
+ 333:Middlewares/Third_Party/wakaama/observe.c ****     if (!LWM2M_URI_IS_SET_INSTANCE(uriP) && LWM2M_URI_IS_SET_RESOURCE(uriP)) return COAP_400_BAD_RE
+ 827              		.loc 1 333 0
+ 828 0008 0C78     		ldrb	r4, [r1]	@ zero_extendqisi2
+ 829 000a 04F00304 		and	r4, r4, #3
+ 830 000e 012C     		cmp	r4, #1
+ 831 0010 00F0AD80 		beq	.L102
+ 832 0014 1D46     		mov	r5, r3
+ 833 0016 1746     		mov	r7, r2
+ 834 0018 0C46     		mov	r4, r1
+ 835 001a 0646     		mov	r6, r0
+ 334:Middlewares/Third_Party/wakaama/observe.c **** 
+ 335:Middlewares/Third_Party/wakaama/observe.c ****     result = object_checkReadable(contextP, uriP, attrP);
+ 836              		.loc 1 335 0
+ 837 001c 1A46     		mov	r2, r3
+ 838              	.LVL92:
+ 839 001e FFF7FEFF 		bl	object_checkReadable
+ 840              	.LVL93:
+ 336:Middlewares/Third_Party/wakaama/observe.c ****     if (COAP_205_CONTENT != result) return result;
+ 841              		.loc 1 336 0
+ 842 0022 4528     		cmp	r0, #69
+ 843 0024 03D0     		beq	.L110
+ 844              	.LVL94:
+ 845              	.L87:
+ 337:Middlewares/Third_Party/wakaama/observe.c **** 
+ 338:Middlewares/Third_Party/wakaama/observe.c ****     watcherP = prv_getWatcher(contextP, uriP, serverP);
+ 339:Middlewares/Third_Party/wakaama/observe.c ****     if (watcherP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 340:Middlewares/Third_Party/wakaama/observe.c **** 
+ 341:Middlewares/Third_Party/wakaama/observe.c ****     // Check rule “lt” value + 2*”stp” values < “gt” value
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 23
+
+
+ 342:Middlewares/Third_Party/wakaama/observe.c ****     if ((((attrP->toSet | (watcherP->parameters?watcherP->parameters->toSet:0)) & ~attrP->toClear) 
+ 343:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 344:Middlewares/Third_Party/wakaama/observe.c ****         float gt;
+ 345:Middlewares/Third_Party/wakaama/observe.c ****         float lt;
+ 346:Middlewares/Third_Party/wakaama/observe.c ****         float stp;
+ 347:Middlewares/Third_Party/wakaama/observe.c **** 
+ 348:Middlewares/Third_Party/wakaama/observe.c ****         if (0 != (attrP->toSet & LWM2M_ATTR_FLAG_GREATER_THAN))
+ 349:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 350:Middlewares/Third_Party/wakaama/observe.c ****             gt = attrP->greaterThan;
+ 351:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 352:Middlewares/Third_Party/wakaama/observe.c ****         else
+ 353:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 354:Middlewares/Third_Party/wakaama/observe.c ****             gt = watcherP->parameters->greaterThan;
+ 355:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 356:Middlewares/Third_Party/wakaama/observe.c ****         if (0 != (attrP->toSet & LWM2M_ATTR_FLAG_LESS_THAN))
+ 357:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 358:Middlewares/Third_Party/wakaama/observe.c ****             lt = attrP->lessThan;
+ 359:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 360:Middlewares/Third_Party/wakaama/observe.c ****         else
+ 361:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 362:Middlewares/Third_Party/wakaama/observe.c ****             lt = watcherP->parameters->lessThan;
+ 363:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 364:Middlewares/Third_Party/wakaama/observe.c ****         if (0 != (attrP->toSet & LWM2M_ATTR_FLAG_STEP))
+ 365:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 366:Middlewares/Third_Party/wakaama/observe.c ****             stp = attrP->step;
+ 367:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 368:Middlewares/Third_Party/wakaama/observe.c ****         else
+ 369:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 370:Middlewares/Third_Party/wakaama/observe.c ****             stp = watcherP->parameters->step;
+ 371:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 372:Middlewares/Third_Party/wakaama/observe.c **** 
+ 373:Middlewares/Third_Party/wakaama/observe.c ****         if (lt + (2 * stp) >= gt) return COAP_400_BAD_REQUEST;
+ 374:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 375:Middlewares/Third_Party/wakaama/observe.c **** 
+ 376:Middlewares/Third_Party/wakaama/observe.c ****     if (watcherP->parameters == NULL)
+ 377:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 378:Middlewares/Third_Party/wakaama/observe.c ****         if (attrP->toSet != 0)
+ 379:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 380:Middlewares/Third_Party/wakaama/observe.c ****             watcherP->parameters = (lwm2m_attributes_t *)lwm2m_malloc(sizeof(lwm2m_attributes_t));
+ 381:Middlewares/Third_Party/wakaama/observe.c ****             if (watcherP->parameters == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 382:Middlewares/Third_Party/wakaama/observe.c ****             memcpy(watcherP->parameters, attrP, sizeof(lwm2m_attributes_t));
+ 383:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 384:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 385:Middlewares/Third_Party/wakaama/observe.c ****     else
+ 386:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 387:Middlewares/Third_Party/wakaama/observe.c ****         watcherP->parameters->toSet &= ~attrP->toClear;
+ 388:Middlewares/Third_Party/wakaama/observe.c ****         if (attrP->toSet & LWM2M_ATTR_FLAG_MIN_PERIOD)
+ 389:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 390:Middlewares/Third_Party/wakaama/observe.c ****             watcherP->parameters->minPeriod = attrP->minPeriod;
+ 391:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 392:Middlewares/Third_Party/wakaama/observe.c ****         if (attrP->toSet & LWM2M_ATTR_FLAG_MAX_PERIOD)
+ 393:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 394:Middlewares/Third_Party/wakaama/observe.c ****             watcherP->parameters->maxPeriod = attrP->maxPeriod;
+ 395:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 396:Middlewares/Third_Party/wakaama/observe.c ****         if (attrP->toSet & LWM2M_ATTR_FLAG_GREATER_THAN)
+ 397:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 398:Middlewares/Third_Party/wakaama/observe.c ****             watcherP->parameters->greaterThan = attrP->greaterThan;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 24
+
+
+ 399:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 400:Middlewares/Third_Party/wakaama/observe.c ****         if (attrP->toSet & LWM2M_ATTR_FLAG_LESS_THAN)
+ 401:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 402:Middlewares/Third_Party/wakaama/observe.c ****             watcherP->parameters->lessThan = attrP->lessThan;
+ 403:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 404:Middlewares/Third_Party/wakaama/observe.c ****         if (attrP->toSet & LWM2M_ATTR_FLAG_STEP)
+ 405:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 406:Middlewares/Third_Party/wakaama/observe.c ****             watcherP->parameters->step = attrP->step;
+ 407:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 408:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 409:Middlewares/Third_Party/wakaama/observe.c **** 
+ 410:Middlewares/Third_Party/wakaama/observe.c ****     LOG_ARG("Final toSet: %08X, minPeriod: %d, maxPeriod: %d, greaterThan: %f, lessThan: %f, step: 
+ 411:Middlewares/Third_Party/wakaama/observe.c ****             watcherP->parameters->toSet, watcherP->parameters->minPeriod, watcherP->parameters->max
+ 412:Middlewares/Third_Party/wakaama/observe.c **** 
+ 413:Middlewares/Third_Party/wakaama/observe.c ****     return COAP_204_CHANGED;
+ 414:Middlewares/Third_Party/wakaama/observe.c **** }
+ 846              		.loc 1 414 0
+ 847 0026 BDEC028B 		vldm	sp!, {d8}
+ 848              	.LCFI11:
+ 849              		.cfi_remember_state
+ 850              		.cfi_restore 80
+ 851              		.cfi_restore 81
+ 852              		.cfi_def_cfa_offset 24
+ 853 002a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 854              	.LVL95:
+ 855              	.L110:
+ 856              	.LCFI12:
+ 857              		.cfi_restore_state
+ 338:Middlewares/Third_Party/wakaama/observe.c ****     if (watcherP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 858              		.loc 1 338 0
+ 859 002e 3A46     		mov	r2, r7
+ 860 0030 2146     		mov	r1, r4
+ 861 0032 3046     		mov	r0, r6
+ 862              	.LVL96:
+ 863 0034 FFF7FEFF 		bl	prv_getWatcher
+ 864              	.LVL97:
+ 339:Middlewares/Third_Party/wakaama/observe.c **** 
+ 865              		.loc 1 339 0
+ 866 0038 0646     		mov	r6, r0
+ 867              	.LVL98:
+ 868 003a 0028     		cmp	r0, #0
+ 869 003c 00F09980 		beq	.L103
+ 342:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 870              		.loc 1 342 0
+ 871 0040 2F78     		ldrb	r7, [r5]	@ zero_extendqisi2
+ 872              	.LVL99:
+ 873 0042 C468     		ldr	r4, [r0, #12]
+ 874              	.LVL100:
+ 875 0044 002C     		cmp	r4, #0
+ 876 0046 3BD0     		beq	.L104
+ 342:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 877              		.loc 1 342 0 is_stmt 0 discriminator 1
+ 878 0048 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 879              	.L88:
+ 342:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 880              		.loc 1 342 0 discriminator 4
+ 881 004a 3B43     		orrs	r3, r3, r7
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 25
+
+
+ 882 004c 95F80180 		ldrb	r8, [r5, #1]	@ zero_extendqisi2
+ 883 0050 23EA0803 		bic	r3, r3, r8
+ 884 0054 03F01C03 		and	r3, r3, #28
+ 885 0058 1C2B     		cmp	r3, #28
+ 886 005a 33D0     		beq	.L111
+ 887              	.LVL101:
+ 888              	.L89:
+ 376:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 889              		.loc 1 376 0 is_stmt 1
+ 890 005c 002C     		cmp	r4, #0
+ 891 005e 6CD0     		beq	.L112
+ 387:Middlewares/Third_Party/wakaama/observe.c ****         if (attrP->toSet & LWM2M_ATTR_FLAG_MIN_PERIOD)
+ 892              		.loc 1 387 0
+ 893 0060 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 894 0062 23EA0808 		bic	r8, r3, r8
+ 895 0066 84F80080 		strb	r8, [r4]
+ 388:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 896              		.loc 1 388 0
+ 897 006a 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 898 006c 13F0010F 		tst	r3, #1
+ 899 0070 02D0     		beq	.L98
+ 390:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 900              		.loc 1 390 0
+ 901 0072 F368     		ldr	r3, [r6, #12]
+ 902 0074 6A68     		ldr	r2, [r5, #4]
+ 903 0076 5A60     		str	r2, [r3, #4]
+ 904              	.L98:
+ 392:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 905              		.loc 1 392 0
+ 906 0078 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 907 007a 13F0020F 		tst	r3, #2
+ 908 007e 02D0     		beq	.L99
+ 394:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 909              		.loc 1 394 0
+ 910 0080 F368     		ldr	r3, [r6, #12]
+ 911 0082 AA68     		ldr	r2, [r5, #8]
+ 912 0084 9A60     		str	r2, [r3, #8]
+ 913              	.L99:
+ 396:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 914              		.loc 1 396 0
+ 915 0086 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 916 0088 13F0040F 		tst	r3, #4
+ 917 008c 04D0     		beq	.L100
+ 398:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 918              		.loc 1 398 0
+ 919 008e F368     		ldr	r3, [r6, #12]
+ 920 0090 D5E90401 		ldrd	r0, [r5, #16]
+ 921 0094 C3E90401 		strd	r0, [r3, #16]
+ 922              	.L100:
+ 400:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 923              		.loc 1 400 0
+ 924 0098 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 925 009a 13F0080F 		tst	r3, #8
+ 926 009e 04D0     		beq	.L101
+ 402:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 927              		.loc 1 402 0
+ 928 00a0 F368     		ldr	r3, [r6, #12]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 26
+
+
+ 929 00a2 D5E90601 		ldrd	r0, [r5, #24]
+ 930 00a6 C3E90601 		strd	r0, [r3, #24]
+ 931              	.L101:
+ 404:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 932              		.loc 1 404 0
+ 933 00aa 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 934 00ac 13F0100F 		tst	r3, #16
+ 935 00b0 65D0     		beq	.L108
+ 406:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 936              		.loc 1 406 0
+ 937 00b2 F368     		ldr	r3, [r6, #12]
+ 938 00b4 D5E90801 		ldrd	r0, [r5, #32]
+ 939 00b8 C3E90801 		strd	r0, [r3, #32]
+ 413:Middlewares/Third_Party/wakaama/observe.c **** }
+ 940              		.loc 1 413 0
+ 941 00bc 4420     		movs	r0, #68
+ 942 00be B2E7     		b	.L87
+ 943              	.LVL102:
+ 944              	.L104:
+ 342:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 945              		.loc 1 342 0
+ 946 00c0 0023     		movs	r3, #0
+ 947 00c2 C2E7     		b	.L88
+ 948              	.L111:
+ 949              	.LBB10:
+ 348:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 950              		.loc 1 348 0
+ 951 00c4 17F0040F 		tst	r7, #4
+ 952 00c8 22D0     		beq	.L90
+ 350:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 953              		.loc 1 350 0
+ 954 00ca D5E90401 		ldrd	r0, [r5, #16]
+ 955              	.LVL103:
+ 956 00ce FFF7FEFF 		bl	__aeabi_d2f
+ 957              	.LVL104:
+ 958 00d2 08EE100A 		vmov	s16, r0
+ 959              	.LVL105:
+ 960              	.L91:
+ 356:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 961              		.loc 1 356 0
+ 962 00d6 17F0080F 		tst	r7, #8
+ 963 00da 20D0     		beq	.L92
+ 358:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 964              		.loc 1 358 0
+ 965 00dc D5E90601 		ldrd	r0, [r5, #24]
+ 966              	.LVL106:
+ 967 00e0 FFF7FEFF 		bl	__aeabi_d2f
+ 968              	.LVL107:
+ 969 00e4 08EE900A 		vmov	s17, r0
+ 970              	.LVL108:
+ 971              	.L93:
+ 364:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 972              		.loc 1 364 0
+ 973 00e8 17F0100F 		tst	r7, #16
+ 974 00ec 1ED0     		beq	.L94
+ 366:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 975              		.loc 1 366 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 27
+
+
+ 976 00ee D5E90801 		ldrd	r0, [r5, #32]
+ 977              	.LVL109:
+ 978 00f2 FFF7FEFF 		bl	__aeabi_d2f
+ 979              	.LVL110:
+ 980 00f6 07EE900A 		vmov	s15, r0
+ 981              	.LVL111:
+ 982              	.L95:
+ 373:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 983              		.loc 1 373 0
+ 984 00fa 77EEA77A 		vadd.f32	s15, s15, s15
+ 985 00fe 77EEA87A 		vadd.f32	s15, s15, s17
+ 986 0102 F4EEC87A 		vcmpe.f32	s15, s16
+ 987 0106 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 988 010a A7DB     		blt	.L89
+ 989 010c 8020     		movs	r0, #128
+ 990              	.LVL112:
+ 991 010e 8AE7     		b	.L87
+ 992              	.LVL113:
+ 993              	.L90:
+ 354:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 994              		.loc 1 354 0
+ 995 0110 D4E90401 		ldrd	r0, [r4, #16]
+ 996              	.LVL114:
+ 997 0114 FFF7FEFF 		bl	__aeabi_d2f
+ 998              	.LVL115:
+ 999 0118 08EE100A 		vmov	s16, r0
+ 1000              	.LVL116:
+ 1001 011c DBE7     		b	.L91
+ 1002              	.L92:
+ 362:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 1003              		.loc 1 362 0
+ 1004 011e D4E90601 		ldrd	r0, [r4, #24]
+ 1005              	.LVL117:
+ 1006 0122 FFF7FEFF 		bl	__aeabi_d2f
+ 1007              	.LVL118:
+ 1008 0126 08EE900A 		vmov	s17, r0
+ 1009              	.LVL119:
+ 1010 012a DDE7     		b	.L93
+ 1011              	.L94:
+ 370:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 1012              		.loc 1 370 0
+ 1013 012c D4E90801 		ldrd	r0, [r4, #32]
+ 1014              	.LVL120:
+ 1015 0130 FFF7FEFF 		bl	__aeabi_d2f
+ 1016              	.LVL121:
+ 1017 0134 07EE900A 		vmov	s15, r0
+ 1018              	.LVL122:
+ 1019 0138 DFE7     		b	.L95
+ 1020              	.LVL123:
+ 1021              	.L112:
+ 1022              	.LBE10:
+ 378:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 1023              		.loc 1 378 0
+ 1024 013a E7B1     		cbz	r7, .L106
+ 380:Middlewares/Third_Party/wakaama/observe.c ****             if (watcherP->parameters == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 1025              		.loc 1 380 0
+ 1026 013c 2820     		movs	r0, #40
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 28
+
+
+ 1027 013e FFF7FEFF 		bl	lwm2m_malloc
+ 1028              	.LVL124:
+ 1029 0142 F060     		str	r0, [r6, #12]
+ 381:Middlewares/Third_Party/wakaama/observe.c ****             memcpy(watcherP->parameters, attrP, sizeof(lwm2m_attributes_t));
+ 1030              		.loc 1 381 0
+ 1031 0144 C8B1     		cbz	r0, .L107
+ 382:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 1032              		.loc 1 382 0
+ 1033 0146 2B46     		mov	r3, r5
+ 1034 0148 2035     		adds	r5, r5, #32
+ 1035              	.LVL125:
+ 1036              	.L97:
+ 1037 014a 1E68     		ldr	r6, [r3]	@ unaligned
+ 1038 014c 5C68     		ldr	r4, [r3, #4]	@ unaligned
+ 1039 014e 9968     		ldr	r1, [r3, #8]	@ unaligned
+ 1040 0150 DA68     		ldr	r2, [r3, #12]	@ unaligned
+ 1041 0152 0660     		str	r6, [r0]	@ unaligned
+ 1042 0154 4460     		str	r4, [r0, #4]	@ unaligned
+ 1043 0156 8160     		str	r1, [r0, #8]	@ unaligned
+ 1044 0158 C260     		str	r2, [r0, #12]	@ unaligned
+ 1045 015a 1033     		adds	r3, r3, #16
+ 1046 015c 1030     		adds	r0, r0, #16
+ 1047 015e AB42     		cmp	r3, r5
+ 1048 0160 F3D1     		bne	.L97
+ 1049 0162 1A68     		ldr	r2, [r3]	@ unaligned
+ 1050 0164 5B68     		ldr	r3, [r3, #4]	@ unaligned
+ 1051 0166 0260     		str	r2, [r0]	@ unaligned
+ 1052 0168 4360     		str	r3, [r0, #4]	@ unaligned
+ 413:Middlewares/Third_Party/wakaama/observe.c **** }
+ 1053              		.loc 1 413 0
+ 1054 016a 4420     		movs	r0, #68
+ 1055 016c 5BE7     		b	.L87
+ 1056              	.LVL126:
+ 1057              	.L102:
+ 333:Middlewares/Third_Party/wakaama/observe.c **** 
+ 1058              		.loc 1 333 0
+ 1059 016e 8020     		movs	r0, #128
+ 1060              	.LVL127:
+ 1061 0170 59E7     		b	.L87
+ 1062              	.LVL128:
+ 1063              	.L103:
+ 339:Middlewares/Third_Party/wakaama/observe.c **** 
+ 1064              		.loc 1 339 0
+ 1065 0172 A020     		movs	r0, #160
+ 1066              	.LVL129:
+ 1067 0174 57E7     		b	.L87
+ 1068              	.LVL130:
+ 1069              	.L106:
+ 413:Middlewares/Third_Party/wakaama/observe.c **** }
+ 1070              		.loc 1 413 0
+ 1071 0176 4420     		movs	r0, #68
+ 1072 0178 55E7     		b	.L87
+ 1073              	.L107:
+ 381:Middlewares/Third_Party/wakaama/observe.c ****             memcpy(watcherP->parameters, attrP, sizeof(lwm2m_attributes_t));
+ 1074              		.loc 1 381 0
+ 1075 017a A020     		movs	r0, #160
+ 1076 017c 53E7     		b	.L87
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 29
+
+
+ 1077              	.L108:
+ 413:Middlewares/Third_Party/wakaama/observe.c **** }
+ 1078              		.loc 1 413 0
+ 1079 017e 4420     		movs	r0, #68
+ 1080 0180 51E7     		b	.L87
+ 1081              		.cfi_endproc
+ 1082              	.LFE10:
+ 1084              		.section	.text.observe_findByUri,"ax",%progbits
+ 1085              		.align	1
+ 1086              		.global	observe_findByUri
+ 1087              		.syntax unified
+ 1088              		.thumb
+ 1089              		.thumb_func
+ 1090              		.fpu fpv4-sp-d16
+ 1092              	observe_findByUri:
+ 1093              	.LFB11:
+ 415:Middlewares/Third_Party/wakaama/observe.c **** 
+ 416:Middlewares/Third_Party/wakaama/observe.c **** lwm2m_observed_t * observe_findByUri(lwm2m_context_t * contextP,
+ 417:Middlewares/Third_Party/wakaama/observe.c ****                                      lwm2m_uri_t * uriP)
+ 418:Middlewares/Third_Party/wakaama/observe.c **** {
+ 1094              		.loc 1 418 0
+ 1095              		.cfi_startproc
+ 1096              		@ args = 0, pretend = 0, frame = 0
+ 1097              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1098              		@ link register save eliminated.
+ 1099              	.LVL131:
+ 419:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * targetP;
+ 420:Middlewares/Third_Party/wakaama/observe.c **** 
+ 421:Middlewares/Third_Party/wakaama/observe.c ****     LOG_URI(uriP);
+ 422:Middlewares/Third_Party/wakaama/observe.c ****     targetP = contextP->observedList;
+ 1100              		.loc 1 422 0
+ 1101 0000 C069     		ldr	r0, [r0, #28]
+ 1102              	.LVL132:
+ 423:Middlewares/Third_Party/wakaama/observe.c ****     while (targetP != NULL)
+ 1103              		.loc 1 423 0
+ 1104 0002 13E0     		b	.L122
+ 1105              	.L117:
+ 1106              	.LCFI13:
+ 1107              		.cfi_def_cfa_offset 4
+ 1108              		.cfi_offset 4, -4
+ 424:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 425:Middlewares/Third_Party/wakaama/observe.c ****         if (targetP->uri.objectId == uriP->objectId)
+ 426:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 427:Middlewares/Third_Party/wakaama/observe.c ****             if ((!LWM2M_URI_IS_SET_INSTANCE(uriP) && !LWM2M_URI_IS_SET_INSTANCE(&(targetP->uri)))
+ 428:Middlewares/Third_Party/wakaama/observe.c ****              || (LWM2M_URI_IS_SET_INSTANCE(uriP) && LWM2M_URI_IS_SET_INSTANCE(&(targetP->uri)) && (
+ 429:Middlewares/Third_Party/wakaama/observe.c ****              {
+ 430:Middlewares/Third_Party/wakaama/observe.c ****                  if ((!LWM2M_URI_IS_SET_RESOURCE(uriP) && !LWM2M_URI_IS_SET_RESOURCE(&(targetP->uri
+ 1109              		.loc 1 430 0
+ 1110 0004 13F00103 		ands	r3, r3, #1
+ 1111 0008 03D1     		bne	.L118
+ 1112              		.loc 1 430 0 is_stmt 0 discriminator 1
+ 1113 000a 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+ 1114 000c 12F0010F 		tst	r2, #1
+ 1115 0010 08D0     		beq	.L113
+ 1116              	.L118:
+ 431:Middlewares/Third_Party/wakaama/observe.c ****                      || (LWM2M_URI_IS_SET_RESOURCE(uriP) && LWM2M_URI_IS_SET_RESOURCE(&(targetP->ur
+ 1117              		.loc 1 431 0 is_stmt 1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 30
+
+
+ 1118 0012 13B3     		cbz	r3, .L115
+ 1119              		.loc 1 431 0 is_stmt 0 discriminator 1
+ 1120 0014 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 1121 0016 13F0010F 		tst	r3, #1
+ 1122 001a 1ED0     		beq	.L115
+ 1123              		.loc 1 431 0 discriminator 2
+ 1124 001c CA88     		ldrh	r2, [r1, #6]
+ 1125 001e 4389     		ldrh	r3, [r0, #10]
+ 1126 0020 9A42     		cmp	r2, r3
+ 1127 0022 1AD1     		bne	.L115
+ 1128              	.L113:
+ 432:Middlewares/Third_Party/wakaama/observe.c ****                  {
+ 433:Middlewares/Third_Party/wakaama/observe.c ****                      LOG_ARG("Found one with%s observers.", targetP->watcherList ? "" : " no");
+ 434:Middlewares/Third_Party/wakaama/observe.c ****                      LOG_URI(&(targetP->uri));
+ 435:Middlewares/Third_Party/wakaama/observe.c ****                      return targetP;
+ 436:Middlewares/Third_Party/wakaama/observe.c ****                  }
+ 437:Middlewares/Third_Party/wakaama/observe.c ****              }
+ 438:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 439:Middlewares/Third_Party/wakaama/observe.c ****         targetP = targetP->next;
+ 440:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 441:Middlewares/Third_Party/wakaama/observe.c **** 
+ 442:Middlewares/Third_Party/wakaama/observe.c ****     LOG("Found nothing");
+ 443:Middlewares/Third_Party/wakaama/observe.c ****     return NULL;
+ 444:Middlewares/Third_Party/wakaama/observe.c **** }
+ 1129              		.loc 1 444 0 is_stmt 1
+ 1130 0024 5DF8044B 		ldr	r4, [sp], #4
+ 1131              	.LCFI14:
+ 1132              		.cfi_restore 4
+ 1133              		.cfi_def_cfa_offset 0
+ 1134 0028 7047     		bx	lr
+ 1135              	.L129:
+ 439:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 1136              		.loc 1 439 0
+ 1137 002a 0068     		ldr	r0, [r0]
+ 1138              	.LVL133:
+ 1139              	.L122:
+ 423:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 1140              		.loc 1 423 0
+ 1141 002c E8B1     		cbz	r0, .L128
+ 425:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 1142              		.loc 1 425 0
+ 1143 002e C288     		ldrh	r2, [r0, #6]
+ 1144 0030 4B88     		ldrh	r3, [r1, #2]
+ 1145 0032 9A42     		cmp	r2, r3
+ 1146 0034 F9D1     		bne	.L129
+ 418:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * targetP;
+ 1147              		.loc 1 418 0
+ 1148 0036 10B4     		push	{r4}
+ 1149              	.LCFI15:
+ 1150              		.cfi_def_cfa_offset 4
+ 1151              		.cfi_offset 4, -4
+ 1152              	.L123:
+ 427:Middlewares/Third_Party/wakaama/observe.c ****              || (LWM2M_URI_IS_SET_INSTANCE(uriP) && LWM2M_URI_IS_SET_INSTANCE(&(targetP->uri)) && (
+ 1153              		.loc 1 427 0
+ 1154 0038 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 1155 003a 13F00202 		ands	r2, r3, #2
+ 1156 003e 03D1     		bne	.L116
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 31
+
+
+ 427:Middlewares/Third_Party/wakaama/observe.c ****              || (LWM2M_URI_IS_SET_INSTANCE(uriP) && LWM2M_URI_IS_SET_INSTANCE(&(targetP->uri)) && (
+ 1157              		.loc 1 427 0 is_stmt 0 discriminator 1
+ 1158 0040 0479     		ldrb	r4, [r0, #4]	@ zero_extendqisi2
+ 1159 0042 14F0020F 		tst	r4, #2
+ 1160 0046 DDD0     		beq	.L117
+ 1161              	.L116:
+ 428:Middlewares/Third_Party/wakaama/observe.c ****              {
+ 1162              		.loc 1 428 0 is_stmt 1
+ 1163 0048 3AB1     		cbz	r2, .L115
+ 428:Middlewares/Third_Party/wakaama/observe.c ****              {
+ 1164              		.loc 1 428 0 is_stmt 0 discriminator 1
+ 1165 004a 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+ 1166 004c 12F0020F 		tst	r2, #2
+ 1167 0050 03D0     		beq	.L115
+ 428:Middlewares/Third_Party/wakaama/observe.c ****              {
+ 1168              		.loc 1 428 0 discriminator 2
+ 1169 0052 8C88     		ldrh	r4, [r1, #4]
+ 1170 0054 0289     		ldrh	r2, [r0, #8]
+ 1171 0056 9442     		cmp	r4, r2
+ 1172 0058 D4D0     		beq	.L117
+ 1173              	.L115:
+ 439:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 1174              		.loc 1 439 0 is_stmt 1
+ 1175 005a 0068     		ldr	r0, [r0]
+ 1176              	.LVL134:
+ 423:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 1177              		.loc 1 423 0
+ 1178 005c 0028     		cmp	r0, #0
+ 1179 005e E1D0     		beq	.L113
+ 425:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 1180              		.loc 1 425 0
+ 1181 0060 C288     		ldrh	r2, [r0, #6]
+ 1182 0062 4B88     		ldrh	r3, [r1, #2]
+ 1183 0064 9A42     		cmp	r2, r3
+ 1184 0066 F8D1     		bne	.L115
+ 1185 0068 E6E7     		b	.L123
+ 1186              	.L128:
+ 1187              	.LCFI16:
+ 1188              		.cfi_def_cfa_offset 0
+ 1189              		.cfi_restore 4
+ 1190 006a 7047     		bx	lr
+ 1191              		.cfi_endproc
+ 1192              	.LFE11:
+ 1194              		.section	.text.lwm2m_resource_value_changed,"ax",%progbits
+ 1195              		.align	1
+ 1196              		.global	lwm2m_resource_value_changed
+ 1197              		.syntax unified
+ 1198              		.thumb
+ 1199              		.thumb_func
+ 1200              		.fpu fpv4-sp-d16
+ 1202              	lwm2m_resource_value_changed:
+ 1203              	.LFB12:
+ 445:Middlewares/Third_Party/wakaama/observe.c **** 
+ 446:Middlewares/Third_Party/wakaama/observe.c **** void lwm2m_resource_value_changed(lwm2m_context_t * contextP,
+ 447:Middlewares/Third_Party/wakaama/observe.c ****                                   lwm2m_uri_t * uriP)
+ 448:Middlewares/Third_Party/wakaama/observe.c **** {
+ 1204              		.loc 1 448 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 32
+
+
+ 1205              		.cfi_startproc
+ 1206              		@ args = 0, pretend = 0, frame = 0
+ 1207              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1208              		@ link register save eliminated.
+ 1209              	.LVL135:
+ 449:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * targetP;
+ 450:Middlewares/Third_Party/wakaama/observe.c **** 
+ 451:Middlewares/Third_Party/wakaama/observe.c ****     LOG_URI(uriP);
+ 452:Middlewares/Third_Party/wakaama/observe.c ****     targetP = contextP->observedList;
+ 1210              		.loc 1 452 0
+ 1211 0000 C269     		ldr	r2, [r0, #28]
+ 1212              	.LVL136:
+ 453:Middlewares/Third_Party/wakaama/observe.c ****     while (targetP != NULL)
+ 1213              		.loc 1 453 0
+ 1214 0002 16E0     		b	.L140
+ 1215              	.LVL137:
+ 1216              	.L136:
+ 1217              	.LCFI17:
+ 1218              		.cfi_def_cfa_offset 4
+ 1219              		.cfi_offset 4, -4
+ 1220              	.LBB11:
+ 454:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 455:Middlewares/Third_Party/wakaama/observe.c ****         if (targetP->uri.objectId == uriP->objectId)
+ 456:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 457:Middlewares/Third_Party/wakaama/observe.c ****             if (!LWM2M_URI_IS_SET_INSTANCE(uriP)
+ 458:Middlewares/Third_Party/wakaama/observe.c ****              || (targetP->uri.flag & LWM2M_URI_FLAG_INSTANCE_ID) == 0
+ 459:Middlewares/Third_Party/wakaama/observe.c ****              || uriP->instanceId == targetP->uri.instanceId)
+ 460:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 461:Middlewares/Third_Party/wakaama/observe.c ****                 if (!LWM2M_URI_IS_SET_RESOURCE(uriP)
+ 462:Middlewares/Third_Party/wakaama/observe.c ****                  || (targetP->uri.flag & LWM2M_URI_FLAG_RESOURCE_ID) == 0
+ 463:Middlewares/Third_Party/wakaama/observe.c ****                  || uriP->resourceId == targetP->uri.resourceId)
+ 464:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 465:Middlewares/Third_Party/wakaama/observe.c ****                     lwm2m_watcher_t * watcherP;
+ 466:Middlewares/Third_Party/wakaama/observe.c **** 
+ 467:Middlewares/Third_Party/wakaama/observe.c ****                     LOG("Found an observation");
+ 468:Middlewares/Third_Party/wakaama/observe.c ****                     LOG_URI(&(targetP->uri));
+ 469:Middlewares/Third_Party/wakaama/observe.c **** 
+ 470:Middlewares/Third_Party/wakaama/observe.c ****                     for (watcherP = targetP->watcherList ; watcherP != NULL ; watcherP = watcherP->
+ 1221              		.loc 1 470 0 discriminator 2
+ 1222 0004 1B68     		ldr	r3, [r3]
+ 1223              	.LVL138:
+ 1224              	.L135:
+ 1225              		.loc 1 470 0 is_stmt 0 discriminator 1
+ 1226 0006 3BB3     		cbz	r3, .L132
+ 471:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 472:Middlewares/Third_Party/wakaama/observe.c ****                         if (watcherP->active == true)
+ 1227              		.loc 1 472 0 is_stmt 1
+ 1228 0008 1879     		ldrb	r0, [r3, #4]	@ zero_extendqisi2
+ 1229 000a 0028     		cmp	r0, #0
+ 1230 000c FAD0     		beq	.L136
+ 473:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 474:Middlewares/Third_Party/wakaama/observe.c ****                             LOG("Tagging a watcher");
+ 475:Middlewares/Third_Party/wakaama/observe.c ****                             watcherP->update = true;
+ 1231              		.loc 1 475 0
+ 1232 000e 0120     		movs	r0, #1
+ 1233 0010 5871     		strb	r0, [r3, #5]
+ 1234 0012 F7E7     		b	.L136
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 33
+
+
+ 1235              	.LVL139:
+ 1236              	.L156:
+ 1237              	.LBE11:
+ 476:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ 477:Middlewares/Third_Party/wakaama/observe.c ****                     }
+ 478:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 479:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 480:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 481:Middlewares/Third_Party/wakaama/observe.c ****         targetP = targetP->next;
+ 482:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 483:Middlewares/Third_Party/wakaama/observe.c **** }
+ 1238              		.loc 1 483 0
+ 1239 0014 5DF8044B 		ldr	r4, [sp], #4
+ 1240              	.LCFI18:
+ 1241              		.cfi_restore 4
+ 1242              		.cfi_def_cfa_offset 0
+ 1243 0018 7047     		bx	lr
+ 1244              	.L143:
+ 461:Middlewares/Third_Party/wakaama/observe.c ****                  || (targetP->uri.flag & LWM2M_URI_FLAG_RESOURCE_ID) == 0
+ 1245              		.loc 1 461 0
+ 1246 001a 13F0010F 		tst	r3, #1
+ 1247 001e 37D0     		beq	.L146
+ 462:Middlewares/Third_Party/wakaama/observe.c ****                  || uriP->resourceId == targetP->uri.resourceId)
+ 1248              		.loc 1 462 0
+ 1249 0020 1379     		ldrb	r3, [r2, #4]	@ zero_extendqisi2
+ 1250 0022 13F0010F 		tst	r3, #1
+ 1251 0026 33D0     		beq	.L146
+ 463:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 1252              		.loc 1 463 0
+ 1253 0028 C888     		ldrh	r0, [r1, #6]
+ 1254 002a 5389     		ldrh	r3, [r2, #10]
+ 1255 002c 9842     		cmp	r0, r3
+ 1256 002e 2FD0     		beq	.L146
+ 1257              	.L142:
+ 481:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 1258              		.loc 1 481 0
+ 1259 0030 1268     		ldr	r2, [r2]
+ 1260              	.LVL140:
+ 1261              	.L140:
+ 453:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 1262              		.loc 1 453 0
+ 1263 0032 002A     		cmp	r2, #0
+ 1264 0034 37D0     		beq	.L155
+ 455:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 1265              		.loc 1 455 0
+ 1266 0036 D088     		ldrh	r0, [r2, #6]
+ 1267 0038 4B88     		ldrh	r3, [r1, #2]
+ 1268 003a 9842     		cmp	r0, r3
+ 1269 003c F8D1     		bne	.L142
+ 457:Middlewares/Third_Party/wakaama/observe.c ****              || (targetP->uri.flag & LWM2M_URI_FLAG_INSTANCE_ID) == 0
+ 1270              		.loc 1 457 0
+ 1271 003e 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 1272 0040 13F0020F 		tst	r3, #2
+ 1273 0044 E9D0     		beq	.L143
+ 458:Middlewares/Third_Party/wakaama/observe.c ****              || uriP->instanceId == targetP->uri.instanceId)
+ 1274              		.loc 1 458 0
+ 1275 0046 1079     		ldrb	r0, [r2, #4]	@ zero_extendqisi2
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 34
+
+
+ 1276 0048 10F0020F 		tst	r0, #2
+ 1277 004c E5D0     		beq	.L143
+ 448:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * targetP;
+ 1278              		.loc 1 448 0
+ 1279 004e 10B4     		push	{r4}
+ 1280              	.LCFI19:
+ 1281              		.cfi_def_cfa_offset 4
+ 1282              		.cfi_offset 4, -4
+ 1283              	.L145:
+ 459:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 1284              		.loc 1 459 0
+ 1285 0050 8C88     		ldrh	r4, [r1, #4]
+ 1286 0052 1089     		ldrh	r0, [r2, #8]
+ 1287 0054 8442     		cmp	r4, r0
+ 1288 0056 0ED0     		beq	.L133
+ 1289              	.L132:
+ 481:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 1290              		.loc 1 481 0
+ 1291 0058 1268     		ldr	r2, [r2]
+ 1292              	.LVL141:
+ 453:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 1293              		.loc 1 453 0
+ 1294 005a 002A     		cmp	r2, #0
+ 1295 005c DAD0     		beq	.L156
+ 455:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 1296              		.loc 1 455 0
+ 1297 005e D088     		ldrh	r0, [r2, #6]
+ 1298 0060 4B88     		ldrh	r3, [r1, #2]
+ 1299 0062 9842     		cmp	r0, r3
+ 1300 0064 F8D1     		bne	.L132
+ 457:Middlewares/Third_Party/wakaama/observe.c ****              || (targetP->uri.flag & LWM2M_URI_FLAG_INSTANCE_ID) == 0
+ 1301              		.loc 1 457 0
+ 1302 0066 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 1303 0068 13F0020F 		tst	r3, #2
+ 1304 006c 03D0     		beq	.L133
+ 458:Middlewares/Third_Party/wakaama/observe.c ****              || uriP->instanceId == targetP->uri.instanceId)
+ 1305              		.loc 1 458 0
+ 1306 006e 1079     		ldrb	r0, [r2, #4]	@ zero_extendqisi2
+ 1307 0070 10F0020F 		tst	r0, #2
+ 1308 0074 ECD1     		bne	.L145
+ 1309              	.L133:
+ 461:Middlewares/Third_Party/wakaama/observe.c ****                  || (targetP->uri.flag & LWM2M_URI_FLAG_RESOURCE_ID) == 0
+ 1310              		.loc 1 461 0
+ 1311 0076 13F0010F 		tst	r3, #1
+ 1312 007a 07D0     		beq	.L134
+ 462:Middlewares/Third_Party/wakaama/observe.c ****                  || uriP->resourceId == targetP->uri.resourceId)
+ 1313              		.loc 1 462 0
+ 1314 007c 1379     		ldrb	r3, [r2, #4]	@ zero_extendqisi2
+ 1315 007e 13F0010F 		tst	r3, #1
+ 1316 0082 03D0     		beq	.L134
+ 463:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 1317              		.loc 1 463 0
+ 1318 0084 C888     		ldrh	r0, [r1, #6]
+ 1319 0086 5389     		ldrh	r3, [r2, #10]
+ 1320 0088 9842     		cmp	r0, r3
+ 1321 008a E5D1     		bne	.L132
+ 1322              	.L134:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 35
+
+
+ 1323              	.LBB12:
+ 470:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 1324              		.loc 1 470 0
+ 1325 008c D368     		ldr	r3, [r2, #12]
+ 1326              	.LVL142:
+ 1327 008e BAE7     		b	.L135
+ 1328              	.LVL143:
+ 1329              	.L146:
+ 1330              	.LCFI20:
+ 1331              		.cfi_def_cfa_offset 0
+ 1332              		.cfi_restore 4
+ 1333 0090 D368     		ldr	r3, [r2, #12]
+ 1334              	.LVL144:
+ 1335 0092 00E0     		b	.L149
+ 1336              	.L151:
+ 1337 0094 1B68     		ldr	r3, [r3]
+ 1338              	.LVL145:
+ 1339              	.L149:
+ 1340 0096 002B     		cmp	r3, #0
+ 1341 0098 CAD0     		beq	.L142
+ 472:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 1342              		.loc 1 472 0
+ 1343 009a 1879     		ldrb	r0, [r3, #4]	@ zero_extendqisi2
+ 1344 009c 0028     		cmp	r0, #0
+ 1345 009e F9D0     		beq	.L151
+ 475:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ 1346              		.loc 1 475 0
+ 1347 00a0 0120     		movs	r0, #1
+ 1348 00a2 5871     		strb	r0, [r3, #5]
+ 1349 00a4 F6E7     		b	.L151
+ 1350              	.LVL146:
+ 1351              	.L155:
+ 1352 00a6 7047     		bx	lr
+ 1353              	.LBE12:
+ 1354              		.cfi_endproc
+ 1355              	.LFE12:
+ 1357              		.global	__aeabi_l2d
+ 1358              		.global	__aeabi_dcmplt
+ 1359              		.global	__aeabi_dcmpgt
+ 1360              		.global	__aeabi_dcmpge
+ 1361              		.global	__aeabi_dsub
+ 1362              		.global	__aeabi_dcmple
+ 1363              		.section	.text.observe_step,"ax",%progbits
+ 1364              		.align	1
+ 1365              		.global	observe_step
+ 1366              		.syntax unified
+ 1367              		.thumb
+ 1368              		.thumb_func
+ 1369              		.fpu fpv4-sp-d16
+ 1371              	observe_step:
+ 1372              	.LFB13:
+ 484:Middlewares/Third_Party/wakaama/observe.c **** 
+ 485:Middlewares/Third_Party/wakaama/observe.c **** void observe_step(lwm2m_context_t * contextP,
+ 486:Middlewares/Third_Party/wakaama/observe.c ****                   time_t currentTime,
+ 487:Middlewares/Third_Party/wakaama/observe.c ****                   time_t * timeoutP)
+ 488:Middlewares/Third_Party/wakaama/observe.c **** {
+ 1373              		.loc 1 488 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 36
+
+
+ 1374              		.cfi_startproc
+ 1375              		@ args = 4, pretend = 0, frame = 208
+ 1376              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1377              	.LVL147:
+ 1378 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1379              	.LCFI21:
+ 1380              		.cfi_def_cfa_offset 36
+ 1381              		.cfi_offset 4, -36
+ 1382              		.cfi_offset 5, -32
+ 1383              		.cfi_offset 6, -28
+ 1384              		.cfi_offset 7, -24
+ 1385              		.cfi_offset 8, -20
+ 1386              		.cfi_offset 9, -16
+ 1387              		.cfi_offset 10, -12
+ 1388              		.cfi_offset 11, -8
+ 1389              		.cfi_offset 14, -4
+ 1390 0004 2DED048B 		vpush.64	{d8, d9}
+ 1391              	.LCFI22:
+ 1392              		.cfi_def_cfa_offset 52
+ 1393              		.cfi_offset 80, -52
+ 1394              		.cfi_offset 81, -48
+ 1395              		.cfi_offset 82, -44
+ 1396              		.cfi_offset 83, -40
+ 1397 0008 B7B0     		sub	sp, sp, #220
+ 1398              	.LCFI23:
+ 1399              		.cfi_def_cfa_offset 272
+ 1400 000a CDE90223 		strd	r2, [sp, #8]
+ 1401 000e DDF810A1 		ldr	r10, [sp, #272]
+ 489:Middlewares/Third_Party/wakaama/observe.c ****     lwm2m_observed_t * targetP;
+ 490:Middlewares/Third_Party/wakaama/observe.c **** 
+ 491:Middlewares/Third_Party/wakaama/observe.c ****     LOG("Entering");
+ 492:Middlewares/Third_Party/wakaama/observe.c ****     for (targetP = contextP->observedList ; targetP != NULL ; targetP = targetP->next)
+ 1402              		.loc 1 492 0
+ 1403 0012 D0F81C90 		ldr	r9, [r0, #28]
+ 1404              	.LVL148:
+ 1405 0016 C846     		mov	r8, r9
+ 1406 0018 8146     		mov	r9, r0
+ 1407              	.LVL149:
+ 1408 001a 5746     		mov	r7, r10
+ 1409 001c 51E2     		b	.L158
+ 1410              	.LVL150:
+ 1411              	.L256:
+ 1412              	.LBB13:
+ 493:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 494:Middlewares/Third_Party/wakaama/observe.c ****         lwm2m_watcher_t * watcherP;
+ 495:Middlewares/Third_Party/wakaama/observe.c ****         uint8_t * buffer = NULL;
+ 496:Middlewares/Third_Party/wakaama/observe.c ****         size_t length = 0;
+ 497:Middlewares/Third_Party/wakaama/observe.c ****         lwm2m_data_t * dataP = NULL;
+ 498:Middlewares/Third_Party/wakaama/observe.c ****         int size = 0;
+ 499:Middlewares/Third_Party/wakaama/observe.c ****         double floatValue = 0;
+ 500:Middlewares/Third_Party/wakaama/observe.c ****         int64_t integerValue = 0;
+ 501:Middlewares/Third_Party/wakaama/observe.c ****         bool storeValue = false;
+ 502:Middlewares/Third_Party/wakaama/observe.c ****         coap_packet_t message[1];
+ 503:Middlewares/Third_Party/wakaama/observe.c ****         time_t interval;
+ 504:Middlewares/Third_Party/wakaama/observe.c **** 
+ 505:Middlewares/Third_Party/wakaama/observe.c ****         LOG_URI(&(targetP->uri));
+ 506:Middlewares/Third_Party/wakaama/observe.c ****         if (LWM2M_URI_IS_SET_RESOURCE(&targetP->uri))
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 37
+
+
+ 507:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 508:Middlewares/Third_Party/wakaama/observe.c ****             if (COAP_205_CONTENT != object_readData(contextP, &targetP->uri, &size, &dataP)) contin
+ 1413              		.loc 1 508 0
+ 1414 001e 0CAB     		add	r3, sp, #48
+ 1415 0020 0DAA     		add	r2, sp, #52
+ 1416 0022 08F10401 		add	r1, r8, #4
+ 1417 0026 4846     		mov	r0, r9
+ 1418 0028 FFF7FEFF 		bl	object_readData
+ 1419              	.LVL151:
+ 1420 002c 4528     		cmp	r0, #69
+ 1421 002e 40F04682 		bne	.L205
+ 509:Middlewares/Third_Party/wakaama/observe.c ****             switch (dataP->type)
+ 1422              		.loc 1 509 0
+ 1423 0032 0C98     		ldr	r0, [sp, #48]
+ 1424 0034 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 1425 0036 062B     		cmp	r3, #6
+ 1426 0038 04D0     		beq	.L161
+ 1427 003a 072B     		cmp	r3, #7
+ 1428 003c 0FD0     		beq	.L162
+ 501:Middlewares/Third_Party/wakaama/observe.c ****         coap_packet_t message[1];
+ 1429              		.loc 1 501 0
+ 1430 003e 0023     		movs	r3, #0
+ 1431 0040 0793     		str	r3, [sp, #28]
+ 1432 0042 56E2     		b	.L159
+ 1433              	.L161:
+ 510:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 511:Middlewares/Third_Party/wakaama/observe.c ****             case LWM2M_TYPE_INTEGER:
+ 512:Middlewares/Third_Party/wakaama/observe.c ****                 if (1 != lwm2m_data_decode_int(dataP, &integerValue))
+ 1434              		.loc 1 512 0
+ 1435 0044 10A9     		add	r1, sp, #64
+ 1436 0046 FFF7FEFF 		bl	lwm2m_data_decode_int
+ 1437              	.LVL152:
+ 1438 004a 0128     		cmp	r0, #1
+ 1439 004c 02D1     		bne	.L249
+ 513:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 514:Middlewares/Third_Party/wakaama/observe.c ****                     lwm2m_data_free(size, dataP);
+ 515:Middlewares/Third_Party/wakaama/observe.c ****                     continue;
+ 516:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 517:Middlewares/Third_Party/wakaama/observe.c ****                 storeValue = true;
+ 1440              		.loc 1 517 0
+ 1441 004e 0123     		movs	r3, #1
+ 1442 0050 0793     		str	r3, [sp, #28]
+ 1443 0052 4EE2     		b	.L159
+ 1444              	.L249:
+ 514:Middlewares/Third_Party/wakaama/observe.c ****                     continue;
+ 1445              		.loc 1 514 0
+ 1446 0054 0C99     		ldr	r1, [sp, #48]
+ 1447 0056 0D98     		ldr	r0, [sp, #52]
+ 1448 0058 FFF7FEFF 		bl	lwm2m_data_free
+ 1449              	.LVL153:
+ 515:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 1450              		.loc 1 515 0
+ 1451 005c 2FE2     		b	.L205
+ 1452              	.L162:
+ 518:Middlewares/Third_Party/wakaama/observe.c ****                 break;
+ 519:Middlewares/Third_Party/wakaama/observe.c ****             case LWM2M_TYPE_FLOAT:
+ 520:Middlewares/Third_Party/wakaama/observe.c ****                 if (1 != lwm2m_data_decode_float(dataP, &floatValue))
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 38
+
+
+ 1453              		.loc 1 520 0
+ 1454 005e 0EA9     		add	r1, sp, #56
+ 1455 0060 FFF7FEFF 		bl	lwm2m_data_decode_float
+ 1456              	.LVL154:
+ 1457 0064 0128     		cmp	r0, #1
+ 1458 0066 02D1     		bne	.L250
+ 521:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 522:Middlewares/Third_Party/wakaama/observe.c ****                     lwm2m_data_free(size, dataP);
+ 523:Middlewares/Third_Party/wakaama/observe.c ****                     continue;
+ 524:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 525:Middlewares/Third_Party/wakaama/observe.c ****                 storeValue = true;
+ 1459              		.loc 1 525 0
+ 1460 0068 0123     		movs	r3, #1
+ 1461 006a 0793     		str	r3, [sp, #28]
+ 1462 006c 41E2     		b	.L159
+ 1463              	.L250:
+ 522:Middlewares/Third_Party/wakaama/observe.c ****                     continue;
+ 1464              		.loc 1 522 0
+ 1465 006e 0C99     		ldr	r1, [sp, #48]
+ 1466 0070 0D98     		ldr	r0, [sp, #52]
+ 1467 0072 FFF7FEFF 		bl	lwm2m_data_free
+ 1468              	.LVL155:
+ 523:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 1469              		.loc 1 523 0
+ 1470 0076 22E2     		b	.L205
+ 1471              	.LVL156:
+ 1472              	.L168:
+ 1473              	.LBB14:
+ 526:Middlewares/Third_Party/wakaama/observe.c ****                 break;
+ 527:Middlewares/Third_Party/wakaama/observe.c ****             default:
+ 528:Middlewares/Third_Party/wakaama/observe.c ****                 break;
+ 529:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 530:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 531:Middlewares/Third_Party/wakaama/observe.c ****         for (watcherP = targetP->watcherList ; watcherP != NULL ; watcherP = watcherP->next)
+ 532:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 533:Middlewares/Third_Party/wakaama/observe.c ****             if (watcherP->active == true)
+ 534:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 535:Middlewares/Third_Party/wakaama/observe.c ****                 bool notify = false;
+ 536:Middlewares/Third_Party/wakaama/observe.c **** 
+ 537:Middlewares/Third_Party/wakaama/observe.c ****                 if (watcherP->update == true)
+ 538:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 539:Middlewares/Third_Party/wakaama/observe.c ****                     // value changed, should we notify the server ?
+ 540:Middlewares/Third_Party/wakaama/observe.c **** 
+ 541:Middlewares/Third_Party/wakaama/observe.c ****                     if (watcherP->parameters == NULL || watcherP->parameters->toSet == 0)
+ 542:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 543:Middlewares/Third_Party/wakaama/observe.c ****                         // no conditions
+ 544:Middlewares/Third_Party/wakaama/observe.c ****                         notify = true;
+ 545:Middlewares/Third_Party/wakaama/observe.c ****                         LOG("Notify with no conditions");
+ 546:Middlewares/Third_Party/wakaama/observe.c ****                         LOG_URI(&(targetP->uri));
+ 547:Middlewares/Third_Party/wakaama/observe.c ****                     }
+ 548:Middlewares/Third_Party/wakaama/observe.c **** 
+ 549:Middlewares/Third_Party/wakaama/observe.c ****                     if (notify == false
+ 550:Middlewares/Third_Party/wakaama/observe.c ****                      && watcherP->parameters != NULL
+ 551:Middlewares/Third_Party/wakaama/observe.c ****                      && (watcherP->parameters->toSet & ATTR_FLAG_NUMERIC) != 0)
+ 552:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 553:Middlewares/Third_Party/wakaama/observe.c ****                         if ((watcherP->parameters->toSet & LWM2M_ATTR_FLAG_LESS_THAN) != 0)
+ 554:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 39
+
+
+ 555:Middlewares/Third_Party/wakaama/observe.c ****                             LOG("Checking lower threshold");
+ 556:Middlewares/Third_Party/wakaama/observe.c ****                             // Did we cross the lower threshold ?
+ 557:Middlewares/Third_Party/wakaama/observe.c ****                             switch (dataP->type)
+ 558:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 559:Middlewares/Third_Party/wakaama/observe.c ****                             case LWM2M_TYPE_INTEGER:
+ 560:Middlewares/Third_Party/wakaama/observe.c ****                                 if ((integerValue < watcherP->parameters->lessThan
+ 1474              		.loc 1 560 0
+ 1475 0078 DDE91001 		ldrd	r0, [sp, #64]
+ 1476 007c FFF7FEFF 		bl	__aeabi_l2d
+ 1477              	.LVL157:
+ 1478 0080 CDE90401 		strd	r0, [sp, #16]
+ 1479 0084 97ED068B 		vldr.64	d8, [r7, #24]
+ 1480 0088 53EC182B 		vmov	r2, r3, d8
+ 1481 008c FFF7FEFF 		bl	__aeabi_dcmplt
+ 1482              	.LVL158:
+ 1483 0090 58B1     		cbz	r0, .L170
+ 561:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asInteger > watcherP->parameters->lessThan
+ 1484              		.loc 1 561 0
+ 1485 0092 D4E90C01 		ldrd	r0, [r4, #48]
+ 1486 0096 FFF7FEFF 		bl	__aeabi_l2d
+ 1487              	.LVL159:
+ 1488 009a 0246     		mov	r2, r0
+ 1489 009c 0B46     		mov	r3, r1
+ 1490 009e 51EC180B 		vmov	r0, r1, d8
+ 1491 00a2 FFF7FEFF 		bl	__aeabi_dcmplt
+ 1492              	.LVL160:
+ 1493 00a6 0028     		cmp	r0, #0
+ 1494 00a8 76D1     		bne	.L216
+ 1495              	.L170:
+ 562:Middlewares/Third_Party/wakaama/observe.c ****                                  || (integerValue > watcherP->parameters->lessThan
+ 1496              		.loc 1 562 0
+ 1497 00aa 53EC182B 		vmov	r2, r3, d8
+ 1498 00ae DDE90401 		ldrd	r0, [sp, #16]
+ 1499 00b2 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 1500              	.LVL161:
+ 1501 00b6 0028     		cmp	r0, #0
+ 1502 00b8 70D0     		beq	.L245
+ 563:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asInteger < watcherP->parameters->lessThan
+ 1503              		.loc 1 563 0
+ 1504 00ba D4E90C01 		ldrd	r0, [r4, #48]
+ 1505 00be FFF7FEFF 		bl	__aeabi_l2d
+ 1506              	.LVL162:
+ 1507 00c2 0246     		mov	r2, r0
+ 1508 00c4 0B46     		mov	r3, r1
+ 1509 00c6 51EC180B 		vmov	r0, r1, d8
+ 1510 00ca FFF7FEFF 		bl	__aeabi_dcmpgt
+ 1511              	.LVL163:
+ 1512 00ce 0028     		cmp	r0, #0
+ 1513 00d0 67D1     		bne	.L218
+ 535:Middlewares/Third_Party/wakaama/observe.c **** 
+ 1514              		.loc 1 535 0
+ 1515 00d2 0023     		movs	r3, #0
+ 1516 00d4 0493     		str	r3, [sp, #16]
+ 1517 00d6 27E0     		b	.L167
+ 1518              	.L169:
+ 564:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 565:Middlewares/Third_Party/wakaama/observe.c ****                                     LOG("Notify on lower threshold crossing");
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 40
+
+
+ 566:Middlewares/Third_Party/wakaama/observe.c ****                                     notify = true;
+ 567:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 568:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 569:Middlewares/Third_Party/wakaama/observe.c ****                             case LWM2M_TYPE_FLOAT:
+ 570:Middlewares/Third_Party/wakaama/observe.c ****                                 if ((floatValue < watcherP->parameters->lessThan
+ 1519              		.loc 1 570 0
+ 1520 00d8 97ED068B 		vldr.64	d8, [r7, #24]
+ 1521 00dc 9DED0E9B 		vldr.64	d9, [sp, #56]
+ 1522 00e0 53EC192B 		vmov	r2, r3, d9
+ 1523 00e4 51EC180B 		vmov	r0, r1, d8
+ 1524 00e8 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 1525              	.LVL164:
+ 1526 00ec 38B1     		cbz	r0, .L173
+ 571:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asFloat > watcherP->parameters->lessThan)
+ 1527              		.loc 1 571 0
+ 1528 00ee D4E90C23 		ldrd	r2, [r4, #48]
+ 1529 00f2 51EC180B 		vmov	r0, r1, d8
+ 1530 00f6 FFF7FEFF 		bl	__aeabi_dcmplt
+ 1531              	.LVL165:
+ 1532 00fa 0028     		cmp	r0, #0
+ 1533 00fc 53D1     		bne	.L219
+ 1534              	.L173:
+ 572:Middlewares/Third_Party/wakaama/observe.c ****                                  || (floatValue > watcherP->parameters->lessThan
+ 1535              		.loc 1 572 0
+ 1536 00fe 53EC192B 		vmov	r2, r3, d9
+ 1537 0102 51EC180B 		vmov	r0, r1, d8
+ 1538 0106 FFF7FEFF 		bl	__aeabi_dcmplt
+ 1539              	.LVL166:
+ 1540 010a 0028     		cmp	r0, #0
+ 1541 010c 4DD0     		beq	.L246
+ 573:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asFloat < watcherP->parameters->lessThan))
+ 1542              		.loc 1 573 0
+ 1543 010e D4E90C23 		ldrd	r2, [r4, #48]
+ 1544 0112 51EC180B 		vmov	r0, r1, d8
+ 1545 0116 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 1546              	.LVL167:
+ 1547 011a 0028     		cmp	r0, #0
+ 1548 011c 48D1     		bne	.L221
+ 535:Middlewares/Third_Party/wakaama/observe.c **** 
+ 1549              		.loc 1 535 0
+ 1550 011e 0023     		movs	r3, #0
+ 1551 0120 0493     		str	r3, [sp, #16]
+ 1552 0122 01E0     		b	.L167
+ 1553              	.L214:
+ 1554 0124 0023     		movs	r3, #0
+ 1555 0126 0493     		str	r3, [sp, #16]
+ 1556              	.L167:
+ 1557              	.LVL168:
+ 574:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 575:Middlewares/Third_Party/wakaama/observe.c ****                                     LOG("Notify on lower threshold crossing");
+ 576:Middlewares/Third_Party/wakaama/observe.c ****                                     notify = true;
+ 577:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 578:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 579:Middlewares/Third_Party/wakaama/observe.c ****                             default:
+ 580:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 581:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 582:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 41
+
+
+ 583:Middlewares/Third_Party/wakaama/observe.c ****                         if ((watcherP->parameters->toSet & LWM2M_ATTR_FLAG_GREATER_THAN) != 0)
+ 1558              		.loc 1 583 0
+ 1559 0128 18F0040F 		tst	r8, #4
+ 1560 012c 05D0     		beq	.L176
+ 584:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 585:Middlewares/Third_Party/wakaama/observe.c ****                             LOG("Checking upper threshold");
+ 586:Middlewares/Third_Party/wakaama/observe.c ****                             // Did we cross the upper threshold ?
+ 587:Middlewares/Third_Party/wakaama/observe.c ****                             switch (dataP->type)
+ 1561              		.loc 1 587 0
+ 1562 012e 0C9B     		ldr	r3, [sp, #48]
+ 1563 0130 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1564 0132 062B     		cmp	r3, #6
+ 1565 0134 3ED0     		beq	.L177
+ 1566 0136 072B     		cmp	r3, #7
+ 1567 0138 6BD0     		beq	.L178
+ 1568              	.LVL169:
+ 1569              	.L176:
+ 588:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 589:Middlewares/Third_Party/wakaama/observe.c ****                             case LWM2M_TYPE_INTEGER:
+ 590:Middlewares/Third_Party/wakaama/observe.c ****                                 if ((integerValue < watcherP->parameters->greaterThan
+ 591:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asInteger > watcherP->parameters->greaterT
+ 592:Middlewares/Third_Party/wakaama/observe.c ****                                  || (integerValue > watcherP->parameters->greaterThan
+ 593:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asInteger < watcherP->parameters->greaterT
+ 594:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 595:Middlewares/Third_Party/wakaama/observe.c ****                                     LOG("Notify on lower upper crossing");
+ 596:Middlewares/Third_Party/wakaama/observe.c ****                                     notify = true;
+ 597:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 598:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 599:Middlewares/Third_Party/wakaama/observe.c ****                             case LWM2M_TYPE_FLOAT:
+ 600:Middlewares/Third_Party/wakaama/observe.c ****                                 if ((floatValue < watcherP->parameters->greaterThan
+ 601:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asFloat > watcherP->parameters->greaterTha
+ 602:Middlewares/Third_Party/wakaama/observe.c ****                                  || (floatValue > watcherP->parameters->greaterThan
+ 603:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asFloat < watcherP->parameters->greaterTha
+ 604:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 605:Middlewares/Third_Party/wakaama/observe.c ****                                     LOG("Notify on lower upper crossing");
+ 606:Middlewares/Third_Party/wakaama/observe.c ****                                     notify = true;
+ 607:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 608:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 609:Middlewares/Third_Party/wakaama/observe.c ****                             default:
+ 610:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 611:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 612:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ 613:Middlewares/Third_Party/wakaama/observe.c ****                         if ((watcherP->parameters->toSet & LWM2M_ATTR_FLAG_STEP) != 0)
+ 1570              		.loc 1 613 0
+ 1571 013a 18F0100F 		tst	r8, #16
+ 1572 013e 00F0D180 		beq	.L166
+ 614:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 615:Middlewares/Third_Party/wakaama/observe.c ****                             LOG("Checking step");
+ 616:Middlewares/Third_Party/wakaama/observe.c **** 
+ 617:Middlewares/Third_Party/wakaama/observe.c ****                             switch (dataP->type)
+ 1573              		.loc 1 617 0
+ 1574 0142 0C9B     		ldr	r3, [sp, #48]
+ 1575 0144 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1576 0146 062B     		cmp	r3, #6
+ 1577 0148 00F08D80 		beq	.L185
+ 1578 014c 072B     		cmp	r3, #7
+ 1579 014e 40F0C980 		bne	.L166
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 42
+
+
+ 1580              	.LBB15:
+ 618:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 619:Middlewares/Third_Party/wakaama/observe.c ****                             case LWM2M_TYPE_INTEGER:
+ 620:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 621:Middlewares/Third_Party/wakaama/observe.c ****                                 int64_t diff;
+ 622:Middlewares/Third_Party/wakaama/observe.c **** 
+ 623:Middlewares/Third_Party/wakaama/observe.c ****                                 diff = integerValue - watcherP->lastValue.asInteger;
+ 624:Middlewares/Third_Party/wakaama/observe.c ****                                 if ((diff < 0 && (0 - diff) >= watcherP->parameters->step)
+ 625:Middlewares/Third_Party/wakaama/observe.c ****                                  || (diff >= 0 && diff >= watcherP->parameters->step))
+ 626:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 627:Middlewares/Third_Party/wakaama/observe.c ****                                     LOG("Notify on step condition");
+ 628:Middlewares/Third_Party/wakaama/observe.c ****                                     notify = true;
+ 629:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 630:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 631:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 632:Middlewares/Third_Party/wakaama/observe.c ****                             case LWM2M_TYPE_FLOAT:
+ 633:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 634:Middlewares/Third_Party/wakaama/observe.c ****                                 double diff;
+ 635:Middlewares/Third_Party/wakaama/observe.c **** 
+ 636:Middlewares/Third_Party/wakaama/observe.c ****                                 diff = floatValue - watcherP->lastValue.asFloat;
+ 1581              		.loc 1 636 0
+ 1582 0152 D4E90C23 		ldrd	r2, [r4, #48]
+ 1583 0156 DDE90E01 		ldrd	r0, [sp, #56]
+ 1584 015a FFF7FEFF 		bl	__aeabi_dsub
+ 1585              	.LVL170:
+ 1586 015e CDE90801 		strd	r0, [sp, #32]
+ 1587              	.LVL171:
+ 637:Middlewares/Third_Party/wakaama/observe.c ****                                 if ((diff < 0 && (0 - diff) >= watcherP->parameters->step)
+ 1588              		.loc 1 637 0
+ 1589 0162 0022     		movs	r2, #0
+ 1590 0164 0023     		movs	r3, #0
+ 1591 0166 FFF7FEFF 		bl	__aeabi_dcmplt
+ 1592              	.LVL172:
+ 1593 016a 0028     		cmp	r0, #0
+ 1594 016c 40F0A880 		bne	.L251
+ 1595              	.L188:
+ 638:Middlewares/Third_Party/wakaama/observe.c ****                                  || (diff >= 0 && diff >= watcherP->parameters->step))
+ 1596              		.loc 1 638 0
+ 1597 0170 0022     		movs	r2, #0
+ 1598 0172 0023     		movs	r3, #0
+ 1599 0174 DDE90801 		ldrd	r0, [sp, #32]
+ 1600 0178 FFF7FEFF 		bl	__aeabi_dcmpge
+ 1601              	.LVL173:
+ 1602 017c 0028     		cmp	r0, #0
+ 1603 017e 00F0B180 		beq	.L166
+ 1604              		.loc 1 638 0 is_stmt 0 discriminator 1
+ 1605 0182 DDE90823 		ldrd	r2, [sp, #32]
+ 1606 0186 D7E90801 		ldrd	r0, [r7, #32]
+ 1607 018a FFF7FEFF 		bl	__aeabi_dcmple
+ 1608              	.LVL174:
+ 1609 018e 0028     		cmp	r0, #0
+ 1610 0190 00F0A880 		beq	.L166
+ 639:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 640:Middlewares/Third_Party/wakaama/observe.c ****                                     LOG("Notify on step condition");
+ 641:Middlewares/Third_Party/wakaama/observe.c ****                                     notify = true;
+ 1611              		.loc 1 641 0 is_stmt 1
+ 1612 0194 0495     		str	r5, [sp, #16]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 43
+
+
+ 1613              	.LVL175:
+ 1614 0196 A5E0     		b	.L166
+ 1615              	.LVL176:
+ 1616              	.L216:
+ 1617              	.LBE15:
+ 566:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1618              		.loc 1 566 0
+ 1619 0198 0495     		str	r5, [sp, #16]
+ 1620 019a C5E7     		b	.L167
+ 1621              	.L245:
+ 535:Middlewares/Third_Party/wakaama/observe.c **** 
+ 1622              		.loc 1 535 0
+ 1623 019c 0023     		movs	r3, #0
+ 1624 019e 0493     		str	r3, [sp, #16]
+ 1625 01a0 C2E7     		b	.L167
+ 1626              	.L218:
+ 566:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1627              		.loc 1 566 0
+ 1628 01a2 0495     		str	r5, [sp, #16]
+ 1629 01a4 C0E7     		b	.L167
+ 1630              	.L219:
+ 576:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1631              		.loc 1 576 0
+ 1632 01a6 0495     		str	r5, [sp, #16]
+ 1633 01a8 BEE7     		b	.L167
+ 1634              	.L246:
+ 535:Middlewares/Third_Party/wakaama/observe.c **** 
+ 1635              		.loc 1 535 0
+ 1636 01aa 0023     		movs	r3, #0
+ 1637 01ac 0493     		str	r3, [sp, #16]
+ 1638 01ae BBE7     		b	.L167
+ 1639              	.L221:
+ 576:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1640              		.loc 1 576 0
+ 1641 01b0 0495     		str	r5, [sp, #16]
+ 1642 01b2 B9E7     		b	.L167
+ 1643              	.LVL177:
+ 1644              	.L177:
+ 590:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asInteger > watcherP->parameters->greaterT
+ 1645              		.loc 1 590 0
+ 1646 01b4 DDE91001 		ldrd	r0, [sp, #64]
+ 1647 01b8 FFF7FEFF 		bl	__aeabi_l2d
+ 1648              	.LVL178:
+ 1649 01bc CDE90801 		strd	r0, [sp, #32]
+ 1650 01c0 97ED048B 		vldr.64	d8, [r7, #16]
+ 1651 01c4 53EC182B 		vmov	r2, r3, d8
+ 1652 01c8 FFF7FEFF 		bl	__aeabi_dcmplt
+ 1653              	.LVL179:
+ 1654 01cc 58B1     		cbz	r0, .L179
+ 591:Middlewares/Third_Party/wakaama/observe.c ****                                  || (integerValue > watcherP->parameters->greaterThan
+ 1655              		.loc 1 591 0
+ 1656 01ce D4E90C01 		ldrd	r0, [r4, #48]
+ 1657 01d2 FFF7FEFF 		bl	__aeabi_l2d
+ 1658              	.LVL180:
+ 1659 01d6 0246     		mov	r2, r0
+ 1660 01d8 0B46     		mov	r3, r1
+ 1661 01da 51EC180B 		vmov	r0, r1, d8
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 44
+
+
+ 1662 01de FFF7FEFF 		bl	__aeabi_dcmplt
+ 1663              	.LVL181:
+ 1664 01e2 0028     		cmp	r0, #0
+ 1665 01e4 3BD1     		bne	.L222
+ 1666              	.L179:
+ 592:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asInteger < watcherP->parameters->greaterT
+ 1667              		.loc 1 592 0
+ 1668 01e6 53EC182B 		vmov	r2, r3, d8
+ 1669 01ea DDE90801 		ldrd	r0, [sp, #32]
+ 1670 01ee FFF7FEFF 		bl	__aeabi_dcmpgt
+ 1671              	.LVL182:
+ 1672 01f2 0028     		cmp	r0, #0
+ 1673 01f4 A1D0     		beq	.L176
+ 593:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 1674              		.loc 1 593 0
+ 1675 01f6 D4E90C01 		ldrd	r0, [r4, #48]
+ 1676 01fa FFF7FEFF 		bl	__aeabi_l2d
+ 1677              	.LVL183:
+ 1678 01fe 0246     		mov	r2, r0
+ 1679 0200 0B46     		mov	r3, r1
+ 1680 0202 51EC180B 		vmov	r0, r1, d8
+ 1681 0206 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 1682              	.LVL184:
+ 1683 020a 0028     		cmp	r0, #0
+ 1684 020c 95D0     		beq	.L176
+ 596:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1685              		.loc 1 596 0
+ 1686 020e 0495     		str	r5, [sp, #16]
+ 1687              	.LVL185:
+ 1688 0210 93E7     		b	.L176
+ 1689              	.LVL186:
+ 1690              	.L178:
+ 600:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asFloat > watcherP->parameters->greaterTha
+ 1691              		.loc 1 600 0
+ 1692 0212 97ED048B 		vldr.64	d8, [r7, #16]
+ 1693 0216 9DED0E9B 		vldr.64	d9, [sp, #56]
+ 1694 021a 53EC192B 		vmov	r2, r3, d9
+ 1695 021e 51EC180B 		vmov	r0, r1, d8
+ 1696 0222 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 1697              	.LVL187:
+ 1698 0226 30B1     		cbz	r0, .L182
+ 601:Middlewares/Third_Party/wakaama/observe.c ****                                  || (floatValue > watcherP->parameters->greaterThan
+ 1699              		.loc 1 601 0
+ 1700 0228 D4E90C23 		ldrd	r2, [r4, #48]
+ 1701 022c 51EC180B 		vmov	r0, r1, d8
+ 1702 0230 FFF7FEFF 		bl	__aeabi_dcmplt
+ 1703              	.LVL188:
+ 1704 0234 A8B9     		cbnz	r0, .L224
+ 1705              	.L182:
+ 602:Middlewares/Third_Party/wakaama/observe.c ****                                   && watcherP->lastValue.asFloat < watcherP->parameters->greaterTha
+ 1706              		.loc 1 602 0
+ 1707 0236 53EC192B 		vmov	r2, r3, d9
+ 1708 023a 51EC180B 		vmov	r0, r1, d8
+ 1709 023e FFF7FEFF 		bl	__aeabi_dcmplt
+ 1710              	.LVL189:
+ 1711 0242 0028     		cmp	r0, #0
+ 1712 0244 3FF479AF 		beq	.L176
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 45
+
+
+ 603:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 1713              		.loc 1 603 0
+ 1714 0248 D4E90C23 		ldrd	r2, [r4, #48]
+ 1715 024c 51EC180B 		vmov	r0, r1, d8
+ 1716 0250 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 1717              	.LVL190:
+ 1718 0254 0028     		cmp	r0, #0
+ 1719 0256 3FF470AF 		beq	.L176
+ 606:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1720              		.loc 1 606 0
+ 1721 025a 0495     		str	r5, [sp, #16]
+ 1722              	.LVL191:
+ 1723 025c 6DE7     		b	.L176
+ 1724              	.LVL192:
+ 1725              	.L222:
+ 596:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1726              		.loc 1 596 0
+ 1727 025e 0495     		str	r5, [sp, #16]
+ 1728              	.LVL193:
+ 1729 0260 6BE7     		b	.L176
+ 1730              	.LVL194:
+ 1731              	.L224:
+ 606:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1732              		.loc 1 606 0
+ 1733 0262 0495     		str	r5, [sp, #16]
+ 1734              	.LVL195:
+ 1735 0264 69E7     		b	.L176
+ 1736              	.LVL196:
+ 1737              	.L185:
+ 1738              	.LBB16:
+ 623:Middlewares/Third_Party/wakaama/observe.c ****                                 if ((diff < 0 && (0 - diff) >= watcherP->parameters->step)
+ 1739              		.loc 1 623 0
+ 1740 0266 D4E90C01 		ldrd	r0, [r4, #48]
+ 1741 026a DDE91023 		ldrd	r2, [sp, #64]
+ 1742 026e 121A     		subs	r2, r2, r0
+ 1743 0270 63EB0103 		sbc	r3, r3, r1
+ 1744 0274 CDE90823 		strd	r2, [sp, #32]
+ 1745              	.LVL197:
+ 624:Middlewares/Third_Party/wakaama/observe.c ****                                  || (diff >= 0 && diff >= watcherP->parameters->step))
+ 1746              		.loc 1 624 0
+ 1747 0278 002A     		cmp	r2, #0
+ 1748 027a 73F10003 		sbcs	r3, r3, #0
+ 1749 027e 10DB     		blt	.L252
+ 1750              	.LVL198:
+ 1751              	.L187:
+ 625:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 1752              		.loc 1 625 0
+ 1753 0280 DDE90823 		ldrd	r2, [sp, #32]
+ 1754 0284 002A     		cmp	r2, #0
+ 1755 0286 73F10001 		sbcs	r1, r3, #0
+ 1756 028a 2BDB     		blt	.L166
+ 625:Middlewares/Third_Party/wakaama/observe.c ****                                 {
+ 1757              		.loc 1 625 0 is_stmt 0 discriminator 1
+ 1758 028c 1046     		mov	r0, r2
+ 1759 028e 1946     		mov	r1, r3
+ 1760 0290 FFF7FEFF 		bl	__aeabi_l2d
+ 1761              	.LVL199:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 46
+
+
+ 1762 0294 D7E90823 		ldrd	r2, [r7, #32]
+ 1763 0298 FFF7FEFF 		bl	__aeabi_dcmpge
+ 1764              	.LVL200:
+ 1765 029c 10B3     		cbz	r0, .L166
+ 628:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1766              		.loc 1 628 0 is_stmt 1
+ 1767 029e 0495     		str	r5, [sp, #16]
+ 1768              	.LVL201:
+ 1769 02a0 20E0     		b	.L166
+ 1770              	.LVL202:
+ 1771              	.L252:
+ 624:Middlewares/Third_Party/wakaama/observe.c ****                                  || (diff >= 0 && diff >= watcherP->parameters->step))
+ 1772              		.loc 1 624 0 discriminator 1
+ 1773 02a2 DDE90801 		ldrd	r0, [sp, #32]
+ 1774 02a6 4042     		rsbs	r0, r0, #0
+ 1775 02a8 61EB4101 		sbc	r1, r1, r1, lsl #1
+ 1776 02ac FFF7FEFF 		bl	__aeabi_l2d
+ 1777              	.LVL203:
+ 1778 02b0 D7E90823 		ldrd	r2, [r7, #32]
+ 1779 02b4 FFF7FEFF 		bl	__aeabi_dcmpge
+ 1780              	.LVL204:
+ 1781 02b8 0028     		cmp	r0, #0
+ 1782 02ba E1D0     		beq	.L187
+ 628:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 1783              		.loc 1 628 0
+ 1784 02bc 0495     		str	r5, [sp, #16]
+ 1785              	.LVL205:
+ 1786 02be 11E0     		b	.L166
+ 1787              	.LVL206:
+ 1788              	.L251:
+ 1789              	.LBE16:
+ 1790              	.LBB17:
+ 637:Middlewares/Third_Party/wakaama/observe.c ****                                  || (diff >= 0 && diff >= watcherP->parameters->step))
+ 1791              		.loc 1 637 0 discriminator 1
+ 1792 02c0 DDE90823 		ldrd	r2, [sp, #32]
+ 1793 02c4 0020     		movs	r0, #0
+ 1794 02c6 0021     		movs	r1, #0
+ 1795 02c8 FFF7FEFF 		bl	__aeabi_dsub
+ 1796              	.LVL207:
+ 1797 02cc D7E90823 		ldrd	r2, [r7, #32]
+ 1798 02d0 FFF7FEFF 		bl	__aeabi_dcmpge
+ 1799              	.LVL208:
+ 1800 02d4 0028     		cmp	r0, #0
+ 1801 02d6 3FF44BAF 		beq	.L188
+ 1802              		.loc 1 641 0
+ 1803 02da 0495     		str	r5, [sp, #16]
+ 1804              	.LVL209:
+ 1805 02dc 02E0     		b	.L166
+ 1806              	.LVL210:
+ 1807              	.L211:
+ 1808              	.LBE17:
+ 1809 02de 0495     		str	r5, [sp, #16]
+ 1810 02e0 00E0     		b	.L166
+ 1811              	.L212:
+ 1812 02e2 0495     		str	r5, [sp, #16]
+ 1813              	.LVL211:
+ 1814              	.L166:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 47
+
+
+ 642:Middlewares/Third_Party/wakaama/observe.c ****                                 }
+ 643:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 644:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 645:Middlewares/Third_Party/wakaama/observe.c ****                             default:
+ 646:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 647:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 648:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ 649:Middlewares/Third_Party/wakaama/observe.c ****                     }
+ 650:Middlewares/Third_Party/wakaama/observe.c **** 
+ 651:Middlewares/Third_Party/wakaama/observe.c ****                     if (watcherP->parameters != NULL
+ 1815              		.loc 1 651 0
+ 1816 02e4 FFB1     		cbz	r7, .L191
+ 652:Middlewares/Third_Party/wakaama/observe.c ****                      && (watcherP->parameters->toSet & LWM2M_ATTR_FLAG_MIN_PERIOD) != 0)
+ 1817              		.loc 1 652 0
+ 1818 02e6 3B78     		ldrb	r3, [r7]	@ zero_extendqisi2
+ 1819 02e8 13F0010F 		tst	r3, #1
+ 1820 02ec 1BD0     		beq	.L191
+ 653:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 654:Middlewares/Third_Party/wakaama/observe.c ****                         LOG_ARG("Checking minimal period (%d s)", watcherP->parameters->minPeriod);
+ 655:Middlewares/Third_Party/wakaama/observe.c **** 
+ 656:Middlewares/Third_Party/wakaama/observe.c ****                         if (watcherP->lastTime + watcherP->parameters->minPeriod > currentTime)
+ 1821              		.loc 1 656 0
+ 1822 02ee D4E90823 		ldrd	r2, [r4, #32]
+ 1823 02f2 7968     		ldr	r1, [r7, #4]
+ 1824 02f4 5718     		adds	r7, r2, r1
+ 1825 02f6 43F10008 		adc	r8, r3, #0
+ 1826 02fa DDE90223 		ldrd	r2, [sp, #8]
+ 1827 02fe BA42     		cmp	r2, r7
+ 1828 0300 73EB0801 		sbcs	r1, r3, r8
+ 1829 0304 28DA     		bge	.L192
+ 657:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 658:Middlewares/Third_Party/wakaama/observe.c ****                             // Minimum Period did not elapse yet
+ 659:Middlewares/Third_Party/wakaama/observe.c ****                             interval = watcherP->lastTime + watcherP->parameters->minPeriod - curre
+ 1830              		.loc 1 659 0
+ 1831 0306 BA1A     		subs	r2, r7, r2
+ 1832 0308 68EB0303 		sbc	r3, r8, r3
+ 1833              	.LVL212:
+ 660:Middlewares/Third_Party/wakaama/observe.c ****                             if (*timeoutP > interval) *timeoutP = interval;
+ 1834              		.loc 1 660 0
+ 1835 030c DBE90001 		ldrd	r0, [fp]
+ 1836 0310 8242     		cmp	r2, r0
+ 1837 0312 73EB0101 		sbcs	r1, r3, r1
+ 1838 0316 1CDA     		bge	.L230
+ 1839              		.loc 1 660 0 is_stmt 0 discriminator 1
+ 1840 0318 CBE90023 		strd	r2, [fp]
+ 661:Middlewares/Third_Party/wakaama/observe.c ****                             notify = false;
+ 1841              		.loc 1 661 0 is_stmt 1 discriminator 1
+ 1842 031c 0025     		movs	r5, #0
+ 1843 031e 04E0     		b	.L165
+ 1844              	.LVL213:
+ 1845              	.L213:
+ 535:Middlewares/Third_Party/wakaama/observe.c **** 
+ 1846              		.loc 1 535 0
+ 1847 0320 0023     		movs	r3, #0
+ 1848 0322 0493     		str	r3, [sp, #16]
+ 1849 0324 DEE7     		b	.L166
+ 1850              	.LVL214:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 48
+
+
+ 1851              	.L191:
+ 662:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ 663:Middlewares/Third_Party/wakaama/observe.c ****                         else
+ 664:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 665:Middlewares/Third_Party/wakaama/observe.c ****                             LOG("Notify on minimal period");
+ 666:Middlewares/Third_Party/wakaama/observe.c ****                             notify = true;
+ 667:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ 668:Middlewares/Third_Party/wakaama/observe.c ****                     }
+ 669:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 670:Middlewares/Third_Party/wakaama/observe.c **** 
+ 671:Middlewares/Third_Party/wakaama/observe.c ****                 // Is the Maximum Period reached ?
+ 672:Middlewares/Third_Party/wakaama/observe.c ****                 if (notify == false
+ 1852              		.loc 1 672 0
+ 1853 0326 049D     		ldr	r5, [sp, #16]
+ 1854 0328 ADB9     		cbnz	r5, .L231
+ 1855              	.LVL215:
+ 1856              	.L165:
+ 673:Middlewares/Third_Party/wakaama/observe.c ****                  && watcherP->parameters != NULL
+ 1857              		.loc 1 673 0
+ 1858 032a E168     		ldr	r1, [r4, #12]
+ 1859 032c A1B1     		cbz	r1, .L192
+ 674:Middlewares/Third_Party/wakaama/observe.c ****                  && (watcherP->parameters->toSet & LWM2M_ATTR_FLAG_MAX_PERIOD) != 0)
+ 1860              		.loc 1 674 0
+ 1861 032e 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 1862 0330 13F0020F 		tst	r3, #2
+ 1863 0334 10D0     		beq	.L192
+ 675:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 676:Middlewares/Third_Party/wakaama/observe.c ****                     LOG_ARG("Checking maximal period (%d s)", watcherP->parameters->maxPeriod);
+ 677:Middlewares/Third_Party/wakaama/observe.c **** 
+ 678:Middlewares/Third_Party/wakaama/observe.c ****                     if (watcherP->lastTime + watcherP->parameters->maxPeriod <= currentTime)
+ 1864              		.loc 1 678 0
+ 1865 0336 D4E90878 		ldrd	r7, [r4, #32]
+ 1866 033a 8968     		ldr	r1, [r1, #8]
+ 1867 033c 7A18     		adds	r2, r7, r1
+ 1868 033e 48F10003 		adc	r3, r8, #0
+ 1869 0342 DDE90201 		ldrd	r0, [sp, #8]
+ 1870 0346 9042     		cmp	r0, r2
+ 1871 0348 71EB0303 		sbcs	r3, r1, r3
+ 1872 034c 04DB     		blt	.L192
+ 679:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 680:Middlewares/Third_Party/wakaama/observe.c ****                         LOG("Notify on maximal period");
+ 681:Middlewares/Third_Party/wakaama/observe.c ****                         notify = true;
+ 1873              		.loc 1 681 0
+ 1874 034e 3546     		mov	r5, r6
+ 1875 0350 03E0     		b	.L193
+ 1876              	.LVL216:
+ 1877              	.L230:
+ 661:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ 1878              		.loc 1 661 0
+ 1879 0352 0025     		movs	r5, #0
+ 1880 0354 E9E7     		b	.L165
+ 1881              	.LVL217:
+ 1882              	.L231:
+ 1883 0356 049D     		ldr	r5, [sp, #16]
+ 1884              	.LVL218:
+ 1885              	.L192:
+ 682:Middlewares/Third_Party/wakaama/observe.c ****                     }
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 49
+
+
+ 683:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 684:Middlewares/Third_Party/wakaama/observe.c **** 
+ 685:Middlewares/Third_Party/wakaama/observe.c ****                 if (notify == true)
+ 1886              		.loc 1 685 0
+ 1887 0358 15B3     		cbz	r5, .L194
+ 1888              	.LVL219:
+ 1889              	.L193:
+ 686:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 687:Middlewares/Third_Party/wakaama/observe.c ****                     if (buffer == NULL)
+ 1890              		.loc 1 687 0
+ 1891 035a 0A9B     		ldr	r3, [sp, #40]
+ 1892 035c 002B     		cmp	r3, #0
+ 1893 035e 68D0     		beq	.L253
+ 1894              	.L195:
+ 688:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 689:Middlewares/Third_Party/wakaama/observe.c ****                         if (dataP != NULL)
+ 690:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 691:Middlewares/Third_Party/wakaama/observe.c ****                             int res;
+ 692:Middlewares/Third_Party/wakaama/observe.c **** 
+ 693:Middlewares/Third_Party/wakaama/observe.c ****                             res = lwm2m_data_serialize(&targetP->uri, size, dataP, &(watcherP->form
+ 694:Middlewares/Third_Party/wakaama/observe.c ****                             if (res < 0)
+ 695:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 696:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 697:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 698:Middlewares/Third_Party/wakaama/observe.c ****                             else
+ 699:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 700:Middlewares/Third_Party/wakaama/observe.c ****                                 length = (size_t)res;
+ 701:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 702:Middlewares/Third_Party/wakaama/observe.c **** 
+ 703:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ 704:Middlewares/Third_Party/wakaama/observe.c ****                         else
+ 705:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 706:Middlewares/Third_Party/wakaama/observe.c ****                             if (COAP_205_CONTENT != object_read(contextP, &targetP->uri, &(watcherP
+ 707:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 708:Middlewares/Third_Party/wakaama/observe.c ****                                 buffer = NULL;
+ 709:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 710:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 711:Middlewares/Third_Party/wakaama/observe.c ****                         }
+ 712:Middlewares/Third_Party/wakaama/observe.c ****                         coap_init_message(message, COAP_TYPE_NON, COAP_205_CONTENT, 0);
+ 713:Middlewares/Third_Party/wakaama/observe.c ****                         coap_set_header_content_type(message, watcherP->format);
+ 714:Middlewares/Third_Party/wakaama/observe.c ****                         coap_set_payload(message, buffer, length);
+ 715:Middlewares/Third_Party/wakaama/observe.c ****                     }
+ 716:Middlewares/Third_Party/wakaama/observe.c ****                     watcherP->lastTime = currentTime;
+ 1895              		.loc 1 716 0
+ 1896 0360 DDE90223 		ldrd	r2, [sp, #8]
+ 1897 0364 C4E90823 		strd	r2, [r4, #32]
+ 717:Middlewares/Third_Party/wakaama/observe.c ****                     watcherP->lastMid = contextP->nextMID++;
+ 1898              		.loc 1 717 0
+ 1899 0368 BAF82030 		ldrh	r3, [r10, #32]
+ 1900 036c 5A1C     		adds	r2, r3, #1
+ 1901 036e AAF82020 		strh	r2, [r10, #32]	@ movhi
+ 1902 0372 A385     		strh	r3, [r4, #44]	@ movhi
+ 718:Middlewares/Third_Party/wakaama/observe.c ****                     message->mid = watcherP->lastMid;
+ 1903              		.loc 1 718 0
+ 1904 0374 ADF85430 		strh	r3, [sp, #84]	@ movhi
+ 719:Middlewares/Third_Party/wakaama/observe.c ****                     coap_set_header_token(message, watcherP->token, watcherP->tokenLen);
+ 1905              		.loc 1 719 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 50
+
+
+ 1906 0378 E269     		ldr	r2, [r4, #28]
+ 1907 037a 04F11201 		add	r1, r4, #18
+ 1908 037e 13A8     		add	r0, sp, #76
+ 1909 0380 FFF7FEFF 		bl	coap_set_header_token
+ 1910              	.LVL220:
+ 720:Middlewares/Third_Party/wakaama/observe.c ****                     coap_set_header_observe(message, watcherP->counter++);
+ 1911              		.loc 1 720 0
+ 1912 0384 A16A     		ldr	r1, [r4, #40]
+ 1913 0386 4B1C     		adds	r3, r1, #1
+ 1914 0388 A362     		str	r3, [r4, #40]
+ 1915 038a 13A8     		add	r0, sp, #76
+ 1916 038c FFF7FEFF 		bl	coap_set_header_observe
+ 1917              	.LVL221:
+ 721:Middlewares/Third_Party/wakaama/observe.c ****                     (void)message_send(contextP, message, watcherP->server->sessionH);
+ 1918              		.loc 1 721 0
+ 1919 0390 A368     		ldr	r3, [r4, #8]
+ 1920 0392 DA69     		ldr	r2, [r3, #28]
+ 1921 0394 13A9     		add	r1, sp, #76
+ 1922 0396 5046     		mov	r0, r10
+ 1923 0398 FFF7FEFF 		bl	message_send
+ 1924              	.LVL222:
+ 722:Middlewares/Third_Party/wakaama/observe.c ****                     watcherP->update = false;
+ 1925              		.loc 1 722 0
+ 1926 039c 0023     		movs	r3, #0
+ 1927 039e 6371     		strb	r3, [r4, #5]
+ 1928              	.L194:
+ 723:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 724:Middlewares/Third_Party/wakaama/observe.c **** 
+ 725:Middlewares/Third_Party/wakaama/observe.c ****                 // Store this value
+ 726:Middlewares/Third_Party/wakaama/observe.c ****                 if (notify == true && storeValue == true)
+ 1929              		.loc 1 726 0
+ 1930 03a0 3DB1     		cbz	r5, .L199
+ 1931              		.loc 1 726 0 is_stmt 0 discriminator 1
+ 1932 03a2 079B     		ldr	r3, [sp, #28]
+ 1933 03a4 2BB1     		cbz	r3, .L199
+ 727:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 728:Middlewares/Third_Party/wakaama/observe.c ****                     switch (dataP->type)
+ 1934              		.loc 1 728 0 is_stmt 1
+ 1935 03a6 0C9B     		ldr	r3, [sp, #48]
+ 1936 03a8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1937 03aa 062B     		cmp	r3, #6
+ 1938 03ac 71D0     		beq	.L200
+ 1939 03ae 072B     		cmp	r3, #7
+ 1940 03b0 74D0     		beq	.L201
+ 1941              	.L199:
+ 729:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 730:Middlewares/Third_Party/wakaama/observe.c ****                     case LWM2M_TYPE_INTEGER:
+ 731:Middlewares/Third_Party/wakaama/observe.c ****                         watcherP->lastValue.asInteger = integerValue;
+ 732:Middlewares/Third_Party/wakaama/observe.c ****                         break;
+ 733:Middlewares/Third_Party/wakaama/observe.c ****                     case LWM2M_TYPE_FLOAT:
+ 734:Middlewares/Third_Party/wakaama/observe.c ****                         watcherP->lastValue.asFloat = floatValue;
+ 735:Middlewares/Third_Party/wakaama/observe.c ****                         break;
+ 736:Middlewares/Third_Party/wakaama/observe.c ****                     default:
+ 737:Middlewares/Third_Party/wakaama/observe.c ****                         break;
+ 738:Middlewares/Third_Party/wakaama/observe.c ****                     }
+ 739:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 740:Middlewares/Third_Party/wakaama/observe.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 51
+
+
+ 741:Middlewares/Third_Party/wakaama/observe.c ****                 if (watcherP->parameters != NULL && (watcherP->parameters->toSet & LWM2M_ATTR_FLAG_
+ 1942              		.loc 1 741 0
+ 1943 03b2 E168     		ldr	r1, [r4, #12]
+ 1944 03b4 C1B1     		cbz	r1, .L164
+ 1945              		.loc 1 741 0 is_stmt 0 discriminator 1
+ 1946 03b6 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 1947 03b8 13F0020F 		tst	r3, #2
+ 1948 03bc 14D0     		beq	.L164
+ 742:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 743:Middlewares/Third_Party/wakaama/observe.c ****                     // update timers
+ 744:Middlewares/Third_Party/wakaama/observe.c ****                     interval = watcherP->lastTime + watcherP->parameters->maxPeriod - currentTime;
+ 1949              		.loc 1 744 0 is_stmt 1
+ 1950 03be D4E90856 		ldrd	r5, [r4, #32]
+ 1951 03c2 8968     		ldr	r1, [r1, #8]
+ 1952 03c4 6A18     		adds	r2, r5, r1
+ 1953 03c6 46F10003 		adc	r3, r6, #0
+ 1954 03ca DDE90201 		ldrd	r0, [sp, #8]
+ 1955 03ce 101A     		subs	r0, r2, r0
+ 1956 03d0 63EB0101 		sbc	r1, r3, r1
+ 1957 03d4 0246     		mov	r2, r0
+ 1958 03d6 0B46     		mov	r3, r1
+ 1959              	.LVL223:
+ 745:Middlewares/Third_Party/wakaama/observe.c ****                     if (*timeoutP > interval) *timeoutP = interval;
+ 1960              		.loc 1 745 0
+ 1961 03d8 DBE90001 		ldrd	r0, [fp]
+ 1962 03dc 8242     		cmp	r2, r0
+ 1963 03de 73EB0101 		sbcs	r1, r3, r1
+ 1964 03e2 01DA     		bge	.L164
+ 1965              		.loc 1 745 0 is_stmt 0 discriminator 1
+ 1966 03e4 CBE90023 		strd	r2, [fp]
+ 1967              	.LVL224:
+ 1968              	.L164:
+ 1969              	.LBE14:
+ 531:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 1970              		.loc 1 531 0 is_stmt 1 discriminator 2
+ 1971 03e8 2468     		ldr	r4, [r4]
+ 1972              	.LVL225:
+ 1973              	.L163:
+ 531:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 1974              		.loc 1 531 0 is_stmt 0 discriminator 1
+ 1975 03ea 002C     		cmp	r4, #0
+ 1976 03ec 5BD0     		beq	.L254
+ 533:Middlewares/Third_Party/wakaama/observe.c ****             {
+ 1977              		.loc 1 533 0 is_stmt 1
+ 1978 03ee 2679     		ldrb	r6, [r4, #4]	@ zero_extendqisi2
+ 1979 03f0 002E     		cmp	r6, #0
+ 1980 03f2 F9D0     		beq	.L164
+ 1981              	.LVL226:
+ 1982              	.LBB19:
+ 537:Middlewares/Third_Party/wakaama/observe.c ****                 {
+ 1983              		.loc 1 537 0
+ 1984 03f4 6579     		ldrb	r5, [r4, #5]	@ zero_extendqisi2
+ 1985 03f6 002D     		cmp	r5, #0
+ 1986 03f8 97D0     		beq	.L165
+ 541:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 1987              		.loc 1 541 0
+ 1988 03fa E768     		ldr	r7, [r4, #12]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 52
+
+
+ 1989 03fc 002F     		cmp	r7, #0
+ 1990 03fe 3FF46EAF 		beq	.L211
+ 541:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 1991              		.loc 1 541 0 is_stmt 0 discriminator 1
+ 1992 0402 97F80080 		ldrb	r8, [r7]	@ zero_extendqisi2
+ 1993 0406 B8F1000F 		cmp	r8, #0
+ 1994 040a 3FF46AAF 		beq	.L212
+ 551:Middlewares/Third_Party/wakaama/observe.c ****                     {
+ 1995              		.loc 1 551 0 is_stmt 1
+ 1996 040e 18F01C0F 		tst	r8, #28
+ 1997 0412 85D0     		beq	.L213
+ 553:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 1998              		.loc 1 553 0
+ 1999 0414 18F0080F 		tst	r8, #8
+ 2000 0418 3FF484AE 		beq	.L214
+ 557:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 2001              		.loc 1 557 0
+ 2002 041c 0C9B     		ldr	r3, [sp, #48]
+ 2003 041e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2004 0420 062B     		cmp	r3, #6
+ 2005 0422 3FF429AE 		beq	.L168
+ 2006 0426 072B     		cmp	r3, #7
+ 2007 0428 3FF456AE 		beq	.L169
+ 535:Middlewares/Third_Party/wakaama/observe.c **** 
+ 2008              		.loc 1 535 0
+ 2009 042c 0023     		movs	r3, #0
+ 2010 042e 0493     		str	r3, [sp, #16]
+ 2011 0430 7AE6     		b	.L167
+ 2012              	.LVL227:
+ 2013              	.L253:
+ 689:Middlewares/Third_Party/wakaama/observe.c ****                         {
+ 2014              		.loc 1 689 0
+ 2015 0432 0C9A     		ldr	r2, [sp, #48]
+ 2016 0434 DAB1     		cbz	r2, .L196
+ 2017              	.LBB18:
+ 693:Middlewares/Third_Party/wakaama/observe.c ****                             if (res < 0)
+ 2018              		.loc 1 693 0
+ 2019 0436 0AAB     		add	r3, sp, #40
+ 2020 0438 0093     		str	r3, [sp]
+ 2021 043a 04F11003 		add	r3, r4, #16
+ 2022 043e 0D99     		ldr	r1, [sp, #52]
+ 2023 0440 09F10400 		add	r0, r9, #4
+ 2024 0444 FFF7FEFF 		bl	lwm2m_data_serialize
+ 2025              	.LVL228:
+ 694:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 2026              		.loc 1 694 0
+ 2027 0448 0028     		cmp	r0, #0
+ 2028 044a 59DB     		blt	.L247
+ 700:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 2029              		.loc 1 700 0
+ 2030 044c 0B90     		str	r0, [sp, #44]
+ 2031              	.LVL229:
+ 2032              	.L198:
+ 2033              	.LBE18:
+ 712:Middlewares/Third_Party/wakaama/observe.c ****                         coap_set_header_content_type(message, watcherP->format);
+ 2034              		.loc 1 712 0
+ 2035 044e 0023     		movs	r3, #0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 53
+
+
+ 2036 0450 4522     		movs	r2, #69
+ 2037 0452 0121     		movs	r1, #1
+ 2038 0454 13A8     		add	r0, sp, #76
+ 2039 0456 FFF7FEFF 		bl	coap_init_message
+ 2040              	.LVL230:
+ 713:Middlewares/Third_Party/wakaama/observe.c ****                         coap_set_payload(message, buffer, length);
+ 2041              		.loc 1 713 0
+ 2042 045a 218A     		ldrh	r1, [r4, #16]
+ 2043 045c 13A8     		add	r0, sp, #76
+ 2044 045e FFF7FEFF 		bl	coap_set_header_content_type
+ 2045              	.LVL231:
+ 714:Middlewares/Third_Party/wakaama/observe.c ****                     }
+ 2046              		.loc 1 714 0
+ 2047 0462 0B9A     		ldr	r2, [sp, #44]
+ 2048 0464 0A99     		ldr	r1, [sp, #40]
+ 2049 0466 13A8     		add	r0, sp, #76
+ 2050 0468 FFF7FEFF 		bl	coap_set_payload
+ 2051              	.LVL232:
+ 2052 046c 78E7     		b	.L195
+ 2053              	.L196:
+ 706:Middlewares/Third_Party/wakaama/observe.c ****                             {
+ 2054              		.loc 1 706 0
+ 2055 046e 0BAB     		add	r3, sp, #44
+ 2056 0470 0093     		str	r3, [sp]
+ 2057 0472 0AAB     		add	r3, sp, #40
+ 2058 0474 04F11002 		add	r2, r4, #16
+ 2059 0478 09F10401 		add	r1, r9, #4
+ 2060 047c 5046     		mov	r0, r10
+ 2061 047e FFF7FEFF 		bl	object_read
+ 2062              	.LVL233:
+ 2063 0482 4528     		cmp	r0, #69
+ 2064 0484 E3D0     		beq	.L198
+ 2065 0486 C846     		mov	r8, r9
+ 2066 0488 D146     		mov	r9, r10
+ 2067              	.LVL234:
+ 2068 048a 5F46     		mov	r7, fp
+ 708:Middlewares/Third_Party/wakaama/observe.c ****                                 break;
+ 2069              		.loc 1 708 0
+ 2070 048c 0023     		movs	r3, #0
+ 2071 048e 0A93     		str	r3, [sp, #40]
+ 709:Middlewares/Third_Party/wakaama/observe.c ****                             }
+ 2072              		.loc 1 709 0
+ 2073 0490 0CE0     		b	.L197
+ 2074              	.LVL235:
+ 2075              	.L200:
+ 731:Middlewares/Third_Party/wakaama/observe.c ****                         break;
+ 2076              		.loc 1 731 0
+ 2077 0492 DDE91023 		ldrd	r2, [sp, #64]
+ 2078 0496 C4E90C23 		strd	r2, [r4, #48]
+ 732:Middlewares/Third_Party/wakaama/observe.c ****                     case LWM2M_TYPE_FLOAT:
+ 2079              		.loc 1 732 0
+ 2080 049a 8AE7     		b	.L199
+ 2081              	.L201:
+ 734:Middlewares/Third_Party/wakaama/observe.c ****                         break;
+ 2082              		.loc 1 734 0
+ 2083 049c DDE90E23 		ldrd	r2, [sp, #56]
+ 2084 04a0 C4E90C23 		strd	r2, [r4, #48]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 54
+
+
+ 735:Middlewares/Third_Party/wakaama/observe.c ****                     default:
+ 2085              		.loc 1 735 0
+ 2086 04a4 85E7     		b	.L199
+ 2087              	.L254:
+ 2088 04a6 C846     		mov	r8, r9
+ 2089 04a8 D146     		mov	r9, r10
+ 2090              	.LVL236:
+ 2091 04aa 5F46     		mov	r7, fp
+ 2092              	.LVL237:
+ 2093              	.L197:
+ 2094              	.LBE19:
+ 746:Middlewares/Third_Party/wakaama/observe.c ****                 }
+ 747:Middlewares/Third_Party/wakaama/observe.c ****             }
+ 748:Middlewares/Third_Party/wakaama/observe.c ****         }
+ 749:Middlewares/Third_Party/wakaama/observe.c ****         if (dataP != NULL) lwm2m_data_free(size, dataP);
+ 2095              		.loc 1 749 0
+ 2096 04ac 0C99     		ldr	r1, [sp, #48]
+ 2097 04ae 11B1     		cbz	r1, .L203
+ 2098              		.loc 1 749 0 is_stmt 0 discriminator 1
+ 2099 04b0 0D98     		ldr	r0, [sp, #52]
+ 2100 04b2 FFF7FEFF 		bl	lwm2m_data_free
+ 2101              	.LVL238:
+ 2102              	.L203:
+ 750:Middlewares/Third_Party/wakaama/observe.c ****         if (buffer != NULL) lwm2m_free(buffer);
+ 2103              		.loc 1 750 0 is_stmt 1
+ 2104 04b6 0A98     		ldr	r0, [sp, #40]
+ 2105 04b8 08B1     		cbz	r0, .L205
+ 2106              		.loc 1 750 0 is_stmt 0 discriminator 1
+ 2107 04ba FFF7FEFF 		bl	lwm2m_free
+ 2108              	.LVL239:
+ 2109              	.L205:
+ 2110              	.LBE13:
+ 492:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 2111              		.loc 1 492 0 is_stmt 1 discriminator 2
+ 2112 04be D8F80080 		ldr	r8, [r8]
+ 2113              	.LVL240:
+ 2114              	.L158:
+ 492:Middlewares/Third_Party/wakaama/observe.c ****     {
+ 2115              		.loc 1 492 0 is_stmt 0 discriminator 1
+ 2116 04c2 B8F1000F 		cmp	r8, #0
+ 2117 04c6 1FD0     		beq	.L255
+ 2118              	.LBB20:
+ 495:Middlewares/Third_Party/wakaama/observe.c ****         size_t length = 0;
+ 2119              		.loc 1 495 0 is_stmt 1
+ 2120 04c8 0023     		movs	r3, #0
+ 2121 04ca 0A93     		str	r3, [sp, #40]
+ 496:Middlewares/Third_Party/wakaama/observe.c ****         lwm2m_data_t * dataP = NULL;
+ 2122              		.loc 1 496 0
+ 2123 04cc 0B93     		str	r3, [sp, #44]
+ 497:Middlewares/Third_Party/wakaama/observe.c ****         int size = 0;
+ 2124              		.loc 1 497 0
+ 2125 04ce 0C93     		str	r3, [sp, #48]
+ 498:Middlewares/Third_Party/wakaama/observe.c ****         double floatValue = 0;
+ 2126              		.loc 1 498 0
+ 2127 04d0 0D93     		str	r3, [sp, #52]
+ 499:Middlewares/Third_Party/wakaama/observe.c ****         int64_t integerValue = 0;
+ 2128              		.loc 1 499 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 55
+
+
+ 2129 04d2 0022     		movs	r2, #0
+ 2130 04d4 0023     		movs	r3, #0
+ 2131 04d6 CDE90E23 		strd	r2, [sp, #56]
+ 500:Middlewares/Third_Party/wakaama/observe.c ****         bool storeValue = false;
+ 2132              		.loc 1 500 0
+ 2133 04da 0022     		movs	r2, #0
+ 2134 04dc 0023     		movs	r3, #0
+ 2135 04de CDE91023 		strd	r2, [sp, #64]
+ 2136              	.LVL241:
+ 506:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 2137              		.loc 1 506 0
+ 2138 04e2 98F80430 		ldrb	r3, [r8, #4]	@ zero_extendqisi2
+ 2139 04e6 13F0010F 		tst	r3, #1
+ 2140 04ea 7FF498AD 		bne	.L256
+ 501:Middlewares/Third_Party/wakaama/observe.c ****         coap_packet_t message[1];
+ 2141              		.loc 1 501 0
+ 2142 04ee 0023     		movs	r3, #0
+ 2143 04f0 0793     		str	r3, [sp, #28]
+ 2144              	.L159:
+ 2145              	.LVL242:
+ 531:Middlewares/Third_Party/wakaama/observe.c ****         {
+ 2146              		.loc 1 531 0
+ 2147 04f2 D8F80CA0 		ldr	r10, [r8, #12]
+ 2148              	.LVL243:
+ 2149 04f6 5446     		mov	r4, r10
+ 2150 04f8 CA46     		mov	r10, r9
+ 2151              	.LVL244:
+ 2152 04fa C146     		mov	r9, r8
+ 2153              	.LVL245:
+ 2154 04fc BB46     		mov	fp, r7
+ 2155 04fe 74E7     		b	.L163
+ 2156              	.LVL246:
+ 2157              	.L247:
+ 2158 0500 C846     		mov	r8, r9
+ 2159 0502 D146     		mov	r9, r10
+ 2160              	.LVL247:
+ 2161 0504 5F46     		mov	r7, fp
+ 2162 0506 D1E7     		b	.L197
+ 2163              	.LVL248:
+ 2164              	.L255:
+ 2165              	.LBE20:
+ 751:Middlewares/Third_Party/wakaama/observe.c ****     }
+ 752:Middlewares/Third_Party/wakaama/observe.c **** }
+ 2166              		.loc 1 752 0
+ 2167 0508 37B0     		add	sp, sp, #220
+ 2168              	.LCFI24:
+ 2169              		.cfi_def_cfa_offset 52
+ 2170              		@ sp needed
+ 2171 050a BDEC048B 		vldm	sp!, {d8-d9}
+ 2172              	.LCFI25:
+ 2173              		.cfi_restore 82
+ 2174              		.cfi_restore 83
+ 2175              		.cfi_restore 80
+ 2176              		.cfi_restore 81
+ 2177              		.cfi_def_cfa_offset 36
+ 2178 050e BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 2179              		.cfi_endproc
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 56
+
+
+ 2180              	.LFE13:
+ 2182              		.text
+ 2183              	.Letext0:
+ 2184              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 2185              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 2186              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 2187              		.file 5 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 2188              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 2189              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 2190              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_timeval.h
+ 2191              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 2192              		.file 10 "Middlewares/Third_Party/wakaama/liblwm2m.h"
+ 2193              		.file 11 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 2194              		.file 12 "Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.h"
+ 2195              		.file 13 "Middlewares/Third_Party/wakaama/internals.h"
+ 2196              		.file 14 "<built-in>"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s 			page 57
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 observe.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:18     .text.prv_findObserved:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:24     .text.prv_findObserved:0000000000000000 prv_findObserved
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:120    .text.prv_unlinkObserved:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:126    .text.prv_unlinkObserved:0000000000000000 prv_unlinkObserved
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:169    .text.prv_findWatcher:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:175    .text.prv_findWatcher:0000000000000000 prv_findWatcher
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:206    .text.prv_getWatcher:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:212    .text.prv_getWatcher:0000000000000000 prv_getWatcher
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:334    .text.observe_cancel:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:341    .text.observe_cancel:0000000000000000 observe_cancel
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:483    .text.observe_handleRequest:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:490    .text.observe_handleRequest:0000000000000000 observe_handleRequest
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:692    .text.observe_clear:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:699    .text.observe_clear:0000000000000000 observe_clear
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:799    .text.observe_setParameters:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:806    .text.observe_setParameters:0000000000000000 observe_setParameters
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:1085   .text.observe_findByUri:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:1092   .text.observe_findByUri:0000000000000000 observe_findByUri
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:1195   .text.lwm2m_resource_value_changed:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:1202   .text.lwm2m_resource_value_changed:0000000000000000 lwm2m_resource_value_changed
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:1364   .text.observe_step:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cc7wwn33.s:1371   .text.observe_step:0000000000000000 observe_step
+
+UNDEFINED SYMBOLS
+lwm2m_malloc
+memset
+lwm2m_free
+lwm2m_session_is_equal
+coap_get_header_observe
+memcpy
+lwm2m_gettime
+coap_set_header_observe
+utils_convertMediaType
+lwm2m_data_decode_int
+lwm2m_data_decode_float
+lwm2m_list_free
+__aeabi_d2f
+object_checkReadable
+__aeabi_l2d
+__aeabi_dcmplt
+__aeabi_dcmpgt
+__aeabi_dcmpge
+__aeabi_dsub
+__aeabi_dcmple
+object_readData
+lwm2m_data_free
+coap_set_header_token
+message_send
+lwm2m_data_serialize
+coap_init_message
+coap_set_header_content_type
+coap_set_payload
+object_read

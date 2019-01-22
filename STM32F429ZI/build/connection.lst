@@ -1,0 +1,1013 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"connection.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.connection_find,"ax",%progbits
+  18              		.align	1
+  19              		.global	connection_find
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	connection_find:
+  26              	.LFB147:
+  27              		.file 1 "Src/communication/wakaama_client/connection.c"
+   1:Src/communication/wakaama_client/connection.c **** /*******************************************************************************
+   2:Src/communication/wakaama_client/connection.c ****  *
+   3:Src/communication/wakaama_client/connection.c ****  * Copyright (c) 2013, 2014 Intel Corporation and others.
+   4:Src/communication/wakaama_client/connection.c ****  * All rights reserved. This program and the accompanying materials
+   5:Src/communication/wakaama_client/connection.c ****  * are made available under the terms of the Eclipse Public License v1.0
+   6:Src/communication/wakaama_client/connection.c ****  * and Eclipse Distribution License v1.0 which accompany this distribution.
+   7:Src/communication/wakaama_client/connection.c ****  *
+   8:Src/communication/wakaama_client/connection.c ****  * The Eclipse Public License is available at
+   9:Src/communication/wakaama_client/connection.c ****  *    http://www.eclipse.org/legal/epl-v10.html
+  10:Src/communication/wakaama_client/connection.c ****  * The Eclipse Distribution License is available at
+  11:Src/communication/wakaama_client/connection.c ****  *    http://www.eclipse.org/org/documents/edl-v10.php.
+  12:Src/communication/wakaama_client/connection.c ****  *
+  13:Src/communication/wakaama_client/connection.c ****  * Contributors:
+  14:Src/communication/wakaama_client/connection.c ****  *    David Navarro, Intel Corporation - initial API and implementation
+  15:Src/communication/wakaama_client/connection.c ****  *    Pascal Rieux - Please refer to git log
+  16:Src/communication/wakaama_client/connection.c ****       Maksymilian Wojczuk, Tomasz Michalec - adjustments for STM32F4 board,
+  17:Src/communication/wakaama_client/connection.c ****  *       please refer to git log
+  18:Src/communication/wakaama_client/connection.c ****  *    
+  19:Src/communication/wakaama_client/connection.c ****  *******************************************************************************/
+  20:Src/communication/wakaama_client/connection.c **** 
+  21:Src/communication/wakaama_client/connection.c **** #include <stdlib.h>
+  22:Src/communication/wakaama_client/connection.c **** #include <string.h>
+  23:Src/communication/wakaama_client/connection.c **** #include <ctype.h>
+  24:Src/communication/wakaama_client/connection.c **** #include "connection.h"
+  25:Src/communication/wakaama_client/connection.c **** 
+  26:Src/communication/wakaama_client/connection.c **** connection_t * connection_find(connection_t * connList, struct sockaddr_storage * addr, size_t addr
+  28              		.loc 1 26 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 2
+
+
+  33 0000 70B5     		push	{r4, r5, r6, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 4, -16
+  37              		.cfi_offset 5, -12
+  38              		.cfi_offset 6, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0446     		mov	r4, r0
+  41 0004 0E46     		mov	r6, r1
+  42 0006 1546     		mov	r5, r2
+  43              	.LVL1:
+  27:Src/communication/wakaama_client/connection.c ****     connection_t * connP;
+  28:Src/communication/wakaama_client/connection.c **** 
+  29:Src/communication/wakaama_client/connection.c ****     connP = connList;
+  30:Src/communication/wakaama_client/connection.c ****     while (connP != NULL) {
+  44              		.loc 1 30 0
+  45 0008 00E0     		b	.L2
+  46              	.LVL2:
+  47              	.L3:
+  31:Src/communication/wakaama_client/connection.c ****         if ((connP->addrLen == addrLen)
+  32:Src/communication/wakaama_client/connection.c ****          && (memcmp(&(connP->addr), addr, addrLen) == 0)) {
+  33:Src/communication/wakaama_client/connection.c ****             return connP;
+  34:Src/communication/wakaama_client/connection.c ****         }
+  35:Src/communication/wakaama_client/connection.c ****         connP = connP->next;
+  48              		.loc 1 35 0
+  49 000a 2468     		ldr	r4, [r4]
+  50              	.LVL3:
+  51              	.L2:
+  30:Src/communication/wakaama_client/connection.c ****         if ((connP->addrLen == addrLen)
+  52              		.loc 1 30 0
+  53 000c 54B1     		cbz	r4, .L4
+  31:Src/communication/wakaama_client/connection.c ****         if ((connP->addrLen == addrLen)
+  54              		.loc 1 31 0
+  55 000e A369     		ldr	r3, [r4, #24]
+  56 0010 AB42     		cmp	r3, r5
+  57 0012 FAD1     		bne	.L3
+  32:Src/communication/wakaama_client/connection.c ****             return connP;
+  58              		.loc 1 32 0
+  59 0014 2A46     		mov	r2, r5
+  60 0016 3146     		mov	r1, r6
+  61 0018 04F10800 		add	r0, r4, #8
+  62 001c FFF7FEFF 		bl	memcmp
+  63              	.LVL4:
+  64 0020 0028     		cmp	r0, #0
+  65 0022 F2D1     		bne	.L3
+  66              	.L4:
+  36:Src/communication/wakaama_client/connection.c ****     }
+  37:Src/communication/wakaama_client/connection.c ****     return connP;
+  38:Src/communication/wakaama_client/connection.c **** }
+  67              		.loc 1 38 0
+  68 0024 2046     		mov	r0, r4
+  69 0026 70BD     		pop	{r4, r5, r6, pc}
+  70              		.cfi_endproc
+  71              	.LFE147:
+  73              		.section	.text.connection_new_incoming,"ax",%progbits
+  74              		.align	1
+  75              		.global	connection_new_incoming
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 3
+
+
+  76              		.syntax unified
+  77              		.thumb
+  78              		.thumb_func
+  79              		.fpu fpv4-sp-d16
+  81              	connection_new_incoming:
+  82              	.LFB148:
+  39:Src/communication/wakaama_client/connection.c **** 
+  40:Src/communication/wakaama_client/connection.c **** connection_t * connection_new_incoming(connection_t * connList,
+  41:Src/communication/wakaama_client/connection.c ****                                        int sock,
+  42:Src/communication/wakaama_client/connection.c ****                                        struct sockaddr * addr,
+  43:Src/communication/wakaama_client/connection.c ****                                        size_t addrLen) {
+  83              		.loc 1 43 0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 0, uses_anonymous_args = 0
+  87              	.LVL5:
+  88 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  89              	.LCFI1:
+  90              		.cfi_def_cfa_offset 24
+  91              		.cfi_offset 4, -24
+  92              		.cfi_offset 5, -20
+  93              		.cfi_offset 6, -16
+  94              		.cfi_offset 7, -12
+  95              		.cfi_offset 8, -8
+  96              		.cfi_offset 14, -4
+  97 0004 0646     		mov	r6, r0
+  98 0006 8846     		mov	r8, r1
+  99 0008 1746     		mov	r7, r2
+ 100 000a 1D46     		mov	r5, r3
+  44:Src/communication/wakaama_client/connection.c ****     connection_t * connP;
+  45:Src/communication/wakaama_client/connection.c **** 
+  46:Src/communication/wakaama_client/connection.c ****     connP = (connection_t *)lwm2m_malloc(sizeof(connection_t));
+ 101              		.loc 1 46 0
+ 102 000c 1C20     		movs	r0, #28
+ 103              	.LVL6:
+ 104 000e FFF7FEFF 		bl	lwm2m_malloc
+ 105              	.LVL7:
+  47:Src/communication/wakaama_client/connection.c ****     if (connP != NULL)
+ 106              		.loc 1 47 0
+ 107 0012 0446     		mov	r4, r0
+ 108 0014 40B1     		cbz	r0, .L7
+  48:Src/communication/wakaama_client/connection.c ****     {
+  49:Src/communication/wakaama_client/connection.c ****         connP->sock = sock;
+ 109              		.loc 1 49 0
+ 110 0016 C0F80480 		str	r8, [r0, #4]
+  50:Src/communication/wakaama_client/connection.c ****         memcpy(&(connP->addr), addr, addrLen);
+ 111              		.loc 1 50 0
+ 112 001a 2A46     		mov	r2, r5
+ 113 001c 3946     		mov	r1, r7
+ 114 001e 0830     		adds	r0, r0, #8
+ 115              	.LVL8:
+ 116 0020 FFF7FEFF 		bl	memcpy
+ 117              	.LVL9:
+  51:Src/communication/wakaama_client/connection.c ****         connP->addrLen = addrLen;
+ 118              		.loc 1 51 0
+ 119 0024 A561     		str	r5, [r4, #24]
+  52:Src/communication/wakaama_client/connection.c ****         connP->next = connList;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 4
+
+
+ 120              		.loc 1 52 0
+ 121 0026 2660     		str	r6, [r4]
+ 122              	.L7:
+  53:Src/communication/wakaama_client/connection.c ****     }
+  54:Src/communication/wakaama_client/connection.c **** 
+  55:Src/communication/wakaama_client/connection.c ****     return connP;
+  56:Src/communication/wakaama_client/connection.c **** }
+ 123              		.loc 1 56 0
+ 124 0028 2046     		mov	r0, r4
+ 125 002a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 126              		.cfi_endproc
+ 127              	.LFE148:
+ 129              		.section	.text.connection_create,"ax",%progbits
+ 130              		.align	1
+ 131              		.global	connection_create
+ 132              		.syntax unified
+ 133              		.thumb
+ 134              		.thumb_func
+ 135              		.fpu fpv4-sp-d16
+ 137              	connection_create:
+ 138              	.LFB149:
+  57:Src/communication/wakaama_client/connection.c **** 
+  58:Src/communication/wakaama_client/connection.c **** connection_t * connection_create(connection_t * connList,
+  59:Src/communication/wakaama_client/connection.c ****                                  int sock,
+  60:Src/communication/wakaama_client/connection.c ****                                  char * host,
+  61:Src/communication/wakaama_client/connection.c ****                                  char * port,
+  62:Src/communication/wakaama_client/connection.c ****                                  int addressFamily) {
+ 139              		.loc 1 62 0
+ 140              		.cfi_startproc
+ 141              		@ args = 4, pretend = 0, frame = 40
+ 142              		@ frame_needed = 0, uses_anonymous_args = 0
+ 143              	.LVL10:
+ 144 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 145              	.LCFI2:
+ 146              		.cfi_def_cfa_offset 32
+ 147              		.cfi_offset 4, -32
+ 148              		.cfi_offset 5, -28
+ 149              		.cfi_offset 6, -24
+ 150              		.cfi_offset 7, -20
+ 151              		.cfi_offset 8, -16
+ 152              		.cfi_offset 9, -12
+ 153              		.cfi_offset 10, -8
+ 154              		.cfi_offset 14, -4
+ 155 0004 8AB0     		sub	sp, sp, #40
+ 156              	.LCFI3:
+ 157              		.cfi_def_cfa_offset 72
+ 158 0006 8146     		mov	r9, r0
+ 159 0008 8A46     		mov	r10, r1
+ 160 000a 1446     		mov	r4, r2
+ 161 000c 1D46     		mov	r5, r3
+  63:Src/communication/wakaama_client/connection.c ****     struct addrinfo hints;
+  64:Src/communication/wakaama_client/connection.c ****     struct addrinfo *servinfo = NULL;
+ 162              		.loc 1 64 0
+ 163 000e 0021     		movs	r1, #0
+ 164              	.LVL11:
+ 165 0010 0191     		str	r1, [sp, #4]
+ 166              	.LVL12:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 5
+
+
+  65:Src/communication/wakaama_client/connection.c ****     struct addrinfo *p;
+  66:Src/communication/wakaama_client/connection.c ****     int s;
+  67:Src/communication/wakaama_client/connection.c ****     struct sockaddr *sa;
+  68:Src/communication/wakaama_client/connection.c ****     socklen_t sl;
+  69:Src/communication/wakaama_client/connection.c ****     connection_t * connP = NULL;
+  70:Src/communication/wakaama_client/connection.c **** 
+  71:Src/communication/wakaama_client/connection.c ****     memset(&hints, 0, sizeof(hints));
+ 167              		.loc 1 71 0
+ 168 0012 2022     		movs	r2, #32
+ 169              	.LVL13:
+ 170 0014 02A8     		add	r0, sp, #8
+ 171              	.LVL14:
+ 172 0016 FFF7FEFF 		bl	memset
+ 173              	.LVL15:
+  72:Src/communication/wakaama_client/connection.c ****     hints.ai_family = addressFamily;
+ 174              		.loc 1 72 0
+ 175 001a 129B     		ldr	r3, [sp, #72]
+ 176 001c 0393     		str	r3, [sp, #12]
+  73:Src/communication/wakaama_client/connection.c ****     hints.ai_socktype = SOCK_DGRAM;
+ 177              		.loc 1 73 0
+ 178 001e 0223     		movs	r3, #2
+ 179 0020 0493     		str	r3, [sp, #16]
+  74:Src/communication/wakaama_client/connection.c ****     int result = lwip_getaddrinfo(host, port, &hints, &servinfo);
+ 180              		.loc 1 74 0
+ 181 0022 01AB     		add	r3, sp, #4
+ 182 0024 02AA     		add	r2, sp, #8
+ 183 0026 2946     		mov	r1, r5
+ 184 0028 2046     		mov	r0, r4
+ 185 002a FFF7FEFF 		bl	lwip_getaddrinfo
+ 186              	.LVL16:
+  75:Src/communication/wakaama_client/connection.c ****     if (result != 0 || servinfo == NULL) {
+ 187              		.loc 1 75 0
+ 188 002e 0246     		mov	r2, r0
+ 189 0030 20B9     		cbnz	r0, .L11
+ 190              		.loc 1 75 0 is_stmt 0 discriminator 1
+ 191 0032 019C     		ldr	r4, [sp, #4]
+ 192              	.LVL17:
+ 193 0034 14B1     		cbz	r4, .L11
+  76:Src/communication/wakaama_client/connection.c ****         fprintf(stderr, "lwip_getaddrinfo returned: %d\r\n", result);
+  77:Src/communication/wakaama_client/connection.c ****         return NULL;
+  78:Src/communication/wakaama_client/connection.c ****     }
+  79:Src/communication/wakaama_client/connection.c ****     // we test the various addresses
+  80:Src/communication/wakaama_client/connection.c ****     s = -1;
+ 194              		.loc 1 80 0 is_stmt 1
+ 195 0036 4FF0FF35 		mov	r5, #-1
+ 196              	.LVL18:
+ 197 003a 08E0     		b	.L12
+ 198              	.LVL19:
+ 199              	.L11:
+  76:Src/communication/wakaama_client/connection.c ****         fprintf(stderr, "lwip_getaddrinfo returned: %d\r\n", result);
+ 200              		.loc 1 76 0
+ 201 003c 1D4B     		ldr	r3, .L22
+ 202 003e 1B68     		ldr	r3, [r3]
+ 203 0040 1D49     		ldr	r1, .L22+4
+ 204 0042 D868     		ldr	r0, [r3, #12]
+ 205              	.LVL20:
+ 206 0044 FFF7FEFF 		bl	fprintf
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 6
+
+
+ 207              	.LVL21:
+  77:Src/communication/wakaama_client/connection.c ****     }
+ 208              		.loc 1 77 0
+ 209 0048 0024     		movs	r4, #0
+ 210 004a 23E0     		b	.L10
+ 211              	.LVL22:
+ 212              	.L14:
+  81:Src/communication/wakaama_client/connection.c ****     for(p = servinfo ; p != NULL && s == -1 ; p = p->ai_next) {
+ 213              		.loc 1 81 0 discriminator 2
+ 214 004c E469     		ldr	r4, [r4, #28]
+ 215              	.LVL23:
+ 216              	.L12:
+ 217              		.loc 1 81 0 is_stmt 0 discriminator 1
+ 218 004e D4B1     		cbz	r4, .L15
+ 219              		.loc 1 81 0 discriminator 3
+ 220 0050 B5F1FF3F 		cmp	r5, #-1
+ 221 0054 17D1     		bne	.L15
+  82:Src/communication/wakaama_client/connection.c ****         s = lwip_socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+ 222              		.loc 1 82 0 is_stmt 1
+ 223 0056 E268     		ldr	r2, [r4, #12]
+ 224 0058 A168     		ldr	r1, [r4, #8]
+ 225 005a 6068     		ldr	r0, [r4, #4]
+ 226 005c FFF7FEFF 		bl	lwip_socket
+ 227              	.LVL24:
+  83:Src/communication/wakaama_client/connection.c ****         if (s >= 0) {
+ 228              		.loc 1 83 0
+ 229 0060 051E     		subs	r5, r0, #0
+ 230 0062 F3DB     		blt	.L14
+  84:Src/communication/wakaama_client/connection.c ****             sa = p->ai_addr;
+ 231              		.loc 1 84 0
+ 232 0064 6769     		ldr	r7, [r4, #20]
+ 233              	.LVL25:
+  85:Src/communication/wakaama_client/connection.c ****             sl = p->ai_addrlen;
+ 234              		.loc 1 85 0
+ 235 0066 D4F81080 		ldr	r8, [r4, #16]
+ 236              	.LVL26:
+  86:Src/communication/wakaama_client/connection.c ****             if (-1 == lwip_connect(s, p->ai_addr, p->ai_addrlen)) {
+ 237              		.loc 1 86 0
+ 238 006a 4246     		mov	r2, r8
+ 239 006c 3946     		mov	r1, r7
+ 240 006e 2846     		mov	r0, r5
+ 241 0070 FFF7FEFF 		bl	lwip_connect
+ 242              	.LVL27:
+ 243 0074 0646     		mov	r6, r0
+ 244 0076 B0F1FF3F 		cmp	r0, #-1
+ 245 007a E7D1     		bne	.L14
+  87:Src/communication/wakaama_client/connection.c ****                 lwip_close(s);
+ 246              		.loc 1 87 0
+ 247 007c 2846     		mov	r0, r5
+ 248 007e FFF7FEFF 		bl	lwip_close
+ 249              	.LVL28:
+  88:Src/communication/wakaama_client/connection.c ****                 s = -1;
+ 250              		.loc 1 88 0
+ 251 0082 3546     		mov	r5, r6
+ 252 0084 E2E7     		b	.L14
+ 253              	.LVL29:
+ 254              	.L15:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 7
+
+
+  89:Src/communication/wakaama_client/connection.c ****             }
+  90:Src/communication/wakaama_client/connection.c ****         }
+  91:Src/communication/wakaama_client/connection.c ****     }
+  92:Src/communication/wakaama_client/connection.c ****     if (s >= 0) {   
+ 255              		.loc 1 92 0
+ 256 0086 002D     		cmp	r5, #0
+ 257 0088 08DA     		bge	.L21
+  69:Src/communication/wakaama_client/connection.c **** 
+ 258              		.loc 1 69 0
+ 259 008a 0024     		movs	r4, #0
+ 260              	.LVL30:
+ 261              	.L17:
+  93:Src/communication/wakaama_client/connection.c ****         connP = connection_new_incoming(connList, sock, sa, sl);
+  94:Src/communication/wakaama_client/connection.c ****         lwip_close(s);
+  95:Src/communication/wakaama_client/connection.c ****     }
+  96:Src/communication/wakaama_client/connection.c ****     if (NULL != servinfo) {
+ 262              		.loc 1 96 0
+ 263 008c 0198     		ldr	r0, [sp, #4]
+ 264 008e 08B1     		cbz	r0, .L10
+  97:Src/communication/wakaama_client/connection.c ****         lwip_freeaddrinfo(servinfo);
+ 265              		.loc 1 97 0
+ 266 0090 FFF7FEFF 		bl	lwip_freeaddrinfo
+ 267              	.LVL31:
+ 268              	.L10:
+  98:Src/communication/wakaama_client/connection.c ****     }
+  99:Src/communication/wakaama_client/connection.c **** 
+ 100:Src/communication/wakaama_client/connection.c ****     return connP;
+ 101:Src/communication/wakaama_client/connection.c **** }
+ 269              		.loc 1 101 0
+ 270 0094 2046     		mov	r0, r4
+ 271 0096 0AB0     		add	sp, sp, #40
+ 272              	.LCFI4:
+ 273              		.cfi_remember_state
+ 274              		.cfi_def_cfa_offset 32
+ 275              		@ sp needed
+ 276 0098 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 277              	.LVL32:
+ 278              	.L21:
+ 279              	.LCFI5:
+ 280              		.cfi_restore_state
+  93:Src/communication/wakaama_client/connection.c ****         lwip_close(s);
+ 281              		.loc 1 93 0
+ 282 009c 4346     		mov	r3, r8
+ 283 009e 3A46     		mov	r2, r7
+ 284 00a0 5146     		mov	r1, r10
+ 285 00a2 4846     		mov	r0, r9
+ 286 00a4 FFF7FEFF 		bl	connection_new_incoming
+ 287              	.LVL33:
+ 288 00a8 0446     		mov	r4, r0
+ 289              	.LVL34:
+  94:Src/communication/wakaama_client/connection.c ****     }
+ 290              		.loc 1 94 0
+ 291 00aa 2846     		mov	r0, r5
+ 292              	.LVL35:
+ 293 00ac FFF7FEFF 		bl	lwip_close
+ 294              	.LVL36:
+ 295 00b0 ECE7     		b	.L17
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 8
+
+
+ 296              	.L23:
+ 297 00b2 00BF     		.align	2
+ 298              	.L22:
+ 299 00b4 00000000 		.word	_impure_ptr
+ 300 00b8 00000000 		.word	.LC0
+ 301              		.cfi_endproc
+ 302              	.LFE149:
+ 304              		.section	.text.connection_free,"ax",%progbits
+ 305              		.align	1
+ 306              		.global	connection_free
+ 307              		.syntax unified
+ 308              		.thumb
+ 309              		.thumb_func
+ 310              		.fpu fpv4-sp-d16
+ 312              	connection_free:
+ 313              	.LFB150:
+ 102:Src/communication/wakaama_client/connection.c **** 
+ 103:Src/communication/wakaama_client/connection.c **** void connection_free(connection_t * connList) {
+ 314              		.loc 1 103 0
+ 315              		.cfi_startproc
+ 316              		@ args = 0, pretend = 0, frame = 0
+ 317              		@ frame_needed = 0, uses_anonymous_args = 0
+ 318              	.LVL37:
+ 104:Src/communication/wakaama_client/connection.c ****     while (connList != NULL) {
+ 319              		.loc 1 104 0
+ 320 0000 38B1     		cbz	r0, .L30
+ 103:Src/communication/wakaama_client/connection.c ****     while (connList != NULL) {
+ 321              		.loc 1 103 0
+ 322 0002 10B5     		push	{r4, lr}
+ 323              	.LCFI6:
+ 324              		.cfi_def_cfa_offset 8
+ 325              		.cfi_offset 4, -8
+ 326              		.cfi_offset 14, -4
+ 327              	.L26:
+ 328              	.LBB2:
+ 105:Src/communication/wakaama_client/connection.c ****         connection_t * nextP;
+ 106:Src/communication/wakaama_client/connection.c **** 
+ 107:Src/communication/wakaama_client/connection.c ****         nextP = connList->next;
+ 329              		.loc 1 107 0
+ 330 0004 0468     		ldr	r4, [r0]
+ 331              	.LVL38:
+ 108:Src/communication/wakaama_client/connection.c ****         lwm2m_free(connList);
+ 332              		.loc 1 108 0
+ 333 0006 FFF7FEFF 		bl	lwm2m_free
+ 334              	.LVL39:
+ 109:Src/communication/wakaama_client/connection.c **** 
+ 110:Src/communication/wakaama_client/connection.c ****         connList = nextP;
+ 335              		.loc 1 110 0
+ 336 000a 2046     		mov	r0, r4
+ 337              	.LBE2:
+ 104:Src/communication/wakaama_client/connection.c ****         connection_t * nextP;
+ 338              		.loc 1 104 0
+ 339 000c 002C     		cmp	r4, #0
+ 340 000e F9D1     		bne	.L26
+ 111:Src/communication/wakaama_client/connection.c ****     }
+ 112:Src/communication/wakaama_client/connection.c **** }
+ 341              		.loc 1 112 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 9
+
+
+ 342 0010 10BD     		pop	{r4, pc}
+ 343              	.LVL40:
+ 344              	.L30:
+ 345              	.LCFI7:
+ 346              		.cfi_def_cfa_offset 0
+ 347              		.cfi_restore 4
+ 348              		.cfi_restore 14
+ 349 0012 7047     		bx	lr
+ 350              		.cfi_endproc
+ 351              	.LFE150:
+ 353              		.section	.text.connection_send,"ax",%progbits
+ 354              		.align	1
+ 355              		.global	connection_send
+ 356              		.syntax unified
+ 357              		.thumb
+ 358              		.thumb_func
+ 359              		.fpu fpv4-sp-d16
+ 361              	connection_send:
+ 362              	.LFB151:
+ 113:Src/communication/wakaama_client/connection.c **** 
+ 114:Src/communication/wakaama_client/connection.c **** int connection_send(connection_t *connP,
+ 115:Src/communication/wakaama_client/connection.c ****                     uint8_t * buffer,
+ 116:Src/communication/wakaama_client/connection.c ****                     size_t length) {
+ 363              		.loc 1 116 0
+ 364              		.cfi_startproc
+ 365              		@ args = 0, pretend = 0, frame = 0
+ 366              		@ frame_needed = 0, uses_anonymous_args = 0
+ 367              	.LVL41:
+ 368 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 369              	.LCFI8:
+ 370              		.cfi_def_cfa_offset 20
+ 371              		.cfi_offset 4, -20
+ 372              		.cfi_offset 5, -16
+ 373              		.cfi_offset 6, -12
+ 374              		.cfi_offset 7, -8
+ 375              		.cfi_offset 14, -4
+ 376 0002 83B0     		sub	sp, sp, #12
+ 377              	.LCFI9:
+ 378              		.cfi_def_cfa_offset 32
+ 379 0004 0546     		mov	r5, r0
+ 380 0006 0F46     		mov	r7, r1
+ 381 0008 1646     		mov	r6, r2
+ 382              	.LVL42:
+ 117:Src/communication/wakaama_client/connection.c ****     int nbSent;
+ 118:Src/communication/wakaama_client/connection.c ****     size_t offset;
+ 119:Src/communication/wakaama_client/connection.c **** 
+ 120:Src/communication/wakaama_client/connection.c **** #ifdef WITH_LOGS
+ 121:Src/communication/wakaama_client/connection.c ****     char s[INET6_ADDRSTRLEN];
+ 122:Src/communication/wakaama_client/connection.c ****     in_port_t port;
+ 123:Src/communication/wakaama_client/connection.c **** 
+ 124:Src/communication/wakaama_client/connection.c ****     s[0] = 0;
+ 125:Src/communication/wakaama_client/connection.c **** 
+ 126:Src/communication/wakaama_client/connection.c ****     if (AF_INET == connP->addr.sin6_family) {
+ 127:Src/communication/wakaama_client/connection.c ****         struct sockaddr_in *saddr = (struct sockaddr_in *)&connP->addr;
+ 128:Src/communication/wakaama_client/connection.c ****         inet_ntop(saddr->sin_family, &saddr->sin_addr, s, INET6_ADDRSTRLEN);
+ 129:Src/communication/wakaama_client/connection.c ****         port = saddr->sin_port; }
+ 130:Src/communication/wakaama_client/connection.c ****     else if (AF_INET6 == connP->addr.sin6_family) {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 10
+
+
+ 131:Src/communication/wakaama_client/connection.c ****         struct sockaddr_in6 *saddr = (struct sockaddr_in6 *)&connP->addr;
+ 132:Src/communication/wakaama_client/connection.c ****         inet_ntop(saddr->sin6_family, &saddr->sin6_addr, s, INET6_ADDRSTRLEN);
+ 133:Src/communication/wakaama_client/connection.c ****         port = saddr->sin6_port;
+ 134:Src/communication/wakaama_client/connection.c ****     }
+ 135:Src/communication/wakaama_client/connection.c **** 
+ 136:Src/communication/wakaama_client/connection.c ****     fprintf(stderr, "Sending %d bytes to [%s]:%hu\r\n", length, s, ntohs(port));
+ 137:Src/communication/wakaama_client/connection.c **** 
+ 138:Src/communication/wakaama_client/connection.c ****     output_buffer(stderr, buffer, length, 0);
+ 139:Src/communication/wakaama_client/connection.c **** #endif
+ 140:Src/communication/wakaama_client/connection.c **** 
+ 141:Src/communication/wakaama_client/connection.c ****     offset = 0;
+ 383              		.loc 1 141 0
+ 384 000a 0024     		movs	r4, #0
+ 385              	.LVL43:
+ 386              	.L32:
+ 142:Src/communication/wakaama_client/connection.c ****     while (offset != length) {
+ 387              		.loc 1 142 0
+ 388 000c B442     		cmp	r4, r6
+ 389 000e 0FD0     		beq	.L36
+ 143:Src/communication/wakaama_client/connection.c ****         nbSent = lwip_sendto(connP->sock, buffer + offset, length - offset, 0, (struct sockaddr *)&
+ 390              		.loc 1 143 0
+ 391 0010 05F10803 		add	r3, r5, #8
+ 392 0014 AA69     		ldr	r2, [r5, #24]
+ 393 0016 0192     		str	r2, [sp, #4]
+ 394 0018 0093     		str	r3, [sp]
+ 395 001a 0023     		movs	r3, #0
+ 396 001c 321B     		subs	r2, r6, r4
+ 397 001e 3919     		adds	r1, r7, r4
+ 398 0020 6868     		ldr	r0, [r5, #4]
+ 399 0022 FFF7FEFF 		bl	lwip_sendto
+ 400              	.LVL44:
+ 144:Src/communication/wakaama_client/connection.c ****         if (nbSent == -1) return -1;
+ 401              		.loc 1 144 0
+ 402 0026 B0F1FF3F 		cmp	r0, #-1
+ 403 002a 02D0     		beq	.L31
+ 145:Src/communication/wakaama_client/connection.c ****         offset += nbSent;
+ 404              		.loc 1 145 0
+ 405 002c 0444     		add	r4, r4, r0
+ 406              	.LVL45:
+ 407 002e EDE7     		b	.L32
+ 408              	.LVL46:
+ 409              	.L36:
+ 146:Src/communication/wakaama_client/connection.c ****     }
+ 147:Src/communication/wakaama_client/connection.c ****     return 0;
+ 410              		.loc 1 147 0
+ 411 0030 0020     		movs	r0, #0
+ 412              	.L31:
+ 148:Src/communication/wakaama_client/connection.c **** }
+ 413              		.loc 1 148 0
+ 414 0032 03B0     		add	sp, sp, #12
+ 415              	.LCFI10:
+ 416              		.cfi_def_cfa_offset 20
+ 417              		@ sp needed
+ 418 0034 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 419              		.cfi_endproc
+ 420              	.LFE151:
+ 422              		.section	.text.lwm2m_buffer_send,"ax",%progbits
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 11
+
+
+ 423              		.align	1
+ 424              		.global	lwm2m_buffer_send
+ 425              		.syntax unified
+ 426              		.thumb
+ 427              		.thumb_func
+ 428              		.fpu fpv4-sp-d16
+ 430              	lwm2m_buffer_send:
+ 431              	.LFB152:
+ 149:Src/communication/wakaama_client/connection.c **** 
+ 150:Src/communication/wakaama_client/connection.c **** uint8_t lwm2m_buffer_send(void * sessionH,
+ 151:Src/communication/wakaama_client/connection.c ****                           uint8_t * buffer,
+ 152:Src/communication/wakaama_client/connection.c ****                           size_t length,
+ 153:Src/communication/wakaama_client/connection.c ****                           void * userdata) {
+ 432              		.loc 1 153 0
+ 433              		.cfi_startproc
+ 434              		@ args = 0, pretend = 0, frame = 0
+ 435              		@ frame_needed = 0, uses_anonymous_args = 0
+ 436              	.LVL47:
+ 437 0000 10B5     		push	{r4, lr}
+ 438              	.LCFI11:
+ 439              		.cfi_def_cfa_offset 8
+ 440              		.cfi_offset 4, -8
+ 441              		.cfi_offset 14, -4
+ 442 0002 1446     		mov	r4, r2
+ 443              	.LVL48:
+ 154:Src/communication/wakaama_client/connection.c ****     connection_t * connP = (connection_t*) sessionH;
+ 155:Src/communication/wakaama_client/connection.c **** 
+ 156:Src/communication/wakaama_client/connection.c ****     if (connP == NULL) {
+ 444              		.loc 1 156 0
+ 445 0004 30B1     		cbz	r0, .L42
+ 157:Src/communication/wakaama_client/connection.c ****         fprintf(stderr, "#> failed sending %u bytes, missing connection\r\n", length);
+ 158:Src/communication/wakaama_client/connection.c ****         return COAP_500_INTERNAL_SERVER_ERROR ;
+ 159:Src/communication/wakaama_client/connection.c ****     }
+ 160:Src/communication/wakaama_client/connection.c **** 
+ 161:Src/communication/wakaama_client/connection.c ****     if (-1 == connection_send(connP, buffer, length)) {
+ 446              		.loc 1 161 0
+ 447 0006 FFF7FEFF 		bl	connection_send
+ 448              	.LVL49:
+ 449 000a B0F1FF3F 		cmp	r0, #-1
+ 450 000e 09D0     		beq	.L43
+ 162:Src/communication/wakaama_client/connection.c ****         fprintf(stderr, "#> failed sending %u bytes\r\n", length);
+ 163:Src/communication/wakaama_client/connection.c ****         return COAP_500_INTERNAL_SERVER_ERROR ;
+ 164:Src/communication/wakaama_client/connection.c ****     }
+ 165:Src/communication/wakaama_client/connection.c **** 
+ 166:Src/communication/wakaama_client/connection.c ****     return COAP_NO_ERROR;
+ 451              		.loc 1 166 0
+ 452 0010 0020     		movs	r0, #0
+ 453              	.L39:
+ 167:Src/communication/wakaama_client/connection.c **** }
+ 454              		.loc 1 167 0
+ 455 0012 10BD     		pop	{r4, pc}
+ 456              	.LVL50:
+ 457              	.L42:
+ 157:Src/communication/wakaama_client/connection.c ****         fprintf(stderr, "#> failed sending %u bytes, missing connection\r\n", length);
+ 458              		.loc 1 157 0
+ 459 0014 084B     		ldr	r3, .L44
+ 460              	.LVL51:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 12
+
+
+ 461 0016 1B68     		ldr	r3, [r3]
+ 462 0018 0849     		ldr	r1, .L44+4
+ 463              	.LVL52:
+ 464 001a D868     		ldr	r0, [r3, #12]
+ 465              	.LVL53:
+ 466 001c FFF7FEFF 		bl	fprintf
+ 467              	.LVL54:
+ 158:Src/communication/wakaama_client/connection.c ****     }
+ 468              		.loc 1 158 0
+ 469 0020 A020     		movs	r0, #160
+ 470 0022 F6E7     		b	.L39
+ 471              	.L43:
+ 162:Src/communication/wakaama_client/connection.c ****         fprintf(stderr, "#> failed sending %u bytes\r\n", length);
+ 472              		.loc 1 162 0
+ 473 0024 044B     		ldr	r3, .L44
+ 474 0026 1B68     		ldr	r3, [r3]
+ 475 0028 2246     		mov	r2, r4
+ 476 002a 0549     		ldr	r1, .L44+8
+ 477 002c D868     		ldr	r0, [r3, #12]
+ 478 002e FFF7FEFF 		bl	fprintf
+ 479              	.LVL55:
+ 163:Src/communication/wakaama_client/connection.c ****     }
+ 480              		.loc 1 163 0
+ 481 0032 A020     		movs	r0, #160
+ 482 0034 EDE7     		b	.L39
+ 483              	.L45:
+ 484 0036 00BF     		.align	2
+ 485              	.L44:
+ 486 0038 00000000 		.word	_impure_ptr
+ 487 003c 00000000 		.word	.LC1
+ 488 0040 34000000 		.word	.LC2
+ 489              		.cfi_endproc
+ 490              	.LFE152:
+ 492              		.section	.text.lwm2m_session_is_equal,"ax",%progbits
+ 493              		.align	1
+ 494              		.global	lwm2m_session_is_equal
+ 495              		.syntax unified
+ 496              		.thumb
+ 497              		.thumb_func
+ 498              		.fpu fpv4-sp-d16
+ 500              	lwm2m_session_is_equal:
+ 501              	.LFB153:
+ 168:Src/communication/wakaama_client/connection.c **** 
+ 169:Src/communication/wakaama_client/connection.c **** bool lwm2m_session_is_equal(void * session1,
+ 170:Src/communication/wakaama_client/connection.c ****                             void * session2,
+ 171:Src/communication/wakaama_client/connection.c ****                             void * userData) {
+ 502              		.loc 1 171 0
+ 503              		.cfi_startproc
+ 504              		@ args = 0, pretend = 0, frame = 0
+ 505              		@ frame_needed = 0, uses_anonymous_args = 0
+ 506              		@ link register save eliminated.
+ 507              	.LVL56:
+ 172:Src/communication/wakaama_client/connection.c ****     return (session1 == session2);
+ 173:Src/communication/wakaama_client/connection.c **** }
+ 508              		.loc 1 173 0
+ 509 0000 8142     		cmp	r1, r0
+ 510 0002 14BF     		ite	ne
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 13
+
+
+ 511 0004 0020     		movne	r0, #0
+ 512              	.LVL57:
+ 513 0006 0120     		moveq	r0, #1
+ 514 0008 7047     		bx	lr
+ 515              		.cfi_endproc
+ 516              	.LFE153:
+ 518              		.section	.text.createUDPSocket,"ax",%progbits
+ 519              		.align	1
+ 520              		.global	createUDPSocket
+ 521              		.syntax unified
+ 522              		.thumb
+ 523              		.thumb_func
+ 524              		.fpu fpv4-sp-d16
+ 526              	createUDPSocket:
+ 527              	.LFB154:
+ 174:Src/communication/wakaama_client/connection.c **** 
+ 175:Src/communication/wakaama_client/connection.c **** int createUDPSocket(int port, int addressFamily){
+ 528              		.loc 1 175 0
+ 529              		.cfi_startproc
+ 530              		@ args = 0, pretend = 0, frame = 16
+ 531              		@ frame_needed = 0, uses_anonymous_args = 0
+ 532              	.LVL58:
+ 533 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 534              	.LCFI12:
+ 535              		.cfi_def_cfa_offset 20
+ 536              		.cfi_offset 4, -20
+ 537              		.cfi_offset 5, -16
+ 538              		.cfi_offset 6, -12
+ 539              		.cfi_offset 7, -8
+ 540              		.cfi_offset 14, -4
+ 541 0002 85B0     		sub	sp, sp, #20
+ 542              	.LCFI13:
+ 543              		.cfi_def_cfa_offset 40
+ 544 0004 0746     		mov	r7, r0
+ 545 0006 0D46     		mov	r5, r1
+ 176:Src/communication/wakaama_client/connection.c ****     /* create a UDP socket */
+ 177:Src/communication/wakaama_client/connection.c ****     int socket;
+ 178:Src/communication/wakaama_client/connection.c ****     socket = lwip_socket(addressFamily, SOCK_DGRAM, 0);
+ 546              		.loc 1 178 0
+ 547 0008 0022     		movs	r2, #0
+ 548 000a 0221     		movs	r1, #2
+ 549              	.LVL59:
+ 550 000c 2846     		mov	r0, r5
+ 551              	.LVL60:
+ 552 000e FFF7FEFF 		bl	lwip_socket
+ 553              	.LVL61:
+ 179:Src/communication/wakaama_client/connection.c ****     if (socket < 0 ) {
+ 554              		.loc 1 179 0
+ 555 0012 041E     		subs	r4, r0, #0
+ 556 0014 1BDB     		blt	.L52
+ 180:Src/communication/wakaama_client/connection.c ****         printf("cannot create socket\r\n");
+ 181:Src/communication/wakaama_client/connection.c ****         return -1;
+ 182:Src/communication/wakaama_client/connection.c ****     }
+ 183:Src/communication/wakaama_client/connection.c ****     if(fcntl(socket, F_SETFL, O_NONBLOCK) == -1){
+ 557              		.loc 1 183 0
+ 558 0016 0122     		movs	r2, #1
+ 559 0018 0421     		movs	r1, #4
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 14
+
+
+ 560 001a 2046     		mov	r0, r4
+ 561 001c FFF7FEFF 		bl	lwip_fcntl
+ 562              	.LVL62:
+ 563 0020 0646     		mov	r6, r0
+ 564 0022 B0F1FF3F 		cmp	r0, #-1
+ 565 0026 18D0     		beq	.L53
+ 184:Src/communication/wakaama_client/connection.c ****         printf("cannot set socket O_NONBLOCK\r\n");
+ 185:Src/communication/wakaama_client/connection.c ****         return -1;
+ 186:Src/communication/wakaama_client/connection.c ****     }
+ 187:Src/communication/wakaama_client/connection.c ****     struct sockaddr_in clientAddress;
+ 188:Src/communication/wakaama_client/connection.c ****     clientAddress.sin_family = addressFamily;
+ 566              		.loc 1 188 0
+ 567 0028 8DF80150 		strb	r5, [sp, #1]
+ 189:Src/communication/wakaama_client/connection.c ****     clientAddress.sin_port = htons(port);
+ 568              		.loc 1 189 0
+ 569 002c B8B2     		uxth	r0, r7
+ 570 002e FFF7FEFF 		bl	lwip_htons
+ 571              	.LVL63:
+ 572 0032 ADF80200 		strh	r0, [sp, #2]	@ movhi
+ 190:Src/communication/wakaama_client/connection.c ****     clientAddress.sin_addr.s_addr = INADDR_ANY;
+ 573              		.loc 1 190 0
+ 574 0036 0023     		movs	r3, #0
+ 575 0038 0193     		str	r3, [sp, #4]
+ 191:Src/communication/wakaama_client/connection.c **** 
+ 192:Src/communication/wakaama_client/connection.c ****     /* bind */
+ 193:Src/communication/wakaama_client/connection.c ****     if (lwip_bind(socket, (struct sockaddr *) &clientAddress, sizeof (clientAddress)) < 0) {
+ 576              		.loc 1 193 0
+ 577 003a 1022     		movs	r2, #16
+ 578 003c 6946     		mov	r1, sp
+ 579 003e 2046     		mov	r0, r4
+ 580 0040 FFF7FEFF 		bl	lwip_bind
+ 581              	.LVL64:
+ 582 0044 0028     		cmp	r0, #0
+ 583 0046 0DDB     		blt	.L54
+ 584              	.LVL65:
+ 585              	.L47:
+ 194:Src/communication/wakaama_client/connection.c ****         printf("cannot bind socket\r\n");
+ 195:Src/communication/wakaama_client/connection.c ****         lwip_close(socket);
+ 196:Src/communication/wakaama_client/connection.c ****         return -1;
+ 197:Src/communication/wakaama_client/connection.c ****     }
+ 198:Src/communication/wakaama_client/connection.c ****     return socket;
+ 199:Src/communication/wakaama_client/connection.c **** }
+ 586              		.loc 1 199 0
+ 587 0048 2046     		mov	r0, r4
+ 588 004a 05B0     		add	sp, sp, #20
+ 589              	.LCFI14:
+ 590              		.cfi_remember_state
+ 591              		.cfi_def_cfa_offset 20
+ 592              		@ sp needed
+ 593 004c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 594              	.LVL66:
+ 595              	.L52:
+ 596              	.LCFI15:
+ 597              		.cfi_restore_state
+ 180:Src/communication/wakaama_client/connection.c ****         return -1;
+ 598              		.loc 1 180 0
+ 599 004e 0A48     		ldr	r0, .L55
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 15
+
+
+ 600              	.LVL67:
+ 601 0050 FFF7FEFF 		bl	puts
+ 602              	.LVL68:
+ 181:Src/communication/wakaama_client/connection.c ****     }
+ 603              		.loc 1 181 0
+ 604 0054 4FF0FF34 		mov	r4, #-1
+ 605              	.LVL69:
+ 606 0058 F6E7     		b	.L47
+ 607              	.LVL70:
+ 608              	.L53:
+ 184:Src/communication/wakaama_client/connection.c ****         return -1;
+ 609              		.loc 1 184 0
+ 610 005a 0848     		ldr	r0, .L55+4
+ 611 005c FFF7FEFF 		bl	puts
+ 612              	.LVL71:
+ 185:Src/communication/wakaama_client/connection.c ****     }
+ 613              		.loc 1 185 0
+ 614 0060 3446     		mov	r4, r6
+ 615              	.LVL72:
+ 616 0062 F1E7     		b	.L47
+ 617              	.LVL73:
+ 618              	.L54:
+ 194:Src/communication/wakaama_client/connection.c ****         lwip_close(socket);
+ 619              		.loc 1 194 0
+ 620 0064 0648     		ldr	r0, .L55+8
+ 621 0066 FFF7FEFF 		bl	puts
+ 622              	.LVL74:
+ 195:Src/communication/wakaama_client/connection.c ****         return -1;
+ 623              		.loc 1 195 0
+ 624 006a 2046     		mov	r0, r4
+ 625 006c FFF7FEFF 		bl	lwip_close
+ 626              	.LVL75:
+ 196:Src/communication/wakaama_client/connection.c ****     }
+ 627              		.loc 1 196 0
+ 628 0070 4FF0FF34 		mov	r4, #-1
+ 629              	.LVL76:
+ 630 0074 E8E7     		b	.L47
+ 631              	.L56:
+ 632 0076 00BF     		.align	2
+ 633              	.L55:
+ 634 0078 00000000 		.word	.LC3
+ 635 007c 18000000 		.word	.LC4
+ 636 0080 38000000 		.word	.LC5
+ 637              		.cfi_endproc
+ 638              	.LFE154:
+ 640              		.section	.rodata.connection_create.str1.4,"aMS",%progbits,1
+ 641              		.align	2
+ 642              	.LC0:
+ 643 0000 6C776970 		.ascii	"lwip_getaddrinfo returned: %d\015\012\000"
+ 643      5F676574 
+ 643      61646472 
+ 643      696E666F 
+ 643      20726574 
+ 644              		.section	.rodata.createUDPSocket.str1.4,"aMS",%progbits,1
+ 645              		.align	2
+ 646              	.LC3:
+ 647 0000 63616E6E 		.ascii	"cannot create socket\015\000"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 16
+
+
+ 647      6F742063 
+ 647      72656174 
+ 647      6520736F 
+ 647      636B6574 
+ 648 0016 0000     		.space	2
+ 649              	.LC4:
+ 650 0018 63616E6E 		.ascii	"cannot set socket O_NONBLOCK\015\000"
+ 650      6F742073 
+ 650      65742073 
+ 650      6F636B65 
+ 650      74204F5F 
+ 651 0036 0000     		.space	2
+ 652              	.LC5:
+ 653 0038 63616E6E 		.ascii	"cannot bind socket\015\000"
+ 653      6F742062 
+ 653      696E6420 
+ 653      736F636B 
+ 653      65740D00 
+ 654              		.section	.rodata.lwm2m_buffer_send.str1.4,"aMS",%progbits,1
+ 655              		.align	2
+ 656              	.LC1:
+ 657 0000 233E2066 		.ascii	"#> failed sending %u bytes, missing connection\015\012"
+ 657      61696C65 
+ 657      64207365 
+ 657      6E64696E 
+ 657      67202575 
+ 658 0030 00       		.ascii	"\000"
+ 659 0031 000000   		.space	3
+ 660              	.LC2:
+ 661 0034 233E2066 		.ascii	"#> failed sending %u bytes\015\012\000"
+ 661      61696C65 
+ 661      64207365 
+ 661      6E64696E 
+ 661      67202575 
+ 662              		.text
+ 663              	.Letext0:
+ 664              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 665              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 666              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 667              		.file 5 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 668              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 669              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 670              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/ctype.h"
+ 671              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 672              		.file 10 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/types.h"
+ 673              		.file 11 "Drivers/CMSIS/Include/core_cm4.h"
+ 674              		.file 12 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 675              		.file 13 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 676              		.file 14 "Middlewares/Third_Party/LwIP/src/include/lwip/arch.h"
+ 677              		.file 15 "Middlewares/Third_Party/LwIP/src/include/lwip/ip4_addr.h"
+ 678              		.file 16 "Middlewares/Third_Party/LwIP/src/include/lwip/ip_addr.h"
+ 679              		.file 17 "Middlewares/Third_Party/LwIP/src/include/lwip/inet.h"
+ 680              		.file 18 "Middlewares/Third_Party/LwIP/src/include/lwip/errno.h"
+ 681              		.file 19 "Middlewares/Third_Party/LwIP/src/include/lwip/sockets.h"
+ 682              		.file 20 "Middlewares/Third_Party/LwIP/src/include/lwip/netdb.h"
+ 683              		.file 21 "Inc/communication/wakaama_client/connection.h"
+ 684              		.file 22 "Middlewares/Third_Party/LwIP/src/include/lwip/def.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 17
+
+
+ 685              		.file 23 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 686              		.file 24 "Middlewares/Third_Party/wakaama/liblwm2m.h"
+ 687              		.file 25 "<built-in>"
+ 688              		.file 26 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/string.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 connection.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:18     .text.connection_find:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:25     .text.connection_find:0000000000000000 connection_find
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:74     .text.connection_new_incoming:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:81     .text.connection_new_incoming:0000000000000000 connection_new_incoming
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:130    .text.connection_create:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:137    .text.connection_create:0000000000000000 connection_create
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:299    .text.connection_create:00000000000000b4 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:305    .text.connection_free:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:312    .text.connection_free:0000000000000000 connection_free
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:354    .text.connection_send:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:361    .text.connection_send:0000000000000000 connection_send
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:423    .text.lwm2m_buffer_send:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:430    .text.lwm2m_buffer_send:0000000000000000 lwm2m_buffer_send
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:486    .text.lwm2m_buffer_send:0000000000000038 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:493    .text.lwm2m_session_is_equal:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:500    .text.lwm2m_session_is_equal:0000000000000000 lwm2m_session_is_equal
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:519    .text.createUDPSocket:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:526    .text.createUDPSocket:0000000000000000 createUDPSocket
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:634    .text.createUDPSocket:0000000000000078 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:641    .rodata.connection_create.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:645    .rodata.createUDPSocket.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//cci95n75.s:655    .rodata.lwm2m_buffer_send.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+memcmp
+lwm2m_malloc
+memcpy
+memset
+lwip_getaddrinfo
+fprintf
+lwip_socket
+lwip_connect
+lwip_close
+lwip_freeaddrinfo
+_impure_ptr
+lwm2m_free
+lwip_sendto
+lwip_fcntl
+lwip_htons
+lwip_bind
+puts

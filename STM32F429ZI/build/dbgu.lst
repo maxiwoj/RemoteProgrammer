@@ -1,0 +1,1079 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"dbgu.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.debug_shdn,"ax",%progbits
+  18              		.align	1
+  19              		.global	debug_shdn
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	debug_shdn:
+  26              	.LFB126:
+  27              		.file 1 "Src/communication/dbgu.c"
+   1:Src/communication/dbgu.c **** /*
+   2:Src/communication/dbgu.c **** * The MIT License (MIT)
+   3:Src/communication/dbgu.c **** * Copyright (c) 2017 Robert Brzoza-Woch
+   4:Src/communication/dbgu.c **** * Permission is hereby granted, free of charge, to any person obtaining 
+   5:Src/communication/dbgu.c **** * a copy of this software and associated documentation files (the "Software"), 
+   6:Src/communication/dbgu.c **** * to deal in the Software without restriction, including without limitation
+   7:Src/communication/dbgu.c **** * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   8:Src/communication/dbgu.c **** * and/or sell copies of the Software, and to permit persons to whom the
+   9:Src/communication/dbgu.c **** * Software is furnished to do so, subject to the following conditions:
+  10:Src/communication/dbgu.c **** * 
+  11:Src/communication/dbgu.c **** * The above copyright notice and this permission notice shall be
+  12:Src/communication/dbgu.c **** * included in all copies or substantial portions of the Software.
+  13:Src/communication/dbgu.c **** * 
+  14:Src/communication/dbgu.c **** * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  15:Src/communication/dbgu.c **** * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  16:Src/communication/dbgu.c **** * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  17:Src/communication/dbgu.c **** * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+  18:Src/communication/dbgu.c **** * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+  19:Src/communication/dbgu.c **** * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+  20:Src/communication/dbgu.c **** * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  21:Src/communication/dbgu.c **** */
+  22:Src/communication/dbgu.c **** 
+  23:Src/communication/dbgu.c **** #include "dbgu.h"
+  24:Src/communication/dbgu.c **** #include "term_io.h"
+  25:Src/communication/dbgu.c **** #include "stm32f4xx_hal.h"
+  26:Src/communication/dbgu.c **** #include "stm32f4xx_hal_gpio.h"
+  27:Src/communication/dbgu.c **** #include "stm32f4xx_hal_uart.h"
+  28:Src/communication/dbgu.c **** 
+  29:Src/communication/dbgu.c **** #define USE_HAL		0
+  30:Src/communication/dbgu.c **** 
+  31:Src/communication/dbgu.c **** UART_HandleTypeDef* pUart = NULL;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 2
+
+
+  32:Src/communication/dbgu.c **** 
+  33:Src/communication/dbgu.c **** void debug_shdn(uint32_t shdn_on)
+  34:Src/communication/dbgu.c **** {
+  28              		.loc 1 34 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  35:Src/communication/dbgu.c **** 	if(shdn_on)
+  36:Src/communication/dbgu.c **** 	{
+  37:Src/communication/dbgu.c **** 	}
+  38:Src/communication/dbgu.c **** 	else
+  39:Src/communication/dbgu.c **** 	{
+  40:Src/communication/dbgu.c **** 	}
+  41:Src/communication/dbgu.c **** 	
+  42:Src/communication/dbgu.c **** 	
+  43:Src/communication/dbgu.c **** }
+  34              		.loc 1 43 0
+  35 0000 7047     		bx	lr
+  36              		.cfi_endproc
+  37              	.LFE126:
+  39              		.section	.text.debug_init,"ax",%progbits
+  40              		.align	1
+  41              		.global	debug_init
+  42              		.syntax unified
+  43              		.thumb
+  44              		.thumb_func
+  45              		.fpu fpv4-sp-d16
+  47              	debug_init:
+  48              	.LFB127:
+  44:Src/communication/dbgu.c **** 
+  45:Src/communication/dbgu.c **** void debug_init(UART_HandleTypeDef* handler)
+  46:Src/communication/dbgu.c **** {
+  49              		.loc 1 46 0
+  50              		.cfi_startproc
+  51              		@ args = 0, pretend = 0, frame = 0
+  52              		@ frame_needed = 0, uses_anonymous_args = 0
+  53              		@ link register save eliminated.
+  54              	.LVL1:
+  47:Src/communication/dbgu.c **** 	pUart = handler;
+  55              		.loc 1 47 0
+  56 0000 014B     		ldr	r3, .L3
+  57 0002 1860     		str	r0, [r3]
+  48:Src/communication/dbgu.c **** }
+  58              		.loc 1 48 0
+  59 0004 7047     		bx	lr
+  60              	.L4:
+  61 0006 00BF     		.align	2
+  62              	.L3:
+  63 0008 00000000 		.word	.LANCHOR0
+  64              		.cfi_endproc
+  65              	.LFE127:
+  67              		.section	.text.debug_chr,"ax",%progbits
+  68              		.align	1
+  69              		.global	debug_chr
+  70              		.syntax unified
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 3
+
+
+  71              		.thumb
+  72              		.thumb_func
+  73              		.fpu fpv4-sp-d16
+  75              	debug_chr:
+  76              	.LFB128:
+  49:Src/communication/dbgu.c **** 
+  50:Src/communication/dbgu.c **** //send chr via UART (platform dependent)
+  51:Src/communication/dbgu.c **** void debug_chr(char chr)
+  52:Src/communication/dbgu.c **** {
+  77              		.loc 1 52 0
+  78              		.cfi_startproc
+  79              		@ args = 0, pretend = 0, frame = 0
+  80              		@ frame_needed = 0, uses_anonymous_args = 0
+  81              		@ link register save eliminated.
+  82              	.LVL2:
+  83              	.L6:
+  53:Src/communication/dbgu.c **** 	#if USE_HAL
+  54:Src/communication/dbgu.c **** 	HAL_UART_Transmit(pUart,
+  55:Src/communication/dbgu.c **** 	(uint8_t*)&chr, 1, 1000);
+  56:Src/communication/dbgu.c **** 	#else
+  57:Src/communication/dbgu.c **** 	while(__HAL_UART_GET_FLAG(pUart, UART_FLAG_TXE) == RESET) { ; }
+  84              		.loc 1 57 0 discriminator 1
+  85 0000 044B     		ldr	r3, .L7
+  86 0002 1B68     		ldr	r3, [r3]
+  87 0004 1B68     		ldr	r3, [r3]
+  88 0006 1A68     		ldr	r2, [r3]
+  89 0008 12F0800F 		tst	r2, #128
+  90 000c F8D0     		beq	.L6
+  58:Src/communication/dbgu.c **** 	pUart->Instance->DR = (uint16_t)chr;
+  91              		.loc 1 58 0
+  92 000e 5860     		str	r0, [r3, #4]
+  59:Src/communication/dbgu.c **** 	#endif
+  60:Src/communication/dbgu.c **** }
+  93              		.loc 1 60 0
+  94 0010 7047     		bx	lr
+  95              	.L8:
+  96 0012 00BF     		.align	2
+  97              	.L7:
+  98 0014 00000000 		.word	.LANCHOR0
+  99              		.cfi_endproc
+ 100              	.LFE128:
+ 102              		.section	.text.debug_inkey,"ax",%progbits
+ 103              		.align	1
+ 104              		.global	debug_inkey
+ 105              		.syntax unified
+ 106              		.thumb
+ 107              		.thumb_func
+ 108              		.fpu fpv4-sp-d16
+ 110              	debug_inkey:
+ 111              	.LFB129:
+  61:Src/communication/dbgu.c **** 
+  62:Src/communication/dbgu.c **** 
+  63:Src/communication/dbgu.c **** //returns ascii value of last char received
+  64:Src/communication/dbgu.c **** //returns 0 if no char was received since last debug_inkey call
+  65:Src/communication/dbgu.c **** //(platform dependent)
+  66:Src/communication/dbgu.c **** char debug_inkey(void)
+  67:Src/communication/dbgu.c **** {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 4
+
+
+ 112              		.loc 1 67 0
+ 113              		.cfi_startproc
+ 114              		@ args = 0, pretend = 0, frame = 8
+ 115              		@ frame_needed = 0, uses_anonymous_args = 0
+ 116              		@ link register save eliminated.
+  68:Src/communication/dbgu.c **** 	uint32_t flags = pUart->Instance->SR;
+ 117              		.loc 1 68 0
+ 118 0000 0A4B     		ldr	r3, .L16
+ 119 0002 1B68     		ldr	r3, [r3]
+ 120 0004 1B68     		ldr	r3, [r3]
+ 121 0006 1A68     		ldr	r2, [r3]
+ 122              	.LVL3:
+  69:Src/communication/dbgu.c **** 	
+  70:Src/communication/dbgu.c **** 	if((flags & UART_FLAG_RXNE) || (flags & UART_FLAG_ORE))
+ 123              		.loc 1 70 0
+ 124 0008 12F0280F 		tst	r2, #40
+ 125 000c 0BD0     		beq	.L11
+  67:Src/communication/dbgu.c **** 	uint32_t flags = pUart->Instance->SR;
+ 126              		.loc 1 67 0
+ 127 000e 82B0     		sub	sp, sp, #8
+ 128              	.LCFI0:
+ 129              		.cfi_def_cfa_offset 8
+ 130              	.LBB2:
+  71:Src/communication/dbgu.c **** 	{
+  72:Src/communication/dbgu.c **** 		__HAL_UART_CLEAR_OREFLAG(pUart);
+ 131              		.loc 1 72 0
+ 132 0010 0022     		movs	r2, #0
+ 133              	.LVL4:
+ 134 0012 0192     		str	r2, [sp, #4]
+ 135 0014 1A68     		ldr	r2, [r3]
+ 136 0016 0192     		str	r2, [sp, #4]
+ 137 0018 5A68     		ldr	r2, [r3, #4]
+ 138 001a 0192     		str	r2, [sp, #4]
+ 139 001c 019A     		ldr	r2, [sp, #4]
+ 140              	.LBE2:
+  73:Src/communication/dbgu.c **** 		return (pUart->Instance->DR);
+ 141              		.loc 1 73 0
+ 142 001e 5868     		ldr	r0, [r3, #4]
+ 143 0020 C0B2     		uxtb	r0, r0
+  74:Src/communication/dbgu.c **** 	}
+  75:Src/communication/dbgu.c **** 	else
+  76:Src/communication/dbgu.c **** 		return 0;
+  77:Src/communication/dbgu.c **** }
+ 144              		.loc 1 77 0
+ 145 0022 02B0     		add	sp, sp, #8
+ 146              	.LCFI1:
+ 147              		.cfi_def_cfa_offset 0
+ 148              		@ sp needed
+ 149 0024 7047     		bx	lr
+ 150              	.LVL5:
+ 151              	.L11:
+  76:Src/communication/dbgu.c **** }
+ 152              		.loc 1 76 0
+ 153 0026 0020     		movs	r0, #0
+ 154              		.loc 1 77 0
+ 155 0028 7047     		bx	lr
+ 156              	.L17:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 5
+
+
+ 157 002a 00BF     		.align	2
+ 158              	.L16:
+ 159 002c 00000000 		.word	.LANCHOR0
+ 160              		.cfi_endproc
+ 161              	.LFE129:
+ 163              		.section	.text.debug_waitkey,"ax",%progbits
+ 164              		.align	1
+ 165              		.global	debug_waitkey
+ 166              		.syntax unified
+ 167              		.thumb
+ 168              		.thumb_func
+ 169              		.fpu fpv4-sp-d16
+ 171              	debug_waitkey:
+ 172              	.LFB130:
+  78:Src/communication/dbgu.c **** 
+  79:Src/communication/dbgu.c **** //halts program/task execution until char is received
+  80:Src/communication/dbgu.c **** //(platform dependent)
+  81:Src/communication/dbgu.c **** char debug_waitkey(void)
+  82:Src/communication/dbgu.c **** {
+ 173              		.loc 1 82 0
+ 174              		.cfi_startproc
+ 175              		@ args = 0, pretend = 0, frame = 8
+ 176              		@ frame_needed = 0, uses_anonymous_args = 0
+ 177 0000 00B5     		push	{lr}
+ 178              	.LCFI2:
+ 179              		.cfi_def_cfa_offset 4
+ 180              		.cfi_offset 14, -4
+ 181 0002 83B0     		sub	sp, sp, #12
+ 182              	.LCFI3:
+ 183              		.cfi_def_cfa_offset 16
+ 184              	.L19:
+ 185              	.LBB3:
+  83:Src/communication/dbgu.c **** 	uint8_t rxed;
+  84:Src/communication/dbgu.c **** 	HAL_StatusTypeDef res;
+  85:Src/communication/dbgu.c **** 	
+  86:Src/communication/dbgu.c **** 	do
+  87:Src/communication/dbgu.c **** 	{
+  88:Src/communication/dbgu.c **** 		osDelay(1);
+ 186              		.loc 1 88 0 discriminator 1
+ 187 0004 0120     		movs	r0, #1
+ 188 0006 FFF7FEFF 		bl	osDelay
+ 189              	.LVL6:
+  89:Src/communication/dbgu.c **** 		res = HAL_UART_Receive(pUart,&rxed,1,3);
+ 190              		.loc 1 89 0 discriminator 1
+ 191 000a 0323     		movs	r3, #3
+ 192 000c 0122     		movs	r2, #1
+ 193 000e 0DF10701 		add	r1, sp, #7
+ 194 0012 0548     		ldr	r0, .L21
+ 195 0014 0068     		ldr	r0, [r0]
+ 196 0016 FFF7FEFF 		bl	HAL_UART_Receive
+ 197              	.LVL7:
+ 198              	.LBE3:
+  90:Src/communication/dbgu.c **** 	}
+  91:Src/communication/dbgu.c **** 	while(res != HAL_OK);
+ 199              		.loc 1 91 0 discriminator 1
+ 200 001a 0028     		cmp	r0, #0
+ 201 001c F2D1     		bne	.L19
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 6
+
+
+  92:Src/communication/dbgu.c **** 	return rxed;
+  93:Src/communication/dbgu.c **** }
+ 202              		.loc 1 93 0
+ 203 001e 9DF80700 		ldrb	r0, [sp, #7]	@ zero_extendqisi2
+ 204              	.LVL8:
+ 205 0022 03B0     		add	sp, sp, #12
+ 206              	.LCFI4:
+ 207              		.cfi_def_cfa_offset 4
+ 208              		@ sp needed
+ 209 0024 5DF804FB 		ldr	pc, [sp], #4
+ 210              	.L22:
+ 211              		.align	2
+ 212              	.L21:
+ 213 0028 00000000 		.word	.LANCHOR0
+ 214              		.cfi_endproc
+ 215              	.LFE130:
+ 217              		.section	.text.debug_txt,"ax",%progbits
+ 218              		.align	1
+ 219              		.global	debug_txt
+ 220              		.syntax unified
+ 221              		.thumb
+ 222              		.thumb_func
+ 223              		.fpu fpv4-sp-d16
+ 225              	debug_txt:
+ 226              	.LFB132:
+  94:Src/communication/dbgu.c **** 
+  95:Src/communication/dbgu.c **** 
+  96:Src/communication/dbgu.c **** //platform independent funcs
+  97:Src/communication/dbgu.c **** 
+  98:Src/communication/dbgu.c **** 
+  99:Src/communication/dbgu.c **** //prints text starting at str
+ 100:Src/communication/dbgu.c **** //adds new line at end
+ 101:Src/communication/dbgu.c **** void debug_msg(const char *str)
+ 102:Src/communication/dbgu.c **** {
+ 103:Src/communication/dbgu.c **** 	debug_txt(str);
+ 104:Src/communication/dbgu.c **** 	debug_chr('\r');
+ 105:Src/communication/dbgu.c **** 	debug_chr('\n');
+ 106:Src/communication/dbgu.c **** }
+ 107:Src/communication/dbgu.c **** 
+ 108:Src/communication/dbgu.c **** //prints text starting at str
+ 109:Src/communication/dbgu.c **** void debug_txt(const char *str)
+ 110:Src/communication/dbgu.c **** {
+ 227              		.loc 1 110 0
+ 228              		.cfi_startproc
+ 229              		@ args = 0, pretend = 0, frame = 0
+ 230              		@ frame_needed = 0, uses_anonymous_args = 0
+ 231              	.LVL9:
+ 232 0000 10B5     		push	{r4, lr}
+ 233              	.LCFI5:
+ 234              		.cfi_def_cfa_offset 8
+ 235              		.cfi_offset 4, -8
+ 236              		.cfi_offset 14, -4
+ 237 0002 0446     		mov	r4, r0
+ 111:Src/communication/dbgu.c **** 	while(*str) debug_chr(*str++);
+ 238              		.loc 1 111 0
+ 239 0004 02E0     		b	.L24
+ 240              	.LVL10:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 7
+
+
+ 241              	.L25:
+ 242              		.loc 1 111 0 is_stmt 0 discriminator 2
+ 243 0006 0134     		adds	r4, r4, #1
+ 244              	.LVL11:
+ 245 0008 FFF7FEFF 		bl	debug_chr
+ 246              	.LVL12:
+ 247              	.L24:
+ 248              		.loc 1 111 0 discriminator 1
+ 249 000c 2078     		ldrb	r0, [r4]	@ zero_extendqisi2
+ 250 000e 0028     		cmp	r0, #0
+ 251 0010 F9D1     		bne	.L25
+ 112:Src/communication/dbgu.c **** }
+ 252              		.loc 1 112 0 is_stmt 1
+ 253 0012 10BD     		pop	{r4, pc}
+ 254              		.cfi_endproc
+ 255              	.LFE132:
+ 257              		.section	.text.debug_msg,"ax",%progbits
+ 258              		.align	1
+ 259              		.global	debug_msg
+ 260              		.syntax unified
+ 261              		.thumb
+ 262              		.thumb_func
+ 263              		.fpu fpv4-sp-d16
+ 265              	debug_msg:
+ 266              	.LFB131:
+ 102:Src/communication/dbgu.c **** 	debug_txt(str);
+ 267              		.loc 1 102 0
+ 268              		.cfi_startproc
+ 269              		@ args = 0, pretend = 0, frame = 0
+ 270              		@ frame_needed = 0, uses_anonymous_args = 0
+ 271              	.LVL13:
+ 272 0000 08B5     		push	{r3, lr}
+ 273              	.LCFI6:
+ 274              		.cfi_def_cfa_offset 8
+ 275              		.cfi_offset 3, -8
+ 276              		.cfi_offset 14, -4
+ 103:Src/communication/dbgu.c **** 	debug_chr('\r');
+ 277              		.loc 1 103 0
+ 278 0002 FFF7FEFF 		bl	debug_txt
+ 279              	.LVL14:
+ 104:Src/communication/dbgu.c **** 	debug_chr('\n');
+ 280              		.loc 1 104 0
+ 281 0006 0D20     		movs	r0, #13
+ 282 0008 FFF7FEFF 		bl	debug_chr
+ 283              	.LVL15:
+ 105:Src/communication/dbgu.c **** }
+ 284              		.loc 1 105 0
+ 285 000c 0A20     		movs	r0, #10
+ 286 000e FFF7FEFF 		bl	debug_chr
+ 287              	.LVL16:
+ 106:Src/communication/dbgu.c **** 
+ 288              		.loc 1 106 0
+ 289 0012 08BD     		pop	{r3, pc}
+ 290              		.cfi_endproc
+ 291              	.LFE131:
+ 293              		.section	.text.debug_ascii,"ax",%progbits
+ 294              		.align	1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 8
+
+
+ 295              		.global	debug_ascii
+ 296              		.syntax unified
+ 297              		.thumb
+ 298              		.thumb_func
+ 299              		.fpu fpv4-sp-d16
+ 301              	debug_ascii:
+ 302              	.LFB134:
+ 113:Src/communication/dbgu.c **** 
+ 114:Src/communication/dbgu.c **** //prints text starting at str
+ 115:Src/communication/dbgu.c **** //prints exactly len chars
+ 116:Src/communication/dbgu.c **** void debug_txt_limit(const char *str, uint8_t len)
+ 117:Src/communication/dbgu.c **** {
+ 118:Src/communication/dbgu.c **** 	while(len)
+ 119:Src/communication/dbgu.c **** 	{
+ 120:Src/communication/dbgu.c **** 		debug_ascii(*str);
+ 121:Src/communication/dbgu.c **** 		str++;
+ 122:Src/communication/dbgu.c **** 		len--;
+ 123:Src/communication/dbgu.c **** 	}
+ 124:Src/communication/dbgu.c **** }
+ 125:Src/communication/dbgu.c **** 
+ 126:Src/communication/dbgu.c **** 
+ 127:Src/communication/dbgu.c **** //sends char b over pDbgu UART. Replaces values that can change cursor pos. on terminal
+ 128:Src/communication/dbgu.c **** void debug_ascii(uint8_t b)
+ 129:Src/communication/dbgu.c **** {
+ 303              		.loc 1 129 0
+ 304              		.cfi_startproc
+ 305              		@ args = 0, pretend = 0, frame = 0
+ 306              		@ frame_needed = 0, uses_anonymous_args = 0
+ 307              	.LVL17:
+ 308 0000 08B5     		push	{r3, lr}
+ 309              	.LCFI7:
+ 310              		.cfi_def_cfa_offset 8
+ 311              		.cfi_offset 3, -8
+ 312              		.cfi_offset 14, -4
+ 130:Src/communication/dbgu.c **** 	switch(b)
+ 313              		.loc 1 130 0
+ 314 0002 0D28     		cmp	r0, #13
+ 315 0004 10D8     		bhi	.L30
+ 316 0006 DFE800F0 		tbb	[pc, r0]
+ 317              	.L32:
+ 318 000a 07       		.byte	(.L31-.L32)/2
+ 319 000b 0F       		.byte	(.L30-.L32)/2
+ 320 000c 0F       		.byte	(.L30-.L32)/2
+ 321 000d 0F       		.byte	(.L30-.L32)/2
+ 322 000e 0F       		.byte	(.L30-.L32)/2
+ 323 000f 0F       		.byte	(.L30-.L32)/2
+ 324 0010 0F       		.byte	(.L30-.L32)/2
+ 325 0011 0F       		.byte	(.L30-.L32)/2
+ 326 0012 0B       		.byte	(.L33-.L32)/2
+ 327 0013 0B       		.byte	(.L33-.L32)/2
+ 328 0014 0B       		.byte	(.L33-.L32)/2
+ 329 0015 0F       		.byte	(.L30-.L32)/2
+ 330 0016 0F       		.byte	(.L30-.L32)/2
+ 331 0017 0B       		.byte	(.L33-.L32)/2
+ 332              		.p2align 1
+ 333              	.L31:
+ 131:Src/communication/dbgu.c **** 	{
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 9
+
+
+ 132:Src/communication/dbgu.c **** 		case 0:
+ 133:Src/communication/dbgu.c **** 		{
+ 134:Src/communication/dbgu.c **** 			debug_chr('.');	//replace 0 with dot
+ 334              		.loc 1 134 0
+ 335 0018 2E20     		movs	r0, #46
+ 336              	.LVL18:
+ 337 001a FFF7FEFF 		bl	debug_chr
+ 338              	.LVL19:
+ 339              	.L29:
+ 135:Src/communication/dbgu.c **** 			break;
+ 136:Src/communication/dbgu.c **** 		}
+ 137:Src/communication/dbgu.c **** 		case 8:
+ 138:Src/communication/dbgu.c **** 		case 9:
+ 139:Src/communication/dbgu.c **** 		case 10:
+ 140:Src/communication/dbgu.c **** 		case 13:
+ 141:Src/communication/dbgu.c **** 		{
+ 142:Src/communication/dbgu.c **** 			//avoid other chars that modify terminal cursor
+ 143:Src/communication/dbgu.c **** 			//replace them with space
+ 144:Src/communication/dbgu.c **** 			debug_chr(' ');
+ 145:Src/communication/dbgu.c **** 			break;
+ 146:Src/communication/dbgu.c **** 		}
+ 147:Src/communication/dbgu.c **** 		default:
+ 148:Src/communication/dbgu.c **** 		{
+ 149:Src/communication/dbgu.c **** 			debug_chr(b);
+ 150:Src/communication/dbgu.c **** 		}
+ 151:Src/communication/dbgu.c **** 	}//switch(chr)
+ 152:Src/communication/dbgu.c **** }
+ 340              		.loc 1 152 0
+ 341 001e 08BD     		pop	{r3, pc}
+ 342              	.LVL20:
+ 343              	.L33:
+ 144:Src/communication/dbgu.c **** 			break;
+ 344              		.loc 1 144 0
+ 345 0020 2020     		movs	r0, #32
+ 346              	.LVL21:
+ 347 0022 FFF7FEFF 		bl	debug_chr
+ 348              	.LVL22:
+ 145:Src/communication/dbgu.c **** 		}
+ 349              		.loc 1 145 0
+ 350 0026 FAE7     		b	.L29
+ 351              	.LVL23:
+ 352              	.L30:
+ 149:Src/communication/dbgu.c **** 		}
+ 353              		.loc 1 149 0
+ 354 0028 FFF7FEFF 		bl	debug_chr
+ 355              	.LVL24:
+ 356              		.loc 1 152 0
+ 357 002c F7E7     		b	.L29
+ 358              		.cfi_endproc
+ 359              	.LFE134:
+ 361              		.section	.text.debug_txt_limit,"ax",%progbits
+ 362              		.align	1
+ 363              		.global	debug_txt_limit
+ 364              		.syntax unified
+ 365              		.thumb
+ 366              		.thumb_func
+ 367              		.fpu fpv4-sp-d16
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 10
+
+
+ 369              	debug_txt_limit:
+ 370              	.LFB133:
+ 117:Src/communication/dbgu.c **** 	while(len)
+ 371              		.loc 1 117 0
+ 372              		.cfi_startproc
+ 373              		@ args = 0, pretend = 0, frame = 0
+ 374              		@ frame_needed = 0, uses_anonymous_args = 0
+ 375              	.LVL25:
+ 376 0000 38B5     		push	{r3, r4, r5, lr}
+ 377              	.LCFI8:
+ 378              		.cfi_def_cfa_offset 16
+ 379              		.cfi_offset 3, -16
+ 380              		.cfi_offset 4, -12
+ 381              		.cfi_offset 5, -8
+ 382              		.cfi_offset 14, -4
+ 383 0002 0546     		mov	r5, r0
+ 384 0004 0C46     		mov	r4, r1
+ 118:Src/communication/dbgu.c **** 	{
+ 385              		.loc 1 118 0
+ 386 0006 05E0     		b	.L37
+ 387              	.LVL26:
+ 388              	.L38:
+ 120:Src/communication/dbgu.c **** 		str++;
+ 389              		.loc 1 120 0
+ 390 0008 15F8010B 		ldrb	r0, [r5], #1	@ zero_extendqisi2
+ 391              	.LVL27:
+ 392 000c FFF7FEFF 		bl	debug_ascii
+ 393              	.LVL28:
+ 122:Src/communication/dbgu.c **** 	}
+ 394              		.loc 1 122 0
+ 395 0010 013C     		subs	r4, r4, #1
+ 396              	.LVL29:
+ 397 0012 E4B2     		uxtb	r4, r4
+ 398              	.LVL30:
+ 399              	.L37:
+ 118:Src/communication/dbgu.c **** 	{
+ 400              		.loc 1 118 0
+ 401 0014 002C     		cmp	r4, #0
+ 402 0016 F7D1     		bne	.L38
+ 124:Src/communication/dbgu.c **** 
+ 403              		.loc 1 124 0
+ 404 0018 38BD     		pop	{r3, r4, r5, pc}
+ 405              		.cfi_endproc
+ 406              	.LFE133:
+ 408              		.section	.text.debug_dump,"ax",%progbits
+ 409              		.align	1
+ 410              		.global	debug_dump
+ 411              		.syntax unified
+ 412              		.thumb
+ 413              		.thumb_func
+ 414              		.fpu fpv4-sp-d16
+ 416              	debug_dump:
+ 417              	.LFB135:
+ 153:Src/communication/dbgu.c **** 
+ 154:Src/communication/dbgu.c **** 
+ 155:Src/communication/dbgu.c **** 
+ 156:Src/communication/dbgu.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 11
+
+
+ 157:Src/communication/dbgu.c **** 
+ 158:Src/communication/dbgu.c **** void debug_dump(void *address, uint16_t len)
+ 159:Src/communication/dbgu.c **** {
+ 418              		.loc 1 159 0
+ 419              		.cfi_startproc
+ 420              		@ args = 0, pretend = 0, frame = 0
+ 421              		@ frame_needed = 0, uses_anonymous_args = 0
+ 422              	.LVL31:
+ 423 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 424              	.LCFI9:
+ 425              		.cfi_def_cfa_offset 24
+ 426              		.cfi_offset 3, -24
+ 427              		.cfi_offset 4, -20
+ 428              		.cfi_offset 5, -16
+ 429              		.cfi_offset 6, -12
+ 430              		.cfi_offset 7, -8
+ 431              		.cfi_offset 14, -4
+ 432 0002 0546     		mov	r5, r0
+ 433 0004 0F46     		mov	r7, r1
+ 434              	.LVL32:
+ 160:Src/communication/dbgu.c **** 	uint8_t *buf = address;
+ 161:Src/communication/dbgu.c **** 	const uint16_t bytesInLine = 16;
+ 162:Src/communication/dbgu.c **** 	const uint16_t spaceBetweenDumpAndASCII = 4;
+ 163:Src/communication/dbgu.c **** 	uint16_t i, counter=len;
+ 164:Src/communication/dbgu.c **** 	
+ 165:Src/communication/dbgu.c **** 	xprintf("Debug dump @ %08X\n",(unsigned int)address);
+ 435              		.loc 1 165 0
+ 436 0006 0146     		mov	r1, r0
+ 437              	.LVL33:
+ 438 0008 3948     		ldr	r0, .L68
+ 439              	.LVL34:
+ 440 000a FFF7FEFF 		bl	xprintf
+ 441              	.LVL35:
+ 163:Src/communication/dbgu.c **** 	
+ 442              		.loc 1 163 0
+ 443 000e 3E46     		mov	r6, r7
+ 444 0010 65E0     		b	.L61
+ 445              	.LVL36:
+ 446              	.L67:
+ 166:Src/communication/dbgu.c **** 	
+ 167:Src/communication/dbgu.c **** 	while(1)
+ 168:Src/communication/dbgu.c **** 	{
+ 169:Src/communication/dbgu.c **** 		//insert last line (may be shorter than full line)
+ 170:Src/communication/dbgu.c **** 		if(counter < bytesInLine)
+ 171:Src/communication/dbgu.c **** 		{
+ 172:Src/communication/dbgu.c **** 			xprintf("%08X %04X: ",(unsigned int)buf,(unsigned int)(len-counter));
+ 447              		.loc 1 172 0
+ 448 0012 BA1B     		subs	r2, r7, r6
+ 449 0014 2946     		mov	r1, r5
+ 450 0016 3748     		ldr	r0, .L68+4
+ 451 0018 FFF7FEFF 		bl	xprintf
+ 452              	.LVL37:
+ 173:Src/communication/dbgu.c **** 			
+ 174:Src/communication/dbgu.c **** 			//contents in hex
+ 175:Src/communication/dbgu.c **** 			for(i=0;i<bytesInLine;i++)
+ 453              		.loc 1 175 0
+ 454 001c 0024     		movs	r4, #0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 12
+
+
+ 455 001e 08E0     		b	.L42
+ 456              	.LVL38:
+ 457              	.L43:
+ 176:Src/communication/dbgu.c **** 			{
+ 177:Src/communication/dbgu.c **** 				if(i<counter)
+ 178:Src/communication/dbgu.c **** 				{
+ 179:Src/communication/dbgu.c **** 					xprintf("%02X ",(unsigned int)(buf[i]));
+ 180:Src/communication/dbgu.c **** 				}
+ 181:Src/communication/dbgu.c **** 				else
+ 182:Src/communication/dbgu.c **** 				{
+ 183:Src/communication/dbgu.c **** 					xprintf("   ");
+ 458              		.loc 1 183 0
+ 459 0020 3548     		ldr	r0, .L68+8
+ 460 0022 FFF7FEFF 		bl	xprintf
+ 461              	.LVL39:
+ 462              	.L44:
+ 184:Src/communication/dbgu.c **** 				}
+ 185:Src/communication/dbgu.c **** 				if(i%8==7) xprintf(" ");
+ 463              		.loc 1 185 0
+ 464 0026 04F00703 		and	r3, r4, #7
+ 465 002a 072B     		cmp	r3, #7
+ 466 002c 0AD0     		beq	.L63
+ 467              	.L45:
+ 175:Src/communication/dbgu.c **** 			{
+ 468              		.loc 1 175 0 discriminator 2
+ 469 002e 0134     		adds	r4, r4, #1
+ 470              	.LVL40:
+ 471 0030 A4B2     		uxth	r4, r4
+ 472              	.LVL41:
+ 473              	.L42:
+ 175:Src/communication/dbgu.c **** 			{
+ 474              		.loc 1 175 0 is_stmt 0 discriminator 1
+ 475 0032 0F2C     		cmp	r4, #15
+ 476 0034 0AD8     		bhi	.L64
+ 177:Src/communication/dbgu.c **** 				{
+ 477              		.loc 1 177 0 is_stmt 1
+ 478 0036 B442     		cmp	r4, r6
+ 479 0038 F2D2     		bcs	.L43
+ 179:Src/communication/dbgu.c **** 				}
+ 480              		.loc 1 179 0
+ 481 003a 295D     		ldrb	r1, [r5, r4]	@ zero_extendqisi2
+ 482 003c 2F48     		ldr	r0, .L68+12
+ 483 003e FFF7FEFF 		bl	xprintf
+ 484              	.LVL42:
+ 485 0042 F0E7     		b	.L44
+ 486              	.L63:
+ 487              		.loc 1 185 0 discriminator 1
+ 488 0044 2E48     		ldr	r0, .L68+16
+ 489 0046 FFF7FEFF 		bl	xprintf
+ 490              	.LVL43:
+ 491 004a F0E7     		b	.L45
+ 492              	.L64:
+ 186:Src/communication/dbgu.c **** 			}
+ 187:Src/communication/dbgu.c **** 			
+ 188:Src/communication/dbgu.c **** 			//space
+ 189:Src/communication/dbgu.c **** 			for(i=0;i<spaceBetweenDumpAndASCII;i++)
+ 493              		.loc 1 189 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 13
+
+
+ 494 004c 0024     		movs	r4, #0
+ 495              	.LVL44:
+ 496 004e 04E0     		b	.L47
+ 497              	.LVL45:
+ 498              	.L48:
+ 190:Src/communication/dbgu.c **** 			{
+ 191:Src/communication/dbgu.c **** 				xprintf(" ");
+ 499              		.loc 1 191 0 discriminator 3
+ 500 0050 2B48     		ldr	r0, .L68+16
+ 501 0052 FFF7FEFF 		bl	xprintf
+ 502              	.LVL46:
+ 189:Src/communication/dbgu.c **** 			{
+ 503              		.loc 1 189 0 discriminator 3
+ 504 0056 0134     		adds	r4, r4, #1
+ 505              	.LVL47:
+ 506 0058 A4B2     		uxth	r4, r4
+ 507              	.LVL48:
+ 508              	.L47:
+ 189:Src/communication/dbgu.c **** 			{
+ 509              		.loc 1 189 0 is_stmt 0 discriminator 1
+ 510 005a 032C     		cmp	r4, #3
+ 511 005c F8D9     		bls	.L48
+ 192:Src/communication/dbgu.c **** 			}
+ 193:Src/communication/dbgu.c **** 			
+ 194:Src/communication/dbgu.c **** 			//contents in ASCII
+ 195:Src/communication/dbgu.c **** 			for(i=0;i<bytesInLine;i++)
+ 512              		.loc 1 195 0 is_stmt 1
+ 513 005e 0024     		movs	r4, #0
+ 514              	.LVL49:
+ 515 0060 04E0     		b	.L49
+ 516              	.LVL50:
+ 517              	.L50:
+ 196:Src/communication/dbgu.c **** 			{
+ 197:Src/communication/dbgu.c **** 				if(i<counter)
+ 198:Src/communication/dbgu.c **** 				{
+ 199:Src/communication/dbgu.c **** 					debug_ascii(buf[i]);
+ 200:Src/communication/dbgu.c **** 				}
+ 201:Src/communication/dbgu.c **** 				else
+ 202:Src/communication/dbgu.c **** 				{
+ 203:Src/communication/dbgu.c **** 					debug_chr(' ');
+ 518              		.loc 1 203 0
+ 519 0062 2020     		movs	r0, #32
+ 520 0064 FFF7FEFF 		bl	debug_chr
+ 521              	.LVL51:
+ 522              	.L51:
+ 195:Src/communication/dbgu.c **** 			{
+ 523              		.loc 1 195 0 discriminator 2
+ 524 0068 0134     		adds	r4, r4, #1
+ 525              	.LVL52:
+ 526 006a A4B2     		uxth	r4, r4
+ 527              	.LVL53:
+ 528              	.L49:
+ 195:Src/communication/dbgu.c **** 			{
+ 529              		.loc 1 195 0 is_stmt 0 discriminator 1
+ 530 006c 0F2C     		cmp	r4, #15
+ 531 006e 05D8     		bhi	.L65
+ 197:Src/communication/dbgu.c **** 				{
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 14
+
+
+ 532              		.loc 1 197 0 is_stmt 1
+ 533 0070 B442     		cmp	r4, r6
+ 534 0072 F6D2     		bcs	.L50
+ 199:Src/communication/dbgu.c **** 				}
+ 535              		.loc 1 199 0
+ 536 0074 285D     		ldrb	r0, [r5, r4]	@ zero_extendqisi2
+ 537 0076 FFF7FEFF 		bl	debug_ascii
+ 538              	.LVL54:
+ 539 007a F5E7     		b	.L51
+ 540              	.L65:
+ 204:Src/communication/dbgu.c **** 				}
+ 205:Src/communication/dbgu.c **** 			}
+ 206:Src/communication/dbgu.c **** 			
+ 207:Src/communication/dbgu.c **** 			debug_chr('\n');
+ 541              		.loc 1 207 0
+ 542 007c 0A20     		movs	r0, #10
+ 543 007e FFF7FEFF 		bl	debug_chr
+ 544              	.LVL55:
+ 545              	.L53:
+ 208:Src/communication/dbgu.c **** 			
+ 209:Src/communication/dbgu.c **** 			break;
+ 210:Src/communication/dbgu.c **** 		}
+ 211:Src/communication/dbgu.c **** 		
+ 212:Src/communication/dbgu.c **** 		xprintf("%08X %04X:   ",(unsigned int)buf,(unsigned int)(len-counter));
+ 213:Src/communication/dbgu.c **** 		
+ 214:Src/communication/dbgu.c **** 		
+ 215:Src/communication/dbgu.c **** 		for(i=0;i<bytesInLine;i++)
+ 216:Src/communication/dbgu.c **** 		{
+ 217:Src/communication/dbgu.c **** 			xprintf("%02X ",(unsigned int)(buf[i]));
+ 218:Src/communication/dbgu.c **** 			if(i%8==7) debug_chr(' ');
+ 219:Src/communication/dbgu.c **** 		}
+ 220:Src/communication/dbgu.c **** 		
+ 221:Src/communication/dbgu.c **** 		//space
+ 222:Src/communication/dbgu.c **** 		for(i=0;i<spaceBetweenDumpAndASCII;i++)
+ 223:Src/communication/dbgu.c **** 		{
+ 224:Src/communication/dbgu.c **** 			debug_chr(' ');
+ 225:Src/communication/dbgu.c **** 		}
+ 226:Src/communication/dbgu.c **** 		
+ 227:Src/communication/dbgu.c **** 		//contents in ASCII
+ 228:Src/communication/dbgu.c **** 		for(i=0;i<bytesInLine;i++)
+ 229:Src/communication/dbgu.c **** 		{
+ 230:Src/communication/dbgu.c **** 			debug_ascii(buf[i]);
+ 231:Src/communication/dbgu.c **** 		}
+ 232:Src/communication/dbgu.c **** 		
+ 233:Src/communication/dbgu.c **** 		buf += bytesInLine;
+ 234:Src/communication/dbgu.c **** 		if(counter >= bytesInLine)
+ 235:Src/communication/dbgu.c **** 		{
+ 236:Src/communication/dbgu.c **** 			counter -= bytesInLine;
+ 237:Src/communication/dbgu.c **** 		}
+ 238:Src/communication/dbgu.c **** 		
+ 239:Src/communication/dbgu.c **** 		debug_chr('\n');
+ 240:Src/communication/dbgu.c **** 			
+ 241:Src/communication/dbgu.c **** 		if(counter == 0) break;
+ 242:Src/communication/dbgu.c **** 		
+ 243:Src/communication/dbgu.c **** 	}	//while(counter)
+ 244:Src/communication/dbgu.c **** 	//footer
+ 245:Src/communication/dbgu.c **** 	xprintf("End of dump");
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 15
+
+
+ 546              		.loc 1 245 0
+ 547 0082 2048     		ldr	r0, .L68+20
+ 548 0084 FFF7FEFF 		bl	xprintf
+ 549              	.LVL56:
+ 246:Src/communication/dbgu.c **** 	
+ 247:Src/communication/dbgu.c **** }
+ 550              		.loc 1 247 0
+ 551 0088 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 552              	.LVL57:
+ 553              	.L55:
+ 215:Src/communication/dbgu.c **** 		{
+ 554              		.loc 1 215 0 discriminator 2
+ 555 008a 0134     		adds	r4, r4, #1
+ 556              	.LVL58:
+ 557 008c A4B2     		uxth	r4, r4
+ 558              	.LVL59:
+ 559              	.L54:
+ 215:Src/communication/dbgu.c **** 		{
+ 560              		.loc 1 215 0 is_stmt 0 discriminator 1
+ 561 008e 0F2C     		cmp	r4, #15
+ 562 0090 0BD8     		bhi	.L66
+ 217:Src/communication/dbgu.c **** 			if(i%8==7) debug_chr(' ');
+ 563              		.loc 1 217 0 is_stmt 1
+ 564 0092 295D     		ldrb	r1, [r5, r4]	@ zero_extendqisi2
+ 565 0094 1948     		ldr	r0, .L68+12
+ 566 0096 FFF7FEFF 		bl	xprintf
+ 567              	.LVL60:
+ 218:Src/communication/dbgu.c **** 		}
+ 568              		.loc 1 218 0
+ 569 009a 04F00703 		and	r3, r4, #7
+ 570 009e 072B     		cmp	r3, #7
+ 571 00a0 F3D1     		bne	.L55
+ 218:Src/communication/dbgu.c **** 		}
+ 572              		.loc 1 218 0 is_stmt 0 discriminator 1
+ 573 00a2 2020     		movs	r0, #32
+ 574 00a4 FFF7FEFF 		bl	debug_chr
+ 575              	.LVL61:
+ 576 00a8 EFE7     		b	.L55
+ 577              	.L66:
+ 222:Src/communication/dbgu.c **** 		{
+ 578              		.loc 1 222 0 is_stmt 1
+ 579 00aa 0024     		movs	r4, #0
+ 580              	.LVL62:
+ 581 00ac 04E0     		b	.L57
+ 582              	.LVL63:
+ 583              	.L58:
+ 224:Src/communication/dbgu.c **** 		}
+ 584              		.loc 1 224 0 discriminator 3
+ 585 00ae 2020     		movs	r0, #32
+ 586 00b0 FFF7FEFF 		bl	debug_chr
+ 587              	.LVL64:
+ 222:Src/communication/dbgu.c **** 		{
+ 588              		.loc 1 222 0 discriminator 3
+ 589 00b4 0134     		adds	r4, r4, #1
+ 590              	.LVL65:
+ 591 00b6 A4B2     		uxth	r4, r4
+ 592              	.LVL66:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 16
+
+
+ 593              	.L57:
+ 222:Src/communication/dbgu.c **** 		{
+ 594              		.loc 1 222 0 is_stmt 0 discriminator 1
+ 595 00b8 032C     		cmp	r4, #3
+ 596 00ba F8D9     		bls	.L58
+ 228:Src/communication/dbgu.c **** 		{
+ 597              		.loc 1 228 0 is_stmt 1
+ 598 00bc 0024     		movs	r4, #0
+ 599              	.LVL67:
+ 600 00be 04E0     		b	.L59
+ 601              	.LVL68:
+ 602              	.L60:
+ 230:Src/communication/dbgu.c **** 		}
+ 603              		.loc 1 230 0 discriminator 3
+ 604 00c0 285D     		ldrb	r0, [r5, r4]	@ zero_extendqisi2
+ 605 00c2 FFF7FEFF 		bl	debug_ascii
+ 606              	.LVL69:
+ 228:Src/communication/dbgu.c **** 		{
+ 607              		.loc 1 228 0 discriminator 3
+ 608 00c6 0134     		adds	r4, r4, #1
+ 609              	.LVL70:
+ 610 00c8 A4B2     		uxth	r4, r4
+ 611              	.LVL71:
+ 612              	.L59:
+ 228:Src/communication/dbgu.c **** 		{
+ 613              		.loc 1 228 0 is_stmt 0 discriminator 1
+ 614 00ca 0F2C     		cmp	r4, #15
+ 615 00cc F8D9     		bls	.L60
+ 233:Src/communication/dbgu.c **** 		if(counter >= bytesInLine)
+ 616              		.loc 1 233 0 is_stmt 1
+ 617 00ce 1035     		adds	r5, r5, #16
+ 618              	.LVL72:
+ 236:Src/communication/dbgu.c **** 		}
+ 619              		.loc 1 236 0
+ 620 00d0 103E     		subs	r6, r6, #16
+ 621              	.LVL73:
+ 622 00d2 B6B2     		uxth	r6, r6
+ 623              	.LVL74:
+ 239:Src/communication/dbgu.c **** 			
+ 624              		.loc 1 239 0
+ 625 00d4 0A20     		movs	r0, #10
+ 626 00d6 FFF7FEFF 		bl	debug_chr
+ 627              	.LVL75:
+ 241:Src/communication/dbgu.c **** 		
+ 628              		.loc 1 241 0
+ 629 00da 002E     		cmp	r6, #0
+ 630 00dc D1D0     		beq	.L53
+ 631              	.LVL76:
+ 632              	.L61:
+ 170:Src/communication/dbgu.c **** 		{
+ 633              		.loc 1 170 0
+ 634 00de 0F2E     		cmp	r6, #15
+ 635 00e0 97D9     		bls	.L67
+ 212:Src/communication/dbgu.c **** 		
+ 636              		.loc 1 212 0
+ 637 00e2 BA1B     		subs	r2, r7, r6
+ 638 00e4 2946     		mov	r1, r5
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 17
+
+
+ 639 00e6 0848     		ldr	r0, .L68+24
+ 640 00e8 FFF7FEFF 		bl	xprintf
+ 641              	.LVL77:
+ 215:Src/communication/dbgu.c **** 		{
+ 642              		.loc 1 215 0
+ 643 00ec 0024     		movs	r4, #0
+ 644 00ee CEE7     		b	.L54
+ 645              	.L69:
+ 646              		.align	2
+ 647              	.L68:
+ 648 00f0 00000000 		.word	.LC0
+ 649 00f4 14000000 		.word	.LC1
+ 650 00f8 28000000 		.word	.LC3
+ 651 00fc 20000000 		.word	.LC2
+ 652 0100 2C000000 		.word	.LC4
+ 653 0104 40000000 		.word	.LC6
+ 654 0108 30000000 		.word	.LC5
+ 655              		.cfi_endproc
+ 656              	.LFE135:
+ 658              		.global	pUart
+ 659              		.section	.bss.pUart,"aw",%nobits
+ 660              		.align	2
+ 661              		.set	.LANCHOR0,. + 0
+ 664              	pUart:
+ 665 0000 00000000 		.space	4
+ 666              		.section	.rodata.debug_dump.str1.4,"aMS",%progbits,1
+ 667              		.align	2
+ 668              	.LC0:
+ 669 0000 44656275 		.ascii	"Debug dump @ %08X\012\000"
+ 669      67206475 
+ 669      6D702040 
+ 669      20253038 
+ 669      580A00
+ 670 0013 00       		.space	1
+ 671              	.LC1:
+ 672 0014 25303858 		.ascii	"%08X %04X: \000"
+ 672      20253034 
+ 672      583A2000 
+ 673              	.LC2:
+ 674 0020 25303258 		.ascii	"%02X \000"
+ 674      2000
+ 675 0026 0000     		.space	2
+ 676              	.LC3:
+ 677 0028 20202000 		.ascii	"   \000"
+ 678              	.LC4:
+ 679 002c 2000     		.ascii	" \000"
+ 680 002e 0000     		.space	2
+ 681              	.LC5:
+ 682 0030 25303858 		.ascii	"%08X %04X:   \000"
+ 682      20253034 
+ 682      583A2020 
+ 682      2000
+ 683 003e 0000     		.space	2
+ 684              	.LC6:
+ 685 0040 456E6420 		.ascii	"End of dump\000"
+ 685      6F662064 
+ 685      756D7000 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 18
+
+
+ 686              		.text
+ 687              	.Letext0:
+ 688              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 689              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 690              		.file 4 "Drivers/CMSIS/Include/core_cm4.h"
+ 691              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 692              		.file 6 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f429xx.h"
+ 693              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 694              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 695              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 696              		.file 10 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 697              		.file 11 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+ 698              		.file 12 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 699              		.file 13 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 700              		.file 14 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h"
+ 701              		.file 15 "Inc/communication/term_io.h"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 dbgu.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:18     .text.debug_shdn:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:25     .text.debug_shdn:0000000000000000 debug_shdn
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:40     .text.debug_init:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:47     .text.debug_init:0000000000000000 debug_init
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:63     .text.debug_init:0000000000000008 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:68     .text.debug_chr:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:75     .text.debug_chr:0000000000000000 debug_chr
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:98     .text.debug_chr:0000000000000014 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:103    .text.debug_inkey:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:110    .text.debug_inkey:0000000000000000 debug_inkey
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:159    .text.debug_inkey:000000000000002c $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:164    .text.debug_waitkey:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:171    .text.debug_waitkey:0000000000000000 debug_waitkey
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:213    .text.debug_waitkey:0000000000000028 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:218    .text.debug_txt:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:225    .text.debug_txt:0000000000000000 debug_txt
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:258    .text.debug_msg:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:265    .text.debug_msg:0000000000000000 debug_msg
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:294    .text.debug_ascii:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:301    .text.debug_ascii:0000000000000000 debug_ascii
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:318    .text.debug_ascii:000000000000000a $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:332    .text.debug_ascii:0000000000000018 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:362    .text.debug_txt_limit:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:369    .text.debug_txt_limit:0000000000000000 debug_txt_limit
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:409    .text.debug_dump:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:416    .text.debug_dump:0000000000000000 debug_dump
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:648    .text.debug_dump:00000000000000f0 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:664    .bss.pUart:0000000000000000 pUart
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:660    .bss.pUart:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccFIA6Ta.s:667    .rodata.debug_dump.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+osDelay
+HAL_UART_Receive
+xprintf

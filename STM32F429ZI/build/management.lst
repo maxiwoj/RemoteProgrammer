@@ -1,0 +1,1581 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"management.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.global	__aeabi_dcmplt
+  18              		.section	.text.prv_readAttributes,"ax",%progbits
+  19              		.align	1
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	prv_readAttributes:
+  26              	.LFB3:
+  27              		.file 1 "Middlewares/Third_Party/wakaama/management.c"
+   1:Middlewares/Third_Party/wakaama/management.c **** /*******************************************************************************
+   2:Middlewares/Third_Party/wakaama/management.c ****  *
+   3:Middlewares/Third_Party/wakaama/management.c ****  * Copyright (c) 2013, 2014 Intel Corporation and others.
+   4:Middlewares/Third_Party/wakaama/management.c ****  * All rights reserved. This program and the accompanying materials
+   5:Middlewares/Third_Party/wakaama/management.c ****  * are made available under the terms of the Eclipse Public License v1.0
+   6:Middlewares/Third_Party/wakaama/management.c ****  * and Eclipse Distribution License v1.0 which accompany this distribution.
+   7:Middlewares/Third_Party/wakaama/management.c ****  *
+   8:Middlewares/Third_Party/wakaama/management.c ****  * The Eclipse Public License is available at
+   9:Middlewares/Third_Party/wakaama/management.c ****  *    http://www.eclipse.org/legal/epl-v10.html
+  10:Middlewares/Third_Party/wakaama/management.c ****  * The Eclipse Distribution License is available at
+  11:Middlewares/Third_Party/wakaama/management.c ****  *    http://www.eclipse.org/org/documents/edl-v10.php.
+  12:Middlewares/Third_Party/wakaama/management.c ****  *
+  13:Middlewares/Third_Party/wakaama/management.c ****  * Contributors:
+  14:Middlewares/Third_Party/wakaama/management.c ****  *    David Navarro, Intel Corporation - initial API and implementation
+  15:Middlewares/Third_Party/wakaama/management.c ****  *    domedambrosio - Please refer to git log
+  16:Middlewares/Third_Party/wakaama/management.c ****  *    Toby Jaffey - Please refer to git log
+  17:Middlewares/Third_Party/wakaama/management.c ****  *    Bosch Software Innovations GmbH - Please refer to git log
+  18:Middlewares/Third_Party/wakaama/management.c ****  *    Pascal Rieux - Please refer to git log
+  19:Middlewares/Third_Party/wakaama/management.c ****  *    
+  20:Middlewares/Third_Party/wakaama/management.c ****  *******************************************************************************/
+  21:Middlewares/Third_Party/wakaama/management.c **** /*
+  22:Middlewares/Third_Party/wakaama/management.c ****  Copyright (c) 2013, 2014 Intel Corporation
+  23:Middlewares/Third_Party/wakaama/management.c **** 
+  24:Middlewares/Third_Party/wakaama/management.c ****  Redistribution and use in source and binary forms, with or without modification,
+  25:Middlewares/Third_Party/wakaama/management.c ****  are permitted provided that the following conditions are met:
+  26:Middlewares/Third_Party/wakaama/management.c **** 
+  27:Middlewares/Third_Party/wakaama/management.c ****      * Redistributions of source code must retain the above copyright notice,
+  28:Middlewares/Third_Party/wakaama/management.c ****        this list of conditions and the following disclaimer.
+  29:Middlewares/Third_Party/wakaama/management.c ****      * Redistributions in binary form must reproduce the above copyright notice,
+  30:Middlewares/Third_Party/wakaama/management.c ****        this list of conditions and the following disclaimer in the documentation
+  31:Middlewares/Third_Party/wakaama/management.c ****        and/or other materials provided with the distribution.
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 2
+
+
+  32:Middlewares/Third_Party/wakaama/management.c ****      * Neither the name of Intel Corporation nor the names of its contributors
+  33:Middlewares/Third_Party/wakaama/management.c ****        may be used to endorse or promote products derived from this software
+  34:Middlewares/Third_Party/wakaama/management.c ****        without specific prior written permission.
+  35:Middlewares/Third_Party/wakaama/management.c **** 
+  36:Middlewares/Third_Party/wakaama/management.c ****  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  37:Middlewares/Third_Party/wakaama/management.c ****  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  38:Middlewares/Third_Party/wakaama/management.c ****  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  39:Middlewares/Third_Party/wakaama/management.c ****  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  40:Middlewares/Third_Party/wakaama/management.c ****  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  41:Middlewares/Third_Party/wakaama/management.c ****  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  42:Middlewares/Third_Party/wakaama/management.c ****  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  43:Middlewares/Third_Party/wakaama/management.c ****  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  44:Middlewares/Third_Party/wakaama/management.c ****  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+  45:Middlewares/Third_Party/wakaama/management.c ****  THE POSSIBILITY OF SUCH DAMAGE.
+  46:Middlewares/Third_Party/wakaama/management.c **** 
+  47:Middlewares/Third_Party/wakaama/management.c ****  David Navarro <david.navarro@intel.com>
+  48:Middlewares/Third_Party/wakaama/management.c **** 
+  49:Middlewares/Third_Party/wakaama/management.c **** */
+  50:Middlewares/Third_Party/wakaama/management.c **** 
+  51:Middlewares/Third_Party/wakaama/management.c **** #include "internals.h"
+  52:Middlewares/Third_Party/wakaama/management.c **** #include <stdio.h>
+  53:Middlewares/Third_Party/wakaama/management.c **** 
+  54:Middlewares/Third_Party/wakaama/management.c **** 
+  55:Middlewares/Third_Party/wakaama/management.c **** #ifdef LWM2M_CLIENT_MODE
+  56:Middlewares/Third_Party/wakaama/management.c **** static int prv_readAttributes(multi_option_t * query,
+  57:Middlewares/Third_Party/wakaama/management.c ****                               lwm2m_attributes_t * attrP)
+  58:Middlewares/Third_Party/wakaama/management.c **** {
+  28              		.loc 1 58 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 16
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 30B5     		push	{r4, r5, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 12
+  36              		.cfi_offset 4, -12
+  37              		.cfi_offset 5, -8
+  38              		.cfi_offset 14, -4
+  39 0002 85B0     		sub	sp, sp, #20
+  40              	.LCFI1:
+  41              		.cfi_def_cfa_offset 32
+  42 0004 0446     		mov	r4, r0
+  43 0006 0D46     		mov	r5, r1
+  59:Middlewares/Third_Party/wakaama/management.c ****     int64_t intValue;
+  60:Middlewares/Third_Party/wakaama/management.c ****     double floatValue;
+  61:Middlewares/Third_Party/wakaama/management.c **** 
+  62:Middlewares/Third_Party/wakaama/management.c ****     memset(attrP, 0, sizeof(lwm2m_attributes_t));
+  44              		.loc 1 62 0
+  45 0008 2822     		movs	r2, #40
+  46 000a 0021     		movs	r1, #0
+  47              	.LVL1:
+  48 000c 2846     		mov	r0, r5
+  49              	.LVL2:
+  50 000e FFF7FEFF 		bl	memset
+  51              	.LVL3:
+  63:Middlewares/Third_Party/wakaama/management.c **** 
+  64:Middlewares/Third_Party/wakaama/management.c ****     while (query != NULL)
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 3
+
+
+  52              		.loc 1 64 0
+  53 0012 15E0     		b	.L2
+  54              	.L3:
+  65:Middlewares/Third_Party/wakaama/management.c ****     {
+  66:Middlewares/Third_Party/wakaama/management.c ****         if (lwm2m_strncmp((char *)query->data, ATTR_MIN_PERIOD_STR, ATTR_MIN_PERIOD_LEN) == 0)
+  67:Middlewares/Third_Party/wakaama/management.c ****         {
+  68:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_MIN_PERIOD)) return -1;
+  69:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_MIN_PERIOD_LEN) return -1;
+  70:Middlewares/Third_Party/wakaama/management.c **** 
+  71:Middlewares/Third_Party/wakaama/management.c ****             if (1 != utils_textToInt(query->data + ATTR_MIN_PERIOD_LEN, query->len - ATTR_MIN_PERIO
+  72:Middlewares/Third_Party/wakaama/management.c ****             if (intValue < 0) return -1;
+  73:Middlewares/Third_Party/wakaama/management.c **** 
+  74:Middlewares/Third_Party/wakaama/management.c ****             attrP->toSet |= LWM2M_ATTR_FLAG_MIN_PERIOD;
+  75:Middlewares/Third_Party/wakaama/management.c ****             attrP->minPeriod = intValue;
+  76:Middlewares/Third_Party/wakaama/management.c ****         }
+  77:Middlewares/Third_Party/wakaama/management.c ****         else if (lwm2m_strncmp((char *)query->data, ATTR_MIN_PERIOD_STR, ATTR_MIN_PERIOD_LEN - 1) =
+  55              		.loc 1 77 0
+  56 0014 0422     		movs	r2, #4
+  57 0016 B349     		ldr	r1, .L46
+  58 0018 A068     		ldr	r0, [r4, #8]
+  59 001a FFF7FEFF 		bl	lwm2m_strncmp
+  60              	.LVL4:
+  61 001e 0028     		cmp	r0, #0
+  62 0020 3AD1     		bne	.L6
+  78:Middlewares/Third_Party/wakaama/management.c ****         {
+  79:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_MIN_PERIOD)) return -1;
+  63              		.loc 1 79 0
+  64 0022 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+  65 0024 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+  66 0026 1A43     		orrs	r2, r2, r3
+  67 0028 12F0010F 		tst	r2, #1
+  68 002c 40F02C81 		bne	.L19
+  80:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_MIN_PERIOD_LEN - 1) return -1;
+  69              		.loc 1 80 0
+  70 0030 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+  71 0032 042A     		cmp	r2, #4
+  72 0034 40F02B81 		bne	.L20
+  81:Middlewares/Third_Party/wakaama/management.c **** 
+  82:Middlewares/Third_Party/wakaama/management.c ****             attrP->toClear |= LWM2M_ATTR_FLAG_MIN_PERIOD;
+  73              		.loc 1 82 0
+  74 0038 43F00103 		orr	r3, r3, #1
+  75 003c 6B70     		strb	r3, [r5, #1]
+  76              	.L5:
+  83:Middlewares/Third_Party/wakaama/management.c ****         }
+  84:Middlewares/Third_Party/wakaama/management.c ****         else if (lwm2m_strncmp((char *)query->data, ATTR_MAX_PERIOD_STR, ATTR_MAX_PERIOD_LEN) == 0)
+  85:Middlewares/Third_Party/wakaama/management.c ****         {
+  86:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_MAX_PERIOD)) return -1;
+  87:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_MAX_PERIOD_LEN) return -1;
+  88:Middlewares/Third_Party/wakaama/management.c **** 
+  89:Middlewares/Third_Party/wakaama/management.c ****             if (1 != utils_textToInt(query->data + ATTR_MAX_PERIOD_LEN, query->len - ATTR_MAX_PERIO
+  90:Middlewares/Third_Party/wakaama/management.c ****             if (intValue < 0) return -1;
+  91:Middlewares/Third_Party/wakaama/management.c **** 
+  92:Middlewares/Third_Party/wakaama/management.c ****             attrP->toSet |= LWM2M_ATTR_FLAG_MAX_PERIOD;
+  93:Middlewares/Third_Party/wakaama/management.c ****             attrP->maxPeriod = intValue;
+  94:Middlewares/Third_Party/wakaama/management.c ****         }
+  95:Middlewares/Third_Party/wakaama/management.c ****         else if (lwm2m_strncmp((char *)query->data, ATTR_MAX_PERIOD_STR, ATTR_MAX_PERIOD_LEN - 1) =
+  96:Middlewares/Third_Party/wakaama/management.c ****         {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 4
+
+
+  97:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_MAX_PERIOD)) return -1;
+  98:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_MAX_PERIOD_LEN - 1) return -1;
+  99:Middlewares/Third_Party/wakaama/management.c **** 
+ 100:Middlewares/Third_Party/wakaama/management.c ****             attrP->toClear |= LWM2M_ATTR_FLAG_MAX_PERIOD;
+ 101:Middlewares/Third_Party/wakaama/management.c ****         }
+ 102:Middlewares/Third_Party/wakaama/management.c ****         else if (lwm2m_strncmp((char *)query->data, ATTR_GREATER_THAN_STR, ATTR_GREATER_THAN_LEN) =
+ 103:Middlewares/Third_Party/wakaama/management.c ****         {
+ 104:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_GREATER_THAN)) return -1;
+ 105:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_GREATER_THAN_LEN) return -1;
+ 106:Middlewares/Third_Party/wakaama/management.c **** 
+ 107:Middlewares/Third_Party/wakaama/management.c ****             if (1 != utils_textToFloat(query->data + ATTR_GREATER_THAN_LEN, query->len - ATTR_GREAT
+ 108:Middlewares/Third_Party/wakaama/management.c **** 
+ 109:Middlewares/Third_Party/wakaama/management.c ****             attrP->toSet |= LWM2M_ATTR_FLAG_GREATER_THAN;
+ 110:Middlewares/Third_Party/wakaama/management.c ****             attrP->greaterThan = floatValue;
+ 111:Middlewares/Third_Party/wakaama/management.c ****         }
+ 112:Middlewares/Third_Party/wakaama/management.c ****         else if (lwm2m_strncmp((char *)query->data, ATTR_GREATER_THAN_STR, ATTR_GREATER_THAN_LEN - 
+ 113:Middlewares/Third_Party/wakaama/management.c ****         {
+ 114:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_GREATER_THAN)) return -1;
+ 115:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_GREATER_THAN_LEN - 1) return -1;
+ 116:Middlewares/Third_Party/wakaama/management.c **** 
+ 117:Middlewares/Third_Party/wakaama/management.c ****             attrP->toClear |= LWM2M_ATTR_FLAG_GREATER_THAN;
+ 118:Middlewares/Third_Party/wakaama/management.c ****         }
+ 119:Middlewares/Third_Party/wakaama/management.c ****         else if (lwm2m_strncmp((char *)query->data, ATTR_LESS_THAN_STR, ATTR_LESS_THAN_LEN) == 0)
+ 120:Middlewares/Third_Party/wakaama/management.c ****         {
+ 121:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_LESS_THAN)) return -1;
+ 122:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_LESS_THAN_LEN) return -1;
+ 123:Middlewares/Third_Party/wakaama/management.c **** 
+ 124:Middlewares/Third_Party/wakaama/management.c ****             if (1 != utils_textToFloat(query->data + ATTR_LESS_THAN_LEN, query->len - ATTR_LESS_THA
+ 125:Middlewares/Third_Party/wakaama/management.c **** 
+ 126:Middlewares/Third_Party/wakaama/management.c ****             attrP->toSet |= LWM2M_ATTR_FLAG_LESS_THAN;
+ 127:Middlewares/Third_Party/wakaama/management.c ****             attrP->lessThan = floatValue;
+ 128:Middlewares/Third_Party/wakaama/management.c ****         }
+ 129:Middlewares/Third_Party/wakaama/management.c ****         else if (lwm2m_strncmp((char *)query->data, ATTR_LESS_THAN_STR, ATTR_LESS_THAN_LEN - 1) == 
+ 130:Middlewares/Third_Party/wakaama/management.c ****         {
+ 131:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_LESS_THAN)) return -1;
+ 132:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_LESS_THAN_LEN - 1) return -1;
+ 133:Middlewares/Third_Party/wakaama/management.c **** 
+ 134:Middlewares/Third_Party/wakaama/management.c ****             attrP->toClear |= LWM2M_ATTR_FLAG_LESS_THAN;
+ 135:Middlewares/Third_Party/wakaama/management.c ****         }
+ 136:Middlewares/Third_Party/wakaama/management.c ****         else if (lwm2m_strncmp((char *)query->data, ATTR_STEP_STR, ATTR_STEP_LEN) == 0)
+ 137:Middlewares/Third_Party/wakaama/management.c ****         {
+ 138:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_STEP)) return -1;
+ 139:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_STEP_LEN) return -1;
+ 140:Middlewares/Third_Party/wakaama/management.c **** 
+ 141:Middlewares/Third_Party/wakaama/management.c ****             if (1 != utils_textToFloat(query->data + ATTR_STEP_LEN, query->len - ATTR_STEP_LEN, &fl
+ 142:Middlewares/Third_Party/wakaama/management.c ****             if (floatValue < 0) return -1;
+ 143:Middlewares/Third_Party/wakaama/management.c **** 
+ 144:Middlewares/Third_Party/wakaama/management.c ****             attrP->toSet |= LWM2M_ATTR_FLAG_STEP;
+ 145:Middlewares/Third_Party/wakaama/management.c ****             attrP->step = floatValue;
+ 146:Middlewares/Third_Party/wakaama/management.c ****         }
+ 147:Middlewares/Third_Party/wakaama/management.c ****         else if (lwm2m_strncmp((char *)query->data, ATTR_STEP_STR, ATTR_STEP_LEN - 1) == 0)
+ 148:Middlewares/Third_Party/wakaama/management.c ****         {
+ 149:Middlewares/Third_Party/wakaama/management.c ****             if (0 != ((attrP->toSet | attrP->toClear) & LWM2M_ATTR_FLAG_STEP)) return -1;
+ 150:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_STEP_LEN - 1) return -1;
+ 151:Middlewares/Third_Party/wakaama/management.c **** 
+ 152:Middlewares/Third_Party/wakaama/management.c ****             attrP->toClear |= LWM2M_ATTR_FLAG_STEP;
+ 153:Middlewares/Third_Party/wakaama/management.c ****         }
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 5
+
+
+ 154:Middlewares/Third_Party/wakaama/management.c ****         else return -1;
+ 155:Middlewares/Third_Party/wakaama/management.c **** 
+ 156:Middlewares/Third_Party/wakaama/management.c ****         query = query->next;
+  77              		.loc 1 156 0
+  78 003e 2468     		ldr	r4, [r4]
+  79              	.LVL5:
+  80              	.L2:
+  64:Middlewares/Third_Party/wakaama/management.c ****     {
+  81              		.loc 1 64 0
+  82 0040 002C     		cmp	r4, #0
+  83 0042 00F01281 		beq	.L45
+  66:Middlewares/Third_Party/wakaama/management.c ****         {
+  84              		.loc 1 66 0
+  85 0046 0522     		movs	r2, #5
+  86 0048 A649     		ldr	r1, .L46
+  87 004a A068     		ldr	r0, [r4, #8]
+  88 004c FFF7FEFF 		bl	lwm2m_strncmp
+  89              	.LVL6:
+  90 0050 0028     		cmp	r0, #0
+  91 0052 DFD1     		bne	.L3
+  68:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_MIN_PERIOD_LEN) return -1;
+  92              		.loc 1 68 0
+  93 0054 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+  94 0056 6A78     		ldrb	r2, [r5, #1]	@ zero_extendqisi2
+  95 0058 1343     		orrs	r3, r3, r2
+  96 005a 13F0010F 		tst	r3, #1
+  97 005e 40F00781 		bne	.L15
+  69:Middlewares/Third_Party/wakaama/management.c **** 
+  98              		.loc 1 69 0
+  99 0062 6179     		ldrb	r1, [r4, #5]	@ zero_extendqisi2
+ 100 0064 0529     		cmp	r1, #5
+ 101 0066 00F00681 		beq	.L16
+  71:Middlewares/Third_Party/wakaama/management.c ****             if (intValue < 0) return -1;
+ 102              		.loc 1 71 0
+ 103 006a A068     		ldr	r0, [r4, #8]
+ 104 006c 02AA     		add	r2, sp, #8
+ 105 006e 0539     		subs	r1, r1, #5
+ 106 0070 0530     		adds	r0, r0, #5
+ 107 0072 FFF7FEFF 		bl	utils_textToInt
+ 108              	.LVL7:
+ 109 0076 0128     		cmp	r0, #1
+ 110 0078 40F00081 		bne	.L17
+  72:Middlewares/Third_Party/wakaama/management.c **** 
+ 111              		.loc 1 72 0
+ 112 007c DDE90223 		ldrd	r2, [sp, #8]
+ 113 0080 002A     		cmp	r2, #0
+ 114 0082 73F10003 		sbcs	r3, r3, #0
+ 115 0086 C0F2FC80 		blt	.L18
+  74:Middlewares/Third_Party/wakaama/management.c ****             attrP->minPeriod = intValue;
+ 116              		.loc 1 74 0
+ 117 008a 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 118 008c 43F00103 		orr	r3, r3, #1
+ 119 0090 2B70     		strb	r3, [r5]
+  75:Middlewares/Third_Party/wakaama/management.c ****         }
+ 120              		.loc 1 75 0
+ 121 0092 029B     		ldr	r3, [sp, #8]
+ 122 0094 6B60     		str	r3, [r5, #4]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 6
+
+
+ 123 0096 D2E7     		b	.L5
+ 124              	.L6:
+  84:Middlewares/Third_Party/wakaama/management.c ****         {
+ 125              		.loc 1 84 0
+ 126 0098 0522     		movs	r2, #5
+ 127 009a 9349     		ldr	r1, .L46+4
+ 128 009c A068     		ldr	r0, [r4, #8]
+ 129 009e FFF7FEFF 		bl	lwm2m_strncmp
+ 130              	.LVL8:
+ 131 00a2 08BB     		cbnz	r0, .L7
+  86:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_MAX_PERIOD_LEN) return -1;
+ 132              		.loc 1 86 0
+ 133 00a4 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 134 00a6 6A78     		ldrb	r2, [r5, #1]	@ zero_extendqisi2
+ 135 00a8 1343     		orrs	r3, r3, r2
+ 136 00aa 13F0020F 		tst	r3, #2
+ 137 00ae 40F0F180 		bne	.L21
+  87:Middlewares/Third_Party/wakaama/management.c **** 
+ 138              		.loc 1 87 0
+ 139 00b2 6179     		ldrb	r1, [r4, #5]	@ zero_extendqisi2
+ 140 00b4 0529     		cmp	r1, #5
+ 141 00b6 00F0F080 		beq	.L22
+  89:Middlewares/Third_Party/wakaama/management.c ****             if (intValue < 0) return -1;
+ 142              		.loc 1 89 0
+ 143 00ba A068     		ldr	r0, [r4, #8]
+ 144 00bc 02AA     		add	r2, sp, #8
+ 145 00be 0539     		subs	r1, r1, #5
+ 146 00c0 0530     		adds	r0, r0, #5
+ 147 00c2 FFF7FEFF 		bl	utils_textToInt
+ 148              	.LVL9:
+ 149 00c6 0128     		cmp	r0, #1
+ 150 00c8 40F0EA80 		bne	.L23
+  90:Middlewares/Third_Party/wakaama/management.c **** 
+ 151              		.loc 1 90 0
+ 152 00cc DDE90223 		ldrd	r2, [sp, #8]
+ 153 00d0 002A     		cmp	r2, #0
+ 154 00d2 73F10003 		sbcs	r3, r3, #0
+ 155 00d6 C0F2E680 		blt	.L24
+  92:Middlewares/Third_Party/wakaama/management.c ****             attrP->maxPeriod = intValue;
+ 156              		.loc 1 92 0
+ 157 00da 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 158 00dc 43F00203 		orr	r3, r3, #2
+ 159 00e0 2B70     		strb	r3, [r5]
+  93:Middlewares/Third_Party/wakaama/management.c ****         }
+ 160              		.loc 1 93 0
+ 161 00e2 029B     		ldr	r3, [sp, #8]
+ 162 00e4 AB60     		str	r3, [r5, #8]
+ 163 00e6 AAE7     		b	.L5
+ 164              	.L7:
+  95:Middlewares/Third_Party/wakaama/management.c ****         {
+ 165              		.loc 1 95 0
+ 166 00e8 0422     		movs	r2, #4
+ 167 00ea 7F49     		ldr	r1, .L46+4
+ 168 00ec A068     		ldr	r0, [r4, #8]
+ 169 00ee FFF7FEFF 		bl	lwm2m_strncmp
+ 170              	.LVL10:
+ 171 00f2 70B9     		cbnz	r0, .L8
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 7
+
+
+  97:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_MAX_PERIOD_LEN - 1) return -1;
+ 172              		.loc 1 97 0
+ 173 00f4 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+ 174 00f6 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+ 175 00f8 1A43     		orrs	r2, r2, r3
+ 176 00fa 12F0020F 		tst	r2, #2
+ 177 00fe 40F0D580 		bne	.L25
+  98:Middlewares/Third_Party/wakaama/management.c **** 
+ 178              		.loc 1 98 0
+ 179 0102 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+ 180 0104 042A     		cmp	r2, #4
+ 181 0106 40F0D480 		bne	.L26
+ 100:Middlewares/Third_Party/wakaama/management.c ****         }
+ 182              		.loc 1 100 0
+ 183 010a 43F00203 		orr	r3, r3, #2
+ 184 010e 6B70     		strb	r3, [r5, #1]
+ 185 0110 95E7     		b	.L5
+ 186              	.L8:
+ 102:Middlewares/Third_Party/wakaama/management.c ****         {
+ 187              		.loc 1 102 0
+ 188 0112 0322     		movs	r2, #3
+ 189 0114 7549     		ldr	r1, .L46+8
+ 190 0116 A068     		ldr	r0, [r4, #8]
+ 191 0118 FFF7FEFF 		bl	lwm2m_strncmp
+ 192              	.LVL11:
+ 193 011c E0B9     		cbnz	r0, .L9
+ 104:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_GREATER_THAN_LEN) return -1;
+ 194              		.loc 1 104 0
+ 195 011e 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 196 0120 6A78     		ldrb	r2, [r5, #1]	@ zero_extendqisi2
+ 197 0122 1343     		orrs	r3, r3, r2
+ 198 0124 13F0040F 		tst	r3, #4
+ 199 0128 40F0C680 		bne	.L27
+ 105:Middlewares/Third_Party/wakaama/management.c **** 
+ 200              		.loc 1 105 0
+ 201 012c 6179     		ldrb	r1, [r4, #5]	@ zero_extendqisi2
+ 202 012e 0329     		cmp	r1, #3
+ 203 0130 00F0C580 		beq	.L28
+ 107:Middlewares/Third_Party/wakaama/management.c **** 
+ 204              		.loc 1 107 0
+ 205 0134 A068     		ldr	r0, [r4, #8]
+ 206 0136 6A46     		mov	r2, sp
+ 207 0138 0339     		subs	r1, r1, #3
+ 208 013a 0330     		adds	r0, r0, #3
+ 209 013c FFF7FEFF 		bl	utils_textToFloat
+ 210              	.LVL12:
+ 211 0140 0128     		cmp	r0, #1
+ 212 0142 40F0BF80 		bne	.L29
+ 109:Middlewares/Third_Party/wakaama/management.c ****             attrP->greaterThan = floatValue;
+ 213              		.loc 1 109 0
+ 214 0146 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 215 0148 43F00403 		orr	r3, r3, #4
+ 216 014c 2B70     		strb	r3, [r5]
+ 110:Middlewares/Third_Party/wakaama/management.c ****         }
+ 217              		.loc 1 110 0
+ 218 014e DDE90023 		ldrd	r2, [sp]
+ 219 0152 C5E90423 		strd	r2, [r5, #16]
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 8
+
+
+ 220 0156 72E7     		b	.L5
+ 221              	.L9:
+ 112:Middlewares/Third_Party/wakaama/management.c ****         {
+ 222              		.loc 1 112 0
+ 223 0158 0222     		movs	r2, #2
+ 224 015a 6449     		ldr	r1, .L46+8
+ 225 015c A068     		ldr	r0, [r4, #8]
+ 226 015e FFF7FEFF 		bl	lwm2m_strncmp
+ 227              	.LVL13:
+ 228 0162 70B9     		cbnz	r0, .L10
+ 114:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_GREATER_THAN_LEN - 1) return -1;
+ 229              		.loc 1 114 0
+ 230 0164 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+ 231 0166 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+ 232 0168 1A43     		orrs	r2, r2, r3
+ 233 016a 12F0040F 		tst	r2, #4
+ 234 016e 40F0AC80 		bne	.L30
+ 115:Middlewares/Third_Party/wakaama/management.c **** 
+ 235              		.loc 1 115 0
+ 236 0172 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+ 237 0174 022A     		cmp	r2, #2
+ 238 0176 40F0AB80 		bne	.L31
+ 117:Middlewares/Third_Party/wakaama/management.c ****         }
+ 239              		.loc 1 117 0
+ 240 017a 43F00403 		orr	r3, r3, #4
+ 241 017e 6B70     		strb	r3, [r5, #1]
+ 242 0180 5DE7     		b	.L5
+ 243              	.L10:
+ 119:Middlewares/Third_Party/wakaama/management.c ****         {
+ 244              		.loc 1 119 0
+ 245 0182 0322     		movs	r2, #3
+ 246 0184 5A49     		ldr	r1, .L46+12
+ 247 0186 A068     		ldr	r0, [r4, #8]
+ 248 0188 FFF7FEFF 		bl	lwm2m_strncmp
+ 249              	.LVL14:
+ 250 018c E0B9     		cbnz	r0, .L11
+ 121:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_LESS_THAN_LEN) return -1;
+ 251              		.loc 1 121 0
+ 252 018e 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 253 0190 6A78     		ldrb	r2, [r5, #1]	@ zero_extendqisi2
+ 254 0192 1343     		orrs	r3, r3, r2
+ 255 0194 13F0080F 		tst	r3, #8
+ 256 0198 40F09D80 		bne	.L32
+ 122:Middlewares/Third_Party/wakaama/management.c **** 
+ 257              		.loc 1 122 0
+ 258 019c 6179     		ldrb	r1, [r4, #5]	@ zero_extendqisi2
+ 259 019e 0329     		cmp	r1, #3
+ 260 01a0 00F09C80 		beq	.L33
+ 124:Middlewares/Third_Party/wakaama/management.c **** 
+ 261              		.loc 1 124 0
+ 262 01a4 A068     		ldr	r0, [r4, #8]
+ 263 01a6 6A46     		mov	r2, sp
+ 264 01a8 0339     		subs	r1, r1, #3
+ 265 01aa 0330     		adds	r0, r0, #3
+ 266 01ac FFF7FEFF 		bl	utils_textToFloat
+ 267              	.LVL15:
+ 268 01b0 0128     		cmp	r0, #1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 9
+
+
+ 269 01b2 40F0A180 		bne	.L34
+ 126:Middlewares/Third_Party/wakaama/management.c ****             attrP->lessThan = floatValue;
+ 270              		.loc 1 126 0
+ 271 01b6 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 272 01b8 43F00803 		orr	r3, r3, #8
+ 273 01bc 2B70     		strb	r3, [r5]
+ 127:Middlewares/Third_Party/wakaama/management.c ****         }
+ 274              		.loc 1 127 0
+ 275 01be DDE90023 		ldrd	r2, [sp]
+ 276 01c2 C5E90623 		strd	r2, [r5, #24]
+ 277 01c6 3AE7     		b	.L5
+ 278              	.L11:
+ 129:Middlewares/Third_Party/wakaama/management.c ****         {
+ 279              		.loc 1 129 0
+ 280 01c8 0222     		movs	r2, #2
+ 281 01ca 4949     		ldr	r1, .L46+12
+ 282 01cc A068     		ldr	r0, [r4, #8]
+ 283 01ce FFF7FEFF 		bl	lwm2m_strncmp
+ 284              	.LVL16:
+ 285 01d2 70B9     		cbnz	r0, .L12
+ 131:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_LESS_THAN_LEN - 1) return -1;
+ 286              		.loc 1 131 0
+ 287 01d4 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+ 288 01d6 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+ 289 01d8 1A43     		orrs	r2, r2, r3
+ 290 01da 12F0080F 		tst	r2, #8
+ 291 01de 40F08E80 		bne	.L35
+ 132:Middlewares/Third_Party/wakaama/management.c **** 
+ 292              		.loc 1 132 0
+ 293 01e2 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+ 294 01e4 022A     		cmp	r2, #2
+ 295 01e6 40F08D80 		bne	.L36
+ 134:Middlewares/Third_Party/wakaama/management.c ****         }
+ 296              		.loc 1 134 0
+ 297 01ea 43F00803 		orr	r3, r3, #8
+ 298 01ee 6B70     		strb	r3, [r5, #1]
+ 299 01f0 25E7     		b	.L5
+ 300              	.L12:
+ 136:Middlewares/Third_Party/wakaama/management.c ****         {
+ 301              		.loc 1 136 0
+ 302 01f2 0322     		movs	r2, #3
+ 303 01f4 3F49     		ldr	r1, .L46+16
+ 304 01f6 A068     		ldr	r0, [r4, #8]
+ 305 01f8 FFF7FEFF 		bl	lwm2m_strncmp
+ 306              	.LVL17:
+ 307 01fc 08BB     		cbnz	r0, .L13
+ 138:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_STEP_LEN) return -1;
+ 308              		.loc 1 138 0
+ 309 01fe 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 310 0200 6A78     		ldrb	r2, [r5, #1]	@ zero_extendqisi2
+ 311 0202 1343     		orrs	r3, r3, r2
+ 312 0204 13F0100F 		tst	r3, #16
+ 313 0208 7FD1     		bne	.L37
+ 139:Middlewares/Third_Party/wakaama/management.c **** 
+ 314              		.loc 1 139 0
+ 315 020a 6179     		ldrb	r1, [r4, #5]	@ zero_extendqisi2
+ 316 020c 0329     		cmp	r1, #3
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 10
+
+
+ 317 020e 7FD0     		beq	.L38
+ 141:Middlewares/Third_Party/wakaama/management.c ****             if (floatValue < 0) return -1;
+ 318              		.loc 1 141 0
+ 319 0210 A068     		ldr	r0, [r4, #8]
+ 320 0212 6A46     		mov	r2, sp
+ 321 0214 0339     		subs	r1, r1, #3
+ 322 0216 0330     		adds	r0, r0, #3
+ 323 0218 FFF7FEFF 		bl	utils_textToFloat
+ 324              	.LVL18:
+ 325 021c 0128     		cmp	r0, #1
+ 326 021e 7AD1     		bne	.L39
+ 142:Middlewares/Third_Party/wakaama/management.c **** 
+ 327              		.loc 1 142 0
+ 328 0220 0022     		movs	r2, #0
+ 329 0222 0023     		movs	r3, #0
+ 330 0224 DDE90001 		ldrd	r0, [sp]
+ 331 0228 FFF7FEFF 		bl	__aeabi_dcmplt
+ 332              	.LVL19:
+ 333 022c 0028     		cmp	r0, #0
+ 334 022e 75D1     		bne	.L40
+ 144:Middlewares/Third_Party/wakaama/management.c ****             attrP->step = floatValue;
+ 335              		.loc 1 144 0
+ 336 0230 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 337 0232 43F01003 		orr	r3, r3, #16
+ 338 0236 2B70     		strb	r3, [r5]
+ 145:Middlewares/Third_Party/wakaama/management.c ****         }
+ 339              		.loc 1 145 0
+ 340 0238 DDE90023 		ldrd	r2, [sp]
+ 341 023c C5E90823 		strd	r2, [r5, #32]
+ 342 0240 FDE6     		b	.L5
+ 343              	.L13:
+ 147:Middlewares/Third_Party/wakaama/management.c ****         {
+ 344              		.loc 1 147 0
+ 345 0242 0222     		movs	r2, #2
+ 346 0244 2B49     		ldr	r1, .L46+16
+ 347 0246 A068     		ldr	r0, [r4, #8]
+ 348 0248 FFF7FEFF 		bl	lwm2m_strncmp
+ 349              	.LVL20:
+ 350 024c 0028     		cmp	r0, #0
+ 351 024e 68D1     		bne	.L41
+ 149:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_STEP_LEN - 1) return -1;
+ 352              		.loc 1 149 0
+ 353 0250 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+ 354 0252 6B78     		ldrb	r3, [r5, #1]	@ zero_extendqisi2
+ 355 0254 1A43     		orrs	r2, r2, r3
+ 356 0256 12F0100F 		tst	r2, #16
+ 357 025a 65D1     		bne	.L42
+ 150:Middlewares/Third_Party/wakaama/management.c **** 
+ 358              		.loc 1 150 0
+ 359 025c 6279     		ldrb	r2, [r4, #5]	@ zero_extendqisi2
+ 360 025e 022A     		cmp	r2, #2
+ 361 0260 65D1     		bne	.L43
+ 152:Middlewares/Third_Party/wakaama/management.c ****         }
+ 362              		.loc 1 152 0
+ 363 0262 43F01003 		orr	r3, r3, #16
+ 364 0266 6B70     		strb	r3, [r5, #1]
+ 365 0268 E9E6     		b	.L5
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 11
+
+
+ 366              	.L45:
+ 157:Middlewares/Third_Party/wakaama/management.c ****     }
+ 158:Middlewares/Third_Party/wakaama/management.c **** 
+ 159:Middlewares/Third_Party/wakaama/management.c ****     return 0;
+ 367              		.loc 1 159 0
+ 368 026a 0020     		movs	r0, #0
+ 369              	.L1:
+ 160:Middlewares/Third_Party/wakaama/management.c **** }
+ 370              		.loc 1 160 0
+ 371 026c 05B0     		add	sp, sp, #20
+ 372              	.LCFI2:
+ 373              		.cfi_remember_state
+ 374              		.cfi_def_cfa_offset 12
+ 375              		@ sp needed
+ 376 026e 30BD     		pop	{r4, r5, pc}
+ 377              	.LVL21:
+ 378              	.L15:
+ 379              	.LCFI3:
+ 380              		.cfi_restore_state
+  68:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_MIN_PERIOD_LEN) return -1;
+ 381              		.loc 1 68 0
+ 382 0270 4FF0FF30 		mov	r0, #-1
+ 383 0274 FAE7     		b	.L1
+ 384              	.L16:
+  69:Middlewares/Third_Party/wakaama/management.c **** 
+ 385              		.loc 1 69 0
+ 386 0276 4FF0FF30 		mov	r0, #-1
+ 387 027a F7E7     		b	.L1
+ 388              	.L17:
+  71:Middlewares/Third_Party/wakaama/management.c ****             if (intValue < 0) return -1;
+ 389              		.loc 1 71 0
+ 390 027c 4FF0FF30 		mov	r0, #-1
+ 391 0280 F4E7     		b	.L1
+ 392              	.L18:
+  72:Middlewares/Third_Party/wakaama/management.c **** 
+ 393              		.loc 1 72 0
+ 394 0282 4FF0FF30 		mov	r0, #-1
+ 395 0286 F1E7     		b	.L1
+ 396              	.L19:
+  79:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_MIN_PERIOD_LEN - 1) return -1;
+ 397              		.loc 1 79 0
+ 398 0288 4FF0FF30 		mov	r0, #-1
+ 399 028c EEE7     		b	.L1
+ 400              	.L20:
+  80:Middlewares/Third_Party/wakaama/management.c **** 
+ 401              		.loc 1 80 0
+ 402 028e 4FF0FF30 		mov	r0, #-1
+ 403 0292 EBE7     		b	.L1
+ 404              	.L21:
+  86:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_MAX_PERIOD_LEN) return -1;
+ 405              		.loc 1 86 0
+ 406 0294 4FF0FF30 		mov	r0, #-1
+ 407 0298 E8E7     		b	.L1
+ 408              	.L22:
+  87:Middlewares/Third_Party/wakaama/management.c **** 
+ 409              		.loc 1 87 0
+ 410 029a 4FF0FF30 		mov	r0, #-1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 12
+
+
+ 411 029e E5E7     		b	.L1
+ 412              	.L23:
+  89:Middlewares/Third_Party/wakaama/management.c ****             if (intValue < 0) return -1;
+ 413              		.loc 1 89 0
+ 414 02a0 4FF0FF30 		mov	r0, #-1
+ 415 02a4 E2E7     		b	.L1
+ 416              	.L24:
+  90:Middlewares/Third_Party/wakaama/management.c **** 
+ 417              		.loc 1 90 0
+ 418 02a6 4FF0FF30 		mov	r0, #-1
+ 419 02aa DFE7     		b	.L1
+ 420              	.L25:
+  97:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_MAX_PERIOD_LEN - 1) return -1;
+ 421              		.loc 1 97 0
+ 422 02ac 4FF0FF30 		mov	r0, #-1
+ 423 02b0 DCE7     		b	.L1
+ 424              	.L26:
+  98:Middlewares/Third_Party/wakaama/management.c **** 
+ 425              		.loc 1 98 0
+ 426 02b2 4FF0FF30 		mov	r0, #-1
+ 427 02b6 D9E7     		b	.L1
+ 428              	.L27:
+ 104:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_GREATER_THAN_LEN) return -1;
+ 429              		.loc 1 104 0
+ 430 02b8 4FF0FF30 		mov	r0, #-1
+ 431 02bc D6E7     		b	.L1
+ 432              	.L28:
+ 105:Middlewares/Third_Party/wakaama/management.c **** 
+ 433              		.loc 1 105 0
+ 434 02be 4FF0FF30 		mov	r0, #-1
+ 435 02c2 D3E7     		b	.L1
+ 436              	.L29:
+ 107:Middlewares/Third_Party/wakaama/management.c **** 
+ 437              		.loc 1 107 0
+ 438 02c4 4FF0FF30 		mov	r0, #-1
+ 439 02c8 D0E7     		b	.L1
+ 440              	.L30:
+ 114:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_GREATER_THAN_LEN - 1) return -1;
+ 441              		.loc 1 114 0
+ 442 02ca 4FF0FF30 		mov	r0, #-1
+ 443 02ce CDE7     		b	.L1
+ 444              	.L31:
+ 115:Middlewares/Third_Party/wakaama/management.c **** 
+ 445              		.loc 1 115 0
+ 446 02d0 4FF0FF30 		mov	r0, #-1
+ 447 02d4 CAE7     		b	.L1
+ 448              	.L32:
+ 121:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_LESS_THAN_LEN) return -1;
+ 449              		.loc 1 121 0
+ 450 02d6 4FF0FF30 		mov	r0, #-1
+ 451 02da C7E7     		b	.L1
+ 452              	.L33:
+ 122:Middlewares/Third_Party/wakaama/management.c **** 
+ 453              		.loc 1 122 0
+ 454 02dc 4FF0FF30 		mov	r0, #-1
+ 455 02e0 C4E7     		b	.L1
+ 456              	.L47:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 13
+
+
+ 457 02e2 00BF     		.align	2
+ 458              	.L46:
+ 459 02e4 00000000 		.word	.LC0
+ 460 02e8 08000000 		.word	.LC1
+ 461 02ec 10000000 		.word	.LC2
+ 462 02f0 14000000 		.word	.LC3
+ 463 02f4 18000000 		.word	.LC4
+ 464              	.L34:
+ 124:Middlewares/Third_Party/wakaama/management.c **** 
+ 465              		.loc 1 124 0
+ 466 02f8 4FF0FF30 		mov	r0, #-1
+ 467 02fc B6E7     		b	.L1
+ 468              	.L35:
+ 131:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_LESS_THAN_LEN - 1) return -1;
+ 469              		.loc 1 131 0
+ 470 02fe 4FF0FF30 		mov	r0, #-1
+ 471 0302 B3E7     		b	.L1
+ 472              	.L36:
+ 132:Middlewares/Third_Party/wakaama/management.c **** 
+ 473              		.loc 1 132 0
+ 474 0304 4FF0FF30 		mov	r0, #-1
+ 475 0308 B0E7     		b	.L1
+ 476              	.L37:
+ 138:Middlewares/Third_Party/wakaama/management.c ****             if (query->len == ATTR_STEP_LEN) return -1;
+ 477              		.loc 1 138 0
+ 478 030a 4FF0FF30 		mov	r0, #-1
+ 479 030e ADE7     		b	.L1
+ 480              	.L38:
+ 139:Middlewares/Third_Party/wakaama/management.c **** 
+ 481              		.loc 1 139 0
+ 482 0310 4FF0FF30 		mov	r0, #-1
+ 483 0314 AAE7     		b	.L1
+ 484              	.L39:
+ 141:Middlewares/Third_Party/wakaama/management.c ****             if (floatValue < 0) return -1;
+ 485              		.loc 1 141 0
+ 486 0316 4FF0FF30 		mov	r0, #-1
+ 487 031a A7E7     		b	.L1
+ 488              	.L40:
+ 142:Middlewares/Third_Party/wakaama/management.c **** 
+ 489              		.loc 1 142 0
+ 490 031c 4FF0FF30 		mov	r0, #-1
+ 491 0320 A4E7     		b	.L1
+ 492              	.L41:
+ 154:Middlewares/Third_Party/wakaama/management.c **** 
+ 493              		.loc 1 154 0
+ 494 0322 4FF0FF30 		mov	r0, #-1
+ 495 0326 A1E7     		b	.L1
+ 496              	.L42:
+ 149:Middlewares/Third_Party/wakaama/management.c ****             if (query->len != ATTR_STEP_LEN - 1) return -1;
+ 497              		.loc 1 149 0
+ 498 0328 4FF0FF30 		mov	r0, #-1
+ 499 032c 9EE7     		b	.L1
+ 500              	.L43:
+ 150:Middlewares/Third_Party/wakaama/management.c **** 
+ 501              		.loc 1 150 0
+ 502 032e 4FF0FF30 		mov	r0, #-1
+ 503 0332 9BE7     		b	.L1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 14
+
+
+ 504              		.cfi_endproc
+ 505              	.LFE3:
+ 507              		.section	.text.dm_handleRequest,"ax",%progbits
+ 508              		.align	1
+ 509              		.global	dm_handleRequest
+ 510              		.syntax unified
+ 511              		.thumb
+ 512              		.thumb_func
+ 513              		.fpu fpv4-sp-d16
+ 515              	dm_handleRequest:
+ 516              	.LFB4:
+ 161:Middlewares/Third_Party/wakaama/management.c **** 
+ 162:Middlewares/Third_Party/wakaama/management.c **** uint8_t dm_handleRequest(lwm2m_context_t * contextP,
+ 163:Middlewares/Third_Party/wakaama/management.c ****                          lwm2m_uri_t * uriP,
+ 164:Middlewares/Third_Party/wakaama/management.c ****                          lwm2m_server_t * serverP,
+ 165:Middlewares/Third_Party/wakaama/management.c ****                          coap_packet_t * message,
+ 166:Middlewares/Third_Party/wakaama/management.c ****                          coap_packet_t * response)
+ 167:Middlewares/Third_Party/wakaama/management.c **** {
+ 517              		.loc 1 167 0
+ 518              		.cfi_startproc
+ 519              		@ args = 4, pretend = 0, frame = 64
+ 520              		@ frame_needed = 0, uses_anonymous_args = 0
+ 521              	.LVL22:
+ 522 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 523              	.LCFI4:
+ 524              		.cfi_def_cfa_offset 24
+ 525              		.cfi_offset 4, -24
+ 526              		.cfi_offset 5, -20
+ 527              		.cfi_offset 6, -16
+ 528              		.cfi_offset 7, -12
+ 529              		.cfi_offset 8, -8
+ 530              		.cfi_offset 14, -4
+ 531 0004 94B0     		sub	sp, sp, #80
+ 532              	.LCFI5:
+ 533              		.cfi_def_cfa_offset 104
+ 534 0006 8046     		mov	r8, r0
+ 535 0008 0D46     		mov	r5, r1
+ 536 000a 1746     		mov	r7, r2
+ 537 000c 1C46     		mov	r4, r3
+ 168:Middlewares/Third_Party/wakaama/management.c ****     uint8_t result;
+ 169:Middlewares/Third_Party/wakaama/management.c ****     lwm2m_media_type_t format;
+ 170:Middlewares/Third_Party/wakaama/management.c **** 
+ 171:Middlewares/Third_Party/wakaama/management.c ****     LOG_ARG("Code: %02X, server status: %s", message->code, STR_STATUS(serverP->status));
+ 172:Middlewares/Third_Party/wakaama/management.c ****     LOG_URI(uriP);
+ 173:Middlewares/Third_Party/wakaama/management.c **** 
+ 174:Middlewares/Third_Party/wakaama/management.c ****     if (IS_OPTION(message, COAP_OPTION_CONTENT_TYPE))
+ 538              		.loc 1 174 0
+ 539 000e DB7A     		ldrb	r3, [r3, #11]	@ zero_extendqisi2
+ 540              	.LVL23:
+ 541 0010 13F0100F 		tst	r3, #16
+ 542 0014 13D1     		bne	.L81
+ 175:Middlewares/Third_Party/wakaama/management.c ****     {
+ 176:Middlewares/Third_Party/wakaama/management.c ****         format = utils_convertMediaType(message->content_type);
+ 177:Middlewares/Third_Party/wakaama/management.c ****     }
+ 178:Middlewares/Third_Party/wakaama/management.c ****     else
+ 179:Middlewares/Third_Party/wakaama/management.c ****     {
+ 180:Middlewares/Third_Party/wakaama/management.c ****         format = LWM2M_CONTENT_TLV;
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 15
+
+
+ 543              		.loc 1 180 0
+ 544 0016 42F61653 		movw	r3, #11542
+ 545 001a ADF84E30 		strh	r3, [sp, #78]	@ movhi
+ 546              	.LVL24:
+ 547              	.L50:
+ 181:Middlewares/Third_Party/wakaama/management.c ****     }
+ 182:Middlewares/Third_Party/wakaama/management.c **** 
+ 183:Middlewares/Third_Party/wakaama/management.c ****     if (uriP->objectId == LWM2M_SECURITY_OBJECT_ID)
+ 548              		.loc 1 183 0
+ 549 001e 6B88     		ldrh	r3, [r5, #2]
+ 550 0020 002B     		cmp	r3, #0
+ 551 0022 00F01F81 		beq	.L73
+ 184:Middlewares/Third_Party/wakaama/management.c ****     {
+ 185:Middlewares/Third_Party/wakaama/management.c ****         return COAP_404_NOT_FOUND;
+ 186:Middlewares/Third_Party/wakaama/management.c ****     }
+ 187:Middlewares/Third_Party/wakaama/management.c **** 
+ 188:Middlewares/Third_Party/wakaama/management.c ****     if (serverP->status != STATE_REGISTERED
+ 552              		.loc 1 188 0
+ 553 0026 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
+ 554 002a 022B     		cmp	r3, #2
+ 555 002c 0DD0     		beq	.L52
+ 189:Middlewares/Third_Party/wakaama/management.c ****         && serverP->status != STATE_REG_UPDATE_NEEDED
+ 556              		.loc 1 189 0
+ 557 002e 052B     		cmp	r3, #5
+ 558 0030 0BD0     		beq	.L52
+ 190:Middlewares/Third_Party/wakaama/management.c ****         && serverP->status != STATE_REG_FULL_UPDATE_NEEDED
+ 559              		.loc 1 190 0
+ 560 0032 062B     		cmp	r3, #6
+ 561 0034 09D0     		beq	.L52
+ 191:Middlewares/Third_Party/wakaama/management.c ****         && serverP->status != STATE_REG_UPDATE_PENDING)
+ 562              		.loc 1 191 0
+ 563 0036 042B     		cmp	r3, #4
+ 564 0038 07D0     		beq	.L52
+ 192:Middlewares/Third_Party/wakaama/management.c ****     {
+ 193:Middlewares/Third_Party/wakaama/management.c ****         return COAP_IGNORE;
+ 565              		.loc 1 193 0
+ 566 003a 0126     		movs	r6, #1
+ 567 003c 13E1     		b	.L51
+ 568              	.LVL25:
+ 569              	.L81:
+ 176:Middlewares/Third_Party/wakaama/management.c ****     }
+ 570              		.loc 1 176 0
+ 571 003e 208A     		ldrh	r0, [r4, #16]
+ 572              	.LVL26:
+ 573 0040 FFF7FEFF 		bl	utils_convertMediaType
+ 574              	.LVL27:
+ 575 0044 ADF84E00 		strh	r0, [sp, #78]	@ movhi
+ 576 0048 E9E7     		b	.L50
+ 577              	.L52:
+ 194:Middlewares/Third_Party/wakaama/management.c ****     }
+ 195:Middlewares/Third_Party/wakaama/management.c **** 
+ 196:Middlewares/Third_Party/wakaama/management.c ****     // TODO: check ACL
+ 197:Middlewares/Third_Party/wakaama/management.c **** 
+ 198:Middlewares/Third_Party/wakaama/management.c ****     switch (message->code)
+ 578              		.loc 1 198 0
+ 579 004a A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+ 580 004c 013B     		subs	r3, r3, #1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 16
+
+
+ 581 004e 032B     		cmp	r3, #3
+ 582 0050 00F20D81 		bhi	.L75
+ 583 0054 DFE813F0 		tbh	[pc, r3, lsl #1]
+ 584              	.L54:
+ 585 0058 0400     		.2byte	(.L53-.L54)/2
+ 586 005a 8300     		.2byte	(.L55-.L54)/2
+ 587 005c CD00     		.2byte	(.L56-.L54)/2
+ 588 005e F200     		.2byte	(.L57-.L54)/2
+ 589              		.p2align 1
+ 590              	.L53:
+ 591              	.LBB2:
+ 199:Middlewares/Third_Party/wakaama/management.c ****     {
+ 200:Middlewares/Third_Party/wakaama/management.c ****     case COAP_GET:
+ 201:Middlewares/Third_Party/wakaama/management.c ****         {
+ 202:Middlewares/Third_Party/wakaama/management.c ****             uint8_t * buffer = NULL;
+ 592              		.loc 1 202 0
+ 593 0060 0023     		movs	r3, #0
+ 594 0062 0593     		str	r3, [sp, #20]
+ 203:Middlewares/Third_Party/wakaama/management.c ****             size_t length = 0;
+ 595              		.loc 1 203 0
+ 596 0064 0693     		str	r3, [sp, #24]
+ 204:Middlewares/Third_Party/wakaama/management.c ****             int res;
+ 205:Middlewares/Third_Party/wakaama/management.c **** 
+ 206:Middlewares/Third_Party/wakaama/management.c ****             if (IS_OPTION(message, COAP_OPTION_OBSERVE))
+ 597              		.loc 1 206 0
+ 598 0066 A37A     		ldrb	r3, [r4, #10]	@ zero_extendqisi2
+ 599 0068 13F0400F 		tst	r3, #64
+ 600 006c 1BD1     		bne	.L82
+ 207:Middlewares/Third_Party/wakaama/management.c ****             {
+ 208:Middlewares/Third_Party/wakaama/management.c ****                 lwm2m_data_t * dataP = NULL;
+ 209:Middlewares/Third_Party/wakaama/management.c ****                 int size = 0;
+ 210:Middlewares/Third_Party/wakaama/management.c **** 
+ 211:Middlewares/Third_Party/wakaama/management.c ****                 result = object_readData(contextP, uriP, &size, &dataP);
+ 212:Middlewares/Third_Party/wakaama/management.c ****                 if (COAP_205_CONTENT == result)
+ 213:Middlewares/Third_Party/wakaama/management.c ****                 {
+ 214:Middlewares/Third_Party/wakaama/management.c ****                     result = observe_handleRequest(contextP, uriP, serverP, size, dataP, message, r
+ 215:Middlewares/Third_Party/wakaama/management.c ****                     if (COAP_205_CONTENT == result)
+ 216:Middlewares/Third_Party/wakaama/management.c ****                     {
+ 217:Middlewares/Third_Party/wakaama/management.c ****                         if (IS_OPTION(message, COAP_OPTION_ACCEPT))
+ 218:Middlewares/Third_Party/wakaama/management.c ****                         {
+ 219:Middlewares/Third_Party/wakaama/management.c ****                             format = utils_convertMediaType(message->accept[0]);
+ 220:Middlewares/Third_Party/wakaama/management.c ****                         }
+ 221:Middlewares/Third_Party/wakaama/management.c ****                         else
+ 222:Middlewares/Third_Party/wakaama/management.c ****                         {
+ 223:Middlewares/Third_Party/wakaama/management.c ****                             format = LWM2M_CONTENT_TLV;
+ 224:Middlewares/Third_Party/wakaama/management.c ****                         }
+ 225:Middlewares/Third_Party/wakaama/management.c **** 
+ 226:Middlewares/Third_Party/wakaama/management.c ****                         res = lwm2m_data_serialize(uriP, size, dataP, &format, &buffer);
+ 227:Middlewares/Third_Party/wakaama/management.c ****                         if (res < 0)
+ 228:Middlewares/Third_Party/wakaama/management.c ****                         {
+ 229:Middlewares/Third_Party/wakaama/management.c ****                             result = COAP_500_INTERNAL_SERVER_ERROR;
+ 230:Middlewares/Third_Party/wakaama/management.c ****                         }
+ 231:Middlewares/Third_Party/wakaama/management.c ****                         else
+ 232:Middlewares/Third_Party/wakaama/management.c ****                         {
+ 233:Middlewares/Third_Party/wakaama/management.c ****                             length = (size_t)res;
+ 234:Middlewares/Third_Party/wakaama/management.c ****                             LOG_ARG("Observe Request[/%d/%d/%d]: %.*s\n", uriP->objectId, uriP->ins
+ 235:Middlewares/Third_Party/wakaama/management.c ****                         }
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 17
+
+
+ 236:Middlewares/Third_Party/wakaama/management.c ****                     }
+ 237:Middlewares/Third_Party/wakaama/management.c ****                     lwm2m_data_free(size, dataP);
+ 238:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 239:Middlewares/Third_Party/wakaama/management.c ****             }
+ 240:Middlewares/Third_Party/wakaama/management.c ****             else if (IS_OPTION(message, COAP_OPTION_ACCEPT)
+ 601              		.loc 1 240 0
+ 602 006e 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 603 0070 13F00203 		ands	r3, r3, #2
+ 604 0074 05D0     		beq	.L64
+ 241:Middlewares/Third_Party/wakaama/management.c ****                   && message->accept_num == 1
+ 242:Middlewares/Third_Party/wakaama/management.c ****                   && message->accept[0] == APPLICATION_LINK_FORMAT)
+ 605              		.loc 1 242 0
+ 606 0076 626D     		ldr	r2, [r4, #84]
+ 607 0078 22F0FF02 		bic	r2, r2, #255
+ 608 007c 7E49     		ldr	r1, .L92
+ 609 007e 8A42     		cmp	r2, r1
+ 610 0080 4ED0     		beq	.L83
+ 611              	.L64:
+ 243:Middlewares/Third_Party/wakaama/management.c ****             {
+ 244:Middlewares/Third_Party/wakaama/management.c ****                 format = LWM2M_CONTENT_LINK;
+ 245:Middlewares/Third_Party/wakaama/management.c ****                 result = object_discover(contextP, uriP, serverP, &buffer, &length);
+ 246:Middlewares/Third_Party/wakaama/management.c ****             }
+ 247:Middlewares/Third_Party/wakaama/management.c ****             else
+ 248:Middlewares/Third_Party/wakaama/management.c ****             {
+ 249:Middlewares/Third_Party/wakaama/management.c ****                 if (IS_OPTION(message, COAP_OPTION_ACCEPT))
+ 612              		.loc 1 249 0
+ 613 0082 002B     		cmp	r3, #0
+ 614 0084 59D1     		bne	.L84
+ 615              	.L65:
+ 250:Middlewares/Third_Party/wakaama/management.c ****                 {
+ 251:Middlewares/Third_Party/wakaama/management.c ****                     format = utils_convertMediaType(message->accept[0]);
+ 252:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 253:Middlewares/Third_Party/wakaama/management.c **** 
+ 254:Middlewares/Third_Party/wakaama/management.c ****                 result = object_read(contextP, uriP, &format, &buffer, &length);
+ 616              		.loc 1 254 0
+ 617 0086 06AB     		add	r3, sp, #24
+ 618 0088 0093     		str	r3, [sp]
+ 619 008a 05AB     		add	r3, sp, #20
+ 620 008c 0DF14E02 		add	r2, sp, #78
+ 621 0090 2946     		mov	r1, r5
+ 622 0092 4046     		mov	r0, r8
+ 623 0094 FFF7FEFF 		bl	object_read
+ 624              	.LVL28:
+ 625 0098 0646     		mov	r6, r0
+ 626              	.LVL29:
+ 627              	.L63:
+ 255:Middlewares/Third_Party/wakaama/management.c ****             }
+ 256:Middlewares/Third_Party/wakaama/management.c ****             if (COAP_205_CONTENT == result)
+ 628              		.loc 1 256 0
+ 629 009a 452E     		cmp	r6, #69
+ 630 009c 54D0     		beq	.L85
+ 257:Middlewares/Third_Party/wakaama/management.c ****             {
+ 258:Middlewares/Third_Party/wakaama/management.c ****                 coap_set_header_content_type(response, format);
+ 259:Middlewares/Third_Party/wakaama/management.c ****                 coap_set_payload(response, buffer, length);
+ 260:Middlewares/Third_Party/wakaama/management.c ****                 // lwm2m_handle_packet will free buffer
+ 261:Middlewares/Third_Party/wakaama/management.c ****             }
+ 262:Middlewares/Third_Party/wakaama/management.c ****             else
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 18
+
+
+ 263:Middlewares/Third_Party/wakaama/management.c ****             {
+ 264:Middlewares/Third_Party/wakaama/management.c ****                 lwm2m_free(buffer);
+ 631              		.loc 1 264 0
+ 632 009e 0598     		ldr	r0, [sp, #20]
+ 633 00a0 FFF7FEFF 		bl	lwm2m_free
+ 634              	.LVL30:
+ 635              	.LBE2:
+ 265:Middlewares/Third_Party/wakaama/management.c ****             }
+ 266:Middlewares/Third_Party/wakaama/management.c ****         }
+ 267:Middlewares/Third_Party/wakaama/management.c ****         break;
+ 636              		.loc 1 267 0
+ 637 00a4 DFE0     		b	.L51
+ 638              	.LVL31:
+ 639              	.L82:
+ 640              	.LBB4:
+ 641              	.LBB3:
+ 208:Middlewares/Third_Party/wakaama/management.c ****                 int size = 0;
+ 642              		.loc 1 208 0
+ 643 00a6 0023     		movs	r3, #0
+ 644 00a8 0793     		str	r3, [sp, #28]
+ 209:Middlewares/Third_Party/wakaama/management.c **** 
+ 645              		.loc 1 209 0
+ 646 00aa 0893     		str	r3, [sp, #32]
+ 211:Middlewares/Third_Party/wakaama/management.c ****                 if (COAP_205_CONTENT == result)
+ 647              		.loc 1 211 0
+ 648 00ac 07AB     		add	r3, sp, #28
+ 649 00ae 08AA     		add	r2, sp, #32
+ 650 00b0 2946     		mov	r1, r5
+ 651 00b2 4046     		mov	r0, r8
+ 652 00b4 FFF7FEFF 		bl	object_readData
+ 653              	.LVL32:
+ 654 00b8 0646     		mov	r6, r0
+ 655              	.LVL33:
+ 212:Middlewares/Third_Party/wakaama/management.c ****                 {
+ 656              		.loc 1 212 0
+ 657 00ba 4528     		cmp	r0, #69
+ 658 00bc EDD1     		bne	.L63
+ 214:Middlewares/Third_Party/wakaama/management.c ****                     if (COAP_205_CONTENT == result)
+ 659              		.loc 1 214 0
+ 660 00be 1A9B     		ldr	r3, [sp, #104]
+ 661 00c0 0293     		str	r3, [sp, #8]
+ 662 00c2 0194     		str	r4, [sp, #4]
+ 663 00c4 079B     		ldr	r3, [sp, #28]
+ 664 00c6 0093     		str	r3, [sp]
+ 665 00c8 089B     		ldr	r3, [sp, #32]
+ 666 00ca 3A46     		mov	r2, r7
+ 667 00cc 2946     		mov	r1, r5
+ 668 00ce 4046     		mov	r0, r8
+ 669              	.LVL34:
+ 670 00d0 FFF7FEFF 		bl	observe_handleRequest
+ 671              	.LVL35:
+ 672 00d4 0646     		mov	r6, r0
+ 673              	.LVL36:
+ 215:Middlewares/Third_Party/wakaama/management.c ****                     {
+ 674              		.loc 1 215 0
+ 675 00d6 4528     		cmp	r0, #69
+ 676 00d8 04D0     		beq	.L86
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 19
+
+
+ 677              	.LVL37:
+ 678              	.L60:
+ 237:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 679              		.loc 1 237 0
+ 680 00da 0799     		ldr	r1, [sp, #28]
+ 681 00dc 0898     		ldr	r0, [sp, #32]
+ 682 00de FFF7FEFF 		bl	lwm2m_data_free
+ 683              	.LVL38:
+ 684 00e2 DAE7     		b	.L63
+ 685              	.LVL39:
+ 686              	.L86:
+ 217:Middlewares/Third_Party/wakaama/management.c ****                         {
+ 687              		.loc 1 217 0
+ 688 00e4 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 689 00e6 13F0020F 		tst	r3, #2
+ 690 00ea 10D1     		bne	.L87
+ 223:Middlewares/Third_Party/wakaama/management.c ****                         }
+ 691              		.loc 1 223 0
+ 692 00ec 42F61653 		movw	r3, #11542
+ 693 00f0 ADF84E30 		strh	r3, [sp, #78]	@ movhi
+ 694              	.LVL40:
+ 695              	.L62:
+ 226:Middlewares/Third_Party/wakaama/management.c ****                         if (res < 0)
+ 696              		.loc 1 226 0
+ 697 00f4 05AB     		add	r3, sp, #20
+ 698 00f6 0093     		str	r3, [sp]
+ 699 00f8 0DF14E03 		add	r3, sp, #78
+ 700 00fc 079A     		ldr	r2, [sp, #28]
+ 701 00fe 0899     		ldr	r1, [sp, #32]
+ 702 0100 2846     		mov	r0, r5
+ 703 0102 FFF7FEFF 		bl	lwm2m_data_serialize
+ 704              	.LVL41:
+ 227:Middlewares/Third_Party/wakaama/management.c ****                         {
+ 705              		.loc 1 227 0
+ 706 0106 0028     		cmp	r0, #0
+ 707 0108 08DB     		blt	.L76
+ 233:Middlewares/Third_Party/wakaama/management.c ****                             LOG_ARG("Observe Request[/%d/%d/%d]: %.*s\n", uriP->objectId, uriP->ins
+ 708              		.loc 1 233 0
+ 709 010a 0690     		str	r0, [sp, #24]
+ 710 010c E5E7     		b	.L60
+ 711              	.LVL42:
+ 712              	.L87:
+ 219:Middlewares/Third_Party/wakaama/management.c ****                         }
+ 713              		.loc 1 219 0
+ 714 010e B4F85600 		ldrh	r0, [r4, #86]
+ 715              	.LVL43:
+ 716 0112 FFF7FEFF 		bl	utils_convertMediaType
+ 717              	.LVL44:
+ 718 0116 ADF84E00 		strh	r0, [sp, #78]	@ movhi
+ 719 011a EBE7     		b	.L62
+ 720              	.LVL45:
+ 721              	.L76:
+ 229:Middlewares/Third_Party/wakaama/management.c ****                         }
+ 722              		.loc 1 229 0
+ 723 011c A026     		movs	r6, #160
+ 724 011e DCE7     		b	.L60
+ 725              	.LVL46:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 20
+
+
+ 726              	.L83:
+ 727              	.LBE3:
+ 244:Middlewares/Third_Party/wakaama/management.c ****                 result = object_discover(contextP, uriP, serverP, &buffer, &length);
+ 728              		.loc 1 244 0
+ 729 0120 2823     		movs	r3, #40
+ 730 0122 ADF84E30 		strh	r3, [sp, #78]	@ movhi
+ 245:Middlewares/Third_Party/wakaama/management.c ****             }
+ 731              		.loc 1 245 0
+ 732 0126 06AB     		add	r3, sp, #24
+ 733 0128 0093     		str	r3, [sp]
+ 734 012a 05AB     		add	r3, sp, #20
+ 735 012c 3A46     		mov	r2, r7
+ 736 012e 2946     		mov	r1, r5
+ 737 0130 4046     		mov	r0, r8
+ 738 0132 FFF7FEFF 		bl	object_discover
+ 739              	.LVL47:
+ 740 0136 0646     		mov	r6, r0
+ 741              	.LVL48:
+ 742 0138 AFE7     		b	.L63
+ 743              	.LVL49:
+ 744              	.L84:
+ 251:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 745              		.loc 1 251 0
+ 746 013a B4F85600 		ldrh	r0, [r4, #86]
+ 747 013e FFF7FEFF 		bl	utils_convertMediaType
+ 748              	.LVL50:
+ 749 0142 ADF84E00 		strh	r0, [sp, #78]	@ movhi
+ 750 0146 9EE7     		b	.L65
+ 751              	.LVL51:
+ 752              	.L85:
+ 258:Middlewares/Third_Party/wakaama/management.c ****                 coap_set_payload(response, buffer, length);
+ 753              		.loc 1 258 0
+ 754 0148 BDF84E10 		ldrh	r1, [sp, #78]
+ 755 014c 1A98     		ldr	r0, [sp, #104]
+ 756 014e FFF7FEFF 		bl	coap_set_header_content_type
+ 757              	.LVL52:
+ 259:Middlewares/Third_Party/wakaama/management.c ****                 // lwm2m_handle_packet will free buffer
+ 758              		.loc 1 259 0
+ 759 0152 069A     		ldr	r2, [sp, #24]
+ 760 0154 0599     		ldr	r1, [sp, #20]
+ 761 0156 1A98     		ldr	r0, [sp, #104]
+ 762 0158 FFF7FEFF 		bl	coap_set_payload
+ 763              	.LVL53:
+ 764 015c 83E0     		b	.L51
+ 765              	.LVL54:
+ 766              	.L55:
+ 767              	.LBE4:
+ 268:Middlewares/Third_Party/wakaama/management.c **** 
+ 269:Middlewares/Third_Party/wakaama/management.c ****     case COAP_POST:
+ 270:Middlewares/Third_Party/wakaama/management.c ****         {
+ 271:Middlewares/Third_Party/wakaama/management.c ****             if (!LWM2M_URI_IS_SET_INSTANCE(uriP))
+ 768              		.loc 1 271 0
+ 769 015e 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 770 0160 13F0020F 		tst	r3, #2
+ 771 0164 0FD0     		beq	.L88
+ 272:Middlewares/Third_Party/wakaama/management.c ****             {
+ 273:Middlewares/Third_Party/wakaama/management.c ****                 result = object_create(contextP, uriP, format, message->payload, message->payload_l
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 21
+
+
+ 274:Middlewares/Third_Party/wakaama/management.c ****                 if (result == COAP_201_CREATED)
+ 275:Middlewares/Third_Party/wakaama/management.c ****                 {
+ 276:Middlewares/Third_Party/wakaama/management.c ****                     //longest uri is /65535/65535 = 12 + 1 (null) chars
+ 277:Middlewares/Third_Party/wakaama/management.c ****                     char location_path[13] = "";
+ 278:Middlewares/Third_Party/wakaama/management.c ****                     //instanceId expected
+ 279:Middlewares/Third_Party/wakaama/management.c ****                     if ((uriP->flag & LWM2M_URI_FLAG_INSTANCE_ID) == 0)
+ 280:Middlewares/Third_Party/wakaama/management.c ****                     {
+ 281:Middlewares/Third_Party/wakaama/management.c ****                         result = COAP_500_INTERNAL_SERVER_ERROR;
+ 282:Middlewares/Third_Party/wakaama/management.c ****                         break;
+ 283:Middlewares/Third_Party/wakaama/management.c ****                     }
+ 284:Middlewares/Third_Party/wakaama/management.c **** 
+ 285:Middlewares/Third_Party/wakaama/management.c ****                     if (sprintf(location_path, "/%d/%d", uriP->objectId, uriP->instanceId) < 0)
+ 286:Middlewares/Third_Party/wakaama/management.c ****                     {
+ 287:Middlewares/Third_Party/wakaama/management.c ****                         result = COAP_500_INTERNAL_SERVER_ERROR;
+ 288:Middlewares/Third_Party/wakaama/management.c ****                         break;
+ 289:Middlewares/Third_Party/wakaama/management.c ****                     }
+ 290:Middlewares/Third_Party/wakaama/management.c ****                     coap_set_header_location_path(response, location_path);
+ 291:Middlewares/Third_Party/wakaama/management.c **** 
+ 292:Middlewares/Third_Party/wakaama/management.c ****                     lwm2m_update_registration(contextP, 0, true);
+ 293:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 294:Middlewares/Third_Party/wakaama/management.c ****             }
+ 295:Middlewares/Third_Party/wakaama/management.c ****             else if (!LWM2M_URI_IS_SET_RESOURCE(uriP))
+ 772              		.loc 1 295 0
+ 773 0166 13F0010F 		tst	r3, #1
+ 774 016a 38D1     		bne	.L70
+ 296:Middlewares/Third_Party/wakaama/management.c ****             {
+ 297:Middlewares/Third_Party/wakaama/management.c ****                 result = object_write(contextP, uriP, format, message->payload, message->payload_le
+ 775              		.loc 1 297 0
+ 776 016c BDF84E20 		ldrh	r2, [sp, #78]
+ 777 0170 D4F88830 		ldr	r3, [r4, #136]
+ 778 0174 B4F88610 		ldrh	r1, [r4, #134]
+ 779 0178 0091     		str	r1, [sp]
+ 780 017a 2946     		mov	r1, r5
+ 781 017c 4046     		mov	r0, r8
+ 782 017e FFF7FEFF 		bl	object_write
+ 783              	.LVL55:
+ 784 0182 0646     		mov	r6, r0
+ 785              	.LVL56:
+ 786 0184 6FE0     		b	.L51
+ 787              	.LVL57:
+ 788              	.L88:
+ 273:Middlewares/Third_Party/wakaama/management.c ****                 if (result == COAP_201_CREATED)
+ 789              		.loc 1 273 0
+ 790 0186 BDF84E20 		ldrh	r2, [sp, #78]
+ 791 018a D4F88830 		ldr	r3, [r4, #136]
+ 792 018e B4F88610 		ldrh	r1, [r4, #134]
+ 793 0192 0091     		str	r1, [sp]
+ 794 0194 2946     		mov	r1, r5
+ 795 0196 4046     		mov	r0, r8
+ 796 0198 FFF7FEFF 		bl	object_create
+ 797              	.LVL58:
+ 798 019c 0646     		mov	r6, r0
+ 799              	.LVL59:
+ 274:Middlewares/Third_Party/wakaama/management.c ****                 {
+ 800              		.loc 1 274 0
+ 801 019e 4128     		cmp	r0, #65
+ 802 01a0 61D1     		bne	.L51
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 22
+
+
+ 803              	.LBB5:
+ 277:Middlewares/Third_Party/wakaama/management.c ****                     //instanceId expected
+ 804              		.loc 1 277 0
+ 805 01a2 0023     		movs	r3, #0
+ 806 01a4 0893     		str	r3, [sp, #32]
+ 807 01a6 0993     		str	r3, [sp, #36]
+ 808 01a8 0A93     		str	r3, [sp, #40]
+ 809 01aa 8DF82C30 		strb	r3, [sp, #44]
+ 279:Middlewares/Third_Party/wakaama/management.c ****                     {
+ 810              		.loc 1 279 0
+ 811 01ae 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 812 01b0 13F0020F 		tst	r3, #2
+ 813 01b4 11D0     		beq	.L69
+ 285:Middlewares/Third_Party/wakaama/management.c ****                     {
+ 814              		.loc 1 285 0
+ 815 01b6 AB88     		ldrh	r3, [r5, #4]
+ 816 01b8 6A88     		ldrh	r2, [r5, #2]
+ 817 01ba 3049     		ldr	r1, .L92+4
+ 818 01bc 08A8     		add	r0, sp, #32
+ 819              	.LVL60:
+ 820 01be FFF7FEFF 		bl	sprintf
+ 821              	.LVL61:
+ 822 01c2 0028     		cmp	r0, #0
+ 823 01c4 09DB     		blt	.L69
+ 290:Middlewares/Third_Party/wakaama/management.c **** 
+ 824              		.loc 1 290 0
+ 825 01c6 08A9     		add	r1, sp, #32
+ 826 01c8 1A98     		ldr	r0, [sp, #104]
+ 827 01ca FFF7FEFF 		bl	coap_set_header_location_path
+ 828              	.LVL62:
+ 292:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 829              		.loc 1 292 0
+ 830 01ce 0122     		movs	r2, #1
+ 831 01d0 0021     		movs	r1, #0
+ 832 01d2 4046     		mov	r0, r8
+ 833 01d4 FFF7FEFF 		bl	lwm2m_update_registration
+ 834              	.LVL63:
+ 835 01d8 45E0     		b	.L51
+ 836              	.L69:
+ 837              	.LVL64:
+ 282:Middlewares/Third_Party/wakaama/management.c ****                     }
+ 838              		.loc 1 282 0
+ 839 01da A026     		movs	r6, #160
+ 840 01dc 43E0     		b	.L51
+ 841              	.LVL65:
+ 842              	.L70:
+ 843              	.LBE5:
+ 298:Middlewares/Third_Party/wakaama/management.c ****             }
+ 299:Middlewares/Third_Party/wakaama/management.c ****             else
+ 300:Middlewares/Third_Party/wakaama/management.c ****             {
+ 301:Middlewares/Third_Party/wakaama/management.c ****                 result = object_execute(contextP, uriP, message->payload, message->payload_len);
+ 844              		.loc 1 301 0
+ 845 01de B4F88630 		ldrh	r3, [r4, #134]
+ 846 01e2 D4F88820 		ldr	r2, [r4, #136]
+ 847 01e6 2946     		mov	r1, r5
+ 848 01e8 4046     		mov	r0, r8
+ 849 01ea FFF7FEFF 		bl	object_execute
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 23
+
+
+ 850              	.LVL66:
+ 851 01ee 0646     		mov	r6, r0
+ 852              	.LVL67:
+ 853 01f0 39E0     		b	.L51
+ 854              	.LVL68:
+ 855              	.L56:
+ 302:Middlewares/Third_Party/wakaama/management.c ****             }
+ 303:Middlewares/Third_Party/wakaama/management.c ****         }
+ 304:Middlewares/Third_Party/wakaama/management.c ****         break;
+ 305:Middlewares/Third_Party/wakaama/management.c **** 
+ 306:Middlewares/Third_Party/wakaama/management.c ****     case COAP_PUT:
+ 307:Middlewares/Third_Party/wakaama/management.c ****         {
+ 308:Middlewares/Third_Party/wakaama/management.c ****             if (IS_OPTION(message, COAP_OPTION_URI_QUERY))
+ 856              		.loc 1 308 0
+ 857 01f2 94F90B30 		ldrsb	r3, [r4, #11]
+ 858 01f6 002B     		cmp	r3, #0
+ 859 01f8 10DB     		blt	.L89
+ 309:Middlewares/Third_Party/wakaama/management.c ****             {
+ 310:Middlewares/Third_Party/wakaama/management.c ****                 lwm2m_attributes_t attr;
+ 311:Middlewares/Third_Party/wakaama/management.c **** 
+ 312:Middlewares/Third_Party/wakaama/management.c ****                 if (0 != prv_readAttributes(message->uri_query, &attr))
+ 313:Middlewares/Third_Party/wakaama/management.c ****                 {
+ 314:Middlewares/Third_Party/wakaama/management.c ****                     result = COAP_400_BAD_REQUEST;
+ 315:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 316:Middlewares/Third_Party/wakaama/management.c ****                 else
+ 317:Middlewares/Third_Party/wakaama/management.c ****                 {
+ 318:Middlewares/Third_Party/wakaama/management.c ****                     result = observe_setParameters(contextP, uriP, serverP, &attr);
+ 319:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 320:Middlewares/Third_Party/wakaama/management.c ****             }
+ 321:Middlewares/Third_Party/wakaama/management.c ****             else if (LWM2M_URI_IS_SET_INSTANCE(uriP))
+ 860              		.loc 1 321 0
+ 861 01fa 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 862 01fc 13F0020F 		tst	r3, #2
+ 863 0200 37D0     		beq	.L78
+ 322:Middlewares/Third_Party/wakaama/management.c ****             {
+ 323:Middlewares/Third_Party/wakaama/management.c ****                 result = object_write(contextP, uriP, format, message->payload, message->payload_le
+ 864              		.loc 1 323 0
+ 865 0202 BDF84E20 		ldrh	r2, [sp, #78]
+ 866 0206 D4F88830 		ldr	r3, [r4, #136]
+ 867 020a B4F88610 		ldrh	r1, [r4, #134]
+ 868 020e 0091     		str	r1, [sp]
+ 869 0210 2946     		mov	r1, r5
+ 870 0212 4046     		mov	r0, r8
+ 871 0214 FFF7FEFF 		bl	object_write
+ 872              	.LVL69:
+ 873 0218 0646     		mov	r6, r0
+ 874              	.LVL70:
+ 875 021a 24E0     		b	.L51
+ 876              	.LVL71:
+ 877              	.L89:
+ 878              	.LBB6:
+ 312:Middlewares/Third_Party/wakaama/management.c ****                 {
+ 879              		.loc 1 312 0
+ 880 021c 08A9     		add	r1, sp, #32
+ 881 021e D4F88000 		ldr	r0, [r4, #128]
+ 882 0222 FFF7FEFF 		bl	prv_readAttributes
+ 883              	.LVL72:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 24
+
+
+ 884 0226 08B1     		cbz	r0, .L90
+ 314:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 885              		.loc 1 314 0
+ 886 0228 8026     		movs	r6, #128
+ 887              	.LVL73:
+ 888 022a 1CE0     		b	.L51
+ 889              	.LVL74:
+ 890              	.L90:
+ 318:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 891              		.loc 1 318 0
+ 892 022c 08AB     		add	r3, sp, #32
+ 893 022e 3A46     		mov	r2, r7
+ 894 0230 2946     		mov	r1, r5
+ 895 0232 4046     		mov	r0, r8
+ 896 0234 FFF7FEFF 		bl	observe_setParameters
+ 897              	.LVL75:
+ 898 0238 0646     		mov	r6, r0
+ 899              	.LVL76:
+ 900 023a 14E0     		b	.L51
+ 901              	.LVL77:
+ 902              	.L57:
+ 903              	.LBE6:
+ 324:Middlewares/Third_Party/wakaama/management.c ****             }
+ 325:Middlewares/Third_Party/wakaama/management.c ****             else
+ 326:Middlewares/Third_Party/wakaama/management.c ****             {
+ 327:Middlewares/Third_Party/wakaama/management.c ****                 result = COAP_400_BAD_REQUEST;
+ 328:Middlewares/Third_Party/wakaama/management.c ****             }
+ 329:Middlewares/Third_Party/wakaama/management.c ****         }
+ 330:Middlewares/Third_Party/wakaama/management.c ****         break;
+ 331:Middlewares/Third_Party/wakaama/management.c **** 
+ 332:Middlewares/Third_Party/wakaama/management.c ****     case COAP_DELETE:
+ 333:Middlewares/Third_Party/wakaama/management.c ****         {
+ 334:Middlewares/Third_Party/wakaama/management.c ****             if (!LWM2M_URI_IS_SET_INSTANCE(uriP) || LWM2M_URI_IS_SET_RESOURCE(uriP))
+ 904              		.loc 1 334 0
+ 905 023c 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 906 023e 03F00303 		and	r3, r3, #3
+ 907 0242 022B     		cmp	r3, #2
+ 908 0244 01D0     		beq	.L91
+ 335:Middlewares/Third_Party/wakaama/management.c ****             {
+ 336:Middlewares/Third_Party/wakaama/management.c ****                 result = COAP_400_BAD_REQUEST;
+ 909              		.loc 1 336 0
+ 910 0246 8026     		movs	r6, #128
+ 911 0248 0DE0     		b	.L51
+ 912              	.L91:
+ 337:Middlewares/Third_Party/wakaama/management.c ****             }
+ 338:Middlewares/Third_Party/wakaama/management.c ****             else
+ 339:Middlewares/Third_Party/wakaama/management.c ****             {
+ 340:Middlewares/Third_Party/wakaama/management.c ****                 result = object_delete(contextP, uriP);
+ 913              		.loc 1 340 0
+ 914 024a 2946     		mov	r1, r5
+ 915 024c 4046     		mov	r0, r8
+ 916 024e FFF7FEFF 		bl	object_delete
+ 917              	.LVL78:
+ 918 0252 0646     		mov	r6, r0
+ 919              	.LVL79:
+ 341:Middlewares/Third_Party/wakaama/management.c ****                 if (result == COAP_202_DELETED)
+ 920              		.loc 1 341 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 25
+
+
+ 921 0254 4228     		cmp	r0, #66
+ 922 0256 06D1     		bne	.L51
+ 342:Middlewares/Third_Party/wakaama/management.c ****                 {
+ 343:Middlewares/Third_Party/wakaama/management.c ****                     lwm2m_update_registration(contextP, 0, true);
+ 923              		.loc 1 343 0
+ 924 0258 0122     		movs	r2, #1
+ 925 025a 0021     		movs	r1, #0
+ 926 025c 4046     		mov	r0, r8
+ 927              	.LVL80:
+ 928 025e FFF7FEFF 		bl	lwm2m_update_registration
+ 929              	.LVL81:
+ 930 0262 00E0     		b	.L51
+ 931              	.L73:
+ 185:Middlewares/Third_Party/wakaama/management.c ****     }
+ 932              		.loc 1 185 0
+ 933 0264 8426     		movs	r6, #132
+ 934              	.L51:
+ 344:Middlewares/Third_Party/wakaama/management.c ****                 }
+ 345:Middlewares/Third_Party/wakaama/management.c ****             }
+ 346:Middlewares/Third_Party/wakaama/management.c ****         }
+ 347:Middlewares/Third_Party/wakaama/management.c ****         break;
+ 348:Middlewares/Third_Party/wakaama/management.c **** 
+ 349:Middlewares/Third_Party/wakaama/management.c ****     default:
+ 350:Middlewares/Third_Party/wakaama/management.c ****         result = COAP_400_BAD_REQUEST;
+ 351:Middlewares/Third_Party/wakaama/management.c ****         break;
+ 352:Middlewares/Third_Party/wakaama/management.c ****     }
+ 353:Middlewares/Third_Party/wakaama/management.c **** 
+ 354:Middlewares/Third_Party/wakaama/management.c ****     return result;
+ 355:Middlewares/Third_Party/wakaama/management.c **** }
+ 935              		.loc 1 355 0
+ 936 0266 3046     		mov	r0, r6
+ 937 0268 14B0     		add	sp, sp, #80
+ 938              	.LCFI6:
+ 939              		.cfi_remember_state
+ 940              		.cfi_def_cfa_offset 24
+ 941              		@ sp needed
+ 942 026a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 943              	.LVL82:
+ 944              	.L75:
+ 350:Middlewares/Third_Party/wakaama/management.c ****         break;
+ 945              		.loc 1 350 0
+ 946 026e 8026     		movs	r6, #128
+ 947 0270 F9E7     		b	.L51
+ 948              	.L78:
+ 949              	.LCFI7:
+ 950              		.cfi_restore_state
+ 327:Middlewares/Third_Party/wakaama/management.c ****             }
+ 951              		.loc 1 327 0
+ 952 0272 8026     		movs	r6, #128
+ 953 0274 F7E7     		b	.L51
+ 954              	.L93:
+ 955 0276 00BF     		.align	2
+ 956              	.L92:
+ 957 0278 00012800 		.word	2621696
+ 958 027c 00000000 		.word	.LC5
+ 959              		.cfi_endproc
+ 960              	.LFE4:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 26
+
+
+ 962              		.section	.rodata.dm_handleRequest.str1.4,"aMS",%progbits,1
+ 963              		.align	2
+ 964              	.LC5:
+ 965 0000 2F25642F 		.ascii	"/%d/%d\000"
+ 965      256400
+ 966              		.section	.rodata.prv_readAttributes.str1.4,"aMS",%progbits,1
+ 967              		.align	2
+ 968              	.LC0:
+ 969 0000 706D696E 		.ascii	"pmin=\000"
+ 969      3D00
+ 970 0006 0000     		.space	2
+ 971              	.LC1:
+ 972 0008 706D6178 		.ascii	"pmax=\000"
+ 972      3D00
+ 973 000e 0000     		.space	2
+ 974              	.LC2:
+ 975 0010 67743D00 		.ascii	"gt=\000"
+ 976              	.LC3:
+ 977 0014 6C743D00 		.ascii	"lt=\000"
+ 978              	.LC4:
+ 979 0018 73743D00 		.ascii	"st=\000"
+ 980              		.text
+ 981              	.Letext0:
+ 982              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 983              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 984              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 985              		.file 5 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 986              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 987              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 988              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_timeval.h
+ 989              		.file 9 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 990              		.file 10 "Middlewares/Third_Party/wakaama/liblwm2m.h"
+ 991              		.file 11 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 992              		.file 12 "Middlewares/Third_Party/wakaama/er-coap-13/er-coap-13.h"
+ 993              		.file 13 "Middlewares/Third_Party/wakaama/internals.h"
+ 994              		.file 14 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h"
+ 995              		.file 15 "<built-in>"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s 			page 27
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 management.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:19     .text.prv_readAttributes:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:25     .text.prv_readAttributes:0000000000000000 prv_readAttributes
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:459    .text.prv_readAttributes:00000000000002e4 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:466    .text.prv_readAttributes:00000000000002f8 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:508    .text.dm_handleRequest:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:515    .text.dm_handleRequest:0000000000000000 dm_handleRequest
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:585    .text.dm_handleRequest:0000000000000058 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:589    .text.dm_handleRequest:0000000000000060 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:957    .text.dm_handleRequest:0000000000000278 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:963    .rodata.dm_handleRequest.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccze1EpG.s:967    .rodata.prv_readAttributes.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_dcmplt
+memset
+lwm2m_strncmp
+utils_textToInt
+utils_textToFloat
+utils_convertMediaType
+object_read
+lwm2m_free
+object_readData
+observe_handleRequest
+lwm2m_data_free
+lwm2m_data_serialize
+object_discover
+coap_set_header_content_type
+coap_set_payload
+object_write
+object_create
+sprintf
+coap_set_header_location_path
+lwm2m_update_registration
+object_execute
+observe_setParameters
+object_delete

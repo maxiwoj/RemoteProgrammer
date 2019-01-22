@@ -1,0 +1,1096 @@
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"object_device.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.prv_device_discover,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu fpv4-sp-d16
+  24              	prv_device_discover:
+  25              	.LFB5:
+  26              		.file 1 "Src/communication/wakaama_client/objects/object_device.c"
+   1:Src/communication/wakaama_client/objects/object_device.c **** /*******************************************************************************
+   2:Src/communication/wakaama_client/objects/object_device.c ****  *
+   3:Src/communication/wakaama_client/objects/object_device.c ****  * Copyright (c) 2013, 2014, 2015 Intel Corporation and others.
+   4:Src/communication/wakaama_client/objects/object_device.c ****  * All rights reserved. This program and the accompanying materials
+   5:Src/communication/wakaama_client/objects/object_device.c ****  * are made available under the terms of the Eclipse Public License v1.0
+   6:Src/communication/wakaama_client/objects/object_device.c ****  * and Eclipse Distribution License v1.0 which accompany this distribution.
+   7:Src/communication/wakaama_client/objects/object_device.c ****  *
+   8:Src/communication/wakaama_client/objects/object_device.c ****  * The Eclipse Public License is available at
+   9:Src/communication/wakaama_client/objects/object_device.c ****  *    http://www.eclipse.org/legal/epl-v10.html
+  10:Src/communication/wakaama_client/objects/object_device.c ****  * The Eclipse Distribution License is available at
+  11:Src/communication/wakaama_client/objects/object_device.c ****  *    http://www.eclipse.org/org/documents/edl-v10.php.
+  12:Src/communication/wakaama_client/objects/object_device.c ****  *
+  13:Src/communication/wakaama_client/objects/object_device.c ****  * Contributors:
+  14:Src/communication/wakaama_client/objects/object_device.c ****  *    David Navarro, Intel Corporation - initial API and implementation
+  15:Src/communication/wakaama_client/objects/object_device.c ****  *    domedambrosio - Please refer to git log
+  16:Src/communication/wakaama_client/objects/object_device.c ****  *    Fabien Fleutot - Please refer to git log
+  17:Src/communication/wakaama_client/objects/object_device.c ****  *    Axel Lorente - Please refer to git log
+  18:Src/communication/wakaama_client/objects/object_device.c ****  *    Bosch Software Innovations GmbH - Please refer to git log
+  19:Src/communication/wakaama_client/objects/object_device.c ****  *    Pascal Rieux - Please refer to git log
+  20:Src/communication/wakaama_client/objects/object_device.c ****  *    
+  21:Src/communication/wakaama_client/objects/object_device.c ****  *******************************************************************************/
+  22:Src/communication/wakaama_client/objects/object_device.c **** 
+  23:Src/communication/wakaama_client/objects/object_device.c **** /*
+  24:Src/communication/wakaama_client/objects/object_device.c ****  Copyright (c) 2013, 2014 Intel Corporation
+  25:Src/communication/wakaama_client/objects/object_device.c **** 
+  26:Src/communication/wakaama_client/objects/object_device.c ****  Redistribution and use in source and binary forms, with or without modification,
+  27:Src/communication/wakaama_client/objects/object_device.c ****  are permitted provided that the following conditions are met:
+  28:Src/communication/wakaama_client/objects/object_device.c **** 
+  29:Src/communication/wakaama_client/objects/object_device.c ****      * Redistributions of source code must retain the above copyright notice,
+  30:Src/communication/wakaama_client/objects/object_device.c ****        this list of conditions and the following disclaimer.
+  31:Src/communication/wakaama_client/objects/object_device.c ****      * Redistributions in binary form must reproduce the above copyright notice,
+  32:Src/communication/wakaama_client/objects/object_device.c ****        this list of conditions and the following disclaimer in the documentation
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 2
+
+
+  33:Src/communication/wakaama_client/objects/object_device.c ****        and/or other materials provided with the distribution.
+  34:Src/communication/wakaama_client/objects/object_device.c ****      * Neither the name of Intel Corporation nor the names of its contributors
+  35:Src/communication/wakaama_client/objects/object_device.c ****        may be used to endorse or promote products derived from this software
+  36:Src/communication/wakaama_client/objects/object_device.c ****        without specific prior written permission.
+  37:Src/communication/wakaama_client/objects/object_device.c **** 
+  38:Src/communication/wakaama_client/objects/object_device.c ****  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  39:Src/communication/wakaama_client/objects/object_device.c ****  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  40:Src/communication/wakaama_client/objects/object_device.c ****  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  41:Src/communication/wakaama_client/objects/object_device.c ****  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  42:Src/communication/wakaama_client/objects/object_device.c ****  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  43:Src/communication/wakaama_client/objects/object_device.c ****  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  44:Src/communication/wakaama_client/objects/object_device.c ****  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  45:Src/communication/wakaama_client/objects/object_device.c ****  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+  46:Src/communication/wakaama_client/objects/object_device.c ****  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+  47:Src/communication/wakaama_client/objects/object_device.c ****  THE POSSIBILITY OF SUCH DAMAGE.
+  48:Src/communication/wakaama_client/objects/object_device.c **** 
+  49:Src/communication/wakaama_client/objects/object_device.c ****  David Navarro <david.navarro@intel.com>
+  50:Src/communication/wakaama_client/objects/object_device.c **** 
+  51:Src/communication/wakaama_client/objects/object_device.c **** */
+  52:Src/communication/wakaama_client/objects/object_device.c **** 
+  53:Src/communication/wakaama_client/objects/object_device.c **** /*
+  54:Src/communication/wakaama_client/objects/object_device.c ****  * This object is single instance only, and is mandatory to all LWM2M device as it describe the obj
+  55:Src/communication/wakaama_client/objects/object_device.c ****  * manufacturer, model, etc...
+  56:Src/communication/wakaama_client/objects/object_device.c ****  *
+  57:Src/communication/wakaama_client/objects/object_device.c ****  * Here we implement only some of the optional resources.
+  58:Src/communication/wakaama_client/objects/object_device.c ****  *
+  59:Src/communication/wakaama_client/objects/object_device.c ****  */
+  60:Src/communication/wakaama_client/objects/object_device.c **** 
+  61:Src/communication/wakaama_client/objects/object_device.c **** #include "liblwm2m.h"
+  62:Src/communication/wakaama_client/objects/object_device.c **** 
+  63:Src/communication/wakaama_client/objects/object_device.c **** #include <stdio.h>
+  64:Src/communication/wakaama_client/objects/object_device.c **** #include <stdlib.h>
+  65:Src/communication/wakaama_client/objects/object_device.c **** #include <string.h>
+  66:Src/communication/wakaama_client/objects/object_device.c **** #include <ctype.h>
+  67:Src/communication/wakaama_client/objects/object_device.c **** 
+  68:Src/communication/wakaama_client/objects/object_device.c **** #include "default_config.h"
+  69:Src/communication/wakaama_client/objects/object_device.c **** #include "config_parser.h"
+  70:Src/communication/wakaama_client/objects/object_device.c **** 
+  71:Src/communication/wakaama_client/objects/object_device.c **** 
+  72:Src/communication/wakaama_client/objects/object_device.c **** // Resource Id's:
+  73:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_MANUFACTURER          0
+  74:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_MODEL_NUMBER          1
+  75:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_SERIAL_NUMBER         2
+  76:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_FIRMWARE_VERSION      3
+  77:Src/communication/wakaama_client/objects/object_device.c **** #define RES_M_REBOOT                4
+  78:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_FACTORY_RESET         5
+  79:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_AVL_POWER_SOURCES     6
+  80:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_POWER_SOURCE_VOLTAGE  7
+  81:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_POWER_SOURCE_CURRENT  8
+  82:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_BATTERY_LEVEL         9
+  83:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_MEMORY_FREE           10
+  84:Src/communication/wakaama_client/objects/object_device.c **** #define RES_M_ERROR_CODE            11
+  85:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_RESET_ERROR_CODE      12
+  86:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_CURRENT_TIME          13
+  87:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_UTC_OFFSET            14
+  88:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_TIMEZONE              15
+  89:Src/communication/wakaama_client/objects/object_device.c **** #define RES_M_BINDING_MODES         16
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 3
+
+
+  90:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_DEVICE_TYPE           17
+  91:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_HARDWARE_VERSION      18
+  92:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_SOFTWARE_VERSION      19
+  93:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_BATTERY_STATUS        20
+  94:Src/communication/wakaama_client/objects/object_device.c **** #define RES_O_MEMORY_TOTAL          21
+  95:Src/communication/wakaama_client/objects/object_device.c **** 
+  96:Src/communication/wakaama_client/objects/object_device.c **** 
+  97:Src/communication/wakaama_client/objects/object_device.c **** static uint8_t prv_set_value(lwm2m_data_t * dataP)
+  98:Src/communication/wakaama_client/objects/object_device.c **** {
+  99:Src/communication/wakaama_client/objects/object_device.c ****     // a simple switch structure is used to respond at the specified resource asked
+ 100:Src/communication/wakaama_client/objects/object_device.c ****     switch (dataP->id)
+ 101:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 102:Src/communication/wakaama_client/objects/object_device.c ****     case RES_O_MANUFACTURER:
+ 103:Src/communication/wakaama_client/objects/object_device.c ****         lwm2m_data_encode_string(configuration.wakaama_company, dataP);
+ 104:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_205_CONTENT;
+ 105:Src/communication/wakaama_client/objects/object_device.c **** 
+ 106:Src/communication/wakaama_client/objects/object_device.c ****     case RES_O_MODEL_NUMBER:
+ 107:Src/communication/wakaama_client/objects/object_device.c ****         lwm2m_data_encode_string(configuration.wakaama_model_number, dataP);
+ 108:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_205_CONTENT;
+ 109:Src/communication/wakaama_client/objects/object_device.c **** 
+ 110:Src/communication/wakaama_client/objects/object_device.c ****     case RES_M_REBOOT:
+ 111:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_405_METHOD_NOT_ALLOWED;
+ 112:Src/communication/wakaama_client/objects/object_device.c ****       
+ 113:Src/communication/wakaama_client/objects/object_device.c ****     case RES_M_BINDING_MODES:
+ 114:Src/communication/wakaama_client/objects/object_device.c ****         lwm2m_data_encode_string(WAKAAMA_BINDING, dataP);
+ 115:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_205_CONTENT;
+ 116:Src/communication/wakaama_client/objects/object_device.c **** 
+ 117:Src/communication/wakaama_client/objects/object_device.c **** 
+ 118:Src/communication/wakaama_client/objects/object_device.c ****     default:
+ 119:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_404_NOT_FOUND;
+ 120:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 121:Src/communication/wakaama_client/objects/object_device.c **** }
+ 122:Src/communication/wakaama_client/objects/object_device.c **** 
+ 123:Src/communication/wakaama_client/objects/object_device.c **** static uint8_t prv_device_read(uint16_t instanceId,
+ 124:Src/communication/wakaama_client/objects/object_device.c ****                                int * numDataP,
+ 125:Src/communication/wakaama_client/objects/object_device.c ****                                lwm2m_data_t ** dataArrayP,
+ 126:Src/communication/wakaama_client/objects/object_device.c ****                                lwm2m_object_t * objectP)
+ 127:Src/communication/wakaama_client/objects/object_device.c **** {
+ 128:Src/communication/wakaama_client/objects/object_device.c ****     uint8_t result;
+ 129:Src/communication/wakaama_client/objects/object_device.c ****     int i;
+ 130:Src/communication/wakaama_client/objects/object_device.c **** 
+ 131:Src/communication/wakaama_client/objects/object_device.c ****     // this is a single instance object
+ 132:Src/communication/wakaama_client/objects/object_device.c ****     if (instanceId != 0)
+ 133:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 134:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_404_NOT_FOUND;
+ 135:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 136:Src/communication/wakaama_client/objects/object_device.c **** 
+ 137:Src/communication/wakaama_client/objects/object_device.c ****     // is the server asking for the full object ?
+ 138:Src/communication/wakaama_client/objects/object_device.c ****     if (*numDataP == 0)
+ 139:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 140:Src/communication/wakaama_client/objects/object_device.c ****         uint16_t resList[] = {
+ 141:Src/communication/wakaama_client/objects/object_device.c ****                 RES_O_MANUFACTURER,
+ 142:Src/communication/wakaama_client/objects/object_device.c ****                 RES_O_MODEL_NUMBER,
+ 143:Src/communication/wakaama_client/objects/object_device.c ****                 RES_M_BINDING_MODES
+ 144:Src/communication/wakaama_client/objects/object_device.c ****         };
+ 145:Src/communication/wakaama_client/objects/object_device.c ****         int nbRes = sizeof(resList)/sizeof(uint16_t);
+ 146:Src/communication/wakaama_client/objects/object_device.c **** 
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 4
+
+
+ 147:Src/communication/wakaama_client/objects/object_device.c ****         *dataArrayP = lwm2m_data_new(nbRes);
+ 148:Src/communication/wakaama_client/objects/object_device.c ****         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 149:Src/communication/wakaama_client/objects/object_device.c ****         *numDataP = nbRes;
+ 150:Src/communication/wakaama_client/objects/object_device.c ****         for (i = 0 ; i < nbRes ; i++)
+ 151:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 152:Src/communication/wakaama_client/objects/object_device.c ****             (*dataArrayP)[i].id = resList[i];
+ 153:Src/communication/wakaama_client/objects/object_device.c ****         }
+ 154:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 155:Src/communication/wakaama_client/objects/object_device.c **** 
+ 156:Src/communication/wakaama_client/objects/object_device.c ****     i = 0;
+ 157:Src/communication/wakaama_client/objects/object_device.c ****     do
+ 158:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 159:Src/communication/wakaama_client/objects/object_device.c ****         result = prv_set_value((*dataArrayP) + i);
+ 160:Src/communication/wakaama_client/objects/object_device.c ****         i++;
+ 161:Src/communication/wakaama_client/objects/object_device.c ****     } while (i < *numDataP && result == COAP_205_CONTENT);
+ 162:Src/communication/wakaama_client/objects/object_device.c **** 
+ 163:Src/communication/wakaama_client/objects/object_device.c ****     return result;
+ 164:Src/communication/wakaama_client/objects/object_device.c **** }
+ 165:Src/communication/wakaama_client/objects/object_device.c **** 
+ 166:Src/communication/wakaama_client/objects/object_device.c **** static uint8_t prv_device_discover(uint16_t instanceId,
+ 167:Src/communication/wakaama_client/objects/object_device.c ****                                    int * numDataP,
+ 168:Src/communication/wakaama_client/objects/object_device.c ****                                    lwm2m_data_t ** dataArrayP,
+ 169:Src/communication/wakaama_client/objects/object_device.c ****                                    lwm2m_object_t * objectP)
+ 170:Src/communication/wakaama_client/objects/object_device.c **** {
+  27              		.loc 1 170 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 8
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+ 171:Src/communication/wakaama_client/objects/object_device.c ****     uint8_t result;
+ 172:Src/communication/wakaama_client/objects/object_device.c ****     int i;
+ 173:Src/communication/wakaama_client/objects/object_device.c **** 
+ 174:Src/communication/wakaama_client/objects/object_device.c ****     // this is a single instance object
+ 175:Src/communication/wakaama_client/objects/object_device.c ****     if (instanceId != 0)
+  32              		.loc 1 175 0
+  33 0000 0028     		cmp	r0, #0
+  34 0002 59D1     		bne	.L11
+ 170:Src/communication/wakaama_client/objects/object_device.c ****     uint8_t result;
+  35              		.loc 1 170 0
+  36 0004 70B5     		push	{r4, r5, r6, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 16
+  39              		.cfi_offset 4, -16
+  40              		.cfi_offset 5, -12
+  41              		.cfi_offset 6, -8
+  42              		.cfi_offset 14, -4
+  43 0006 82B0     		sub	sp, sp, #8
+  44              	.LCFI1:
+  45              		.cfi_def_cfa_offset 24
+  46              	.LVL1:
+ 176:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 177:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_404_NOT_FOUND;
+ 178:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 179:Src/communication/wakaama_client/objects/object_device.c **** 
+ 180:Src/communication/wakaama_client/objects/object_device.c ****     result = COAP_205_CONTENT;
+ 181:Src/communication/wakaama_client/objects/object_device.c **** 
+ 182:Src/communication/wakaama_client/objects/object_device.c ****     // is the server asking for the full object ?
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 5
+
+
+ 183:Src/communication/wakaama_client/objects/object_device.c ****     if (*numDataP == 0)
+  47              		.loc 1 183 0
+  48 0008 0C68     		ldr	r4, [r1]
+  49 000a 14B1     		cbz	r4, .L18
+ 184:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 185:Src/communication/wakaama_client/objects/object_device.c ****         uint16_t resList[] = {
+ 186:Src/communication/wakaama_client/objects/object_device.c ****                 RES_O_MANUFACTURER,
+ 187:Src/communication/wakaama_client/objects/object_device.c ****                 RES_O_MODEL_NUMBER,
+ 188:Src/communication/wakaama_client/objects/object_device.c ****                 RES_M_BINDING_MODES,
+ 189:Src/communication/wakaama_client/objects/object_device.c ****                 RES_M_REBOOT
+ 190:Src/communication/wakaama_client/objects/object_device.c ****         };
+ 191:Src/communication/wakaama_client/objects/object_device.c ****         int nbRes = sizeof(resList)/sizeof(uint16_t);
+ 192:Src/communication/wakaama_client/objects/object_device.c **** 
+ 193:Src/communication/wakaama_client/objects/object_device.c ****         *dataArrayP = lwm2m_data_new(nbRes);
+ 194:Src/communication/wakaama_client/objects/object_device.c ****         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 195:Src/communication/wakaama_client/objects/object_device.c ****         *numDataP = nbRes;
+ 196:Src/communication/wakaama_client/objects/object_device.c ****         for (i = 0 ; i < nbRes ; i++)
+ 197:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 198:Src/communication/wakaama_client/objects/object_device.c ****             (*dataArrayP)[i].id = resList[i];
+ 199:Src/communication/wakaama_client/objects/object_device.c ****         }
+ 200:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 201:Src/communication/wakaama_client/objects/object_device.c ****     else
+ 202:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 203:Src/communication/wakaama_client/objects/object_device.c ****         for (i = 0; i < *numDataP && result == COAP_205_CONTENT; i++)
+  50              		.loc 1 203 0
+  51 000c 0023     		movs	r3, #0
+  52              	.LVL2:
+ 180:Src/communication/wakaama_client/objects/object_device.c **** 
+  53              		.loc 1 180 0
+  54 000e 4520     		movs	r0, #69
+  55              	.LVL3:
+  56 0010 22E0     		b	.L3
+  57              	.LVL4:
+  58              	.L18:
+  59 0012 1546     		mov	r5, r2
+  60 0014 0E46     		mov	r6, r1
+  61              	.LBB2:
+ 185:Src/communication/wakaama_client/objects/object_device.c ****                 RES_O_MANUFACTURER,
+  62              		.loc 1 185 0
+  63 0016 294B     		ldr	r3, .L20
+  64              	.LVL5:
+  65 0018 93E80300 		ldm	r3, {r0, r1}
+  66              	.LVL6:
+  67 001c 02AB     		add	r3, sp, #8
+  68 001e 03E90300 		stmdb	r3, {r0, r1}
+  69              	.LVL7:
+ 193:Src/communication/wakaama_client/objects/object_device.c ****         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+  70              		.loc 1 193 0
+  71 0022 0420     		movs	r0, #4
+  72 0024 FFF7FEFF 		bl	lwm2m_data_new
+  73              	.LVL8:
+  74 0028 2860     		str	r0, [r5]
+ 194:Src/communication/wakaama_client/objects/object_device.c ****         *numDataP = nbRes;
+  75              		.loc 1 194 0
+  76 002a 10B1     		cbz	r0, .L19
+ 195:Src/communication/wakaama_client/objects/object_device.c ****         for (i = 0 ; i < nbRes ; i++)
+  77              		.loc 1 195 0
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 6
+
+
+  78 002c 0423     		movs	r3, #4
+  79 002e 3360     		str	r3, [r6]
+  80              	.LVL9:
+ 196:Src/communication/wakaama_client/objects/object_device.c ****         {
+  81              		.loc 1 196 0
+  82 0030 0BE0     		b	.L5
+  83              	.LVL10:
+  84              	.L19:
+ 194:Src/communication/wakaama_client/objects/object_device.c ****         *numDataP = nbRes;
+  85              		.loc 1 194 0 discriminator 1
+  86 0032 A020     		movs	r0, #160
+  87 0034 0CE0     		b	.L2
+  88              	.LVL11:
+  89              	.L6:
+ 198:Src/communication/wakaama_client/objects/object_device.c ****         }
+  90              		.loc 1 198 0 discriminator 3
+  91 0036 2B68     		ldr	r3, [r5]
+  92 0038 03EB0413 		add	r3, r3, r4, lsl #4
+  93 003c 02AA     		add	r2, sp, #8
+  94 003e 02EB4402 		add	r2, r2, r4, lsl #1
+  95 0042 32F8082C 		ldrh	r2, [r2, #-8]
+  96 0046 5A80     		strh	r2, [r3, #2]	@ movhi
+ 196:Src/communication/wakaama_client/objects/object_device.c ****         {
+  97              		.loc 1 196 0 discriminator 3
+  98 0048 0134     		adds	r4, r4, #1
+  99              	.LVL12:
+ 100              	.L5:
+ 196:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 101              		.loc 1 196 0 is_stmt 0 discriminator 1
+ 102 004a 032C     		cmp	r4, #3
+ 103 004c F3DD     		ble	.L6
+ 104              	.LBE2:
+ 180:Src/communication/wakaama_client/objects/object_device.c **** 
+ 105              		.loc 1 180 0 is_stmt 1
+ 106 004e 4520     		movs	r0, #69
+ 107              	.LVL13:
+ 108              	.L2:
+ 204:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 205:Src/communication/wakaama_client/objects/object_device.c ****             switch ((*dataArrayP)[i].id)
+ 206:Src/communication/wakaama_client/objects/object_device.c ****             {
+ 207:Src/communication/wakaama_client/objects/object_device.c ****             case RES_O_MANUFACTURER:
+ 208:Src/communication/wakaama_client/objects/object_device.c ****             case RES_O_MODEL_NUMBER:
+ 209:Src/communication/wakaama_client/objects/object_device.c ****             case RES_M_BINDING_MODES:
+ 210:Src/communication/wakaama_client/objects/object_device.c ****             case RES_M_REBOOT:
+ 211:Src/communication/wakaama_client/objects/object_device.c ****                 break;
+ 212:Src/communication/wakaama_client/objects/object_device.c ****             default:
+ 213:Src/communication/wakaama_client/objects/object_device.c ****                 result = COAP_404_NOT_FOUND;
+ 214:Src/communication/wakaama_client/objects/object_device.c ****             }
+ 215:Src/communication/wakaama_client/objects/object_device.c ****         }
+ 216:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 217:Src/communication/wakaama_client/objects/object_device.c **** 
+ 218:Src/communication/wakaama_client/objects/object_device.c ****     return result;
+ 219:Src/communication/wakaama_client/objects/object_device.c **** }
+ 109              		.loc 1 219 0
+ 110 0050 02B0     		add	sp, sp, #8
+ 111              	.LCFI2:
+ 112              		.cfi_remember_state
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 7
+
+
+ 113              		.cfi_def_cfa_offset 16
+ 114              		@ sp needed
+ 115 0052 70BD     		pop	{r4, r5, r6, pc}
+ 116              	.LVL14:
+ 117              	.L13:
+ 118              	.LCFI3:
+ 119              		.cfi_restore_state
+ 213:Src/communication/wakaama_client/objects/object_device.c ****             }
+ 120              		.loc 1 213 0
+ 121 0054 8420     		movs	r0, #132
+ 122              	.LVL15:
+ 123              	.L7:
+ 203:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 124              		.loc 1 203 0 discriminator 2
+ 125 0056 0133     		adds	r3, r3, #1
+ 126              	.LVL16:
+ 127              	.L3:
+ 203:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 128              		.loc 1 203 0 is_stmt 0 discriminator 1
+ 129 0058 9C42     		cmp	r4, r3
+ 130 005a F9DD     		ble	.L2
+ 203:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 131              		.loc 1 203 0 discriminator 3
+ 132 005c 4528     		cmp	r0, #69
+ 133 005e F7D1     		bne	.L2
+ 205:Src/communication/wakaama_client/objects/object_device.c ****             {
+ 134              		.loc 1 205 0 is_stmt 1
+ 135 0060 1168     		ldr	r1, [r2]
+ 136 0062 01EB0311 		add	r1, r1, r3, lsl #4
+ 137 0066 4988     		ldrh	r1, [r1, #2]
+ 138 0068 1029     		cmp	r1, #16
+ 139 006a F3D8     		bhi	.L13
+ 140 006c 01A5     		adr	r5, .L9
+ 141 006e 55F821F0 		ldr	pc, [r5, r1, lsl #2]
+ 142 0072 00BF     		.p2align 2
+ 143              	.L9:
+ 144 0074 57000000 		.word	.L7+1
+ 145 0078 57000000 		.word	.L7+1
+ 146 007c 55000000 		.word	.L13+1
+ 147 0080 55000000 		.word	.L13+1
+ 148 0084 57000000 		.word	.L7+1
+ 149 0088 55000000 		.word	.L13+1
+ 150 008c 55000000 		.word	.L13+1
+ 151 0090 55000000 		.word	.L13+1
+ 152 0094 55000000 		.word	.L13+1
+ 153 0098 55000000 		.word	.L13+1
+ 154 009c 55000000 		.word	.L13+1
+ 155 00a0 55000000 		.word	.L13+1
+ 156 00a4 55000000 		.word	.L13+1
+ 157 00a8 55000000 		.word	.L13+1
+ 158 00ac 55000000 		.word	.L13+1
+ 159 00b0 55000000 		.word	.L13+1
+ 160 00b4 57000000 		.word	.L7+1
+ 161              	.LVL17:
+ 162              		.p2align 1
+ 163              	.L11:
+ 164              	.LCFI4:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 8
+
+
+ 165              		.cfi_def_cfa_offset 0
+ 166              		.cfi_restore 4
+ 167              		.cfi_restore 5
+ 168              		.cfi_restore 6
+ 169              		.cfi_restore 14
+ 177:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 170              		.loc 1 177 0
+ 171 00b8 8420     		movs	r0, #132
+ 172              	.LVL18:
+ 173              		.loc 1 219 0
+ 174 00ba 7047     		bx	lr
+ 175              	.L21:
+ 176              		.align	2
+ 177              	.L20:
+ 178 00bc 00000000 		.word	.LANCHOR0
+ 179              		.cfi_endproc
+ 180              	.LFE5:
+ 182              		.section	.text.prv_device_execute,"ax",%progbits
+ 183              		.align	1
+ 184              		.syntax unified
+ 185              		.thumb
+ 186              		.thumb_func
+ 187              		.fpu fpv4-sp-d16
+ 189              	prv_device_execute:
+ 190              	.LFB6:
+ 220:Src/communication/wakaama_client/objects/object_device.c **** 
+ 221:Src/communication/wakaama_client/objects/object_device.c **** static uint8_t prv_device_execute(uint16_t instanceId,
+ 222:Src/communication/wakaama_client/objects/object_device.c ****                                   uint16_t resourceId,
+ 223:Src/communication/wakaama_client/objects/object_device.c ****                                   uint8_t * buffer,
+ 224:Src/communication/wakaama_client/objects/object_device.c ****                                   int length,
+ 225:Src/communication/wakaama_client/objects/object_device.c ****                                   lwm2m_object_t * objectP)
+ 226:Src/communication/wakaama_client/objects/object_device.c **** {
+ 191              		.loc 1 226 0
+ 192              		.cfi_startproc
+ 193              		@ args = 4, pretend = 0, frame = 0
+ 194              		@ frame_needed = 0, uses_anonymous_args = 0
+ 195              	.LVL19:
+ 227:Src/communication/wakaama_client/objects/object_device.c ****     // this is a single instance object
+ 228:Src/communication/wakaama_client/objects/object_device.c ****     if (instanceId != 0)
+ 196              		.loc 1 228 0
+ 197 0000 78B9     		cbnz	r0, .L24
+ 229:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 230:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_404_NOT_FOUND;
+ 231:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 232:Src/communication/wakaama_client/objects/object_device.c **** 
+ 233:Src/communication/wakaama_client/objects/object_device.c ****     if (length != 0) return COAP_400_BAD_REQUEST;
+ 198              		.loc 1 233 0
+ 199 0002 83B9     		cbnz	r3, .L25
+ 234:Src/communication/wakaama_client/objects/object_device.c **** 
+ 235:Src/communication/wakaama_client/objects/object_device.c ****     if (resourceId == RES_M_REBOOT)
+ 200              		.loc 1 235 0
+ 201 0004 0429     		cmp	r1, #4
+ 202 0006 01D0     		beq	.L31
+ 236:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 237:Src/communication/wakaama_client/objects/object_device.c ****         fprintf(stdout, "\n\t REBOOT\r\n\n");
+ 238:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_204_CHANGED;
+ 239:Src/communication/wakaama_client/objects/object_device.c ****     }
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 9
+
+
+ 240:Src/communication/wakaama_client/objects/object_device.c **** 
+ 241:Src/communication/wakaama_client/objects/object_device.c ****     return COAP_405_METHOD_NOT_ALLOWED;
+ 203              		.loc 1 241 0
+ 204 0008 8520     		movs	r0, #133
+ 205              	.LVL20:
+ 242:Src/communication/wakaama_client/objects/object_device.c **** }
+ 206              		.loc 1 242 0
+ 207 000a 7047     		bx	lr
+ 208              	.LVL21:
+ 209              	.L31:
+ 226:Src/communication/wakaama_client/objects/object_device.c ****     // this is a single instance object
+ 210              		.loc 1 226 0
+ 211 000c 08B5     		push	{r3, lr}
+ 212              	.LCFI5:
+ 213              		.cfi_def_cfa_offset 8
+ 214              		.cfi_offset 3, -8
+ 215              		.cfi_offset 14, -4
+ 237:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_204_CHANGED;
+ 216              		.loc 1 237 0
+ 217 000e 074B     		ldr	r3, .L32
+ 218              	.LVL22:
+ 219 0010 1B68     		ldr	r3, [r3]
+ 220 0012 9B68     		ldr	r3, [r3, #8]
+ 221 0014 0C22     		movs	r2, #12
+ 222              	.LVL23:
+ 223 0016 0121     		movs	r1, #1
+ 224              	.LVL24:
+ 225 0018 0548     		ldr	r0, .L32+4
+ 226              	.LVL25:
+ 227 001a FFF7FEFF 		bl	fwrite
+ 228              	.LVL26:
+ 238:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 229              		.loc 1 238 0
+ 230 001e 4420     		movs	r0, #68
+ 231              		.loc 1 242 0
+ 232 0020 08BD     		pop	{r3, pc}
+ 233              	.LVL27:
+ 234              	.L24:
+ 235              	.LCFI6:
+ 236              		.cfi_def_cfa_offset 0
+ 237              		.cfi_restore 3
+ 238              		.cfi_restore 14
+ 230:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 239              		.loc 1 230 0
+ 240 0022 8420     		movs	r0, #132
+ 241              	.LVL28:
+ 242 0024 7047     		bx	lr
+ 243              	.LVL29:
+ 244              	.L25:
+ 233:Src/communication/wakaama_client/objects/object_device.c **** 
+ 245              		.loc 1 233 0
+ 246 0026 8020     		movs	r0, #128
+ 247              	.LVL30:
+ 248 0028 7047     		bx	lr
+ 249              	.L33:
+ 250 002a 00BF     		.align	2
+ 251              	.L32:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 10
+
+
+ 252 002c 00000000 		.word	_impure_ptr
+ 253 0030 00000000 		.word	.LC2
+ 254              		.cfi_endproc
+ 255              	.LFE6:
+ 257              		.section	.text.prv_set_value,"ax",%progbits
+ 258              		.align	1
+ 259              		.syntax unified
+ 260              		.thumb
+ 261              		.thumb_func
+ 262              		.fpu fpv4-sp-d16
+ 264              	prv_set_value:
+ 265              	.LFB3:
+  98:Src/communication/wakaama_client/objects/object_device.c ****     // a simple switch structure is used to respond at the specified resource asked
+ 266              		.loc 1 98 0
+ 267              		.cfi_startproc
+ 268              		@ args = 0, pretend = 0, frame = 0
+ 269              		@ frame_needed = 0, uses_anonymous_args = 0
+ 270              	.LVL31:
+ 271 0000 08B5     		push	{r3, lr}
+ 272              	.LCFI7:
+ 273              		.cfi_def_cfa_offset 8
+ 274              		.cfi_offset 3, -8
+ 275              		.cfi_offset 14, -4
+ 100:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 276              		.loc 1 100 0
+ 277 0002 4388     		ldrh	r3, [r0, #2]
+ 278 0004 102B     		cmp	r3, #16
+ 279 0006 20D8     		bhi	.L41
+ 280 0008 DFE803F0 		tbb	[pc, r3]
+ 281              	.L37:
+ 282 000c 0B       		.byte	(.L36-.L37)/2
+ 283 000d 12       		.byte	(.L38-.L37)/2
+ 284 000e 1F       		.byte	(.L41-.L37)/2
+ 285 000f 1F       		.byte	(.L41-.L37)/2
+ 286 0010 09       		.byte	(.L39-.L37)/2
+ 287 0011 1F       		.byte	(.L41-.L37)/2
+ 288 0012 1F       		.byte	(.L41-.L37)/2
+ 289 0013 1F       		.byte	(.L41-.L37)/2
+ 290 0014 1F       		.byte	(.L41-.L37)/2
+ 291 0015 1F       		.byte	(.L41-.L37)/2
+ 292 0016 1F       		.byte	(.L41-.L37)/2
+ 293 0017 1F       		.byte	(.L41-.L37)/2
+ 294 0018 1F       		.byte	(.L41-.L37)/2
+ 295 0019 1F       		.byte	(.L41-.L37)/2
+ 296 001a 1F       		.byte	(.L41-.L37)/2
+ 297 001b 1F       		.byte	(.L41-.L37)/2
+ 298 001c 19       		.byte	(.L40-.L37)/2
+ 299 001d 00       		.p2align 1
+ 300              	.L39:
+ 111:Src/communication/wakaama_client/objects/object_device.c ****       
+ 301              		.loc 1 111 0
+ 302 001e 8520     		movs	r0, #133
+ 303              	.LVL32:
+ 304              	.L35:
+ 121:Src/communication/wakaama_client/objects/object_device.c **** 
+ 305              		.loc 1 121 0
+ 306 0020 08BD     		pop	{r3, pc}
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 11
+
+
+ 307              	.LVL33:
+ 308              	.L36:
+ 103:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_205_CONTENT;
+ 309              		.loc 1 103 0
+ 310 0022 0146     		mov	r1, r0
+ 311 0024 0A4B     		ldr	r3, .L43
+ 312 0026 1869     		ldr	r0, [r3, #16]
+ 313              	.LVL34:
+ 314 0028 FFF7FEFF 		bl	lwm2m_data_encode_string
+ 315              	.LVL35:
+ 104:Src/communication/wakaama_client/objects/object_device.c **** 
+ 316              		.loc 1 104 0
+ 317 002c 4520     		movs	r0, #69
+ 318 002e F7E7     		b	.L35
+ 319              	.LVL36:
+ 320              	.L38:
+ 107:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_205_CONTENT;
+ 321              		.loc 1 107 0
+ 322 0030 0146     		mov	r1, r0
+ 323 0032 074B     		ldr	r3, .L43
+ 324 0034 5869     		ldr	r0, [r3, #20]
+ 325              	.LVL37:
+ 326 0036 FFF7FEFF 		bl	lwm2m_data_encode_string
+ 327              	.LVL38:
+ 108:Src/communication/wakaama_client/objects/object_device.c **** 
+ 328              		.loc 1 108 0
+ 329 003a 4520     		movs	r0, #69
+ 330 003c F0E7     		b	.L35
+ 331              	.LVL39:
+ 332              	.L40:
+ 114:Src/communication/wakaama_client/objects/object_device.c ****         return COAP_205_CONTENT;
+ 333              		.loc 1 114 0
+ 334 003e 0146     		mov	r1, r0
+ 335 0040 0448     		ldr	r0, .L43+4
+ 336              	.LVL40:
+ 337 0042 FFF7FEFF 		bl	lwm2m_data_encode_string
+ 338              	.LVL41:
+ 115:Src/communication/wakaama_client/objects/object_device.c **** 
+ 339              		.loc 1 115 0
+ 340 0046 4520     		movs	r0, #69
+ 341 0048 EAE7     		b	.L35
+ 342              	.LVL42:
+ 343              	.L41:
+ 119:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 344              		.loc 1 119 0
+ 345 004a 8420     		movs	r0, #132
+ 346              	.LVL43:
+ 347 004c E8E7     		b	.L35
+ 348              	.L44:
+ 349 004e 00BF     		.align	2
+ 350              	.L43:
+ 351 0050 00000000 		.word	configuration
+ 352 0054 00000000 		.word	.LC3
+ 353              		.cfi_endproc
+ 354              	.LFE3:
+ 356              		.section	.text.prv_device_read,"ax",%progbits
+ 357              		.align	1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 12
+
+
+ 358              		.syntax unified
+ 359              		.thumb
+ 360              		.thumb_func
+ 361              		.fpu fpv4-sp-d16
+ 363              	prv_device_read:
+ 364              	.LFB4:
+ 127:Src/communication/wakaama_client/objects/object_device.c ****     uint8_t result;
+ 365              		.loc 1 127 0
+ 366              		.cfi_startproc
+ 367              		@ args = 0, pretend = 0, frame = 8
+ 368              		@ frame_needed = 0, uses_anonymous_args = 0
+ 369              	.LVL44:
+ 132:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 370              		.loc 1 132 0
+ 371 0000 80BB     		cbnz	r0, .L52
+ 127:Src/communication/wakaama_client/objects/object_device.c ****     uint8_t result;
+ 372              		.loc 1 127 0
+ 373 0002 70B5     		push	{r4, r5, r6, lr}
+ 374              	.LCFI8:
+ 375              		.cfi_def_cfa_offset 16
+ 376              		.cfi_offset 4, -16
+ 377              		.cfi_offset 5, -12
+ 378              		.cfi_offset 6, -8
+ 379              		.cfi_offset 14, -4
+ 380 0004 82B0     		sub	sp, sp, #8
+ 381              	.LCFI9:
+ 382              		.cfi_def_cfa_offset 24
+ 383 0006 1646     		mov	r6, r2
+ 384 0008 0D46     		mov	r5, r1
+ 138:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 385              		.loc 1 138 0
+ 386 000a 0C68     		ldr	r4, [r1]
+ 387 000c 6CB1     		cbz	r4, .L57
+ 388              	.LVL45:
+ 389              	.L47:
+ 127:Src/communication/wakaama_client/objects/object_device.c ****     uint8_t result;
+ 390              		.loc 1 127 0 discriminator 2
+ 391 000e 0024     		movs	r4, #0
+ 392              	.L51:
+ 393              	.LVL46:
+ 159:Src/communication/wakaama_client/objects/object_device.c ****         i++;
+ 394              		.loc 1 159 0 discriminator 2
+ 395 0010 3068     		ldr	r0, [r6]
+ 396 0012 00EB0410 		add	r0, r0, r4, lsl #4
+ 397 0016 FFF7FEFF 		bl	prv_set_value
+ 398              	.LVL47:
+ 160:Src/communication/wakaama_client/objects/object_device.c ****     } while (i < *numDataP && result == COAP_205_CONTENT);
+ 399              		.loc 1 160 0 discriminator 2
+ 400 001a 0134     		adds	r4, r4, #1
+ 401              	.LVL48:
+ 161:Src/communication/wakaama_client/objects/object_device.c **** 
+ 402              		.loc 1 161 0 discriminator 2
+ 403 001c 2B68     		ldr	r3, [r5]
+ 404 001e A342     		cmp	r3, r4
+ 405 0020 01DD     		ble	.L46
+ 161:Src/communication/wakaama_client/objects/object_device.c **** 
+ 406              		.loc 1 161 0 is_stmt 0 discriminator 1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 13
+
+
+ 407 0022 4528     		cmp	r0, #69
+ 408 0024 F4D0     		beq	.L51
+ 409              	.LVL49:
+ 410              	.L46:
+ 164:Src/communication/wakaama_client/objects/object_device.c **** 
+ 411              		.loc 1 164 0 is_stmt 1
+ 412 0026 02B0     		add	sp, sp, #8
+ 413              	.LCFI10:
+ 414              		.cfi_remember_state
+ 415              		.cfi_def_cfa_offset 16
+ 416              		@ sp needed
+ 417 0028 70BD     		pop	{r4, r5, r6, pc}
+ 418              	.LVL50:
+ 419              	.L57:
+ 420              	.LCFI11:
+ 421              		.cfi_restore_state
+ 422              	.LBB3:
+ 140:Src/communication/wakaama_client/objects/object_device.c ****                 RES_O_MANUFACTURER,
+ 423              		.loc 1 140 0
+ 424 002a 0F4B     		ldr	r3, .L59
+ 425              	.LVL51:
+ 426 002c 93E80300 		ldm	r3, {r0, r1}
+ 427              	.LVL52:
+ 428 0030 0090     		str	r0, [sp]
+ 429 0032 ADF80410 		strh	r1, [sp, #4]	@ movhi
+ 430              	.LVL53:
+ 147:Src/communication/wakaama_client/objects/object_device.c ****         if (*dataArrayP == NULL) return COAP_500_INTERNAL_SERVER_ERROR;
+ 431              		.loc 1 147 0
+ 432 0036 0320     		movs	r0, #3
+ 433 0038 FFF7FEFF 		bl	lwm2m_data_new
+ 434              	.LVL54:
+ 435 003c 3060     		str	r0, [r6]
+ 148:Src/communication/wakaama_client/objects/object_device.c ****         *numDataP = nbRes;
+ 436              		.loc 1 148 0
+ 437 003e 10B1     		cbz	r0, .L58
+ 149:Src/communication/wakaama_client/objects/object_device.c ****         for (i = 0 ; i < nbRes ; i++)
+ 438              		.loc 1 149 0
+ 439 0040 0323     		movs	r3, #3
+ 440 0042 2B60     		str	r3, [r5]
+ 441              	.LVL55:
+ 150:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 442              		.loc 1 150 0
+ 443 0044 0BE0     		b	.L49
+ 444              	.LVL56:
+ 445              	.L58:
+ 148:Src/communication/wakaama_client/objects/object_device.c ****         *numDataP = nbRes;
+ 446              		.loc 1 148 0 discriminator 1
+ 447 0046 A020     		movs	r0, #160
+ 448 0048 EDE7     		b	.L46
+ 449              	.LVL57:
+ 450              	.L50:
+ 152:Src/communication/wakaama_client/objects/object_device.c ****         }
+ 451              		.loc 1 152 0 discriminator 3
+ 452 004a 3368     		ldr	r3, [r6]
+ 453 004c 03EB0413 		add	r3, r3, r4, lsl #4
+ 454 0050 02AA     		add	r2, sp, #8
+ 455 0052 02EB4402 		add	r2, r2, r4, lsl #1
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 14
+
+
+ 456 0056 32F8082C 		ldrh	r2, [r2, #-8]
+ 457 005a 5A80     		strh	r2, [r3, #2]	@ movhi
+ 150:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 458              		.loc 1 150 0 discriminator 3
+ 459 005c 0134     		adds	r4, r4, #1
+ 460              	.LVL58:
+ 461              	.L49:
+ 150:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 462              		.loc 1 150 0 is_stmt 0 discriminator 1
+ 463 005e 022C     		cmp	r4, #2
+ 464 0060 F3DD     		ble	.L50
+ 465 0062 D4E7     		b	.L47
+ 466              	.LVL59:
+ 467              	.L52:
+ 468              	.LCFI12:
+ 469              		.cfi_def_cfa_offset 0
+ 470              		.cfi_restore 4
+ 471              		.cfi_restore 5
+ 472              		.cfi_restore 6
+ 473              		.cfi_restore 14
+ 474              	.LBE3:
+ 134:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 475              		.loc 1 134 0 is_stmt 1
+ 476 0064 8420     		movs	r0, #132
+ 477              	.LVL60:
+ 164:Src/communication/wakaama_client/objects/object_device.c **** 
+ 478              		.loc 1 164 0
+ 479 0066 7047     		bx	lr
+ 480              	.L60:
+ 481              		.align	2
+ 482              	.L59:
+ 483 0068 08000000 		.word	.LANCHOR0+8
+ 484              		.cfi_endproc
+ 485              	.LFE4:
+ 487              		.section	.text.get_object_device,"ax",%progbits
+ 488              		.align	1
+ 489              		.global	get_object_device
+ 490              		.syntax unified
+ 491              		.thumb
+ 492              		.thumb_func
+ 493              		.fpu fpv4-sp-d16
+ 495              	get_object_device:
+ 496              	.LFB7:
+ 243:Src/communication/wakaama_client/objects/object_device.c **** 
+ 244:Src/communication/wakaama_client/objects/object_device.c **** lwm2m_object_t * get_object_device()
+ 245:Src/communication/wakaama_client/objects/object_device.c **** {
+ 497              		.loc 1 245 0
+ 498              		.cfi_startproc
+ 499              		@ args = 0, pretend = 0, frame = 0
+ 500              		@ frame_needed = 0, uses_anonymous_args = 0
+ 501 0000 10B5     		push	{r4, lr}
+ 502              	.LCFI13:
+ 503              		.cfi_def_cfa_offset 8
+ 504              		.cfi_offset 4, -8
+ 505              		.cfi_offset 14, -4
+ 246:Src/communication/wakaama_client/objects/object_device.c ****     /*
+ 247:Src/communication/wakaama_client/objects/object_device.c ****      * The get_object_device function create the object itself and return a pointer to the structur
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 15
+
+
+ 248:Src/communication/wakaama_client/objects/object_device.c ****      */
+ 249:Src/communication/wakaama_client/objects/object_device.c ****     lwm2m_object_t * deviceObj;
+ 250:Src/communication/wakaama_client/objects/object_device.c **** 
+ 251:Src/communication/wakaama_client/objects/object_device.c ****     deviceObj = (lwm2m_object_t *)lwm2m_malloc(sizeof(lwm2m_object_t));
+ 506              		.loc 1 251 0
+ 507 0002 2820     		movs	r0, #40
+ 508 0004 FFF7FEFF 		bl	lwm2m_malloc
+ 509              	.LVL61:
+ 252:Src/communication/wakaama_client/objects/object_device.c ****     if (NULL != deviceObj)
+ 510              		.loc 1 252 0
+ 511 0008 0446     		mov	r4, r0
+ 512 000a 98B1     		cbz	r0, .L61
+ 253:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 254:Src/communication/wakaama_client/objects/object_device.c ****         memset(deviceObj, 0, sizeof(lwm2m_object_t));
+ 513              		.loc 1 254 0
+ 514 000c 2822     		movs	r2, #40
+ 515 000e 0021     		movs	r1, #0
+ 516 0010 FFF7FEFF 		bl	memset
+ 517              	.LVL62:
+ 255:Src/communication/wakaama_client/objects/object_device.c **** 
+ 256:Src/communication/wakaama_client/objects/object_device.c ****         /*
+ 257:Src/communication/wakaama_client/objects/object_device.c ****          * It assigns his unique ID
+ 258:Src/communication/wakaama_client/objects/object_device.c ****          * The 3 is the standard ID for the mandatory object "Object device".
+ 259:Src/communication/wakaama_client/objects/object_device.c ****          */
+ 260:Src/communication/wakaama_client/objects/object_device.c ****         deviceObj->objID = LWM2M_DEVICE_OBJECT_ID;
+ 518              		.loc 1 260 0
+ 519 0014 0323     		movs	r3, #3
+ 520 0016 A380     		strh	r3, [r4, #4]	@ movhi
+ 261:Src/communication/wakaama_client/objects/object_device.c **** 
+ 262:Src/communication/wakaama_client/objects/object_device.c ****         /*
+ 263:Src/communication/wakaama_client/objects/object_device.c ****          * and its unique instance
+ 264:Src/communication/wakaama_client/objects/object_device.c ****          *
+ 265:Src/communication/wakaama_client/objects/object_device.c ****          */
+ 266:Src/communication/wakaama_client/objects/object_device.c ****         deviceObj->instanceList = (lwm2m_list_t *)lwm2m_malloc(sizeof(lwm2m_list_t));
+ 521              		.loc 1 266 0
+ 522 0018 0820     		movs	r0, #8
+ 523 001a FFF7FEFF 		bl	lwm2m_malloc
+ 524              	.LVL63:
+ 525 001e A060     		str	r0, [r4, #8]
+ 267:Src/communication/wakaama_client/objects/object_device.c ****         if (NULL != deviceObj->instanceList)
+ 526              		.loc 1 267 0
+ 527 0020 50B1     		cbz	r0, .L63
+ 268:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 269:Src/communication/wakaama_client/objects/object_device.c ****             memset(deviceObj->instanceList, 0, sizeof(lwm2m_list_t));
+ 528              		.loc 1 269 0
+ 529 0022 0023     		movs	r3, #0
+ 530 0024 0360     		str	r3, [r0]	@ unaligned
+ 531 0026 4360     		str	r3, [r0, #4]	@ unaligned
+ 270:Src/communication/wakaama_client/objects/object_device.c ****         }
+ 271:Src/communication/wakaama_client/objects/object_device.c ****         else
+ 272:Src/communication/wakaama_client/objects/object_device.c ****         {
+ 273:Src/communication/wakaama_client/objects/object_device.c ****             lwm2m_free(deviceObj);
+ 274:Src/communication/wakaama_client/objects/object_device.c ****             return NULL;
+ 275:Src/communication/wakaama_client/objects/object_device.c ****         }
+ 276:Src/communication/wakaama_client/objects/object_device.c ****         
+ 277:Src/communication/wakaama_client/objects/object_device.c ****         /*
+ 278:Src/communication/wakaama_client/objects/object_device.c ****          * And the private function that will access the object.
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 16
+
+
+ 279:Src/communication/wakaama_client/objects/object_device.c ****          * Those function will be called when a read/write/execute query is made by the server. In 
+ 280:Src/communication/wakaama_client/objects/object_device.c ****          * know the resources of the object, only the server does.
+ 281:Src/communication/wakaama_client/objects/object_device.c ****          */
+ 282:Src/communication/wakaama_client/objects/object_device.c ****         deviceObj->readFunc     = prv_device_read;
+ 532              		.loc 1 282 0
+ 533 0028 064B     		ldr	r3, .L65
+ 534 002a E360     		str	r3, [r4, #12]
+ 283:Src/communication/wakaama_client/objects/object_device.c ****         deviceObj->executeFunc  = prv_device_execute;
+ 535              		.loc 1 283 0
+ 536 002c 064B     		ldr	r3, .L65+4
+ 537 002e 6361     		str	r3, [r4, #20]
+ 284:Src/communication/wakaama_client/objects/object_device.c ****         deviceObj->discoverFunc = prv_device_discover;
+ 538              		.loc 1 284 0
+ 539 0030 064B     		ldr	r3, .L65+8
+ 540 0032 2362     		str	r3, [r4, #32]
+ 541              	.LVL64:
+ 542              	.L61:
+ 285:Src/communication/wakaama_client/objects/object_device.c **** 
+ 286:Src/communication/wakaama_client/objects/object_device.c ****      }
+ 287:Src/communication/wakaama_client/objects/object_device.c **** 
+ 288:Src/communication/wakaama_client/objects/object_device.c ****     return deviceObj;
+ 289:Src/communication/wakaama_client/objects/object_device.c **** }
+ 543              		.loc 1 289 0
+ 544 0034 2046     		mov	r0, r4
+ 545 0036 10BD     		pop	{r4, pc}
+ 546              	.LVL65:
+ 547              	.L63:
+ 273:Src/communication/wakaama_client/objects/object_device.c ****             return NULL;
+ 548              		.loc 1 273 0
+ 549 0038 2046     		mov	r0, r4
+ 550 003a FFF7FEFF 		bl	lwm2m_free
+ 551              	.LVL66:
+ 274:Src/communication/wakaama_client/objects/object_device.c ****         }
+ 552              		.loc 1 274 0
+ 553 003e 0024     		movs	r4, #0
+ 554              	.LVL67:
+ 555 0040 F8E7     		b	.L61
+ 556              	.L66:
+ 557 0042 00BF     		.align	2
+ 558              	.L65:
+ 559 0044 00000000 		.word	prv_device_read
+ 560 0048 00000000 		.word	prv_device_execute
+ 561 004c 00000000 		.word	prv_device_discover
+ 562              		.cfi_endproc
+ 563              	.LFE7:
+ 565              		.section	.text.free_object_device,"ax",%progbits
+ 566              		.align	1
+ 567              		.global	free_object_device
+ 568              		.syntax unified
+ 569              		.thumb
+ 570              		.thumb_func
+ 571              		.fpu fpv4-sp-d16
+ 573              	free_object_device:
+ 574              	.LFB8:
+ 290:Src/communication/wakaama_client/objects/object_device.c **** 
+ 291:Src/communication/wakaama_client/objects/object_device.c **** void free_object_device(lwm2m_object_t * objectP)
+ 292:Src/communication/wakaama_client/objects/object_device.c **** {
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 17
+
+
+ 575              		.loc 1 292 0
+ 576              		.cfi_startproc
+ 577              		@ args = 0, pretend = 0, frame = 0
+ 578              		@ frame_needed = 0, uses_anonymous_args = 0
+ 579              	.LVL68:
+ 580 0000 10B5     		push	{r4, lr}
+ 581              	.LCFI14:
+ 582              		.cfi_def_cfa_offset 8
+ 583              		.cfi_offset 4, -8
+ 584              		.cfi_offset 14, -4
+ 585 0002 0446     		mov	r4, r0
+ 293:Src/communication/wakaama_client/objects/object_device.c ****     if (NULL != objectP->userData)
+ 586              		.loc 1 293 0
+ 587 0004 406A     		ldr	r0, [r0, #36]
+ 588              	.LVL69:
+ 589 0006 18B1     		cbz	r0, .L68
+ 294:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 295:Src/communication/wakaama_client/objects/object_device.c ****         lwm2m_free(objectP->userData);
+ 590              		.loc 1 295 0
+ 591 0008 FFF7FEFF 		bl	lwm2m_free
+ 592              	.LVL70:
+ 296:Src/communication/wakaama_client/objects/object_device.c ****         objectP->userData = NULL;
+ 593              		.loc 1 296 0
+ 594 000c 0023     		movs	r3, #0
+ 595 000e 6362     		str	r3, [r4, #36]
+ 596              	.L68:
+ 297:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 298:Src/communication/wakaama_client/objects/object_device.c ****     if (NULL != objectP->instanceList)
+ 597              		.loc 1 298 0
+ 598 0010 A068     		ldr	r0, [r4, #8]
+ 599 0012 18B1     		cbz	r0, .L69
+ 299:Src/communication/wakaama_client/objects/object_device.c ****     {
+ 300:Src/communication/wakaama_client/objects/object_device.c ****         lwm2m_free(objectP->instanceList);
+ 600              		.loc 1 300 0
+ 601 0014 FFF7FEFF 		bl	lwm2m_free
+ 602              	.LVL71:
+ 301:Src/communication/wakaama_client/objects/object_device.c ****         objectP->instanceList = NULL;
+ 603              		.loc 1 301 0
+ 604 0018 0023     		movs	r3, #0
+ 605 001a A360     		str	r3, [r4, #8]
+ 606              	.L69:
+ 302:Src/communication/wakaama_client/objects/object_device.c ****     }
+ 303:Src/communication/wakaama_client/objects/object_device.c **** 
+ 304:Src/communication/wakaama_client/objects/object_device.c ****     lwm2m_free(objectP);
+ 607              		.loc 1 304 0
+ 608 001c 2046     		mov	r0, r4
+ 609 001e FFF7FEFF 		bl	lwm2m_free
+ 610              	.LVL72:
+ 305:Src/communication/wakaama_client/objects/object_device.c **** }
+ 611              		.loc 1 305 0
+ 612 0022 10BD     		pop	{r4, pc}
+ 613              		.cfi_endproc
+ 614              	.LFE8:
+ 616              		.section	.rodata
+ 617              		.align	2
+ 618              		.set	.LANCHOR0,. + 0
+ 619              	.LC0:
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 18
+
+
+ 620 0000 0000     		.short	0
+ 621 0002 0100     		.short	1
+ 622 0004 1000     		.short	16
+ 623 0006 0400     		.short	4
+ 624              	.LC1:
+ 625 0008 0000     		.short	0
+ 626 000a 0100     		.short	1
+ 627 000c 1000     		.short	16
+ 628              		.section	.rodata.prv_device_execute.str1.4,"aMS",%progbits,1
+ 629              		.align	2
+ 630              	.LC2:
+ 631 0000 0A092052 		.ascii	"\012\011 REBOOT\015\012\012\000"
+ 631      45424F4F 
+ 631      540D0A0A 
+ 631      00
+ 632              		.section	.rodata.prv_set_value.str1.4,"aMS",%progbits,1
+ 633              		.align	2
+ 634              	.LC3:
+ 635 0000 5500     		.ascii	"U\000"
+ 636              		.text
+ 637              	.Letext0:
+ 638              		.file 2 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_defau
+ 639              		.file 3 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 640              		.file 4 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/
+ 641              		.file 5 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 642              		.file 6 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 643              		.file 7 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 644              		.file 8 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/time.h"
+ 645              		.file 9 "Middlewares/Third_Party/wakaama/liblwm2m.h"
+ 646              		.file 10 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 647              		.file 11 "/usr/local/gcc_arm/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/ctype.h"
+ 648              		.file 12 "Inc/config_parser.h"
+ 649              		.file 13 "<built-in>"
+ARM GAS  /var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 object_device.c
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:18     .text.prv_device_discover:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:24     .text.prv_device_discover:0000000000000000 prv_device_discover
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:144    .text.prv_device_discover:0000000000000074 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:162    .text.prv_device_discover:00000000000000b8 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:178    .text.prv_device_discover:00000000000000bc $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:183    .text.prv_device_execute:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:189    .text.prv_device_execute:0000000000000000 prv_device_execute
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:252    .text.prv_device_execute:000000000000002c $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:258    .text.prv_set_value:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:264    .text.prv_set_value:0000000000000000 prv_set_value
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:282    .text.prv_set_value:000000000000000c $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:351    .text.prv_set_value:0000000000000050 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:357    .text.prv_device_read:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:363    .text.prv_device_read:0000000000000000 prv_device_read
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:483    .text.prv_device_read:0000000000000068 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:488    .text.get_object_device:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:495    .text.get_object_device:0000000000000000 get_object_device
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:559    .text.get_object_device:0000000000000044 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:566    .text.free_object_device:0000000000000000 $t
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:573    .text.free_object_device:0000000000000000 free_object_device
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:617    .rodata:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:629    .rodata.prv_device_execute.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:633    .rodata.prv_set_value.str1.4:0000000000000000 $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:299    .text.prv_set_value:000000000000001d $d
+/var/folders/0d/93p3r6493yg7p0rvl_4r983m0000gn/T//ccRnZAOz.s:299    .text.prv_set_value:000000000000001e $t
+
+UNDEFINED SYMBOLS
+lwm2m_data_new
+fwrite
+_impure_ptr
+lwm2m_data_encode_string
+configuration
+lwm2m_malloc
+memset
+lwm2m_free
