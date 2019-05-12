@@ -50,15 +50,16 @@ This will download run a demo leshan server with our custom model definition. Th
 
 ## Configuration
 Remote Programming Device requires a basic configuration file on attached USB memory. Possible fields are described below:
-| field name 	| default value		| description 		|
-|---			|---				| 					|
-| device_name	| Remote Programmer Device | Name of the LWM2M client. Should be unique |
-| lwm2m_server_uri | coap://192.168.2.1:5683 | LWM2M server address |
-| local_port 	| 5683 				| Local port number, that is used to communicate with LWM2M server | 
-| wakaama_short_id | 123 			| Cannot be equal to 0 |
-| wakaama_company | AGH				| Field required by Wakaama in the instance of device object |
-| wakaama_model_number | Remote Programmer | Field required by Wakaama in the instance of device object |
-| config_uri 	| 					| URL address for another file containing additional configuration |
+
+|field name 			|default value				|description 		|
+|---					|---						|---				|
+|device_name			|Remote Programmer Device 	|Name of the LWM2M client. Should be unique |
+|lwm2m_server_uri 		|coap://192.168.2.1:5683 	|LWM2M server address |
+|local_port 			|5683 						|Local port number, that is used to communicate with LWM2M server | 
+|wakaama_short_id 		|123 						|Cannot be equal to 0 |
+|wakaama_company 		|AGH						|Field required by Wakaama in the instance of device object |
+|wakaama_model_number 	|Remote Programmer 			|Field required by Wakaama in the instance of device object |
+|config_uri 			| 							|URL address for another file containing additional configuration |
 
 
 Example file looks like this:
@@ -106,7 +107,7 @@ Having connected and setup the device, it's name should appear in the web interf
 
 The RemoteProgrammer should appear as the device with a name specified in the config file. Using the Target objects you can programm the connected device. Each connected device is represented as an instance of an object. The structure of the object is described below:
 
-| Name 			|ID |Operations	|Instances|Mandatory|Type|Range	|Units|Description 					|
+|Name 			|ID |Operations	|Instances|Mandatory|Type|Range	|Units|Description 					|
 |------				|---|-------|-------|-------|-------|-------|---|----							|
 | target_type		|1	|R/W 	|No 	|Yes 	|string	|		|	|type of the programmable board |
 | firmware_url		|2	|R/W 	|No 	|Yes 	|string	|		|	|url to the Binary 				|
@@ -132,8 +133,9 @@ Compiled Binary for the target device should be placed on a http server. To star
 ## Development setup
 ### Compilation
 to compile the source just type:
-```
-make
+```bash
+$ cd STM32F429ZI
+$ make
 ```
 
 The programming algorithm is structured in layers, so as to maximize the number of reusing the code. Layers are shown below:
