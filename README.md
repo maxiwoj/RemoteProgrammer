@@ -13,9 +13,9 @@ Advantages to existing solutions:
 - energy-saving: does not use an operating system, FreeRTOS on board
 - quicker for prototyping, than bootloader development
 
-![schema](https://raw.githubusercontent.com/maxiwoj/RemoteProgrammer/cleanup/img/schema.png)
+![schema](https://raw.githubusercontent.com/maxiwoj/RemoteProgrammer/master/img/schema.png)
 
-![web-interface](https://raw.githubusercontent.com/maxiwoj/RemoteProgrammer/cleanup/img/leshan-target-flash.png)
+![web-interface](https://raw.githubusercontent.com/maxiwoj/RemoteProgrammer/master/img/leshan-target-flash.png)
 
 ## Installation
 ### Prerequisites
@@ -123,7 +123,7 @@ The RemoteProgrammer should appear as the device with a name specified in the co
 
 Compiled Binary for the target device should be placed on a http server. To start the download to the Remote Programming Device, just click the `WRITE` button at the firmware_url field of your desired Target Instance. Before doing it, check the device type, that it has been auto-detected successfully and this is the device you want to programm. 
 
-![Write_example](https://raw.githubusercontent.com/maxiwoj/RemoteProgrammer/cleanup/img/arch.png)
+![Write_example](https://raw.githubusercontent.com/maxiwoj/RemoteProgrammer/master/img/arch.png)
 
 ### Reference
 
@@ -139,7 +139,7 @@ $ make
 ```
 
 The programming algorithm is structured in layers, so as to maximize the number of reusing the code. Layers are shown below:
-![structure](https://raw.githubusercontent.com/maxiwoj/RemoteProgrammer/cleanup/img/structure.png). 
+![structure](https://raw.githubusercontent.com/maxiwoj/RemoteProgrammer/master/img/structure.png). 
 
 
 --------------- TODO maybe something more? ----------
