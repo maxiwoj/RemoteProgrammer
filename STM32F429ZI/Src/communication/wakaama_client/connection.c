@@ -13,6 +13,8 @@
  * Contributors:
  *    David Navarro, Intel Corporation - initial API and implementation
  *    Pascal Rieux - Please refer to git log
+      Maksymilian Wojczuk, Tomasz Michalec - adjustments for STM32F4 board,
+ *       please refer to git log
  *    
  *******************************************************************************/
 
